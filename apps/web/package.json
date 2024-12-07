@@ -1,5 +1,5 @@
 {
-  "name": "@mi-deck/web",
+  "name": "@mi-deck/server",
   "type": "module",
   "scripts": {
     "dev": "vite",
