@@ -1,13 +1,14 @@
 {
-  "name": "mi-deck",
+  "name": "@mi-deck",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "web": "pnpm -F @mi-deck/web",
+    "format": "biome format --write ."
   },
   "engines": {
-    "pnpm": "9.14.4",
+    "pnpm": "9.15",
     "node": "22.12.0",
     "npm": "please_use_pnpm_instead"
   },
@@ -23,5 +24,8 @@
   },
   "dependencies": {
     "misskey-js": "2024.11.0"
+  },
+  "volta": {
+    "node": "22.12.0"
   }
 }
