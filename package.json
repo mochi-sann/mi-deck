@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "pnpm -r run dev",
     "web": "pnpm -F @mi-deck/web",
     "format": "biome format --write ."
   },
