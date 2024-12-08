@@ -1,10 +1,12 @@
 import "./App.css";
-import { LoginForm } from "./Component/login/LoginForm";
+import { AddServerForm } from "./Component/login/AddServerForm";
+import { TestComponet } from "./Component/TestComponet";
 
 function App() {
   return (
     <div>
-      <LoginForm />
+      <AddServerForm />
+      <TestComponet />
     </div>
   );
 }

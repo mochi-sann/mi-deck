@@ -5,7 +5,7 @@ type Inputs = {
   misskeyServerUrl: string;
 };
 
-export const LoginForm: React.FC = () => {
+export const AddServerForm: React.FC = () => {
   const {
     register,
     handleSubmit,
