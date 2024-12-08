@@ -2,7 +2,12 @@
   "name": "api",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "db:seed": "prisma db seed -- --environment development",
+    "db:seed:test": "prisma db seed -- --environment test",
+    "db:migrate:reset": "npx prisma migrate reset -f",
+    "db:migrate:dev": "npx prisma migrate dev",
+    "db:generate": "prisma generate"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.7",
@@ -10,6 +15,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
-    "tsx": "^4.7.1"
+    "prisma": "^6.0.1",
+    "tsx": "^4.19.2"
   }
 }
