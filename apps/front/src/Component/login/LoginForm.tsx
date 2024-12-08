@@ -1,5 +1,6 @@
 import type React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { MiAuthReq } from "../../lib/miAuth";
 type Inputs = {
   misskeyServerUrl: string;
 };
@@ -13,6 +14,8 @@ export const LoginForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log(data);
+    const uuid = MiAuthReq(data.misskeyServerUrl);
+    console.log(...[uuid, "👀 [LoginForm.tsx:18]: uuid"].reverse());
   };
   return (
     <div>
