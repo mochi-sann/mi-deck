@@ -1,6 +1,7 @@
-import { Hono } from "hono";
 import { AppController } from "./app.controller.js";
 import { AppService } from "./app.service.js";
+import { AuthModule } from "../auth/auth.module.js";
+import type { Hono } from "hono";
 
 export class AppModule {
   constructor(private readonly app: Hono) {}
@@ -11,5 +12,7 @@ export class AppModule {
 
     // ルーティングの設定
     appController.initRoutes(this.app);
+    const newAuthModule = new AuthModule(this.app);
+    newAuthModule.init();
   }
 }
