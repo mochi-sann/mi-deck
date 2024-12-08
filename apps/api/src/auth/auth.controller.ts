@@ -6,28 +6,24 @@ export class AuthController {
 
   login(app: Hono) {
     app.post("/auth/login", async (ctx) => {
-      const { username, password } = await ctx.req.json();
+      const { email, password } = await ctx.req.json();
 
-      // ここで認証処理を行う (例: ユーザーDBチェック)
-      if (username === "user" && password === "password") {
-        const token = this.authService.generateToken({ username });
-        return ctx.json({ token });
+      try {
+        const user = await this.authService.register(email, password);
+        return ctx.json({ message: "User registered successfully", user });
+      } catch (error) {
+        return ctx.json({ error: error.message }, 400);
       }
-
-      return ctx.text("Invalid credentials", 401);
     });
-  }
-  signUp(app: Hono) {
     app.post("/auth/signup", async (ctx) => {
-      const { username, password, email } = await ctx.req.json();
+      const { email, password } = await ctx.req.json();
 
-      // ここで認証処理を行う (例: ユーザーDBチェック)
-      if (username === "user" && password === "password") {
-        const token = this.authService.generateToken({ username });
-        return ctx.json({ token });
+      try {
+        const { token } = await this.authService.login(email, password);
+        return ctx.json({ message: "Login successful", token });
+      } catch (error) {
+        return ctx.json({ error: error.message }, 401);
       }
-
-      return ctx.text("Invalid credentials", 401);
     });
   }
 }
