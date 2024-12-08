@@ -8,16 +8,16 @@ export const LoginForm: React.FC = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<Inputs>();
-  console.log(watch("misskeyServerUrl"));
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    console.log(data);
+  };
   return (
     <div>
-      <form action={handleSubmit(onSubmit)}>
-        <input {...register("misskeyServerUrl")} />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <input required {...register("misskeyServerUrl")} />
         <button type="submit">登録</button>
       </form>
     </div>
