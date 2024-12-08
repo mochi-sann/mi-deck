@@ -43,12 +43,18 @@ importers:
 
   apps/front:
     dependencies:
+      miauth-js:
+        specifier: ^0.0.6
+        version: 0.0.6
       react:
         specifier: ^18.3.1
         version: 18.3.1
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      react-hook-form:
+        specifier: ^7.54.0
+        version: 7.54.0(react@18.3.1)
     devDependencies:
       '@eslint/js':
         specifier: ^9.15.0
@@ -129,6 +135,15 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
+
+  '@deno/shim-crypto@0.3.1':
+    resolution: {integrity: sha512-ed4pNnfur6UbASEgF34gVxR9p7Mc3qF+Ygbmjiil8ws5IhNFhPDFy5vE5hQAUA9JmVsSxXPcVLM5Rf8LOZqQ5Q==}
+
+  '@deno/shim-deno-test@0.3.3':
+    resolution: {integrity: sha512-Ge0Tnl7zZY0VvEfgsyLhjid8DzI1d0La0dgm+3m0/A8gZXgp5xwlyIyue5e4SCUuVB/3AH/0lun9LcJhhTwmbg==}
+
+  '@deno/shim-deno@0.10.0':
+    resolution: {integrity: sha512-E7rQ0Hk33V45xQXKEnCxizdSP5C+hhqw1H3xWXsct3kYFWgG93B5gN3LKlyvcxbckt8d67jVa6s+y5duRYawvg==}
 
   '@esbuild/aix-ppc64@0.23.1':
     resolution: {integrity: sha512-6VhYk1diRqrhBAqpJEdjASR/+WVRtfjpqKuNw11cLiaWpAT/Uu+nokB+UJnevzy/P9C/ty6AOe0dwueMrGh/iQ==}
@@ -1069,6 +1084,9 @@ packages:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
 
+  miauth-js@0.0.6:
+    resolution: {integrity: sha512-u67dyAdYSrIUX09Zi2wLJb1vl82J4AqhwItUz4XFHIpQ4bn7Hts7uYGXf847/bjI1crxs1oiG+Myxg9WlgLOmg==}
+
   micromatch@4.0.8:
     resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
     engines: {node: '>=8.6'}
@@ -1144,6 +1162,12 @@ packages:
     resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
     peerDependencies:
       react: ^18.3.1
+
+  react-hook-form@7.54.0:
+    resolution: {integrity: sha512-PS05+UQy/IdSbJNojBypxAo9wllhHgGmyr8/dyGQcPoiMf3e7Dfb9PWYVRco55bLbxH9S+1yDDJeTdlYCSxO3A==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
 
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
@@ -1336,6 +1360,15 @@ snapshots:
 
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
+
+  '@deno/shim-crypto@0.3.1': {}
+
+  '@deno/shim-deno-test@0.3.3': {}
+
+  '@deno/shim-deno@0.10.0':
+    dependencies:
+      '@deno/shim-deno-test': 0.3.3
+      which: 2.0.2
 
   '@esbuild/aix-ppc64@0.23.1':
     optional: true
@@ -2120,6 +2153,11 @@ snapshots:
 
   merge2@1.4.1: {}
 
+  miauth-js@0.0.6:
+    dependencies:
+      '@deno/shim-crypto': 0.3.1
+      '@deno/shim-deno': 0.10.0
+
   micromatch@4.0.8:
     dependencies:
       braces: 3.0.3
@@ -2191,6 +2229,10 @@ snapshots:
       loose-envify: 1.4.0
       react: 18.3.1
       scheduler: 0.23.2
+
+  react-hook-form@7.54.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   react@18.3.1:
     dependencies:
