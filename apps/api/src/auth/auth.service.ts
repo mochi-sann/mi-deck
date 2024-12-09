@@ -1,14 +1,15 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
+import { JWT_SECRET } from "../index.js";
 const prisma = new PrismaClient();
 
 export class AuthService {
-  private readonly secret = "your-secret-key"; // 必ず環境変数で管理すること
+  private readonly jwtSecret = JWT_SECRET; // 必ず環境変数で管理すること
   private readonly saltRounds = 10;
 
   generateToken(payload: object): string {
-    return jwt.sign(payload, this.secret, { expiresIn: "1h" });
+    return jwt.sign(payload, this.jwtSecret, { expiresIn: "1h" });
   }
   async register(email: string, password: string) {
     // パスワードをハッシュ化
@@ -51,9 +52,10 @@ export class AuthService {
 
     return { token };
   }
+  async getUserInfo() {}
   verifyToken(token: string): jwt.JwtPayload | string | null {
     try {
-      return jwt.verify(token, this.secret);
+      return jwt.verify(token, this.jwtSecret);
     } catch {
       return null;
     }

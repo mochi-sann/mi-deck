@@ -1,23 +1,22 @@
 import type { MiddlewareHandler } from "hono";
-import { AuthService } from "./auth.service.js";
+import jwt from "jsonwebtoken";
+
+const jwtSecret = "your-jwt-secret"; // 環境変数で管理
 
 export const authMiddleware: MiddlewareHandler = (ctx, next) => {
-  const authService = new AuthService();
-  const authHeader = ctx.req.header.get("authorization");
+  const authHeader = ctx.req.headers.get("authorization");
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return ctx.text("Unauthorized", 401);
   }
 
   const token = authHeader.split(" ")[1];
-  const payload = authService.verifyToken(token);
 
-  if (!payload) {
+  try {
+    const decoded = jwt.verify(token, jwtSecret);
+    ctx.set("user", decoded); // ユーザー情報を保存
+    return next();
+  } catch {
     return ctx.text("Invalid or expired token", 401);
   }
-
-  // トークン情報をリクエストコンテキストに保存
-  ctx.set("user", payload);
-
-  return next();
 };

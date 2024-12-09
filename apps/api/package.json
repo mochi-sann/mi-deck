@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "db:seed": "prisma db seed -- --environment development",
+    "db:studio": "prisma studio -- --environment development",
     "db:seed:test": "prisma db seed -- --environment test",
     "db:migrate:reset": "npx prisma migrate reset -f",
     "db:migrate:dev": "npx prisma migrate dev",

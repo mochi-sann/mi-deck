@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { AppModule } from "./app/app.module.js";
 
 const app = new Hono();
+export const JWT_SECRET = process.env.JWT_SECRET || ("DEV_SERCRET" as const);
 
 const port = Number(process.env.PORT) || 3001;
 const appModule = new AppModule(app);
