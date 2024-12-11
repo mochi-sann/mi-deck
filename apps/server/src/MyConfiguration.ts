@@ -4,7 +4,7 @@ import path from "path";
 import { MyGlobal } from "./MyGlobal";
 
 export namespace MyConfiguration {
-  export const API_PORT = () => Number(MyGlobal.env.PROJECT_API_PORT);
+  export const API_PORT = () => Number(MyGlobal.env.server_API_PORT);
 
   export const ROOT = (() => {
     const splitted: string[] = __dirname.split(path.sep);

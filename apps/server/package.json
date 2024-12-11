@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@mi-deck/PROJECT",
+  "name": "@mi-deck/server",
   "version": "0.1.0",
   "description": "Starter kit of Nestia",
   "main": "lib/index.js",

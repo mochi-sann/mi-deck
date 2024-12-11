@@ -1,7 +1,7 @@
 import { DynamicExecutor } from "@nestia/e2e";
 import chalk from "chalk";
 
-import api from "@mi-deck/PROJECT-api";
+import api from "@mi-deck/server-api";
 
 import { MyBackend } from "../src/MyBackend";
 import { MyConfiguration } from "../src/MyConfiguration";
