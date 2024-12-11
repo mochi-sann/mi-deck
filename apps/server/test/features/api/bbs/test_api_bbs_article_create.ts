@@ -1,8 +1,8 @@
 import { RandomGenerator, TestValidator } from "@nestia/e2e";
 import { v4 } from "uuid";
 
-import api from "@ORGANIZATION/PROJECT-api/lib/index";
-import { IBbsArticle } from "@ORGANIZATION/PROJECT-api/lib/structures/bbs/IBbsArticle";
+import api from "@mi-deck/PROJECT-api/lib/index";
+import { IBbsArticle } from "@mi-deck/PROJECT-api/lib/structures/bbs/IBbsArticle";
 
 export async function test_api_bbs_article_create(
   connection: api.IConnection,

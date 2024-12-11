@@ -5,9 +5,9 @@ import {
   TestValidator,
 } from "@nestia/e2e";
 
-import api from "@ORGANIZATION/PROJECT-api/lib/index";
-import { IBbsArticle } from "@ORGANIZATION/PROJECT-api/lib/structures/bbs/IBbsArticle";
-import { IPage } from "@ORGANIZATION/PROJECT-api/lib/structures/common/IPage";
+import api from "@mi-deck/PROJECT-api/lib/index";
+import { IBbsArticle } from "@mi-deck/PROJECT-api/lib/structures/bbs/IBbsArticle";
+import { IPage } from "@mi-deck/PROJECT-api/lib/structures/common/IPage";
 
 export async function test_api_bbs_article_index_sort(
   connection: api.IConnection,

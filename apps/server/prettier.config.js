@@ -8,11 +8,7 @@ module.exports = {
 
   // PLUG-IN CONFIGURATIONS
   plugins: ["@trivago/prettier-plugin-sort-imports"],
-  importOrder: [
-    "<THIRD_PARTY_MODULES>",
-    "^@ORGANIZATION/PROJECT-api(.*)$",
-    "^[./]",
-  ],
+  importOrder: ["<THIRD_PARTY_MODULES>", "^@mi-deck/PROJECT-api(.*)$", "^[./]"],
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
   importOrderParserPlugins: ["decorators-legacy", "typescript"],

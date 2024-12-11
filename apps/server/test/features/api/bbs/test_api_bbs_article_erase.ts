@@ -1,7 +1,7 @@
 import { TestValidator } from "@nestia/e2e";
 
-import api from "@ORGANIZATION/PROJECT-api/lib/index";
-import { IBbsArticle } from "@ORGANIZATION/PROJECT-api/lib/structures/bbs/IBbsArticle";
+import api from "@mi-deck/PROJECT-api/lib/index";
+import { IBbsArticle } from "@mi-deck/PROJECT-api/lib/structures/bbs/IBbsArticle";
 
 export async function test_api_bbs_article_at(
   connection: api.IConnection,
