@@ -1,5 +1,26 @@
 import type React from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+type SignUpFormInput = {
+  email: string;
+  password: string;
+};
 
 export const SignUpForm: React.FC = () => {
-  return <div></div>;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpFormInput>();
+  const onSubmit: SubmitHandler<SignUpFormInput> = (data) => {
+    console.log(data);
+  };
+  return (
+    <div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <input required {...register("email")} />
+        <input required {...register("password")} />
+        <button type="submit">登録</button>
+      </form>
+    </div>
+  );
 };
