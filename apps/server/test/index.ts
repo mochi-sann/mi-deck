@@ -51,7 +51,7 @@ async function main(): Promise<void> {
   };
   const report: DynamicExecutor.IReport = await DynamicExecutor.validate({
     prefix: "test",
-    location: __dirname + "/features",
+    location: `${__dirname}/features`,
     parameters: () => [
       {
         host: connection.host,

@@ -1,6 +1,7 @@
 import cp from "node:child_process";
 import express from "express";
 
+const PORT = 3005;
 const execute = (command: string): void => {
   console.log(`\n$ ${command}\n`);
   cp.execSync(command, { stdio: "inherit" });
@@ -16,11 +17,11 @@ const main = async (): Promise<void> => {
   const app = express();
   const swaggerUi = require("swagger-ui-express");
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(docs));
-  app.listen(37810);
+  app.listen(PORT);
 
   console.log("\n");
   console.log("-----------------------------------------------------------");
-  console.log("\n Swagger UI Address: http://127.0.0.1:37810/api-docs \n");
+  console.log(`\n Swagger UI Address: http://localhost:${PORT}/api-docs \n`);
   console.log("-----------------------------------------------------------");
 };
 main().catch((exp) => {
