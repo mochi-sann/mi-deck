@@ -34,6 +34,7 @@ export class MyBackend {
   public async close(): Promise<void> {
     if (this.application_ === undefined) return;
 
+    // DO CLOSE
     await this.application_.close();
     this.application_ = undefined;
   }

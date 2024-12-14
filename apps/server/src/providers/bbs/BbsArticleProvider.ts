@@ -3,6 +3,7 @@ import { v4 } from "uuid";
 
 import type { IBbsArticle } from "@mi-deck/server-api/lib/structures/bbs/IBbsArticle";
 import type { IPage } from "@mi-deck/server-api/lib/structures/common/IPage";
+
 import { MapUtil } from "../../utils/MapUtil";
 
 /**
@@ -31,18 +32,18 @@ export namespace BbsArticleProvider {
     if (props.input.search !== undefined) {
       if (props.input.search.writer)
         articles = articles.filter(
-          (x) => x.writer.indexOf(props.input.search?.writer!) !== -1,
+          (x) => x.writer.indexOf(props.input.search!.writer!) !== -1,
         );
       if (props.input.search.title)
         articles = articles.filter(
           (x) =>
-            x.snapshots.at(-1)?.title.indexOf(props.input.search?.title!) !==
+            x.snapshots.at(-1)!.title.indexOf(props.input.search!.title!) !==
             -1,
         );
       if (props.input.search.body)
         articles = articles.filter(
           (x) =>
-            x.snapshots.at(-1)?.body.indexOf(props.input.search?.body!) !== -1,
+            x.snapshots.at(-1)!.body.indexOf(props.input.search!.body!) !== -1,
         );
     }
 
@@ -58,16 +59,17 @@ export namespace BbsArticleProvider {
                 new Date(x.created_at).getTime() -
                 new Date(y.created_at).getTime()
               );
-            if (column === "updated_at")
+            else if (column === "updated_at")
               return (
-                new Date(x.snapshots.at(-1)?.created_at).getTime() -
-                new Date(y.snapshots.at(-1)?.created_at).getTime()
+                new Date(x.snapshots.at(-1)!.created_at).getTime() -
+                new Date(y.snapshots.at(-1)!.created_at).getTime()
               );
-            if (column === "writer") return x.writer.localeCompare(y.writer);
-
-            return x.snapshots
-              .at(-1)
-              ?.title.localeCompare(y.snapshots.at(-1)?.title);
+            else if (column === "writer")
+              return x.writer.localeCompare(y.writer);
+            else
+              return x.snapshots
+                .at(-1)!
+                .title.localeCompare(y.snapshots.at(-1)!.title);
           };
           return sign === "+" ? closure() : -closure();
         });
@@ -91,9 +93,9 @@ export namespace BbsArticleProvider {
         id: article.id,
         section: article.section,
         writer: article.writer,
-        title: article.snapshots.at(-1)?.title,
+        title: article.snapshots.at(-1)!.title,
         created_at: article.created_at,
-        updated_at: article.snapshots.at(-1)?.created_at,
+        updated_at: article.snapshots.at(-1)!.created_at,
       })),
     };
   }
@@ -114,7 +116,7 @@ export namespace BbsArticleProvider {
       throw new NotFoundException(
         `Error on BbsArticleProvider.find(): unable to find the matched article "${props.id}".`,
       );
-    if (props.password !== undefined && props.password !== record.password)
+    else if (props.password !== undefined && props.password !== record.password)
       throw new ForbiddenException(
         "Error on BbsArticleProvider.find(): different password.",
       );
@@ -187,7 +189,7 @@ export namespace BbsArticleProvider {
       id: props.id,
       password: props.input.password,
     });
-    storage.get(props.section)?.delete(props.id);
+    storage.get(props.section)!.delete(props.id);
   }
 }
 
