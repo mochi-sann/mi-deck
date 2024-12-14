@@ -1,5 +1,5 @@
-import fs from "fs";
-import os from "os";
+import fs from "node:fs";
+import os from "node:os";
 import { DynamicBenchmarker } from "@nestia/benchmark";
 import cliProgress from "cli-progress";
 import type { IPointer } from "tstl";

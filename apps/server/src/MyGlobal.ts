@@ -3,7 +3,7 @@ import dotenvExpand from "dotenv-expand";
 import { Singleton } from "tstl";
 import typia from "typia";
 
-/* eslint-disable */
+// biome-ignore lint:
 export class MyGlobal {
   public static testing = false;
   public static get env(): MyGlobal.IEnvironments {

@@ -51,7 +51,7 @@ async function main(): Promise<void> {
   };
   const report: DynamicExecutor.IReport = await DynamicExecutor.validate({
     prefix: "test",
-    location: __dirname + "/features",
+    location: `${__dirname}/features`,
     parameters: () => [
       {
         host: connection.host,
@@ -81,7 +81,7 @@ async function main(): Promise<void> {
   );
   if (failures.length === 0) {
     console.log("Success");
-    console.log("Elapsed time", report.time.toLocaleString(), `ms`);
+    console.log("Elapsed time", report.time.toLocaleString(), "ms");
   } else {
     for (const f of failures) console.log(f.error);
     process.exit(-1);

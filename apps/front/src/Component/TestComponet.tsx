@@ -12,7 +12,7 @@ export const TestComponet: React.FC = () => {
 
   if (isPending) return "Loading...";
 
-  if (error) return "An error has occurred: " + error.message;
+  if (error) return `An error has occurred: ${error.message}`;
 
   return <div>{JSON.stringify(data)}</div>;
 };

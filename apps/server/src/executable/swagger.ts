@@ -10,6 +10,7 @@ const main = async (): Promise<void> => {
   if (!process.argv.some((str) => str === "--skipBuild"))
     execute("npm run build:swagger");
 
+  // biome-ignore lint: disable any
   const docs = await import("../../packages/api/swagger.json" as any);
 
   const app = express();

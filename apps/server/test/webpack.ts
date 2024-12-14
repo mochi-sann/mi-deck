@@ -1,4 +1,4 @@
-import cp from "child_process";
+import cp from "node:child_process";
 import { DynamicExecutor } from "@nestia/e2e";
 import chalk from "chalk";
 import { sleep_for } from "tstl";
@@ -19,7 +19,7 @@ const main = async (): Promise<void> => {
   };
   const report: DynamicExecutor.IReport = await DynamicExecutor.validate({
     prefix: "test",
-    location: __dirname + "/features",
+    location: `${__dirname}/features`,
     parameters: () => [
       {
         host: connection.host,
@@ -45,7 +45,7 @@ const main = async (): Promise<void> => {
   );
   if (failures.length === 0) {
     console.log("Success");
-    console.log("Elapsed time", report.time.toLocaleString(), `ms`);
+    console.log("Elapsed time", report.time.toLocaleString(), "ms");
   } else {
     for (const f of failures) console.log(f.error);
     process.exit(-1);

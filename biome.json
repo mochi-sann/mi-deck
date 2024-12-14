@@ -13,7 +13,8 @@
       "tsconfig.node.json",
       "vscode/**",
       "apps/server/bin/**",
-      "apps/server/lib/**"
+      "apps/server/lib/**",
+      "apps/front/dist/**"
     ]
   },
   "formatter": {
@@ -26,7 +27,12 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "style": {
+        "noNonNullAssertion": "off",
+        "useTemplate": "off",
+        "noUselessElse": "off"
+      }
     }
   },
   "javascript": {
