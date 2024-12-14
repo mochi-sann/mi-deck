@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int             @id @default(autoincrement())
+  email         String          @unique
+  name          String?
+  password  String
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+  serverSession ServerSession[]
+
+  @@map("user")
+}
+
+
+enum ServerType {
+  Misskey
+}
+
+model ServerSession {
+  id         Int        @id @default(autoincrement())
+  userId     Int        @map("user_id")
+  user       User       @relation(fields: [userId], references: [id])
+  oringin    String
+  token      String
+  serverType ServerType @map("server_type")
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+  panels     Panels[]
+
+  @@map("server_session")
+}
+
+model Panels {
+  id              Int           @id @default(autoincrement())
+  serverSessionId Int           @map("server_session_id")
+  serverSession   ServerSession @relation(fields: [serverSessionId], references: [id])
+  type            String
+
+  @@map("panels")
+}

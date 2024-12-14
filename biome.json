@@ -32,7 +32,8 @@
       "style": {
         "noNonNullAssertion": "off",
         "useTemplate": "off",
-        "noUselessElse": "off"
+        "noUselessElse": "off",
+        "useImportType": "off"
       }
     }
   },

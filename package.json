@@ -8,6 +8,7 @@
     "build": "dotenvx run -- pnpm -r run build",
     "web": "dotenvx run -- pnpm -F @mi-deck/web",
     "api": "dotenvx run -- pnpm -F @mi-deck/api",
+    "server": "dotenvx run -- pnpm -F @mi-deck/server",
     "format": "biome format --write .",
     "check": "biome check --write . --unsafe"
   },
