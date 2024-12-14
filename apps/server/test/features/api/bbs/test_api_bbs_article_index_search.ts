@@ -1,8 +1,8 @@
 import { ArrayUtil, RandomGenerator, TestValidator } from "@nestia/e2e";
 
 import api from "@mi-deck/server-api/lib/index";
-import { IBbsArticle } from "@mi-deck/server-api/lib/structures/bbs/IBbsArticle";
-import { IPage } from "@mi-deck/server-api/lib/structures/common/IPage";
+import type { IBbsArticle } from "@mi-deck/server-api/lib/structures/bbs/IBbsArticle";
+import type { IPage } from "@mi-deck/server-api/lib/structures/common/IPage";
 
 export async function test_api_bbs_article_index_search(
   connection: api.IConnection,

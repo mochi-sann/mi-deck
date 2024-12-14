@@ -1,6 +1,6 @@
 import type { Hono } from "hono";
-import type { AuthService } from "./auth.service.js";
 import { authMiddleware } from "./auth.middleware.js";
+import type { AuthService } from "./auth.service.js";
 
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

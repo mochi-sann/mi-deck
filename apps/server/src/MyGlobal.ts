@@ -5,7 +5,7 @@ import typia from "typia";
 
 /* eslint-disable */
 export class MyGlobal {
-  public static testing: boolean = false;
+  public static testing = false;
   public static get env(): MyGlobal.IEnvironments {
     return environments.get();
   }

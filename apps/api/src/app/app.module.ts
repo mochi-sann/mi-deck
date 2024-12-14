@@ -1,7 +1,7 @@
+import type { Hono } from "hono";
+import { AuthModule } from "../auth/auth.module.js";
 import { AppController } from "./app.controller.js";
 import { AppService } from "./app.service.js";
-import { AuthModule } from "../auth/auth.module.js";
-import type { Hono } from "hono";
 
 export class AppModule {
   constructor(private readonly app: Hono) {}

@@ -1,5 +1,5 @@
 import type React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { MiAuthReq } from "../../lib/miAuth";
 type Inputs = {
   misskeyServerUrl: string;

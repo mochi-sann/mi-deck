@@ -2,7 +2,7 @@ import { RandomGenerator, TestValidator } from "@nestia/e2e";
 import { v4 } from "uuid";
 
 import api from "@mi-deck/server-api/lib/index";
-import { IBbsArticle } from "@mi-deck/server-api/lib/structures/bbs/IBbsArticle";
+import type { IBbsArticle } from "@mi-deck/server-api/lib/structures/bbs/IBbsArticle";
 
 export async function test_api_bbs_article_update(
   connection: api.IConnection,

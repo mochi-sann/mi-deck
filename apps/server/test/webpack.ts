@@ -1,10 +1,10 @@
+import cp from "child_process";
 import { DynamicExecutor } from "@nestia/e2e";
 import chalk from "chalk";
-import cp from "child_process";
 import { sleep_for } from "tstl";
 
 import { MyConfiguration } from "../src/MyConfiguration";
-import api from "../src/api";
+import type api from "../src/api";
 
 const main = async (): Promise<void> => {
   // OPEN BUNDLED SERVER

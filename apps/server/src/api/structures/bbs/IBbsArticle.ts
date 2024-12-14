@@ -1,7 +1,7 @@
-import { tags } from "typia";
+import type { tags } from "typia";
 
-import { IAttachmentFile } from "../common/IAttachmentFile";
-import { IPage } from "../common/IPage";
+import type { IAttachmentFile } from "../common/IAttachmentFile";
+import type { IPage } from "../common/IPage";
 
 /**
  * BBS article.

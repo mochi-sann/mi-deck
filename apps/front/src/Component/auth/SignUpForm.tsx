@@ -1,5 +1,5 @@
 import type React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 type SignUpFormInput = {
   email: string;
   password: string;

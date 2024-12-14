@@ -1,8 +1,8 @@
 import { ForbiddenException, NotFoundException } from "@nestjs/common";
 import { v4 } from "uuid";
 
-import { IBbsArticle } from "@mi-deck/server-api/lib/structures/bbs/IBbsArticle";
-import { IPage } from "@mi-deck/server-api/lib/structures/common/IPage";
+import type { IBbsArticle } from "@mi-deck/server-api/lib/structures/bbs/IBbsArticle";
+import type { IPage } from "@mi-deck/server-api/lib/structures/common/IPage";
 
 import { MapUtil } from "../../utils/MapUtil";
 

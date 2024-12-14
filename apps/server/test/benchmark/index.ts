@@ -1,8 +1,8 @@
-import { DynamicBenchmarker } from "@nestia/benchmark";
-import cliProgress from "cli-progress";
 import fs from "fs";
 import os from "os";
-import { IPointer } from "tstl";
+import { DynamicBenchmarker } from "@nestia/benchmark";
+import cliProgress from "cli-progress";
+import type { IPointer } from "tstl";
 
 import { MyBackend } from "../../src/MyBackend";
 import { MyConfiguration } from "../../src/MyConfiguration";

@@ -1,4 +1,4 @@
-import { tags } from "typia";
+import type { tags } from "typia";
 
 export interface IAttachmentFile {
   name: null | (string & tags.MinLength<1> & tags.MaxLength<255>);

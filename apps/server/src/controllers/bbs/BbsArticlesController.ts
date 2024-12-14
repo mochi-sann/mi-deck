@@ -1,9 +1,9 @@
 import core from "@nestia/core";
 import { Controller } from "@nestjs/common";
-import { tags } from "typia";
+import type { tags } from "typia";
 
-import { IBbsArticle } from "../../api/structures/bbs/IBbsArticle";
-import { IPage } from "../../api/structures/common/IPage";
+import type { IBbsArticle } from "../../api/structures/bbs/IBbsArticle";
+import type { IPage } from "../../api/structures/common/IPage";
 import { BbsArticleProvider } from "../../providers/bbs/BbsArticleProvider";
 
 /**
