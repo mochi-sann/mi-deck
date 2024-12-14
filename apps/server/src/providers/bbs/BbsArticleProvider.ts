@@ -3,7 +3,6 @@ import { v4 } from "uuid";
 
 import type { IBbsArticle } from "@mi-deck/server-api/lib/structures/bbs/IBbsArticle";
 import type { IPage } from "@mi-deck/server-api/lib/structures/common/IPage";
-
 import { MapUtil } from "../../utils/MapUtil";
 
 /**
