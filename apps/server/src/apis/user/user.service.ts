@@ -2,15 +2,27 @@ import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { JWT_SECRET, SOLT_ROUNDS } from "src/lib/env";
 import { SignUpUserDto } from "./dto/sign-up-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 
 const prisma = new PrismaClient();
-export const JWT_SECRET = process.env.JWT_SECRET || ("DEV_SERCRET" as const);
 @Injectable()
 export class UserService {
   private readonly jwtSecret = JWT_SECRET; // 必ず環境変数で管理すること
-  private readonly saltRounds = 10;
+  private readonly saltRounds = SOLT_ROUNDS;
+  private readonly users = [
+    {
+      userId: 1,
+      username: "john",
+      password: "changeme",
+    },
+    {
+      userId: 2,
+      username: "maria",
+      password: "guess",
+    },
+  ];
   generateToken(payload: object): string {
     return jwt.sign(payload, this.jwtSecret, { expiresIn: "1h" });
   }
@@ -73,19 +85,7 @@ export class UserService {
     return User;
   }
 
-  findAll() {
-    return "This action returns all user";
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  findOne(username: string) {
+    return this.users.find((user) => user.username === username);
   }
 }
