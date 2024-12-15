@@ -17,14 +17,26 @@ model User {
   id            Int             @id @default(autoincrement())
   email         String          @unique
   name          String?
-  password  String
+  password      String
   createdAt     DateTime        @default(now()) @map("created_at")
   updatedAt     DateTime        @updatedAt @map("updated_at")
   serverSession ServerSession[]
+  UserSetting   UserSetting[]
 
   @@map("user")
 }
 
+model UserSetting {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  key       String
+  value     String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("user_setting")
+}
 
 enum ServerType {
   Misskey
