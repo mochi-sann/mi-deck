@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, SOLT_ROUNDS } from "src/lib/env";
+import { PrismaService } from "src/lib/prisma.service";
 import { SignUpUserDto } from "./dto/sign-up-user.dto";
 
-const prisma = new PrismaClient();
 @Injectable()
 export class UserService {
+  constructor(private prisma: PrismaService) {}
   private readonly jwtSecret = JWT_SECRET; // 必ず環境変数で管理すること
   private readonly saltRounds = SOLT_ROUNDS;
   private readonly users = [
@@ -32,7 +32,7 @@ export class UserService {
     const hashedPassword = await bcrypt.hash(password, this.saltRounds);
 
     // ユーザーを作成
-    const user = prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         email,
         password: hashedPassword,
@@ -41,7 +41,7 @@ export class UserService {
     return user;
   }
   async findUserByEmail(email: string) {
-    return prisma.user.findUnique({
+    return await this.prisma.user.findUnique({
       where: { email },
     });
   }
@@ -69,7 +69,7 @@ export class UserService {
     return { token };
   }
   async getUserInfo(UserId: number) {
-    const User = await prisma.user.findUnique({
+    const User = await this.prisma.user.findUnique({
       where: {
         id: UserId,
       },
