@@ -14,53 +14,57 @@ datasource db {
 }
 
 model User {
-  id            Int             @id @default(autoincrement())
+  id            String          @id @default(uuid())
   email         String          @unique
   name          String?
   password      String
   createdAt     DateTime        @default(now()) @map("created_at")
   updatedAt     DateTime        @updatedAt @map("updated_at")
   serverSession ServerSession[]
-  UserSetting   UserSetting[]
+  userSettings  UserSetting[]
 
   @@map("user")
 }
 
 model UserSetting {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @map("user_id")
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
   user      User     @relation(fields: [userId], references: [id])
   key       String
   value     String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  @@index([userId])
   @@map("user_setting")
 }
 
 enum ServerType {
   Misskey
+  OtherServer // 将来のサーバータイプを追加
 }
 
 model ServerSession {
-  id         Int        @id @default(autoincrement())
-  userId     Int        @map("user_id")
+  id         String     @id @default(uuid())
+  userId     String     @map("user_id")
   user       User       @relation(fields: [userId], references: [id])
-  oringin    String
+  origin     String // 修正されたフィールド名
   token      String
   serverType ServerType @map("server_type")
   createdAt  DateTime   @default(now()) @map("created_at")
   updatedAt  DateTime   @updatedAt @map("updated_at")
-  panels     Panels[]
+  panels     Panel[]
 
+  @@index([userId])
   @@map("server_session")
 }
 
-model Panels {
-  id              Int           @id @default(autoincrement())
-  serverSessionId Int           @map("server_session_id")
+model Panel {
+  id              String        @id @default(uuid())
+  serverSessionId String        @map("server_session_id")
   serverSession   ServerSession @relation(fields: [serverSessionId], references: [id])
   type            String
 
+  @@index([serverSessionId])
   @@map("panels")
 }
