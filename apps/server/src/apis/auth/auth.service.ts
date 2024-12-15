@@ -30,7 +30,11 @@ export class AuthService {
     };
   }
 
-  async register(email: string, pass: string): Promise<LoginEntity> {
+  async register(
+    email: string,
+    pass: string,
+    username: string,
+  ): Promise<LoginEntity> {
     const salt = bcrypt.genSaltSync(10);
 
     const hashedPassword = bcrypt.hashSync(pass, salt);
@@ -39,6 +43,7 @@ export class AuthService {
       data: {
         email,
         password: hashedPassword,
+        name: username,
       },
     });
     const payload = { id: user.id, name: user.id, email: user.email };

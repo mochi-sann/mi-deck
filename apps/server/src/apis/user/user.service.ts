@@ -10,18 +10,6 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
   private readonly jwtSecret = JWT_SECRET; // 必ず環境変数で管理すること
   private readonly saltRounds = SOLT_ROUNDS;
-  private readonly users = [
-    {
-      userId: 1,
-      username: "hoge",
-      password: "hoge",
-    },
-    {
-      userId: 2,
-      username: "maria",
-      password: "guess",
-    },
-  ];
   generateToken(payload: object): string {
     return jwt.sign(payload, this.jwtSecret, { expiresIn: "1h" });
   }
@@ -68,10 +56,10 @@ export class UserService {
 
     return { token };
   }
-  async getUserInfo(UserId: number) {
+  async getUserInfo(userId: string) {
     const User = await this.prisma.user.findUnique({
       where: {
-        id: UserId,
+        id: userId,
       },
       select: {
         email: true,
@@ -82,9 +70,5 @@ export class UserService {
       },
     });
     return User;
-  }
-
-  findOne(username: string) {
-    return this.users.find((user) => user.username === username);
   }
 }
