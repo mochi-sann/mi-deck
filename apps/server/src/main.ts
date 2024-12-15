@@ -4,11 +4,15 @@ import { AppModule } from "./app.module";
 import { PORT } from "./lib/env";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: false,
+    logger: ["error", "warn", "log", "debug", "verbose"],
+  });
   const options = new DocumentBuilder()
     .setTitle("mi-deck api")
     .setDescription("mi-deck api description")
     .setVersion("1.0")
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup("api-docs", app, document);
