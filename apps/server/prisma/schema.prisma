@@ -13,6 +13,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator markdown {
+  provider = "prisma-markdown"
+  output   = "./ERD.md"
+  title    = "prisma schema"
+}
+enum UserRole {
+  ADMIN
+  USER
+}
 model User {
   id            String          @id @default(uuid())
   email         String          @unique
@@ -22,6 +31,7 @@ model User {
   updatedAt     DateTime        @updatedAt @map("updated_at")
   serverSession ServerSession[]
   userSettings  UserSetting[]
+  userRole      UserRole        @default(USER) @map("user_role")
 
   @@map("user")
 }
