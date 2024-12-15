@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, SOLT_ROUNDS } from "src/lib/env";
 import { SignUpUserDto } from "./dto/sign-up-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
 
 const prisma = new PrismaClient();
 @Injectable()
@@ -14,8 +13,8 @@ export class UserService {
   private readonly users = [
     {
       userId: 1,
-      username: "john",
-      password: "changeme",
+      username: "hoge",
+      password: "hoge",
     },
     {
       userId: 2,
