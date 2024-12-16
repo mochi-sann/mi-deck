@@ -27,8 +27,16 @@ erDiagram
   String id PK
   String user_id FK
   String origin
-  String token
+  String server_token
   ServerType server_type
+  DateTime created_at
+  DateTime updated_at
+}
+"server_info" {
+  String id PK
+  String server_session_id FK
+  String key
+  String value
   DateTime created_at
   DateTime updated_at
 }
@@ -39,6 +47,7 @@ erDiagram
 }
 "user_setting" }o--|| "user" : user
 "server_session" }o--|| "user" : user
+"server_info" }o--|| "server_session" : serverSession
 "panels" }o--|| "server_session" : serverSession
 ```
 
@@ -69,8 +78,18 @@ erDiagram
   - `id`: 
   - `user_id`: 
   - `origin`: 
-  - `token`: 
+  - `server_token`: 
   - `server_type`: 
+  - `created_at`: 
+  - `updated_at`: 
+
+### `server_info`
+
+**Properties**
+  - `id`: 
+  - `server_session_id`: 
+  - `key`: 
+  - `value`: 
   - `created_at`: 
   - `updated_at`: 
 

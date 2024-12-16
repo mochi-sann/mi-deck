@@ -18,10 +18,12 @@ generator markdown {
   output   = "./ERD.md"
   title    = "prisma schema"
 }
+
 enum UserRole {
   ADMIN
   USER
 }
+
 model User {
   id            String          @id @default(uuid())
   email         String          @unique
@@ -55,18 +57,32 @@ enum ServerType {
 }
 
 model ServerSession {
-  id         String     @id @default(uuid())
-  userId     String     @map("user_id")
-  user       User       @relation(fields: [userId], references: [id])
-  origin     String // 修正されたフィールド名
-  token      String
-  serverType ServerType @map("server_type")
-  createdAt  DateTime   @default(now()) @map("created_at")
-  updatedAt  DateTime   @updatedAt @map("updated_at")
-  panels     Panel[]
+  id           String       @id @default(uuid())
+  userId       String       @map("user_id")
+  user         User         @relation(fields: [userId], references: [id])
+  origin       String // 修正されたフィールド名
+  serverToken  String       @map("server_token")
+  serverType   ServerType   @map("server_type")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  panels       Panel[]
+  serverInfo   ServerInfo[]
 
   @@index([userId])
   @@map("server_session")
+}
+
+model ServerInfo {
+  id              String        @id @default(uuid())
+  serverSessionId String        @map("server_session_id")
+  serverSession   ServerSession @relation(fields: [serverSessionId], references: [id])
+  key             String
+  value           String
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  @@index([serverSessionId])
+  @@map("server_info")
 }
 
 model Panel {
