@@ -35,12 +35,25 @@ erDiagram
 "server_info" {
   String id PK
   String server_session_id FK
-  String key
-  String value
+  String name
+  String software_name
+  String software_version
+  String icon_url
+  String favicon_url
+  String theme_color
   DateTime created_at
   DateTime updated_at
 }
-"panels" {
+"user_info" {
+  String id PK
+  String name
+  String icon_url
+  DateTime created_at
+  DateTime updated_at
+  String server_s_ession_id FK
+  String userId FK "nullable"
+}
+"panel" {
   String id PK
   String server_session_id FK
   String type
@@ -48,7 +61,9 @@ erDiagram
 "user_setting" }o--|| "user" : user
 "server_session" }o--|| "user" : user
 "server_info" }o--|| "server_session" : serverSession
-"panels" }o--|| "server_session" : serverSession
+"user_info" |o--|| "server_session" : serverSession
+"user_info" }o--o| "user" : User
+"panel" }o--|| "server_session" : serverSession
 ```
 
 ### `user`
@@ -88,12 +103,27 @@ erDiagram
 **Properties**
   - `id`: 
   - `server_session_id`: 
-  - `key`: 
-  - `value`: 
+  - `name`: 
+  - `software_name`: 
+  - `software_version`: 
+  - `icon_url`: 
+  - `favicon_url`: 
+  - `theme_color`: 
   - `created_at`: 
   - `updated_at`: 
 
-### `panels`
+### `user_info`
+
+**Properties**
+  - `id`: 
+  - `name`: 
+  - `icon_url`: 
+  - `created_at`: 
+  - `updated_at`: 
+  - `server_s_ession_id`: 
+  - `userId`: 
+
+### `panel`
 
 **Properties**
   - `id`: 
