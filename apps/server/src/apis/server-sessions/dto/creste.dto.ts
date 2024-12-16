@@ -12,6 +12,7 @@ export class CreateServerSessionDto {
     type: "string",
   })
   sessionToken: string;
-  @IsEnum(["misskey"])
+  @ApiProperty({})
+  @IsString()
   serverType: string;
 }

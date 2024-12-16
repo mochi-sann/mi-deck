@@ -7,6 +7,7 @@ import {
   Injectable,
   Post,
   Put,
+  Request,
   UseGuards,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -26,8 +27,9 @@ export class ServersessionsController {
   @ApiResponse({
     status: 201,
   })
-  create(@Body() boday: CreateServerSessionDto) {
-    return "This action adds a new server-session";
+  async create(@Body() body: CreateServerSessionDto, @Request() req) {
+    const user = req.user;
+    return await this.serverSessionsService.create(body, user.id);
   }
 
   @Get()

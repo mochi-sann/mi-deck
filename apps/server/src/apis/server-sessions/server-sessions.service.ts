@@ -1,6 +1,7 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ServerType } from "@prisma/client";
-import { api } from "misskey-js";
+import * as Misskey from "misskey-js";
+import { User } from "misskey-js/entities.js";
 import { PrismaService } from "../../lib/prisma.service.js";
 import { CreateServerSessionDto } from "./dto/creste.dto.js";
 
@@ -9,26 +10,38 @@ export class ServerSessionsService {
   constructor(private prisma: PrismaService) {}
   async create(data: CreateServerSessionDto, userId: string) {
     const getServerType =
-      data.serverType === "Misskey"
+      data.serverType.toLowerCase() === "misskey"
         ? ServerType.Misskey
         : ServerType.OtherServer;
-    const MisskeyApi = new api.APIClient({
-      origin: `https://${data.origin}`,
-      credential: data.sessionToken,
-    });
 
-    const serverInfo = await MisskeyApi.request("meta", { detail: true });
-    console.log(
-      ...[
-        serverInfo,
-        "👀 [server-sessions.service.ts:21]: serverInfo",
-      ].reverse(),
-    );
+    const fetchMisskey: {
+      ok: boolean;
+      token: string;
+      user: User;
+    } = await fetch(
+      `https://${data.origin}/api/miauth/${data.sessionToken}/check`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Length": "0",
+        },
+      },
+    )
+      .then((res) => res.json())
+      .catch((err) => {
+        console.error(err);
+        return new UnauthorizedException("can not auth misskey server");
+      });
+    if (fetchMisskey.ok === false) {
+      throw new UnauthorizedException("can not auth misskey");
+    }
+
     return await this.prisma.serverSession.create({
       data: {
-        token: data.sessionToken,
         origin: data.origin,
         serverType: getServerType,
+        serverToken: fetchMisskey.token,
+
         user: {
           connect: {
             id: userId,
