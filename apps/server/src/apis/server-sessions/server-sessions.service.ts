@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ServerType } from "@prisma/client";
 import { api } from "misskey-js";
-import { PrismaService } from "src/lib/prisma.service.js";
+import { PrismaService } from "../../lib/prisma.service.js";
 import { CreateServerSessionDto } from "./dto/creste.dto.js";
 
 @Injectable()

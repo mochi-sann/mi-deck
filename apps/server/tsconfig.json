@@ -14,13 +14,18 @@
     "noFallthroughCasesInSwitch": false,
     "module": "ESNext",
     "target": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "strict": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": {
+      "~/*": [
+        "src/*"
+      ]
+    }
   },
   "execute": [
     "vitest.config.ts"

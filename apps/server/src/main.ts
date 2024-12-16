@@ -1,13 +1,10 @@
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "./app.module.js";
-import { PORT } from "./lib/env.js";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    cors: false,
-    logger: ["error", "warn", "log", "debug", "verbose"],
-  });
+  const PORT = process.env.PORT || 3000;
+  const app = await NestFactory.create(AppModule, {});
   const options = new DocumentBuilder()
     .setTitle("mi-deck api")
     .setDescription("mi-deck api description")

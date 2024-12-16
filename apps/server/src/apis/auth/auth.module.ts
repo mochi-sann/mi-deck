@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
-import { JWT_SECRET } from "src/lib/env.js";
-import { PrismaService } from "src/lib/prisma.service.js";
+import { JWT_SECRET } from "../../lib/env.js";
+import { PrismaService } from "../../lib/prisma.service.js";
 import { UserService } from "../user/user.service.js";
 import { AuthController } from "./auth.controller.js";
 import { AuthService } from "./auth.service.js";

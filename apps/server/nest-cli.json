@@ -4,8 +4,14 @@
   "sourceRoot": "src",
   "entryFile": "main",
   "compilerOptions": {
-    "builder": "swc",
     "deleteOutDir": true,
-    "typeCheck": true
+    "typeCheck": true,
+    "builder": {
+      "typeCheck": true,
+      "type": "swc",
+      "options": {
+        "swcrcPath": ".swcrc"
+      }
+    }
   }
 }
