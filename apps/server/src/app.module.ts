@@ -1,12 +1,12 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { AuthModule } from "./apis/auth/auth.module";
+import { ServerSessionsModule } from "./apis/server-sessions/server-sessions.module";
 import { UserModule } from "./apis/user/user.module";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { RequestLoggerMiddleware } from "./middleware/requestLogger.middleware";
 
 @Module({
-  imports: [UserModule, AuthModule],
+  imports: [UserModule, AuthModule, ServerSessionsModule],
   controllers: [AppController],
   providers: [AppService],
 })
