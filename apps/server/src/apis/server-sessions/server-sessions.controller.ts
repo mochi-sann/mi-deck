@@ -10,9 +10,9 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { AuthGuard } from "../auth/auth.gurd";
-import { CreateServerSessionDto } from "./dto/creste.dto";
-import { ServerSessionsService } from "./server-sessions.service";
+import { AuthGuard } from "../auth/auth.gurd.js";
+import { CreateServerSessionDto } from "./dto/creste.dto.js";
+import { ServerSessionsService } from "./server-sessions.service.js";
 
 @Controller("server-sessions")
 @ApiTags("server-sessions")

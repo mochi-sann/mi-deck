@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "dotenvx run -- pnpm -r run dev",
     "build": "dotenvx run -- pnpm -r run build",
@@ -27,9 +28,6 @@
     "lefthook": "^1.9.0",
     "@dotenvx/dotenvx": "^1.28.0",
     "typescript": "^5.7.2"
-  },
-  "dependencies": {
-    "misskey-js": "2024.11.0"
   },
   "volta": {
     "node": "22.12.0"

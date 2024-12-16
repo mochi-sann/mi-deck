@@ -4,6 +4,7 @@
   "description": "",
   "author": "",
   "private": true,
+  "type": "module",
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
@@ -38,7 +39,8 @@
     "class-validator": "^0.14.1",
     "jsonwebtoken": "^9.0.2",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "misskey-js": "2024.11.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.4.9",
