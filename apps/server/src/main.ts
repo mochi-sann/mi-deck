@@ -6,8 +6,8 @@ import {
 } from "@nestjs/platform-fastify";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { dump } from "js-yaml";
-import { AppModule } from "./app.module.js";
-import { PORT } from "./lib/env.js";
+import { AppModule } from "./app.module";
+import { PORT } from "./lib/env";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(

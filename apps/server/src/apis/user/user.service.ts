@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET, SOLT_ROUNDS } from "../../lib/env.js";
-import { PrismaService } from "../../lib/prisma.service.js";
-import { SignUpUserDto } from "./dto/sign-up-user.dto.js";
+import { JWT_SECRET, SOLT_ROUNDS } from "../../lib/env";
+import { PrismaService } from "../../lib/prisma.service";
+import { SignUpUserDto } from "./dto/sign-up-user.dto";
 
 @Injectable()
 export class UserService {

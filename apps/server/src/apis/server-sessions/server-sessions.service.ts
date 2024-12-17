@@ -1,9 +1,8 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ServerType } from "@prisma/client";
-import * as Misskey from "misskey-js";
 import { User } from "misskey-js/entities.js";
-import { PrismaService } from "../../lib/prisma.service.js";
-import { CreateServerSessionDto } from "./dto/creste.dto.js";
+import { PrismaService } from "../../lib/prisma.service";
+import { CreateServerSessionDto } from "./dto/creste.dto";
 
 @Injectable()
 export class ServerSessionsService {

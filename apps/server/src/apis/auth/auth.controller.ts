@@ -9,12 +9,12 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { AuthGuard } from "./auth.gurd.js";
-import { AuthService } from "./auth.service.js";
-import { LoginDto } from "./dto/login.dto.js";
-import { SignUpDto } from "./dto/sign-up.dto.js";
-import { LoginEntity } from "./entities/login.entity.js";
-import { MeEntity } from "./entities/me.entity.js";
+import { AuthGuard } from "./auth.gurd";
+import { AuthService } from "./auth.service";
+import { LoginDto } from "./dto/login.dto";
+import { SignUpDto } from "./dto/sign-up.dto";
+import { LoginEntity } from "./entities/login.entity";
+import { MeEntity } from "./entities/me.entity";
 
 @ApiTags("auth")
 @Controller("auth")
