@@ -1,0 +1,151 @@
+openapi: 3.0.0
+paths:
+  /v1:
+    get:
+      operationId: AppController_getHello
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - App
+  /v1/auth/login:
+    post:
+      operationId: AuthController_login
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDto'
+      responses:
+        '200':
+          description: ''
+        '401':
+          description: ''
+      tags: &ref_0
+        - auth
+  /v1/auth/signUp:
+    post:
+      operationId: AuthController_signUp
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpDto'
+      responses:
+        '201':
+          description: ''
+        '401':
+          description: ''
+        '409':
+          description: メールアドレスがコンフリクト
+      tags: *ref_0
+  /v1/auth/me:
+    get:
+      operationId: AuthController_getProfile
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearer: []
+      tags: *ref_0
+  /v1/server-sessions:
+    post:
+      operationId: ServersessionsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateServerSessionDto'
+      responses:
+        '201':
+          description: ''
+      security:
+        - bearer: []
+      tags: &ref_1
+        - server-sessions
+    get:
+      operationId: ServersessionsController_getList
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_1
+  /v1/server-sessions/{id}:
+    put:
+      operationId: ServersessionsController_update
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_1
+    delete:
+      operationId: ServersessionsController_delete
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_1
+info:
+  title: mi-deck api
+  description: mi-deck api description
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    LoginDto:
+      type: object
+      properties:
+        email:
+          type: string
+          example: example@example.com
+        password:
+          type: string
+          example: password
+      required:
+        - email
+        - password
+    SignUpDto:
+      type: object
+      properties:
+        email:
+          type: string
+          example: example@example.com
+        password:
+          type: string
+          example: password
+        username:
+          type: string
+          example: username
+      required:
+        - email
+        - password
+        - username
+    CreateServerSessionDto:
+      type: object
+      properties:
+        origin:
+          type: string
+          example: example.com
+        sessionToken:
+          type: string
+        serverType:
+          type: string
+      required:
+        - origin
+        - sessionToken
+        - serverType
