@@ -47,7 +47,8 @@ erDiagram
 "user_info" {
   String id PK
   String name
-  String icon_url
+  String username
+  String avater_url
   DateTime created_at
   DateTime updated_at
   String server_s_ession_id FK
@@ -60,7 +61,7 @@ erDiagram
 }
 "user_setting" }o--|| "user" : user
 "server_session" }o--|| "user" : user
-"server_info" }o--|| "server_session" : serverSession
+"server_info" |o--|| "server_session" : serverSession
 "user_info" |o--|| "server_session" : serverSession
 "user_info" }o--o| "user" : User
 "panel" }o--|| "server_session" : serverSession
@@ -117,7 +118,8 @@ erDiagram
 **Properties**
   - `id`: 
   - `name`: 
-  - `icon_url`: 
+  - `username`: 
+  - `avater_url`: 
   - `created_at`: 
   - `updated_at`: 
   - `server_s_ession_id`: 

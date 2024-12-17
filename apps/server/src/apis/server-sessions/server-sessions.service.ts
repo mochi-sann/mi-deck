@@ -36,11 +36,25 @@ export class ServerSessionsService {
       throw new UnauthorizedException("can not auth misskey");
     }
 
+    console.log(
+      ...[
+        fetchMisskey,
+        "👀 [server-sessions.service.ts:39]: fetchMisskey",
+      ].reverse(),
+    );
     return await this.prisma.serverSession.create({
       data: {
         origin: data.origin,
         serverType: getServerType,
         serverToken: fetchMisskey.token,
+        serverUserInfo: {
+          create: {
+            id: fetchMisskey.user.id,
+            name: fetchMisskey.user.name,
+            username: fetchMisskey.user.username,
+            avatarUrl: fetchMisskey.user.avatarUrl,
+          },
+        },
 
         user: {
           connect: {
