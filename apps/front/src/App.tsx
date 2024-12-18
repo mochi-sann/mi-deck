@@ -1,12 +1,15 @@
+import { Route, Routes } from "react-router";
 import "./App.css";
 import { TestComponet } from "./Component/TestComponet";
 import { AddServerForm } from "./Component/login/AddServerForm";
+import { Home } from "./routes/Home";
 
 function App() {
   return (
     <div>
-      <AddServerForm />
-      <TestComponet />
+      <Routes>
+        <Route index element={<Home />} />
+      </Routes>
     </div>
   );
 }
