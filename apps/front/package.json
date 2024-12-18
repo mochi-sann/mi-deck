@@ -11,16 +11,18 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.3",
+    "@tanstack/react-router": "^1.91.2",
     "miauth-js": "^0.0.6",
     "misskey-js": "2024.11.0",
     "openapi-fetch": "^0.13.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-hook-form": "^7.54.0",
-    "react-router": "^7.0.2"
+    "react-hook-form": "^7.54.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
+    "@tanstack/router-devtools": "^1.91.2",
+    "@tanstack/router-plugin": "^1.91.1",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react-swc": "^3.7.2",
