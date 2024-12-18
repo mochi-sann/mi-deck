@@ -17,6 +17,7 @@ export const SignUpForm: React.FC = () => {
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <p>sigin form</p>
         <input required {...register("email")} />
         <input required {...register("password")} />
         <button type="submit">登録</button>
