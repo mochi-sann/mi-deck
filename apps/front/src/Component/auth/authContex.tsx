@@ -1,6 +1,13 @@
 // src/contexts/AuthContext.tsx
 
-import { ReactNode, createContext, useEffect, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { client } from "../../lib/api/fetchClient";
 
 interface User {
   id: string;
@@ -35,14 +42,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
 
   useEffect(() => {
     if (authToken) {
-      // トークンを使用してユーザー情報を取得
-      fetch("/api/auth/me", {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      })
+      client
+        .GET("/v1/auth/me", {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        })
         .then(async (response) => {
-          if (!response.ok) {
+          if (!response.error) {
             throw new Error("認証エラー");
           }
           const data: User = await response.json();
@@ -80,3 +87,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
     </AuthContext.Provider>
   );
 };
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+}

@@ -13,6 +13,6 @@ const throwOnError: Middleware = {
   },
 };
 
-const client = createClient<paths>({ baseUrl: "https://myapi.dev/v1/" });
+const client = createClient<paths>({ baseUrl: "/api/" });
 client.use(throwOnError);
 export { client };
