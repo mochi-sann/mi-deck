@@ -14,10 +14,19 @@ const throwOnError: Middleware = {
     return undefined;
   },
 };
-const fetchClient = createFetchClient<paths>({
-  baseUrl: "/api",
-  headers: {},
-});
+const CreateFetchClient = () => {
+  const authToken = localStorage.getItem("jwt-token");
+  console.log(...[authToken, "👀 [fetchClient.ts:19]: token"].reverse());
+
+  return createFetchClient<paths>({
+    baseUrl: "http://localhost:3001",
+    headers: {
+      "Content-Type": "application/json",
+      ...(authToken ? { Authorization: "Bearer " + authToken } : {}),
+    },
+  });
+};
+const fetchClient = CreateFetchClient();
 const $api = createClient(fetchClient);
 
 fetchClient.use(throwOnError);

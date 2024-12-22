@@ -16,7 +16,7 @@ async function bootstrap() {
       logger: true,
     }),
     {
-      cors: false,
+      cors: true,
       logger: ["error", "warn", "log"],
     },
   );

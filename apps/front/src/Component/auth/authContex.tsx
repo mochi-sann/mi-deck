@@ -38,7 +38,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
   const [authToken, setAuthToken, removeAuthToken] = useLocalStorage<
     string | null
-  >("jwt-token", "");
+  >("jwt-token", null);
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
         })
         .catch(() => {
           console.log("認証エラー");
-          logout();
+          // logout();
         });
     }
   }, [authToken]);
@@ -89,6 +89,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
       }}
     >
       <div>authToken: {authToken}</div>
+      <button type="button" onClick={logout}>
+        ログアウト
+      </button>
       {props.children}
     </AuthContext.Provider>
   );
