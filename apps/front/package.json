@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predev": "npx openapi-typescript ../server/.swagger/swagger-spec.yaml -o ./src/lib/api/type.ts",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

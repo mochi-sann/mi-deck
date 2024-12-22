@@ -17,9 +17,10 @@ interface User {
   // 他のユーザー情報があれば追加
 }
 
-interface AuthContextType {
+export interface AuthContextType {
   authToken: string | null;
   user: User | null;
+  isAuth: boolean;
   login: (token: string) => void;
   logout: () => void;
 }
@@ -27,6 +28,7 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType>({
   authToken: null,
   user: null,
+  isAuth: false,
   login: () => {},
   logout: () => {},
 });
@@ -73,11 +75,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
     setAuthToken(token);
   };
 
-  const logout = () => {
+  const logout = async () => {
     setAuthToken(null);
     setUser(null);
     removeAuthToken();
-    window.location.reload();
+    return null;
   };
 
   return (
@@ -87,6 +89,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
         user,
         login,
         logout,
+        isAuth: !!authToken,
       }}
     >
       <div>authToken: {authToken}</div>
