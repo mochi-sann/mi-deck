@@ -16,6 +16,7 @@ const throwOnError: Middleware = {
 };
 const fetchClient = createFetchClient<paths>({
   baseUrl: "/api",
+  headers: {},
 });
 const $api = createClient(fetchClient);
 

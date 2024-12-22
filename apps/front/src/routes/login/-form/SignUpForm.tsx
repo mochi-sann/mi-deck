@@ -1,5 +1,8 @@
+import { useNavigate } from "@tanstack/react-router";
 import type React from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { AuthContext } from "../../../Component/auth/authContex";
 import { $api } from "../../../lib/api/fetchClient";
 
 type SignUpFormType = {
@@ -11,7 +14,9 @@ type SignUpFormType = {
 export const SignUpForm: React.FC = () => {
   // 登録フォームを作成
   const { register, handleSubmit } = useForm<SignUpFormType>();
+  const { login } = useContext(AuthContext);
   const { mutateAsync } = $api.useMutation("post", "/v1/auth/signUp");
+  const navigate = useNavigate();
   const onSubmit = async (data: SignUpFormType) => {
     const SignUpResponse = await mutateAsync({
       body: {
@@ -22,6 +27,10 @@ export const SignUpForm: React.FC = () => {
     })
       .then((res) => {
         console.log(res);
+        login(res.access_token);
+        navigate({
+          to: "/",
+        });
         return res;
       })
       .catch((err) => {
@@ -41,7 +50,7 @@ export const SignUpForm: React.FC = () => {
         </label>
         <label>
           メールアドレス
-          <input type="text" {...register("email")} />
+          <input type="email" {...register("email")} />
         </label>
         <label>
           パスワード

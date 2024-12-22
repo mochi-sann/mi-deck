@@ -38,7 +38,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
   const [authToken, setAuthToken, removeAuthToken] = useLocalStorage<
     string | null
-  >("jwt-token", null);
+  >("jwt-token", "");
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -50,11 +50,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
           },
         })
         .then(async (response) => {
-          if (
-            !response.error ||
-            !response.data ||
-            response.response.status !== 200
-          ) {
+          console.log(
+            ...[response, "👀 [authContex.tsx:53]: response"].reverse(),
+          );
+          if (!response.data || response.response.status !== 200) {
             console.log("認証エラー");
             throw new Error("認証エラー");
           }
@@ -70,7 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
   }, [authToken]);
 
   const login = (token: string) => {
-    setAuthToken(token);
+    console.log(...[token, "👀 [authContex.tsx:73]: token"].reverse());
     setAuthToken(token);
   };
 
