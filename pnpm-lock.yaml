@@ -12,8 +12,8 @@ importers:
         specifier: 1.9.4
         version: 1.9.4
       '@dotenvx/dotenvx':
-        specifier: ^1.28.0
-        version: 1.28.0
+        specifier: ^1.31.3
+        version: 1.31.3
       '@types/node':
         specifier: ^20
         version: 20.17.9
@@ -388,8 +388,8 @@ packages:
   '@deno/shim-deno@0.10.0':
     resolution: {integrity: sha512-E7rQ0Hk33V45xQXKEnCxizdSP5C+hhqw1H3xWXsct3kYFWgG93B5gN3LKlyvcxbckt8d67jVa6s+y5duRYawvg==}
 
-  '@dotenvx/dotenvx@1.28.0':
-    resolution: {integrity: sha512-JJ9HgYBuvZpFvepGMnTj6/NQQX/Ska1N30GVln0Mw+wuL6oXZMOR2t/XrkSBjnjYr2rCiWtgDtTt8FajTJcbiA==}
+  '@dotenvx/dotenvx@1.31.3':
+    resolution: {integrity: sha512-NgRjBV8NrCIoRhdbPozkKp+HvSn0Sc8DrOT22YDvTbs5pgPC2YrXKqwI7YwLFDVHBjSJHJTvkhQ5QHCCO+//yg==}
     hasBin: true
 
   '@ecies/ciphers@0.2.2':
@@ -4605,7 +4605,7 @@ snapshots:
       '@deno/shim-deno-test': 0.3.3
       which: 2.0.2
 
-  '@dotenvx/dotenvx@1.28.0':
+  '@dotenvx/dotenvx@1.31.3':
     dependencies:
       commander: 11.1.0
       dotenv: 16.4.7
