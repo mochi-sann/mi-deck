@@ -1,18 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
 import type React from "react";
+import { $api } from "../lib/api/fetchClient";
 
 export const TestComponet: React.FC = () => {
-  const { isPending, error, data, isFetching } = useQuery({
-    queryKey: ["repoData"],
-    queryFn: async () => {
-      const response = await fetch("/api");
-      return await response.json();
-    },
-  });
+  const { isPending, error, data } = $api.useQuery("get", "/v1");
 
   if (isPending) return "Loading...";
 
-  if (error) return `An error has occurred: ${error.message}`;
+  if (error) return `An error has occurred: ${JSON.stringify(error)}`;
 
   return <div>{JSON.stringify(data)}</div>;
 };

@@ -1,4 +1,6 @@
-import createClient, { Middleware } from "openapi-fetch";
+import createFetchClient from "openapi-fetch";
+import { Middleware } from "openapi-fetch";
+import createClient from "openapi-react-query";
 import { paths } from "./type";
 
 const throwOnError: Middleware = {
@@ -12,7 +14,10 @@ const throwOnError: Middleware = {
     return undefined;
   },
 };
+const fetchClient = createFetchClient<paths>({
+  baseUrl: "/api",
+});
+const $api = createClient(fetchClient);
 
-const client = createClient<paths>({ baseUrl: "/api/" });
-client.use(throwOnError);
-export { client };
+fetchClient.use(throwOnError);
+export { fetchClient, $api };

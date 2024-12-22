@@ -7,7 +7,8 @@ import {
   useEffect,
   useState,
 } from "react";
-import { client } from "../../lib/api/fetchClient";
+import { useLocalStorage } from "usehooks-ts";
+import { fetchClient } from "../../lib/api/fetchClient";
 
 interface User {
   id: string;
@@ -35,43 +36,48 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
-  const [authToken, setAuthToken] = useState<string | null>(() =>
-    localStorage.getItem("token"),
-  );
+  const [authToken, setAuthToken, removeAuthToken] = useLocalStorage<
+    string | null
+  >("jwt-token", null);
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     if (authToken) {
-      client
+      fetchClient
         .GET("/v1/auth/me", {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
         })
         .then(async (response) => {
-          if (!response.error) {
+          if (
+            !response.error ||
+            !response.data ||
+            response.response.status !== 200
+          ) {
+            console.log("認証エラー");
             throw new Error("認証エラー");
           }
-          const data: User = await response.json();
+          console.log("認証した", response.data);
+          const data: User = response.data;
           setUser(data);
         })
         .catch(() => {
-          setAuthToken(null);
-          setUser(null);
-          localStorage.removeItem("token");
+          console.log("認証エラー");
+          logout();
         });
     }
   }, [authToken]);
 
   const login = (token: string) => {
     setAuthToken(token);
-    localStorage.setItem("token", token);
+    setAuthToken(token);
   };
 
   const logout = () => {
     setAuthToken(null);
     setUser(null);
-    localStorage.removeItem("token");
+    removeAuthToken();
   };
 
   return (
@@ -83,6 +89,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
         logout,
       }}
     >
+      <div>authToken: {authToken}</div>
       {props.children}
     </AuthContext.Provider>
   );
