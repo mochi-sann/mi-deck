@@ -77,6 +77,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
     setAuthToken(null);
     setUser(null);
     removeAuthToken();
+    window.location.reload();
   };
 
   return (
