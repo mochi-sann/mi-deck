@@ -22,6 +22,10 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginEntity'
         '401':
           description: ''
       tags: &ref_0
@@ -39,6 +43,10 @@ paths:
       responses:
         '201':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginEntity'
         '401':
           description: ''
         '409':
@@ -50,6 +58,12 @@ paths:
       parameters: []
       responses:
         '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeEntity'
+        '401':
           description: ''
       security:
         - bearer: []
@@ -119,6 +133,13 @@ components:
       required:
         - email
         - password
+    LoginEntity:
+      type: object
+      properties:
+        access_token:
+          type: string
+      required:
+        - access_token
     SignUpDto:
       type: object
       properties:
@@ -135,6 +156,19 @@ components:
         - email
         - password
         - username
+    MeEntity:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+      required:
+        - id
+        - email
+        - name
     CreateServerSessionDto:
       type: object
       properties:

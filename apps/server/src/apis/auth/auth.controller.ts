@@ -9,10 +9,12 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { AuthGuard } from "./auth.gurd.js";
-import { AuthService } from "./auth.service.js";
-import { LoginDto } from "./dto/login.dto.js";
-import { SignUpDto } from "./dto/sign-up.dto.js";
+import { AuthGuard } from "./auth.gurd";
+import { AuthService } from "./auth.service";
+import { LoginDto } from "./dto/login.dto";
+import { SignUpDto } from "./dto/sign-up.dto";
+import { LoginEntity } from "./entities/login.entity";
+import { MeEntity } from "./entities/me.entity";
 
 @ApiTags("auth")
 @Controller("auth")
@@ -22,6 +24,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: 200,
+    type: LoginEntity,
   })
   @ApiResponse({
     status: 401,
@@ -33,6 +36,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: 201,
+    type: LoginEntity,
   })
   @ApiResponse({
     status: 401,
@@ -52,6 +56,13 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    type: MeEntity,
+  })
+  @ApiResponse({
+    status: 401,
+  })
   @Get("me")
   getProfile(@Request() req) {
     return this.authService.me(req.user.id);

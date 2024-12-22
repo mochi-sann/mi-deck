@@ -6,17 +6,14 @@ type SignUpFormInput = {
 };
 
 export const SignUpForm: React.FC = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignUpFormInput>();
+  const { register, handleSubmit } = useForm<SignUpFormInput>();
   const onSubmit: SubmitHandler<SignUpFormInput> = (data) => {
     console.log(data);
   };
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <p>sigin form</p>
         <input required {...register("email")} />
         <input required {...register("password")} />
         <button type="submit">登録</button>

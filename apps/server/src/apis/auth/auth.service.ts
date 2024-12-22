@@ -5,9 +5,10 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
-import { PrismaService } from "../../lib/prisma.service.js";
-import { UserService } from "../user/user.service.js";
-import { LoginEntity } from "./entities/login.entity.js";
+import { PrismaService } from "../../lib/prisma.service";
+import { UserService } from "../user/user.service";
+import { LoginEntity } from "./entities/login.entity";
+import { MeEntity } from "./entities/me.entity";
 @Injectable()
 export class AuthService {
   constructor(
@@ -29,9 +30,9 @@ export class AuthService {
     // TODO: Generate a JWT and return it here
     // instead of the user object
     const payload = { id: user.id, name: user.name, email: user.email };
-    return {
+    return new LoginEntity({
       access_token: await this.jwtService.signAsync(payload),
-    };
+    });
   }
 
   async register(
@@ -73,6 +74,6 @@ export class AuthService {
         id: true,
       },
     });
-    return user;
+    return new MeEntity(user);
   }
 }

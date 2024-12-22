@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
-import { AuthModule } from "./apis/auth/auth.module.js";
-import { ServerSessionsModule } from "./apis/server-sessions/server-sessions.module.js";
-import { UserModule } from "./apis/user/user.module.js";
-import { AppController } from "./app.controller.js";
-import { AppService } from "./app.service.js";
+import { AuthModule } from "./apis/auth/auth.module";
+import { ServerSessionsModule } from "./apis/server-sessions/server-sessions.module";
+import { UserModule } from "./apis/user/user.module";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
 
 @Module({
   imports: [UserModule, AuthModule, ServerSessionsModule],

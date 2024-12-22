@@ -7,8 +7,7 @@
   "scripts": {
     "dev": "dotenvx run -- pnpm -r run dev",
     "build": "dotenvx run -- pnpm -r run build",
-    "web": "dotenvx run -- pnpm -F @mi-deck/web",
-    "api": "dotenvx run -- pnpm -F @mi-deck/api",
+    "front": "dotenvx run -- pnpm -F @mi-deck/front",
     "server": "dotenvx run -- pnpm -F @mi-deck/server",
     "format": "biome format --write .",
     "check": "biome check --write . --unsafe"
@@ -24,9 +23,9 @@
   "license": "",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@dotenvx/dotenvx": "^1.31.3",
     "@types/node": "^20",
     "lefthook": "^1.9.0",
-    "@dotenvx/dotenvx": "^1.28.0",
     "typescript": "^5.7.2"
   },
   "volta": {
