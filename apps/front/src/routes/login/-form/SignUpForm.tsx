@@ -2,20 +2,22 @@ import type React from "react";
 import { useForm } from "react-hook-form";
 import { $api } from "../../../lib/api/fetchClient";
 
-type LoginFormType = {
+type SignUpFormType = {
   email: string;
   password: string;
+  usename: string;
 };
 
-export const LoginForm: React.FC = () => {
-  // ログインフォームを作成
-  const { register, handleSubmit } = useForm<LoginFormType>();
-  const { mutateAsync } = $api.useMutation("post", "/v1/auth/login");
-  const onSubmit = async (data: LoginFormType) => {
+export const SignUpForm: React.FC = () => {
+  // 登録フォームを作成
+  const { register, handleSubmit } = useForm<SignUpFormType>();
+  const { mutateAsync } = $api.useMutation("post", "/v1/auth/signUp");
+  const onSubmit = async (data: SignUpFormType) => {
     const SignUpResponse = await mutateAsync({
       body: {
         email: data.email,
         password: data.password,
+        username: data.usename,
       },
     })
       .then((res) => {
@@ -31,8 +33,12 @@ export const LoginForm: React.FC = () => {
 
   return (
     <div>
-      <p>ログイン</p>
+      <p>とうろく</p>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <label>
+          ユーザー名
+          <input type="text" {...register("usename")} />
+        </label>
         <label>
           メールアドレス
           <input type="text" {...register("email")} />

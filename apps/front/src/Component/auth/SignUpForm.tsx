@@ -6,11 +6,7 @@ type SignUpFormInput = {
 };
 
 export const SignUpForm: React.FC = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignUpFormInput>();
+  const { register, handleSubmit } = useForm<SignUpFormInput>();
   const onSubmit: SubmitHandler<SignUpFormInput> = (data) => {
     console.log(data);
   };
