@@ -3,6 +3,7 @@ import type React from "react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../../Component/auth/authContex";
+import { Input } from "../../../Component/parts/Input";
 import { $api } from "../../../lib/api/fetchClient";
 
 type LoginFormType = {
@@ -42,13 +43,17 @@ export const LoginForm: React.FC = () => {
     <div>
       <p>ログイン</p>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <label>
+        <label htmlFor="email">
           メールアドレス
-          <input type="email" {...register("email")} />
+          <Input placeholder="email" type="email" {...register("email")} />
         </label>
-        <label>
+        <label htmlFor="password">
           パスワード
-          <input type="password" {...register("password")} />
+          <Input
+            placeholder="password"
+            type="password"
+            {...register("password")}
+          />
         </label>
         <button type="submit">ログイン</button>
       </form>

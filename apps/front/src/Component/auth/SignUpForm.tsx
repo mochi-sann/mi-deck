@@ -1,5 +1,6 @@
 import type React from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
+import { Input } from "../parts/Input";
 type SignUpFormInput = {
   email: string;
   password: string;
@@ -14,8 +15,8 @@ export const SignUpForm: React.FC = () => {
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <p>sigin form</p>
-        <input required {...register("email")} />
-        <input required {...register("password")} />
+        <Input required {...register("email")} />
+        <Input required {...register("password")} />
         <button type="submit">登録</button>
       </form>
     </div>

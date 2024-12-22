@@ -4,6 +4,7 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { Suspense, lazy } from "react";
+import { css } from "../../styled-system/css";
 import { AuthContextType } from "../Component/auth/authContex";
 
 const TanStackRouterDevtools = import.meta.env.DEV
@@ -24,7 +25,13 @@ interface MyRouterContext {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
-      <div className="p-2 flex gap-2">
+      <div
+        className={css({
+          display: "flex",
+          gap: "8px",
+          padding: 1,
+        })}
+      >
         <Link to="/" className="[&.active]:font-bold">
           Home
         </Link>{" "}
