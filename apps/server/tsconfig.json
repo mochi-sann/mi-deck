@@ -14,7 +14,7 @@
     "noFallthroughCasesInSwitch": false,
     "module": "ESNext",
     "target": "ESNext",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "strict": true,

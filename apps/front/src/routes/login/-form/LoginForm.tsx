@@ -1,10 +1,10 @@
+import { Button } from "@/Component/ui/button";
+import { Input } from "@/Component/ui/input";
+import { $api } from "@/lib/api/fetchClient";
 import type React from "react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../../Component/auth/authContex";
-import { Button } from "../../../Component/parts/Button";
-import { Input } from "../../../Component/parts/Input";
-import { $api } from "../../../lib/api/fetchClient";
 
 type LoginFormType = {
   email: string;
