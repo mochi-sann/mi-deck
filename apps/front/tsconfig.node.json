@@ -21,12 +21,16 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": [
+      "@/*": [
         "./src/*"
+      ],
+      "styled-system/*": [
+        "./styled-system/*"
       ]
     }
   },
   "include": [
-    "vite.config.ts"
+    "vite.config.ts",
+    "panda.config.ts"
   ]
 }

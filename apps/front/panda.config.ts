@@ -1,3 +1,4 @@
+// import { ButtonRecipe } from "./src/Component/recipes/button";
 import { defineConfig } from "@pandacss/dev";
 import { createPreset } from "@park-ui/panda-preset";
 
@@ -22,6 +23,7 @@ export default defineConfig({
   // Useful for theme customization
   theme: {
     extend: {
+      recipes: {},
       tokens: {
         fonts: {
           body: { value: "system-ui, sans-serif" },
