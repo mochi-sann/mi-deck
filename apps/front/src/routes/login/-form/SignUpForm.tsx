@@ -18,6 +18,7 @@ export const SignUpForm: React.FC = () => {
   const { login } = useContext(AuthContext);
   const { mutateAsync } = $api.useMutation("post", "/v1/auth/signUp");
   const onSubmit = async (data: SignUpFormType) => {
+    console.log("data", data);
     const SignUpResponse = await mutateAsync({
       body: {
         email: data.email,
