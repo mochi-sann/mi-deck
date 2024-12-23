@@ -1,8 +1,9 @@
-import { useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../../Component/auth/authContex";
+import { Button } from "../../../Component/parts/Button";
+import { Input } from "../../../Component/parts/Input";
 import { $api } from "../../../lib/api/fetchClient";
 
 type SignUpFormType = {
@@ -16,7 +17,6 @@ export const SignUpForm: React.FC = () => {
   const { register, handleSubmit } = useForm<SignUpFormType>();
   const { login } = useContext(AuthContext);
   const { mutateAsync } = $api.useMutation("post", "/v1/auth/signUp");
-  const navigate = useNavigate();
   const onSubmit = async (data: SignUpFormType) => {
     const SignUpResponse = await mutateAsync({
       body: {
@@ -28,9 +28,6 @@ export const SignUpForm: React.FC = () => {
       .then((res) => {
         console.log(res);
         login(res.access_token);
-        navigate({
-          to: "/",
-        });
         return res;
       })
       .catch((err) => {
@@ -44,19 +41,34 @@ export const SignUpForm: React.FC = () => {
     <div>
       <p>とうろく</p>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <label>
+        <label htmlFor="username">
           ユーザー名
-          <input type="text" {...register("usename")} />
+          <Input
+            type="text"
+            required={true}
+            placeholder="username"
+            {...register("usename")}
+          />
         </label>
-        <label>
+        <label htmlFor="email">
           メールアドレス
-          <input type="email" {...register("email")} />
+          <Input
+            type="email"
+            required={true}
+            placeholder="email"
+            {...register("email")}
+          />
         </label>
-        <label>
+        <label htmlFor="password">
           パスワード
-          <input type="password" {...register("password")} />
+          <Input
+            type="password"
+            required={true}
+            placeholder="password"
+            {...register("password")}
+          />
         </label>
-        <button type="submit">ログイン</button>
+        <Button type="submit">登録</Button>
       </form>
     </div>
   );
