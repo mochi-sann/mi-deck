@@ -30,7 +30,6 @@
     }
   },
   "include": [
-    "vite.config.ts",
-    "panda.config.ts"
+    "vite.config.ts"
   ]
 }

@@ -33,10 +33,10 @@ export const ButtonRecipe = defineRecipe({
   defaultVariants: {
     variant: "solid",
     size: "md",
-    width: "auto",
+    buttonWidth: "auto",
   },
   variants: {
-    width: {
+    buttonWidth: {
       full: {
         w: "full",
       },
@@ -154,6 +154,28 @@ export const ButtonRecipe = defineRecipe({
           _hover: {
             background: "bg.disabled",
             color: "fg.disabled",
+          },
+        },
+      },
+      // 警告用のvarient
+      danger: {
+        background: "red.default",
+        color: "white",
+        _hover: {
+          background: "red.10",
+        },
+        _focusVisible: {
+          outline: "2px solid",
+          outlineColor: "colorPalette.default",
+          outlineOffset: "2px",
+        },
+        _disabled: {
+          color: "fg.disabled",
+          background: "bg.disabled",
+          cursor: "not-allowed",
+          _hover: {
+            color: "fg.disabled",
+            background: "bg.disabled",
           },
         },
       },

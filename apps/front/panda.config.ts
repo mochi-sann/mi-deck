@@ -1,6 +1,7 @@
 // import { ButtonRecipe } from "./src/Component/recipes/button";
 import { defineConfig } from "@pandacss/dev";
 import { createPreset } from "@park-ui/panda-preset";
+import { recipes } from "./theme/recipe";
 
 export default defineConfig({
   // Whether to use css reset
@@ -23,7 +24,9 @@ export default defineConfig({
   // Useful for theme customization
   theme: {
     extend: {
-      recipes: {},
+      recipes: {
+        ...recipes,
+      },
       tokens: {
         fonts: {
           body: { value: "system-ui, sans-serif" },

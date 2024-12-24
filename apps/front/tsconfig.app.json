@@ -36,6 +36,10 @@
   "include": [
     "src",
     "styled-system",
-    "panda.config.ts"
+    "panda.config.ts",
+    "theme/*",
+        "**/*.ts",
+    "**/*.tsx",
+
   ]
 }

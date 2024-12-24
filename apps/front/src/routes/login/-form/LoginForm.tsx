@@ -57,7 +57,7 @@ export const LoginForm: React.FC = () => {
             {...register("password")}
           />
         </label>
-        <Button variant={"solid"} type="submit">
+        <Button variant={"solid"} buttonWidth={"full"} type="submit">
           ログイン
         </Button>
       </form>

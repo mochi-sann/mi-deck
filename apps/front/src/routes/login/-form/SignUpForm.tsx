@@ -1,10 +1,10 @@
+import { AuthContext } from "@/Component/auth/authContex";
+import { Input } from "@/Component/ui/input";
+import { Button } from "@/Component/ui/styled/button";
+import { $api } from "@/lib/api/fetchClient";
 import type React from "react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { AuthContext } from "../../../Component/auth/authContex";
-import { Button } from "../../../Component/parts/Button";
-import { Input } from "../../../Component/parts/Input";
-import { $api } from "../../../lib/api/fetchClient";
 
 type SignUpFormType = {
   email: string;
@@ -69,7 +69,9 @@ export const SignUpForm: React.FC = () => {
             {...register("password")}
           />
         </label>
-        <Button type="submit">登録</Button>
+        <Button variant={"danger"} buttonWidth={"full"} type="submit">
+          登録
+        </Button>
       </form>
     </div>
   );
