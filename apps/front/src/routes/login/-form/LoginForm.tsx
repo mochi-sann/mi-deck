@@ -1,4 +1,5 @@
 import { Button } from "@/Component/ui/button";
+import { Field } from "@/Component/ui/field";
 import { Input } from "@/Component/ui/input";
 import { $api } from "@/lib/api/fetchClient";
 import type React from "react";
@@ -39,15 +40,18 @@ export const LoginForm: React.FC = () => {
     <div>
       <p>ログイン</p>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="email">
-          メールアドレス
-          <Input
-            placeholder="email"
-            required={true}
-            type="email"
-            {...register("email")}
-          />
-        </label>
+        <Field.Root>
+          <Field.Label>Email</Field.Label>
+          <Field.Input asChild>
+            <Input
+              placeholder="email"
+              required={true}
+              type="email"
+              {...register("email")}
+            />
+          </Field.Input>
+          <Field.ErrorText>Please enter a valid email address</Field.ErrorText>
+        </Field.Root>
         <label htmlFor="password">
           パスワード
           <Input
