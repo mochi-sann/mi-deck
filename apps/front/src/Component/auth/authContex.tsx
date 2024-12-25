@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
         })
         .catch(() => {
           console.log("認証エラー");
-          // logout();
+          logout();
         });
     }
   }, [authToken]);
@@ -80,6 +80,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
     setUser(null);
     removeAuthToken();
     return null;
+  };
+  const reload = () => {
+    window.location.reload();
   };
 
   return (

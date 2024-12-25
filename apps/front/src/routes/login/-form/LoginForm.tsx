@@ -3,10 +3,11 @@ import { FormStyle } from "@/Component/forms/formStyle";
 import { Button } from "@/Component/ui/button";
 import { Heading } from "@/Component/ui/heading";
 import { $api } from "@/lib/api/fetchClient";
-import { useNavigate } from "@tanstack/react-router";
+import { redirect, useNavigate, useRouter } from "@tanstack/react-router";
 import type React from "react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { LoginPageFallBack, Route } from "..";
 import { AuthContext } from "../../../Component/auth/authContex";
 
 type LoginFormType = {
@@ -19,7 +20,7 @@ export const LoginForm: React.FC = () => {
   const { handleSubmit, control } = useForm<LoginFormType>();
   const { login } = useContext(AuthContext);
   const { mutateAsync } = $api.useMutation("post", "/v1/auth/login");
-  const navigate = useNavigate();
+  const search = Route.useSearch();
   const onSubmit = async (data: LoginFormType) => {
     const SignUpResponse = await mutateAsync({
       body: {
@@ -27,10 +28,19 @@ export const LoginForm: React.FC = () => {
         password: data.password,
       },
     })
-      .then((res) => {
+      .then(async (res) => {
         console.log(res);
         login(res.access_token);
-        navigate({ to: "/" });
+        // navigate({ to: "/" });
+        console.log(
+          ...[
+            search.redirect,
+            "👀 [LoginForm.tsx:35]: state.redirect",
+          ].reverse(),
+        );
+        console.log(...[search, "👀 [LoginForm.tsx:41]: search"].reverse());
+        redirect({ to: search.redirect || LoginPageFallBack });
+
         return res;
       })
       .catch((err) => {

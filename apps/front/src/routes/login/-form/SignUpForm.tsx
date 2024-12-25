@@ -33,7 +33,7 @@ export const SignUpForm: React.FC = () => {
       .then((res) => {
         console.log(res);
         login(res.access_token);
-        navigate({ to: "/" });
+        // navigate({ to: "/" });
         return res;
       })
       .catch((err) => {
