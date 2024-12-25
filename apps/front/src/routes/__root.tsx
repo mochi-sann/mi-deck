@@ -5,6 +5,7 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { Suspense, lazy } from "react";
+import { link } from "styled-system/recipes";
 import { css } from "../../styled-system/css";
 import { AuthContextType } from "../Component/auth/authContex";
 
@@ -33,7 +34,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
           padding: 1,
         })}
       >
-        <Link to="/" className="[&.active]:font-bold">
+        <Link to="/" className={link()}>
           Home
         </Link>{" "}
         <Link to="/about" className="[&.active]:font-bold">
@@ -42,6 +43,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         <Link to="/login" className="[&.active]:font-bold">
           login
         </Link>{" "}
+        <Link to="/dassboard" className="[&.active]:font-bold">
+          dassboard
+        </Link>
         <Link to="/dassboard" className="[&.active]:font-bold">
           dassboard
         </Link>

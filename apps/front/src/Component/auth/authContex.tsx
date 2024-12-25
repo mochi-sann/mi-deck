@@ -1,6 +1,6 @@
 // src/contexts/AuthContext.tsx
 
-import {
+import React, {
   ReactNode,
   createContext,
   useContext,
@@ -37,10 +37,19 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+const AuthTokenStorageKey = "jwt-token";
+export function setStoredUser(user: string | null) {
+  if (user) {
+    localStorage.setItem(AuthTokenStorageKey, user);
+  } else {
+    localStorage.removeItem(AuthTokenStorageKey);
+  }
+}
+
 export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
   const [authToken, setAuthToken, removeAuthToken] = useLocalStorage<
     string | null
-  >("jwt-token", null);
+  >(AuthTokenStorageKey, null);
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
