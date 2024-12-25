@@ -92,10 +92,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
         isAuth: !!authToken,
       }}
     >
-      <div>authToken: {authToken}</div>
-      <button type="button" onClick={logout}>
-        ログアウト
-      </button>
       {props.children}
     </AuthContext.Provider>
   );

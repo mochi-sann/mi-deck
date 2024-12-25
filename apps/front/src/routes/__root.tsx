@@ -1,3 +1,4 @@
+import { Layout } from "@/Component/Layout/Layout";
 import {
   Link,
   Outlet,
@@ -46,7 +47,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         </Link>
       </div>
       <hr />
-      <Outlet />
+      <Layout>
+        <Outlet />
+      </Layout>
       <Suspense>
         <TanStackRouterDevtools />
       </Suspense>
