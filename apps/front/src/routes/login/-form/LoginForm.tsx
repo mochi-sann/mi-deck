@@ -3,7 +3,7 @@ import { FormStyle } from "@/Component/forms/formStyle";
 import { Button } from "@/Component/ui/button";
 import { Heading } from "@/Component/ui/heading";
 import { $api } from "@/lib/api/fetchClient";
-import { redirect, useNavigate, useRouter } from "@tanstack/react-router";
+import { redirect, useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
@@ -20,6 +20,7 @@ export const LoginForm: React.FC = () => {
   const { handleSubmit, control } = useForm<LoginFormType>();
   const { login } = useContext(AuthContext);
   const { mutateAsync } = $api.useMutation("post", "/v1/auth/login");
+  const navigate = useNavigate();
   const search = Route.useSearch();
   const onSubmit = async (data: LoginFormType) => {
     const SignUpResponse = await mutateAsync({
@@ -27,26 +28,20 @@ export const LoginForm: React.FC = () => {
         email: data.email,
         password: data.password,
       },
-    })
-      .then(async (res) => {
-        console.log(res);
-        login(res.access_token);
-        // navigate({ to: "/" });
-        console.log(
-          ...[
-            search.redirect,
-            "👀 [LoginForm.tsx:35]: state.redirect",
-          ].reverse(),
-        );
-        console.log(...[search, "👀 [LoginForm.tsx:41]: search"].reverse());
-        redirect({ to: search.redirect || LoginPageFallBack });
+    });
+    console.log(SignUpResponse);
+    login(SignUpResponse.access_token);
+    console.log(
+      ...[search.redirect, "👀 [LoginForm.tsx:41]: search.redirect"].reverse(),
+    );
+    navigate({ to: search.redirect || LoginPageFallBack });
+    // redirect({ to: search.redirect || LoginPageFallBack, throw: true });
 
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-        return err;
-      });
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    //   return err;
+    // });
     console.log(data, SignUpResponse);
   };
 

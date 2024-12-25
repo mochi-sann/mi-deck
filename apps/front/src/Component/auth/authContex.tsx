@@ -57,6 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
           );
           if (!response.data || response.response.status !== 200) {
             console.log("認証エラー");
+            // logout();
             throw new Error("認証エラー");
           }
           console.log("認証した", response.data);
@@ -65,7 +66,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
         })
         .catch(() => {
           console.log("認証エラー");
-          logout();
+          // logout();
         });
     }
   }, [authToken]);
@@ -79,6 +80,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
     setAuthToken(null);
     setUser(null);
     removeAuthToken();
+    reload();
     return null;
   };
   const reload = () => {
