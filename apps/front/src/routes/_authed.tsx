@@ -8,7 +8,7 @@ import { useAuth } from "../Component/auth/authContex";
 
 export const Route = createFileRoute("/_authed")({
   beforeLoad: ({ context, location }) => {
-    if (!context.auth || (context.auth && !context.auth?.id)) {
+    if (!context.auth || (context.auth && !context.auth?.isAuth)) {
       throw redirect({
         to: "/login",
         search: {

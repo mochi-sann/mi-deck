@@ -18,9 +18,10 @@ export type userType = {
   id: string;
   email: string;
   name: string;
+  isAuth: boolean;
 };
 
-const getuserInfo = async (jwt: string) => {
+const getuserInfo = async (jwt: string): Promise<userType | null> => {
   const userResponse = await fetchClient.GET("/v1/auth/me", {
     headers: {
       Authorization: `Bearer ${jwt}`,
@@ -31,7 +32,9 @@ const getuserInfo = async (jwt: string) => {
     // throw new Error("Login failed");
     return null;
   }
-  return userResponse.data ?? null;
+  return userResponse.data
+    ? { isAuth: !!userResponse.data.id, ...userResponse.data }
+    : null;
 };
 async function userFn() {
   console.log("userFn");

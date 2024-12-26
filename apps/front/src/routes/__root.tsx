@@ -20,7 +20,9 @@ const TanStackRouterDevtools = import.meta.env.DEV
     );
 
 interface MyRouterContext {
-  auth: userType;
+  auth: {
+    isAuth: boolean;
+  };
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({

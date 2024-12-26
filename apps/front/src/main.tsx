@@ -4,7 +4,7 @@ import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 
-import { useUser } from "./lib/configureAuth";
+import { AuthTokenStorage, useUser } from "./lib/configureAuth";
 import { routeTree } from "./routeTree.gen";
 
 // Create a new router instance
@@ -12,7 +12,9 @@ const router = createRouter({
   routeTree,
   defaultPreload: "intent",
   context: {
-    auth: undefined!, // This will be set after we wrap the app in an AuthProvider
+    auth: {
+      isAuth: false,
+    }, // This will be set after we wrap the app in an AuthProvider
   },
 });
 
@@ -27,10 +29,8 @@ function InnerApp() {
     <RouterProvider
       router={router}
       context={{
-        auth: data || {
-          id: "",
-          email: "",
-          name: "",
+        auth: {
+          isAuth: data?.isAuth || false,
         },
       }}
     />
@@ -43,7 +43,13 @@ declare module "@tanstack/react-router" {
     router: typeof router;
   }
 }
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
