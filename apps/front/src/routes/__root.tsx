@@ -19,6 +19,16 @@ const TanStackRouterDevtools = import.meta.env.DEV
         // default: res.TanStackRouterDevtoolsPanel
       })),
     );
+const TanstackReactQueryDevtools = import.meta.env.DEV
+  ? () => null // Render nothing in production
+  : lazy(() =>
+      // Lazy load in development
+      import("@tanstack/react-query-devtools").then((res) => ({
+        default: res.ReactQueryDevtools,
+        // For Embedded Mode
+        // default: res.TanStackRouterDevtoolsPanel
+      })),
+    );
 
 interface MyRouterContext {
   auth: AuthContextType;
@@ -56,6 +66,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       </Layout>
       <Suspense>
         <TanStackRouterDevtools />
+      </Suspense>
+      <Suspense>
+        <TanstackReactQueryDevtools />
       </Suspense>
     </>
   ),

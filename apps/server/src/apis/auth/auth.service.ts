@@ -76,4 +76,8 @@ export class AuthService {
     });
     return new MeEntity(user);
   }
+  async logout(userId: string) {
+    // ログアウト処理
+    return { message: "ログアウトしました" };
+  }
 }

@@ -37,7 +37,7 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-const AuthTokenStorageKey = "jwt-token";
+export const AuthTokenStorageKey = "mi-deck-auth-token";
 export function setStoredUser(user: string | null) {
   if (user) {
     localStorage.setItem(AuthTokenStorageKey, user);
@@ -45,12 +45,16 @@ export function setStoredUser(user: string | null) {
     localStorage.removeItem(AuthTokenStorageKey);
   }
 }
+export function getStoredUser() {
+  return localStorage.getItem(AuthTokenStorageKey);
+}
 
 export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
-  const [authToken, setAuthToken, removeAuthToken] = useLocalStorage<
-    string | null
-  >(AuthTokenStorageKey, null);
+  // const [authToken, setAuthToken, removeAuthToken] = useLocalStorage<
+  //   string | null
+  // >(AuthTokenStorageKey, null);
   const [user, setUser] = useState<User | null>(null);
+  const authToken = getStoredUser();
 
   useEffect(() => {
     if (authToken) {
@@ -82,14 +86,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
 
   const login = (token: string) => {
     console.log(...[token, "👀 [authContex.tsx:73]: token"].reverse());
-    setAuthToken(token);
+    setStoredUser(token);
   };
 
   const logout = async () => {
-    setAuthToken(null);
+    setStoredUser(null);
     setUser(null);
-    removeAuthToken();
-    reload();
     return null;
   };
   const reload = () => {

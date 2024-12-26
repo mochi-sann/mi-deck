@@ -70,4 +70,9 @@ export class AuthController {
   getProfile(@Request() req) {
     return this.authService.me(req.user.id);
   }
+
+  @Post("logout")
+  logout(@Request() req) {
+    return this.authService.logout(req.user.id);
+  }
 }
