@@ -47,6 +47,9 @@ export class AuthController {
   })
   @Post("signUp")
   signUp(@Body() signUpDto: SignUpDto) {
+    console.log(
+      ...[signUpDto, "👀 [auth.controller.ts:50]: signUpDto"].reverse(),
+    );
     return this.authService.register(
       signUpDto.email,
       signUpDto.password,
@@ -66,5 +69,10 @@ export class AuthController {
   @Get("me")
   getProfile(@Request() req) {
     return this.authService.me(req.user.id);
+  }
+
+  @Post("logout")
+  logout(@Request() req) {
+    return this.authService.logout(req.user.id);
   }
 }

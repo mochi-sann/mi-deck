@@ -18,7 +18,9 @@ generator markdown {
   output   = "./ERD.md"
   title    = "prisma schema"
 }
-
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
 enum UserRole {
   ADMIN
   USER

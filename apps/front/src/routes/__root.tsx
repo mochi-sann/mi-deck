@@ -1,12 +1,13 @@
+import { Layout } from "@/Component/Layout/Layout";
 import {
   Link,
   Outlet,
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { Suspense, lazy } from "react";
-import { AuthContextType } from "../Component/auth/authContex";
-
-const TanStackRouterDevtools = import.meta.env.DEV
+import { link } from "styled-system/recipes";
+import { css } from "../../styled-system/css";
+const TanStackRouterDevtools = !import.meta.env.DEV
   ? () => null // Render nothing in production
   : lazy(() =>
       // Lazy load in development
@@ -18,14 +19,22 @@ const TanStackRouterDevtools = import.meta.env.DEV
     );
 
 interface MyRouterContext {
-  auth: AuthContextType;
+  auth: {
+    isAuth: boolean;
+  };
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
-      <div className="p-2 flex gap-2">
-        <Link to="/" className="[&.active]:font-bold">
+      <div
+        className={css({
+          display: "flex",
+          gap: "8px",
+          padding: 1,
+        })}
+      >
+        <Link to="/" className={link()}>
           Home
         </Link>{" "}
         <Link to="/about" className="[&.active]:font-bold">
@@ -37,9 +46,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         <Link to="/dassboard" className="[&.active]:font-bold">
           dassboard
         </Link>
+        <Link to="/add-server" className="[&.active]:font-bold">
+          add-server
+        </Link>
       </div>
       <hr />
-      <Outlet />
+      <Layout>
+        <Outlet />
+      </Layout>
       <Suspense>
         <TanStackRouterDevtools />
       </Suspense>

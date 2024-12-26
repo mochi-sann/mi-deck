@@ -1,37 +1,28 @@
 import createFetchClient from "openapi-fetch";
 import { Middleware } from "openapi-fetch";
 import createClient from "openapi-react-query";
-import { trimFirstAndLastChar } from "../../utils/trimText";
+import { AuthTokenStorage } from "../configureAuth";
 import { paths } from "./type";
 
-const throwOnError: Middleware = {
-  async onResponse({ response }) {
-    if (response.status >= 400) {
-      const body = response.headers.get("content-type")?.includes("json")
-        ? await response.clone().json()
-        : await response.clone().text();
-      throw new Error(body);
-    }
-    return undefined;
+const JwtMiddleware: Middleware = {
+  async onRequest({ request, options }) {
+    console.log(...[options, "👀 [fetchClient.ts:20]: options"].reverse());
+    // set "foo" header
+    request.headers.set(
+      "Authorization",
+      `Bearer ${AuthTokenStorage.getToken()}`,
+    );
+    return request;
   },
 };
 const CreateFetchClient = () => {
-  let authToken = localStorage.getItem("jwt-token");
-  if (authToken) {
-    authToken = authToken.trim();
-    authToken = trimFirstAndLastChar(authToken);
-  }
-
   return createFetchClient<paths>({
     // baseUrl: "http://localhost:3001",
     baseUrl: "/api",
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
   });
 };
 const fetchClient = CreateFetchClient();
 const $api = createClient(fetchClient);
 
-fetchClient.use(throwOnError);
+fetchClient.use(JwtMiddleware);
 export { fetchClient, $api };

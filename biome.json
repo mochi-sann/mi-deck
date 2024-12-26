@@ -16,7 +16,8 @@
       "apps/server/lib/**",
       "apps/server/dist/**",
       "apps/front/dist/**",
-      "apps/front/src/routeTree.gen.ts"
+      "apps/front/src/routeTree.gen.ts",
+      "apps/front/styled-system/**"
     ]
   },
   "formatter": {

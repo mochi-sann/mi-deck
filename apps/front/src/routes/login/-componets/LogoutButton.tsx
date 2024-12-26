@@ -1,0 +1,12 @@
+import { Button } from "@/Component/ui/button";
+import { useLogout } from "@/lib/configureAuth";
+import type React from "react";
+
+export const LogoutButton: React.FC = () => {
+  const { mutateAsync } = useLogout();
+  return (
+    <Button variant={"danger"} buttonWidth={"full"} onClick={mutateAsync}>
+      ログアウト
+    </Button>
+  );
+};
