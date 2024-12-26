@@ -7,7 +7,7 @@ import {
 import { Suspense, lazy } from "react";
 import { link } from "styled-system/recipes";
 import { css } from "../../styled-system/css";
-const TanStackRouterDevtools = import.meta.env.DEV
+const TanStackRouterDevtools = !import.meta.env.DEV
   ? () => null // Render nothing in production
   : lazy(() =>
       // Lazy load in development
