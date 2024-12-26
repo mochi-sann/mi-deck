@@ -2,13 +2,11 @@ import { TextFieldSet } from "@/Component/forms/TextFieldSet";
 import { FormStyle } from "@/Component/forms/formStyle";
 import { Button } from "@/Component/ui/button";
 import { Heading } from "@/Component/ui/heading";
-import { $api } from "@/lib/api/fetchClient";
+import { useLogin } from "@/lib/configureAuth";
 import { useNavigate } from "@tanstack/react-router";
 import type React from "react";
-import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Route } from "..";
-import { AuthContext } from "../../../Component/auth/authContex";
 
 type LoginFormType = {
   email: string;
@@ -18,19 +16,16 @@ type LoginFormType = {
 export const LoginForm: React.FC = () => {
   // ログインフォームを作成
   const { handleSubmit, control } = useForm<LoginFormType>();
-  const { login } = useContext(AuthContext);
-  const { mutateAsync } = $api.useMutation("post", "/v1/auth/login");
+  const { mutateAsync } = useLogin();
+  // const { mutateAsync } = $api.useMutation("post", "/v1/auth/login");
   const navigate = useNavigate();
   const search = Route.useSearch();
   const onSubmit = async (data: LoginFormType) => {
     const SignUpResponse = await mutateAsync({
-      body: {
-        email: data.email,
-        password: data.password,
-      },
+      email: data.email,
+      password: data.password,
     });
     console.log(SignUpResponse);
-    login(SignUpResponse.access_token);
     console.log(
       ...[search.redirect, "👀 [LoginForm.tsx:41]: search.redirect"].reverse(),
     );

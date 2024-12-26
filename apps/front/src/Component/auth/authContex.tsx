@@ -7,7 +7,6 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { useLocalStorage } from "usehooks-ts";
 import { fetchClient } from "../../lib/api/fetchClient";
 
 interface User {

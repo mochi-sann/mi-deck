@@ -1,4 +1,5 @@
 import { Layout } from "@/Component/Layout/Layout";
+import { userType } from "@/lib/configureAuth";
 import {
   Link,
   Outlet,
@@ -7,8 +8,6 @@ import {
 import { Suspense, lazy } from "react";
 import { link } from "styled-system/recipes";
 import { css } from "../../styled-system/css";
-import { AuthContextType } from "../Component/auth/authContex";
-
 const TanStackRouterDevtools = import.meta.env.DEV
   ? () => null // Render nothing in production
   : lazy(() =>
@@ -19,19 +18,9 @@ const TanStackRouterDevtools = import.meta.env.DEV
         // default: res.TanStackRouterDevtoolsPanel
       })),
     );
-const TanstackReactQueryDevtools = import.meta.env.DEV
-  ? () => null // Render nothing in production
-  : lazy(() =>
-      // Lazy load in development
-      import("@tanstack/react-query-devtools").then((res) => ({
-        default: res.ReactQueryDevtools,
-        // For Embedded Mode
-        // default: res.TanStackRouterDevtoolsPanel
-      })),
-    );
 
 interface MyRouterContext {
-  auth: AuthContextType;
+  auth: userType;
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
@@ -66,9 +55,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       </Layout>
       <Suspense>
         <TanStackRouterDevtools />
-      </Suspense>
-      <Suspense>
-        <TanstackReactQueryDevtools />
       </Suspense>
     </>
   ),

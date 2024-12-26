@@ -4,10 +4,8 @@ import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 
-import { AuthProvider, useAuth } from "./Component/auth/authContex";
-import { AuthLoader } from "./lib/configureAuth";
+import { useUser } from "./lib/configureAuth";
 import { routeTree } from "./routeTree.gen";
-import { LoginForm } from "./routes/login/-form/LoginForm";
 
 // Create a new router instance
 const router = createRouter({
@@ -19,8 +17,24 @@ const router = createRouter({
 });
 
 function InnerApp() {
-  const auth = useAuth();
-  return <RouterProvider router={router} context={{ auth }} />;
+  const { data, status } = useUser();
+
+  if (status === "pending" && !data) {
+    return <div>Loading...</div>;
+  }
+  console.log(...[data, "👀 [main.tsx:25]: data"].reverse());
+  return (
+    <RouterProvider
+      router={router}
+      context={{
+        auth: data || {
+          id: "",
+          email: "",
+          name: "",
+        },
+      }}
+    />
+  );
 }
 
 // Register the router instance for type safety
@@ -33,12 +47,7 @@ const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <AuthLoader
-        renderLoading={() => <div>Loading ...</div>}
-        renderUnauthenticated={() => <LoginForm />}
-      >
-        <InnerApp />
-      </AuthLoader>
+      <InnerApp />
     </QueryClientProvider>
   </StrictMode>,
 );

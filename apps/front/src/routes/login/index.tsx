@@ -1,5 +1,5 @@
-import { useAuth } from "@/Component/auth/authContex";
 import { Heading } from "@/Component/ui/heading";
+import { useUser } from "@/lib/configureAuth";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 import { LogoutButton } from "./-componets/LogoutButton";
@@ -20,10 +20,20 @@ export const Route = createFileRoute("/login/")({
 });
 
 export function Index() {
-  const { isAuth } = useAuth();
+  const { status, data } = useUser();
   return (
     <div className="p-2">
       <h3>Welcome login page!</h3>
+      {status === "pending" ? (
+        <div>loading...</div>
+      ) : status === "error" ? (
+        <div>error...</div>
+      ) : (
+        <div>
+          <h3>ログイン情報</h3>
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </div>
+      )}
       <div>
         <Heading as={"h1"}>ログアウトする</Heading>
         <LogoutButton />

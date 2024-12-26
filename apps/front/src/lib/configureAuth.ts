@@ -1,32 +1,51 @@
-import { AuthTokenStorageKey } from "@/Component/auth/authContex";
 import { configureAuth } from "react-query-auth";
 import { fetchClient } from "./api/fetchClient";
 import { components } from "./api/type";
+
+const AuthTokenStorageKey = "mi-deck-auth-token";
 export const AuthTokenStorage = {
   getToken: () =>
-    JSON.parse(window.localStorage.getItem(AuthTokenStorageKey) || "null"),
+    JSON.parse(localStorage.getItem(AuthTokenStorageKey) || "null"),
   setToken: (token: string) =>
-    window.localStorage.setItem(AuthTokenStorageKey, JSON.stringify(token)),
+    localStorage.setItem(AuthTokenStorageKey, JSON.stringify(token)),
   clearToken: () => window.localStorage.removeItem(AuthTokenStorageKey),
 };
 
 export type LoginCredentials = components["schemas"]["LoginDto"];
 
 export type SignUpCredentials = components["schemas"]["SignUpDto"];
+export type userType = {
+  id: string;
+  email: string;
+  name: string;
+};
 
-async function userFn() {
-  const token = AuthTokenStorage.getToken();
+const getuserInfo = async (jwt: string) => {
   const userResponse = await fetchClient.GET("/v1/auth/me", {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${jwt}`,
     },
   });
+  if (userResponse.response.status >= 400 || !userResponse.data?.id) {
+    console.log(userResponse.response.status);
+    // throw new Error("Login failed");
+    return null;
+  }
   return userResponse.data ?? null;
+};
+async function userFn() {
+  console.log("userFn");
+  const token = AuthTokenStorage.getToken();
+  console.log(...[token, "👀 [configureAuth.ts:39]: token"].reverse());
+  if (!token || token == null) {
+    return null;
+  }
+  return await getuserInfo(token);
 }
 
 async function handleUserResponse(jwt: string) {
   AuthTokenStorage.setToken(jwt);
-  const user = await userFn();
+  const user = await getuserInfo(jwt);
   return user;
 }
 

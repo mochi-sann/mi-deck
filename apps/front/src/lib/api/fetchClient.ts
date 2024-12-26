@@ -1,7 +1,7 @@
 import createFetchClient from "openapi-fetch";
 import { Middleware } from "openapi-fetch";
 import createClient from "openapi-react-query";
-import { trimFirstAndLastChar } from "../../utils/trimText";
+import { AuthTokenStorage } from "../configureAuth";
 import { paths } from "./type";
 
 const throwOnError: Middleware = {
@@ -16,18 +16,14 @@ const throwOnError: Middleware = {
   },
 };
 const CreateFetchClient = () => {
-  let authToken = localStorage.getItem("jwt-token");
-  if (authToken) {
-    authToken = authToken.trim();
-    authToken = trimFirstAndLastChar(authToken);
-  }
-
+  // const authTokenStorage = AuthTokenStorage || {}; // 安全に取得
+  // let authToken = authTokenStorage.getToken ? authTokenStorage.getToken() : "";
   return createFetchClient<paths>({
     // baseUrl: "http://localhost:3001",
     baseUrl: "/api",
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${authToken}`,
+    // },
   });
 };
 const fetchClient = CreateFetchClient();
