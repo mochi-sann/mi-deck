@@ -108,6 +108,9 @@ importers:
       vite:
         specifier: ^6.0.1
         version: 6.0.5(@types/node@22.10.1)(lightningcss@1.25.1)(terser@5.37.0)(tsx@4.19.2)
+      vite-bundle-analyzer:
+        specifier: ^0.15.2
+        version: 0.15.2
       vite-tsconfig-paths:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.6.3)(vite@6.0.5(@types/node@22.10.1)(lightningcss@1.25.1)(terser@5.37.0)(tsx@4.19.2))
@@ -5724,6 +5727,10 @@ packages:
   vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
+
+  vite-bundle-analyzer@0.15.2:
+    resolution: {integrity: sha512-AwFOewhvf7EkTACa9c/inbxMrJOWwyVF4nUMITwN26lM5TAYkcnJC4KFgZXym3sYRAWe1Qgvk8X4OFTw4HPaJw==}
+    hasBin: true
 
   vite-node@2.1.8:
     resolution: {integrity: sha512-uPAwSr57kYjAUux+8E2j0q0Fxpn8M9VoyfGiRI8Kfktz9NcYMCenwY5RnZxnF1WTu3TGiYipirIzacLL3VVGFg==}
@@ -12277,6 +12284,8 @@ snapshots:
   validator@13.12.0: {}
 
   vary@1.1.2: {}
+
+  vite-bundle-analyzer@0.15.2: {}
 
   vite-node@2.1.8(@types/node@20.17.9)(lightningcss@1.25.1)(terser@5.37.0):
     dependencies:
