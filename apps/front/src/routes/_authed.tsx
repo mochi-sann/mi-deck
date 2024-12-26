@@ -4,7 +4,7 @@ import { LogoutButton } from "./login/-componets/LogoutButton";
 
 export const Route = createFileRoute("/_authed")({
   beforeLoad: ({ context, location }) => {
-    if (!context.auth || (context.auth && !context.auth?.isAuth)) {
+    if (!context.auth.isAuth) {
       throw redirect({
         to: "/login",
         search: {

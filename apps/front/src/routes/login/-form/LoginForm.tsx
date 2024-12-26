@@ -17,7 +17,6 @@ export const LoginForm: React.FC = () => {
   // ログインフォームを作成
   const { handleSubmit, control } = useForm<LoginFormType>();
   const { mutateAsync } = useLogin();
-  // const { mutateAsync } = $api.useMutation("post", "/v1/auth/login");
   const navigate = useNavigate();
   const search = Route.useSearch();
   const onSubmit = async (data: LoginFormType) => {
