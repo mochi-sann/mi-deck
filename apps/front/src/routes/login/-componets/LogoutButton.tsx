@@ -5,7 +5,7 @@ import type React from "react";
 export const LogoutButton: React.FC = () => {
   const { logout } = useAuth();
   return (
-    <Button variant={"danger"} onClick={logout}>
+    <Button variant={"danger"} buttonWidth={"full"} onClick={logout}>
       ログアウト
     </Button>
   );

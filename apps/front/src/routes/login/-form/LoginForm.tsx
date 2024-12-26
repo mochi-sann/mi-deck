@@ -3,11 +3,11 @@ import { FormStyle } from "@/Component/forms/formStyle";
 import { Button } from "@/Component/ui/button";
 import { Heading } from "@/Component/ui/heading";
 import { $api } from "@/lib/api/fetchClient";
-import { redirect, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { LoginPageFallBack, Route } from "..";
+import { Route } from "..";
 import { AuthContext } from "../../../Component/auth/authContex";
 
 type LoginFormType = {
@@ -34,7 +34,7 @@ export const LoginForm: React.FC = () => {
     console.log(
       ...[search.redirect, "👀 [LoginForm.tsx:41]: search.redirect"].reverse(),
     );
-    navigate({ to: search.redirect || LoginPageFallBack });
+    await navigate({ to: search.redirect });
     // redirect({ to: search.redirect || LoginPageFallBack, throw: true });
 
     // })
