@@ -4,7 +4,7 @@ import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 
-import { AuthTokenStorage, useUser } from "./lib/configureAuth";
+import { useUser } from "./lib/configureAuth";
 import { routeTree } from "./routeTree.gen";
 
 // Create a new router instance

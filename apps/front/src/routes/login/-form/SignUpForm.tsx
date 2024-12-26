@@ -1,13 +1,12 @@
-import { AuthContext } from "@/Component/auth/authContex";
 import { TextFieldSet } from "@/Component/forms/TextFieldSet";
 import { FormStyle } from "@/Component/forms/formStyle";
 import { Heading } from "@/Component/ui/heading";
 import { Button } from "@/Component/ui/styled/button";
-import { $api } from "@/lib/api/fetchClient";
+import { useRegister } from "@/lib/configureAuth";
 import { useNavigate } from "@tanstack/react-router";
 import type React from "react";
-import { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { Route } from "..";
 
 type SignUpFormType = {
   email: string;
@@ -18,22 +17,19 @@ type SignUpFormType = {
 export const SignUpForm: React.FC = () => {
   // 登録フォームを作成
   const { handleSubmit, control } = useForm<SignUpFormType>();
+  const { mutateAsync } = useRegister();
+  const search = Route.useSearch();
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
-  const { mutateAsync } = $api.useMutation("post", "/v1/auth/signUp");
   const onSubmit = async (data: SignUpFormType) => {
     console.log("data", data);
     const SignUpResponse = await mutateAsync({
-      body: {
-        email: data.email,
-        password: data.password,
-        username: data.username,
-      },
+      email: data.email,
+      password: data.password,
+      username: data.username,
     })
       .then((res) => {
         console.log(res);
-        login(res.access_token);
-        // navigate({ to: "/" });
+        navigate({ to: search.redirect });
         return res;
       })
       .catch((err) => {

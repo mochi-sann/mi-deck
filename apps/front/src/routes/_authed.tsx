@@ -1,10 +1,10 @@
+import { useLogout } from "@/lib/configureAuth";
 import {
   Outlet,
   createFileRoute,
   redirect,
   useRouter,
 } from "@tanstack/react-router";
-import { useAuth } from "../Component/auth/authContex";
 
 export const Route = createFileRoute("/_authed")({
   beforeLoad: ({ context, location }) => {
@@ -23,11 +23,11 @@ export const Route = createFileRoute("/_authed")({
 function AuthLayout() {
   const router = useRouter();
   const navigate = Route.useNavigate();
-  const auth = useAuth();
+  const logout = useLogout();
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
-      auth.logout();
+      logout.mutate("logout");
       router.invalidate().finally(() => {
         navigate({ to: "/" });
       });

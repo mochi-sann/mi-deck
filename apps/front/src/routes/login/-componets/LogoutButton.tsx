@@ -1,4 +1,3 @@
-import { useAuth } from "@/Component/auth/authContex";
 import { Button } from "@/Component/ui/button";
 import { useLogout } from "@/lib/configureAuth";
 import type React from "react";

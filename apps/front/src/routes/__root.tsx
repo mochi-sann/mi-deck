@@ -1,5 +1,4 @@
 import { Layout } from "@/Component/Layout/Layout";
-import { userType } from "@/lib/configureAuth";
 import {
   Link,
   Outlet,

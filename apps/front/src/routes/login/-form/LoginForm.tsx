@@ -29,14 +29,7 @@ export const LoginForm: React.FC = () => {
     console.log(
       ...[search.redirect, "👀 [LoginForm.tsx:41]: search.redirect"].reverse(),
     );
-    await navigate({ to: search.redirect });
-    // redirect({ to: search.redirect || LoginPageFallBack, throw: true });
-
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    //   return err;
-    // });
+    navigate({ to: search.redirect });
     console.log(data, SignUpResponse);
   };
 
