@@ -1,3 +1,4 @@
+name: bundle size check
 on:
   pull_request:
 
@@ -6,7 +7,6 @@ permissions:
 
 jobs:
   analysis:
-
     runs-on: ubuntu-22.04
     strategy:
       matrix:
@@ -23,7 +23,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
       - name: Install & Build
-        run: pnpm i  && pnpm run build
+        run: pnpm i
+      - run: pnpm run front build
 
       - name: Analysis
         uses: apple-yagi/filesize-analysis@v1
