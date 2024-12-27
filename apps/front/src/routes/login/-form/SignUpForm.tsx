@@ -6,7 +6,7 @@ import { useRegister } from "@/lib/configureAuth";
 import { useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useForm } from "react-hook-form";
-import { Route } from "..";
+import { Route } from "../route.lazy";
 
 type SignUpFormType = {
   email: string;
