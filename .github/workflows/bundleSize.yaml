@@ -2,8 +2,7 @@ name: bundle size check
 on:
   pull_request:
 
-permissions:
-  pull-requests: write # PRにコメントするために必要
+permissions: write-all
 
 jobs:
   Analyzer:
