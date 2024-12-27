@@ -1,0 +1,42 @@
+name: Build Check
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [22]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install & Build
+        run: pnpm i  && pnpm run build
+
+      # 環境変数を設定 (シークレットから取得)
+      - name: Set environment variables
+        env:
+          API_KEY: ${{ secrets.API_KEY }} # 必要な場合のみ
+        run: echo "Environment variables set"
+
+      # 依存関係をインストール
+      - name: Install dependencies
+        run: pnpm install
+
+      # ビルドを実行
+      - name: Run build
+        run: pnpm build
+
+      # ビルドの成果物
+
