@@ -6,11 +6,12 @@ permissions:
   pull-requests: write # PRにコメントするために必要
 
 jobs:
-  analysis:
+  Analyzer:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        node-version: [20]
+        node-version: [22]
+
     steps:
       - uses: actions/checkout@v4
       - name: Install pnpm
@@ -21,7 +22,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
       - name: Install & Build
         run: pnpm i
       - run: pnpm run front build
