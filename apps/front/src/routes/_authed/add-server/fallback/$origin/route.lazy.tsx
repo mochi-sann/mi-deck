@@ -1,14 +1,12 @@
 import { Button } from "@/Component/ui/button";
 import { Text } from "@/Component/ui/text";
 import { $api } from "@/lib/api/fetchClient";
-import { createFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute } from "@tanstack/react-router";
 
-import * as v from "valibot";
-export const Route = createFileRoute("/_authed/add-server/fallback/$origin")({
+export const Route = createLazyFileRoute(
+  "/_authed/add-server/fallback/$origin",
+)({
   component: RouteComponent,
-  validateSearch: v.object({
-    session: v.optional(v.fallback(v.string(), "")),
-  }),
 });
 
 function RouteComponent() {
@@ -32,7 +30,8 @@ function RouteComponent() {
   };
   return (
     <div>
-      Hello "/_authed/add-server/fallback"!
+      にゃああああああああああああああああん Hello
+      "/_authed/add-server/fallback"!
       <pre>{JSON.stringify({ search: search }, null, 2)}</pre>
       <Button onClick={OnSubmit} loading={status === "pending"}>
         サーバーを追加
