@@ -30,6 +30,5 @@ jobs:
         uses: apple-yagi/filesize-analysis@v1
         with:
           out_dir: "./apps/front/dist" # ファイルサイズを表示したいファイルが入っているディレクトリ
-          build_cmd: "pnpm run front build"
           ext: "js,css,html" # ファイルサイズを確認したい拡張子（単数の場合 -> "bundle.js"）
           github_token: ${{secrets.GITHUB_TOKEN}}
