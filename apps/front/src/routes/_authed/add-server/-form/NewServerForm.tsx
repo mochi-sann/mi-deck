@@ -2,6 +2,7 @@ import { MenuFieldSet } from "@/Component/forms/MenuFieldSet";
 import { TextFieldSet } from "@/Component/forms/TextFieldSet";
 import { FormStyle } from "@/Component/forms/formStyle";
 import { Button } from "@/Component/ui/button";
+import { MiAuthReq } from "@/lib/miAuth";
 import type React from "react";
 import { useForm } from "react-hook-form";
 type NewServerFormType = {
@@ -12,6 +13,13 @@ export const NewServerForm: React.FC = () => {
   const { handleSubmit, control, formState } = useForm<NewServerFormType>();
   const onSubmit = async (data: NewServerFormType) => {
     console.log(...[data, "👀 [NewServerForm.tsx:14]: data"].reverse());
+    const MisskeySessionToken = MiAuthReq(data.serverOrigin);
+    console.log(
+      ...[
+        MisskeySessionToken,
+        "👀 [NewServerForm.tsx:17]: MisskeySessionUrl",
+      ].reverse(),
+    );
   };
   return (
     <div>
