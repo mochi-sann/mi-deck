@@ -7,12 +7,13 @@ export const GenMiAuthUrl = (origin: string) => {
   };
   //今のURLを取得
   const currentOrigin = window.location.origin;
-  const callbackUrl = `${currentOrigin}/add-server/fallback`;
+  const callbackUrl = `${currentOrigin}/add-server/fallback/${origin}`;
+  const encodeCallbackUrl = encodeURIComponent(callbackUrl);
 
   const newUuid = crypto.randomUUID();
   const MiauthUrl = `https://${origin}/miauth/${newUuid}?name=${
     param.name
-  }&permission=${param.permission.join(",")}&callback=${callbackUrl}`;
+  }&permission=${param.permission.join(",")}&callback=${encodeCallbackUrl}`;
   return { url: MiauthUrl, uuid: newUuid };
 };
 export const MiAuthReq = async (origin: string) => {

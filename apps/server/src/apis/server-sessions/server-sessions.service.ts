@@ -17,15 +17,12 @@ export class ServerSessionsService {
       ok: boolean;
       token: string;
       user: User;
-    } = await fetch(
-      `https://${data.origin}/api/miauth/${data.sessionToken}/check`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Length": "0",
-        },
+    } = await fetch(`${data.origin}/api/miauth/${data.sessionToken}/check`, {
+      method: "POST",
+      headers: {
+        "Content-Length": "0",
       },
-    )
+    })
       .then((res) => res.json())
       .catch((err) => {
         console.error(err);

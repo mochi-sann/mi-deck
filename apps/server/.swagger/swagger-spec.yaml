@@ -182,7 +182,7 @@ components:
       properties:
         origin:
           type: string
-          example: example.com
+          example: https://example.com
         sessionToken:
           type: string
         serverType:

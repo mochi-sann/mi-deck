@@ -4,7 +4,7 @@ import { IsEnum, IsString, IsUUID } from "class-validator";
 export class CreateServerSessionDto {
   @IsString()
   @ApiProperty({
-    example: "example.com",
+    example: "https://example.com",
   })
   origin: string;
   @IsUUID()
