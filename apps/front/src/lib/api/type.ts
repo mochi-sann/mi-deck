@@ -143,7 +143,7 @@ export interface components {
       name: string;
     };
     CreateServerSessionDto: {
-      /** @example example.com */
+      /** @example https://example.com */
       origin: string;
       sessionToken: string;
       serverType: string;

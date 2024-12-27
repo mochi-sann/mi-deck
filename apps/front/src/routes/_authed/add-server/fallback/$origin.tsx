@@ -1,12 +1,12 @@
 import { Button } from "@/Component/ui/button";
 import { $api } from "@/lib/api/fetchClient";
 import { createFileRoute } from "@tanstack/react-router";
-import { z } from "zod";
 
+import * as v from "valibot";
 export const Route = createFileRoute("/_authed/add-server/fallback/$origin")({
   component: RouteComponent,
-  validateSearch: z.object({
-    session: z.string().optional().catch(""),
+  validateSearch: v.object({
+    session: v.optional(v.fallback(v.string(), "")),
   }),
 });
 

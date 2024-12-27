@@ -1,7 +1,7 @@
 import { Heading } from "@/Component/ui/heading";
 import { useUser } from "@/lib/configureAuth";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { z } from "zod";
+import * as v from "valibot";
 import { LogoutButton } from "./-componets/LogoutButton";
 import { LoginForm } from "./-form/LoginForm";
 import { SignUpForm } from "./-form/SignUpForm";
@@ -9,8 +9,8 @@ export const LoginPageFallBack = "/" as const;
 
 export const Route = createFileRoute("/login/")({
   component: Index,
-  validateSearch: z.object({
-    redirect: z.string().optional().catch(""),
+  validateSearch: v.object({
+    redirect: v.optional(v.fallback(v.string(), "")),
   }),
   beforeLoad: ({ context, search }) => {
     if (context.auth.isAuth) {
