@@ -146,16 +146,16 @@ export class ServerSessionsService {
         serverSessionId,
       },
       update: {
-        name: misskeyServerInfo.name,
-        iconUrl: MisskeyUserInfo.avatarUrl,
-        faviconUrl: misskeyServerInfo.iconUrl,
-        themeColor: misskeyServerInfo.themeColor,
+        name: misskeyServerInfo.name || "",
+        iconUrl: MisskeyUserInfo.avatarUrl || "",
+        faviconUrl: misskeyServerInfo.iconUrl || "",
+        themeColor: misskeyServerInfo.themeColor || "",
       },
       create: {
-        name: misskeyServerInfo.name,
-        iconUrl: MisskeyUserInfo.avatarUrl,
-        faviconUrl: misskeyServerInfo.iconUrl,
-        themeColor: misskeyServerInfo.themeColor,
+        name: misskeyServerInfo.name || "",
+        iconUrl: MisskeyUserInfo.avatarUrl || "",
+        faviconUrl: misskeyServerInfo.iconUrl || "",
+        themeColor: misskeyServerInfo.themeColor || "",
         serverSession: {
           connect: {
             id: serverSessionId,

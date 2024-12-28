@@ -286,10 +286,6 @@ components:
         serverSessionId:
           type: string
           format: uuid
-        softwareName:
-          type: string
-        softwareVersion:
-          type: string
         iconUrl:
           type: string
         faviconUrl:
@@ -302,8 +298,6 @@ components:
         - updatedAt
         - name
         - serverSessionId
-        - softwareName
-        - softwareVersion
         - iconUrl
         - faviconUrl
         - themeColor
