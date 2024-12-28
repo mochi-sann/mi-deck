@@ -8,8 +8,6 @@ export class ServerInfoEntity {
     this.updatedAt = data.updatedAt;
     this.name = data.name;
     this.serverSessionId = data.serverSessionId;
-    this.softwareName = data.softwareName;
-    this.softwareVersion = data.softwareVersion;
     this.iconUrl = data.iconUrl;
     this.faviconUrl = data.faviconUrl;
     this.themeColor = data.themeColor;
@@ -43,16 +41,6 @@ export class ServerInfoEntity {
     format: "uuid",
   })
   serverSessionId: string;
-  @IsString()
-  @ApiProperty({
-    type: "string",
-  })
-  softwareName: string;
-  @IsString()
-  @ApiProperty({
-    type: "string",
-  })
-  softwareVersion: string;
   @IsString()
   @ApiProperty({
     type: "string",

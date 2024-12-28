@@ -84,8 +84,8 @@ model ServerInfo {
   serverSessionId String        @unique @map("server_session_id")
   serverSession   ServerSession @relation(fields: [serverSessionId], references: [id])
   name            String
-  softwareName    String        @map("software_name")
-  softwareVersion String        @map("software_version")
+  // softwareName    String?        @map("software_name")
+  // softwareVersion String?        @map("software_version")
   iconUrl         String        @map("icon_url")
   faviconUrl      String        @map("favicon_url")
   themeColor      String        @map("theme_color")

@@ -1,3 +1,4 @@
+import { userInfo } from "node:os";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ServerType } from "@prisma/client";
 import { APIClient } from "misskey-js/api.js";
@@ -91,6 +92,9 @@ export class ServerSessionsService {
         },
       },
     });
+    console.log(
+      ...[server, "👀 [server-sessions.service.ts:95]: server"].reverse(),
+    );
     return new CreateServerSessionResponseEntity(server);
   }
   async updateOrCreateServerInfo(
@@ -114,8 +118,8 @@ export class ServerSessionsService {
       origin: origin,
       credential: ServerInfo.serverToken,
     });
-    const serverInfo = await client
-      .request("i", {
+    const misskeyServerInfo = await client
+      .request("meta", {
         detail: true,
       })
       .then((res) => res)
@@ -123,26 +127,35 @@ export class ServerSessionsService {
         console.error(err);
         throw new UnauthorizedException("can not get server info");
       });
+    const MisskeyUserInfo = await client
+      .request("i", {})
+      .then((res) => res)
+      .catch((err) => {
+        console.error(err);
+        throw new UnauthorizedException("can not get server info");
+      });
+    console.log(
+      ...[
+        misskeyServerInfo,
+        "👀 [server-sessions.service.ts:128]: serverInfo",
+      ].reverse(),
+    );
 
     const serverInfoDb = await this.prisma.serverInfo.upsert({
       where: {
         serverSessionId,
       },
       update: {
-        name: serverInfo.instance.name,
-        iconUrl: serverInfo.instance.iconUrl,
-        faviconUrl: serverInfo.instance.faviconUrl,
-        themeColor: serverInfo.instance.themeColor,
-        softwareName: serverInfo.instance.softwareName,
-        softwareVersion: serverInfo.instance.softwareVersion,
+        name: misskeyServerInfo.name,
+        iconUrl: MisskeyUserInfo.avatarUrl,
+        faviconUrl: misskeyServerInfo.iconUrl,
+        themeColor: misskeyServerInfo.themeColor,
       },
       create: {
-        name: serverInfo.instance.name,
-        iconUrl: serverInfo.instance.iconUrl,
-        faviconUrl: serverInfo.instance.faviconUrl,
-        themeColor: serverInfo.instance.themeColor,
-        softwareName: serverInfo.instance.softwareName,
-        softwareVersion: serverInfo.instance.softwareVersion,
+        name: misskeyServerInfo.name,
+        iconUrl: MisskeyUserInfo.avatarUrl,
+        faviconUrl: misskeyServerInfo.iconUrl,
+        themeColor: misskeyServerInfo.themeColor,
         serverSession: {
           connect: {
             id: serverSessionId,

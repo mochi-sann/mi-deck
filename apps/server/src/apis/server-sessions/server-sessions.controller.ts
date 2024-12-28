@@ -72,6 +72,12 @@ export class ServersessionsController {
         userId,
         body.origin,
       );
+    console.log(
+      ...[
+        serverSession,
+        "👀 [server-sessions.controller.ts:75]: serverSession",
+      ].reverse(),
+    );
     return await this.serverSessionsService.updateOrCreateServerInfo(
       serverSession.id,
       body.origin,
