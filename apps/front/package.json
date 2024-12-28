@@ -10,8 +10,10 @@
     "predev": "npx openapi-typescript ../server/.swagger/swagger-spec.yaml -o ./src/lib/api/type.ts",
     "dev": "vite",
     "build": "tsr generate && tsc -b && vite build",
+    "build:analyzer": "BUNDLE_ANALYZE=true pnpm run build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "vite preview"
   },
   "dependencies": {
     "@ark-ui/react": "^4.5.0",

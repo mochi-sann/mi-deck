@@ -3,13 +3,16 @@ import viteReact from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 import { analyzer } from "vite-bundle-analyzer";
 import tsconfigPaths from "vite-tsconfig-paths";
+
+const showAnayler = process.env.BUNDLE_ANALYZE === "true";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     tsconfigPaths({ root: "./" }),
     TanStackRouterVite(),
     viteReact(),
-    analyzer(),
+    // analyzer がprocess.env.BUNDLE_ANALYZEがある場合にのみ実行される
+    showAnayler && analyzer(),
   ],
   server: {
     port: 3000,
