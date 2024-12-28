@@ -1,11 +1,11 @@
-import { TextFieldSet } from "@/Component/forms/TextFieldSet";
-import { FormStyle } from "@/Component/forms/formStyle";
-import { Heading } from "@/Component/ui/heading";
-import { Button } from "@/Component/ui/styled/button";
-import { useRegister } from "@/lib/configureAuth";
 import { useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useForm } from "react-hook-form";
+import { TextFieldSet } from "../../../Component/forms/TextFieldSet";
+import { FormStyle } from "../../../Component/forms/formStyle";
+import { Heading } from "../../../Component/ui/heading";
+import { Button } from "../../../Component/ui/styled/button";
+import { useRegister } from "../../../lib/configureAuth";
 import { Route } from "../route.lazy";
 
 type SignUpFormType = {

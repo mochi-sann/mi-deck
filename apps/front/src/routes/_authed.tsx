@@ -1,5 +1,5 @@
-import { Text } from "@/Component/ui/text";
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
+import { Text } from "../Component/ui/text";
 import { LogoutButton } from "./login/-componets/LogoutButton";
 
 export const Route = createFileRoute("/_authed")({

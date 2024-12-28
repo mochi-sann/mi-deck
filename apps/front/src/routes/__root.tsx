@@ -1,4 +1,3 @@
-import { Layout } from "@/Component/Layout/Layout";
 import {
   Link,
   Outlet,
@@ -7,6 +6,7 @@ import {
 import { Suspense, lazy } from "react";
 import { link } from "styled-system/recipes";
 import { css } from "../../styled-system/css";
+import { Layout } from "../Component/Layout/Layout";
 const TanStackRouterDevtools = !import.meta.env.DEV
   ? () => null // Render nothing in production
   : lazy(() =>

@@ -1,11 +1,11 @@
-import { TextFieldSet } from "@/Component/forms/TextFieldSet";
-import { FormStyle } from "@/Component/forms/formStyle";
-import { Button } from "@/Component/ui/button";
-import { Heading } from "@/Component/ui/heading";
-import { useLogin } from "@/lib/configureAuth";
 import { useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useForm } from "react-hook-form";
+import { TextFieldSet } from "../../../Component/forms/TextFieldSet";
+import { FormStyle } from "../../../Component/forms/formStyle";
+import { Button } from "../../../Component/ui/button";
+import { Heading } from "../../../Component/ui/heading";
+import { useLogin } from "../../../lib/configureAuth";
 import { Route } from "../route.lazy";
 
 type LoginFormType = {

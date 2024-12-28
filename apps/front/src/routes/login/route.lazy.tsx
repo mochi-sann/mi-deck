@@ -1,6 +1,6 @@
-import { Heading } from "@/Component/ui/heading";
-import { useUser } from "@/lib/configureAuth";
 import { createLazyFileRoute } from "@tanstack/react-router";
+import { Heading } from "../../Component/ui/heading";
+import { useUser } from "../../lib/configureAuth";
 import { LogoutButton } from "./-componets/LogoutButton";
 import { LoginForm } from "./-form/LoginForm";
 import { SignUpForm } from "./-form/SignUpForm";

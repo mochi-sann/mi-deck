@@ -1,7 +1,7 @@
-import { Button } from "@/Component/ui/button";
-import { Text } from "@/Component/ui/text";
-import { $api } from "@/lib/api/fetchClient";
 import { createLazyFileRoute } from "@tanstack/react-router";
+import { Button } from "../../../../../Component/ui/button";
+import { Text } from "../../../../../Component/ui/text";
+import { $api } from "../../../../../lib/api/fetchClient";
 
 export const Route = createLazyFileRoute(
   "/_authed/add-server/fallback/$origin",

@@ -1,5 +1,5 @@
-import { $api } from "@/lib/api/fetchClient";
 import { createLazyFileRoute } from "@tanstack/react-router";
+import { $api } from "../../lib/api/fetchClient";
 
 export const Route = createLazyFileRoute("/_authed/about")({
   component: About,
