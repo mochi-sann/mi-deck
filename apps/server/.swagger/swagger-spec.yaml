@@ -160,10 +160,10 @@ components:
     LoginEntity:
       type: object
       properties:
-        access_token:
+        accessToken:
           type: string
       required:
-        - access_token
+        - accessToken
     SignUpDto:
       type: object
       properties:

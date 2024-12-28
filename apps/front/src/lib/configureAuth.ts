@@ -14,17 +14,17 @@ export const AuthTokenStorage = {
 export type LoginCredentials = components["schemas"]["LoginDto"];
 
 export type SignUpCredentials = components["schemas"]["SignUpDto"];
-export type userType = {
+export type UserType = {
   id: string;
   email: string;
   name: string;
   isAuth: boolean;
 };
 
-const getuserInfo = async (jwt: string): Promise<userType | null> => {
+const getuserInfo = async (jwt: string): Promise<UserType | null> => {
   const userResponse = await fetchClient.GET("/v1/auth/me", {
     headers: {
-      Authorization: `Bearer ${jwt}`,
+      authorization: `Bearer ${jwt}`,
     },
   });
   if (userResponse.response.status >= 400 || !userResponse.data?.id) {
