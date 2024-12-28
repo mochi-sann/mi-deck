@@ -5,6 +5,7 @@ import {
   NestFastifyApplication,
 } from "@nestjs/platform-fastify";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { apiReference } from "@scalar/nestjs-api-reference";
 import { dump } from "js-yaml";
 import { AppModule } from "./app.module";
 import { PORT } from "./lib/env";
@@ -29,6 +30,16 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup("api-docs", app, document);
+
+  app.use(
+    "/api-docs",
+    apiReference({
+      withFastify: true,
+      spec: {
+        content: document,
+      },
+    }),
+  );
   console.log(`Server is running on http://localhost:${PORT}`);
   fs.writeFileSync("./.swagger/swagger-spec.yaml", dump(document, {}));
   await app.listen(PORT);
