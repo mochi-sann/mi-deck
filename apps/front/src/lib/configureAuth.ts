@@ -56,10 +56,10 @@ async function loginFn(data: LoginCredentials) {
   const response = await fetchClient.POST("/v1/auth/login", {
     body: data,
   });
-  if (response.response.status >= 400 || !response.data?.access_token) {
+  if (response.response.status >= 400 || !response.data?.accessToken) {
     throw new Error("Login failed");
   }
-  const user = await handleUserResponse(response.data?.access_token);
+  const user = await handleUserResponse(response.data?.accessToken);
   return user;
 }
 
@@ -67,10 +67,10 @@ async function registerFn(data: SignUpCredentials) {
   const response = await fetchClient.POST("/v1/auth/signUp", {
     body: data,
   });
-  if (response.response.status >= 400 || !response.data?.access_token) {
+  if (response.response.status >= 400 || !response.data?.accessToken) {
     throw new Error("Login failed");
   }
-  const user = await handleUserResponse(response.data.access_token);
+  const user = await handleUserResponse(response.data.accessToken);
   return user;
 }
 
