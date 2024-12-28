@@ -116,6 +116,28 @@ paths:
       security:
         - bearer: []
       tags: *ref_1
+  /v1/server-sessions/update-server-info:
+    post:
+      operationId: ServersessionsController_updateServerInfo
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateServerInfoDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerInfoEntity'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      tags: *ref_1
   /v1/server-sessions/{id}:
     put:
       operationId: ServersessionsController_update
@@ -239,3 +261,49 @@ components:
         - serverType
         - createdAt
         - updatedAt
+    UpdateServerInfoDto:
+      type: object
+      properties:
+        origin:
+          type: string
+          example: https://example.com
+      required:
+        - origin
+    ServerInfoEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        name:
+          type: string
+        serverSessionId:
+          type: string
+          format: uuid
+        softwareName:
+          type: string
+        softwareVersion:
+          type: string
+        iconUrl:
+          type: string
+        faviconUrl:
+          type: string
+        themeColor:
+          type: string
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - name
+        - serverSessionId
+        - softwareName
+        - softwareVersion
+        - iconUrl
+        - faviconUrl
+        - themeColor

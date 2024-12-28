@@ -18,9 +18,11 @@ generator markdown {
   output   = "./ERD.md"
   title    = "prisma schema"
 }
+
 generator dbml {
   provider = "prisma-dbml-generator"
 }
+
 enum UserRole {
   ADMIN
   USER
@@ -72,6 +74,7 @@ model ServerSession {
   serverInfo     ServerInfo?
   serverUserInfo UserInfo?
 
+  @@unique([origin, userId])
   @@index([userId])
   @@map("server_session")
 }

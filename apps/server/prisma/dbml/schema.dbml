@@ -37,6 +37,10 @@ Table server_session {
   panels panel [not null]
   serverInfo server_info
   serverUserInfo user_info
+
+  indexes {
+    (origin, userId) [unique]
+  }
 }
 
 Table server_info {

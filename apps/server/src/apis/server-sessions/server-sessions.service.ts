@@ -1,9 +1,11 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ServerType } from "@prisma/client";
+import { APIClient } from "misskey-js/api.js";
 import { User } from "misskey-js/entities.js";
 import { PrismaService } from "../../lib/prisma.service";
 import { CreateServerSessionDto } from "./dto/creste.dto";
 import { CreateServerSessionResponseEntity } from "./entities/create-server.entity";
+import { ServerInfoEntity } from "./entities/server-info.entity";
 
 @Injectable()
 export class ServerSessionsService {
@@ -33,12 +35,6 @@ export class ServerSessionsService {
       throw new UnauthorizedException("can not auth misskey");
     }
 
-    console.log(
-      ...[
-        fetchMisskey,
-        "👀 [server-sessions.service.ts:39]: fetchMisskey",
-      ].reverse(),
-    );
     const newServerSession = await this.prisma.serverSession.create({
       data: {
         origin: data.origin,
@@ -60,6 +56,11 @@ export class ServerSessionsService {
         },
       },
     });
+    await this.updateOrCreateServerInfo(
+      newServerSession.id,
+      data.origin,
+      userId,
+    );
     return new CreateServerSessionResponseEntity(newServerSession);
   }
   async getList(userId: string) {
@@ -71,5 +72,84 @@ export class ServerSessionsService {
     return serverList.map((server) => {
       return new CreateServerSessionResponseEntity(server);
     });
+  }
+  async getServerSessionfromId(Id: string) {
+    const server = await this.prisma.serverSession.findUnique({
+      where: {
+        id: Id,
+      },
+    });
+    return new CreateServerSessionResponseEntity(server);
+  }
+  async getServerSessionfromUseridAndOrigin(UserId: string, origin: string) {
+    const server = await this.prisma.serverSession.findUnique({
+      where: {
+        // biome-ignore lint/style/useNamingConvention:
+        origin_userId: {
+          userId: UserId,
+          origin: origin,
+        },
+      },
+    });
+    return new CreateServerSessionResponseEntity(server);
+  }
+  async updateOrCreateServerInfo(
+    serverSessionId: string,
+    origin: string,
+    userId: string,
+  ) {
+    const ServerInfo = await this.prisma.serverSession.findUnique({
+      where: {
+        // biome-ignore lint/style/useNamingConvention:
+        origin_userId: {
+          userId: userId,
+          origin,
+        },
+      },
+      select: {
+        serverToken: true,
+      },
+    });
+    const client = new APIClient({
+      origin: origin,
+      credential: ServerInfo.serverToken,
+    });
+    const serverInfo = await client
+      .request("i", {
+        detail: true,
+      })
+      .then((res) => res)
+      .catch((err) => {
+        console.error(err);
+        throw new UnauthorizedException("can not get server info");
+      });
+
+    const serverInfoDb = await this.prisma.serverInfo.upsert({
+      where: {
+        serverSessionId,
+      },
+      update: {
+        name: serverInfo.instance.name,
+        iconUrl: serverInfo.instance.iconUrl,
+        faviconUrl: serverInfo.instance.faviconUrl,
+        themeColor: serverInfo.instance.themeColor,
+        softwareName: serverInfo.instance.softwareName,
+        softwareVersion: serverInfo.instance.softwareVersion,
+      },
+      create: {
+        name: serverInfo.instance.name,
+        iconUrl: serverInfo.instance.iconUrl,
+        faviconUrl: serverInfo.instance.faviconUrl,
+        themeColor: serverInfo.instance.themeColor,
+        softwareName: serverInfo.instance.softwareName,
+        softwareVersion: serverInfo.instance.softwareVersion,
+        serverSession: {
+          connect: {
+            id: serverSessionId,
+          },
+        },
+      },
+    });
+    return new ServerInfoEntity(serverInfoDb);
   }
 }
