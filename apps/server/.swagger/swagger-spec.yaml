@@ -89,6 +89,12 @@ paths:
       responses:
         '201':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateServerSessionResponseEntity'
+        '401':
+          description: ''
       security:
         - bearer: []
       tags: &ref_1
@@ -97,8 +103,18 @@ paths:
       operationId: ServersessionsController_getList
       parameters: []
       responses:
-        '200':
+        '201':
           description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreateServerSessionResponseEntity'
+        '401':
+          description: ''
+      security:
+        - bearer: []
       tags: *ref_1
   /v1/server-sessions/{id}:
     put:
@@ -191,3 +207,35 @@ components:
         - origin
         - sessionToken
         - serverType
+    CreateServerSessionResponseEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        origin:
+          type: string
+        serverToken:
+          type: string
+        serverType:
+          type: string
+          enum:
+            - Misskey
+            - OtherServer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - origin
+        - serverToken
+        - serverType
+        - createdAt
+        - updatedAt

@@ -3,6 +3,7 @@ import { ServerType } from "@prisma/client";
 import { User } from "misskey-js/entities.js";
 import { PrismaService } from "../../lib/prisma.service";
 import { CreateServerSessionDto } from "./dto/creste.dto";
+import { CreateServerSessionResponseEntity } from "./entities/create-server.entity";
 
 @Injectable()
 export class ServerSessionsService {
@@ -38,7 +39,7 @@ export class ServerSessionsService {
         "👀 [server-sessions.service.ts:39]: fetchMisskey",
       ].reverse(),
     );
-    return await this.prisma.serverSession.create({
+    const newServerSession = await this.prisma.serverSession.create({
       data: {
         origin: data.origin,
         serverType: getServerType,
@@ -58,6 +59,17 @@ export class ServerSessionsService {
           },
         },
       },
+    });
+    return new CreateServerSessionResponseEntity(newServerSession);
+  }
+  async getList(userId: string) {
+    const serverList = await this.prisma.serverSession.findMany({
+      where: {
+        userId,
+      },
+    });
+    return serverList.map((server) => {
+      return new CreateServerSessionResponseEntity(server);
     });
   }
 }

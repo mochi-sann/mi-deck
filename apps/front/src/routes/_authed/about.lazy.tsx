@@ -1,3 +1,4 @@
+import { $api } from "@/lib/api/fetchClient";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/_authed/about")({
@@ -5,5 +6,14 @@ export const Route = createLazyFileRoute("/_authed/about")({
 });
 
 function About() {
-  return <div className="p-2">Hello from About!</div>;
+  const { data, status } = $api.useQuery("get", "/v1/server-sessions");
+  if (status === "pending") {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div className="p-2">
+      <pre>{JSON.stringify(data, null, 2)}</pre>!
+    </div>
+  );
 }
