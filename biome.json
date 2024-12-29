@@ -17,7 +17,8 @@
       "apps/server/dist/**",
       "apps/front/dist/**",
       "apps/front/src/routeTree.gen.ts",
-      "apps/front/styled-system/**"
+      "apps/front/styled-system/**",
+      "apps/front/src/lib/api/type.ts"
     ]
   },
   "formatter": {
@@ -35,7 +36,8 @@
         "noNonNullAssertion": "off",
         "useTemplate": "off",
         "noUselessElse": "off",
-        "useImportType": "off"
+        "useImportType": "off",
+        "useNamingConvention": "error"
       }
     }
   },

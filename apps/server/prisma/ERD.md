@@ -36,8 +36,6 @@ erDiagram
   String id PK
   String server_session_id FK
   String name
-  String software_name
-  String software_version
   String icon_url
   String favicon_url
   String theme_color
@@ -105,8 +103,6 @@ erDiagram
   - `id`: 
   - `server_session_id`: 
   - `name`: 
-  - `software_name`: 
-  - `software_version`: 
   - `icon_url`: 
   - `favicon_url`: 
   - `theme_color`: 

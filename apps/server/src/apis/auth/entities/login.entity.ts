@@ -1,9 +1,9 @@
-import { ApiProperty, ApiResponse } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class LoginEntity {
   constructor(data: LoginEntity) {
-    this.access_token = data.access_token;
+    this.accessToken = data.accessToken;
   }
   @ApiProperty()
-  access_token: string;
+  accessToken: string;
 }

@@ -1,0 +1,34 @@
+name: bundle size check
+on:
+  pull_request:
+
+permissions: write-all
+
+jobs:
+  Analyzer:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [22]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+      - name: Install & Build
+        run: pnpm i
+      - run: pnpm run front build
+
+      - name: Analysis
+        uses: apple-yagi/filesize-analysis@v1
+        with:
+          out_dir: "./apps/front/dist" # ファイルサイズを表示したいファイルが入っているディレクトリ
+          ext: "js|html|css" # ファイルサイズを確認したい拡張子（単数の場合 -> "bundle.js"）
+          github_token: ${{secrets.GITHUB_TOKEN}}

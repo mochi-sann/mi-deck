@@ -32,7 +32,7 @@ export const ButtonRecipe = defineRecipe({
   },
   defaultVariants: {
     variant: "solid",
-    size: "md",
+    size: "lg",
     buttonWidth: "auto",
   },
   variants: {

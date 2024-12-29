@@ -1,16 +1,16 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { $Enums } from "@prisma/client";
 import { IsString } from "class-validator";
 
-export class CreateServerSessionResponseEntity {
-  constructor(data: CreateServerSessionResponseEntity) {
+export class ServerInfoEntity {
+  constructor(data: ServerInfoEntity) {
     this.id = data.id;
-    this.userId = data.userId;
-    this.origin = data.origin;
-    this.serverToken = data.serverToken;
-    this.serverType = data.serverType;
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
+    this.name = data.name;
+    this.serverSessionId = data.serverSessionId;
+    this.iconUrl = data.iconUrl;
+    this.faviconUrl = data.faviconUrl;
+    this.themeColor = data.themeColor;
   }
   @IsString()
   @ApiProperty({
@@ -21,32 +21,39 @@ export class CreateServerSessionResponseEntity {
   @IsString()
   @ApiProperty({
     type: "string",
-    format: "uuid",
-  })
-  userId: string;
-  @IsString()
-  @ApiProperty({
-    type: "string",
-  })
-  origin: string;
-  @IsString()
-  @ApiProperty({
-    type: "string",
-  })
-  serverToken: string;
-  @ApiProperty({
-    type: "string",
-    enum: ["Misskey", "OtherServer"],
-  })
-  serverType: $Enums.ServerType;
-  @ApiProperty({
-    type: "string",
     format: "date-time",
   })
   createdAt: Date;
+  @IsString()
   @ApiProperty({
     type: "string",
     format: "date-time",
   })
   updatedAt: Date;
+  @IsString()
+  @ApiProperty({
+    type: "string",
+  })
+  name: string;
+  @IsString()
+  @ApiProperty({
+    type: "string",
+    format: "uuid",
+  })
+  serverSessionId: string;
+  @IsString()
+  @ApiProperty({
+    type: "string",
+  })
+  iconUrl: string;
+  @IsString()
+  @ApiProperty({
+    type: "string",
+  })
+  faviconUrl: string;
+  @IsString()
+  @ApiProperty({
+    type: "string",
+  })
+  themeColor: string;
 }

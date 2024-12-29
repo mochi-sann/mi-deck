@@ -31,7 +31,7 @@ export class AuthService {
     // instead of the user object
     const payload = { id: user.id, name: user.name, email: user.email };
     return new LoginEntity({
-      access_token: await this.jwtService.signAsync(payload),
+      accessToken: await this.jwtService.signAsync(payload),
     });
   }
 
@@ -60,7 +60,7 @@ export class AuthService {
     });
     const payload = { id: user.id, name: user.name, email: user.email };
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      accessToken: await this.jwtService.signAsync(payload),
     };
   }
   async me(userId: string) {

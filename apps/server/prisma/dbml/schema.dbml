@@ -37,6 +37,10 @@ Table server_session {
   panels panel [not null]
   serverInfo server_info
   serverUserInfo user_info
+
+  indexes {
+    (origin, userId) [unique]
+  }
 }
 
 Table server_info {
@@ -44,8 +48,6 @@ Table server_info {
   serverSessionId String [unique, not null]
   serverSession server_session [not null]
   name String [not null]
-  softwareName String [not null]
-  softwareVersion String [not null]
   iconUrl String [not null]
   faviconUrl String [not null]
   themeColor String [not null]
