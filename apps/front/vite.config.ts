@@ -5,6 +5,7 @@ import { analyzer } from "vite-bundle-analyzer";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const showAnayler = process.env.BUNDLE_ANALYZE === "true";
+const IsDev = process.env.NODE_ENV === "development";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -14,6 +15,9 @@ export default defineConfig({
     // analyzer がprocess.env.BUNDLE_ANALYZEがある場合にのみ実行される
     showAnayler && analyzer(),
   ],
+  esbuild: {
+    drop: !IsDev ? ["console", "debugger"] : [],
+  },
   server: {
     port: 3000,
     proxy: {
