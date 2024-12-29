@@ -1,4 +1,5 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
+import { flex } from "styled-system/patterns";
 import { Heading } from "../../Component/ui/heading";
 import { useUser } from "../../lib/configureAuth";
 import { LogoutButton } from "./-componets/LogoutButton";
@@ -31,9 +32,16 @@ function RouteComponent() {
         </div>
         <div>
           <Heading as={"h1"}>ログインする</Heading>
-          <LoginForm />
-          <hr />
-          <SignUpForm />
+          <div
+            className={flex({
+              flexDirection: "row",
+              gap: 8,
+              padding: 4,
+            })}
+          >
+            <LoginForm />
+            <SignUpForm />
+          </div>
         </div>
       </div>
       Hello "/login"!
