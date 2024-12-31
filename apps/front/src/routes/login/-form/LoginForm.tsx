@@ -18,7 +18,7 @@ type LoginFormType = {
 export const LoginForm: React.FC = () => {
   // ログインフォームを作成
   const { handleSubmit, control } = useForm<LoginFormType>();
-  const { mutateAsync } = useLogin();
+  const { mutateAsync, isSuccess } = useLogin();
   const navigate = useNavigate();
   const search = Route.useSearch();
   const onSubmit = async (data: LoginFormType) => {
@@ -33,6 +33,24 @@ export const LoginForm: React.FC = () => {
     navigate({ to: search.redirect });
     console.log(data, SignUpResponse);
   };
+  if (isSuccess) {
+    return (
+      <Card.Root
+        className={css({
+          flex: 1,
+        })}
+      >
+        <Card.Header>
+          <Heading as="h2" size={"xl"}>
+            ログイン
+          </Heading>
+        </Card.Header>
+        <Card.Body>
+          <p>ログインに成功しました</p>
+        </Card.Body>
+      </Card.Root>
+    );
+  }
 
   return (
     <Card.Root

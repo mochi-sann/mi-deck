@@ -8,10 +8,7 @@
     "typeCheck": true,
     "builder": {
       "typeCheck": true,
-      "type": "swc",
-      "options": {
-        "swcrcPath": ".swcrc"
-      }
+      "type": "swc"
     }
   }
 }
