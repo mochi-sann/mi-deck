@@ -23,11 +23,11 @@ enum UserRole {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String   @id @default(cuid()) @map("Id")
+  username  String   @unique @map("Username")
+  password  String   @map("Password")
+  createdAt DateTime @default(now()) @map("CreatedAt")
+  updatedAt DateTime @updatedAt @map("UpdatedAt")
 
   accounts Account[]
   decks    Deck[]
@@ -36,25 +36,25 @@ model User {
 
 // Misskeyアカウント
 model Account {
-  id         String   @id @default(cuid())
+  id         String   @id @default(cuid()) @map("Id")
   user       User     @relation(fields: [userId], references: [id])
-  userId     String
+  userId     String   @map("UserId")
   instance   Instance @relation(fields: [instanceId], references: [id])
-  instanceId String
-  token      String
-  username   String // Misskeyでのユーザー名
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  instanceId String   @map("InstanceId")
+  token      String   @map("Token")
+  username   String   @map("Username") // Misskeyでのユーザー名
+  createdAt  DateTime @default(now()) @map("CreatedAt")
+  updatedAt  DateTime @updatedAt @map("UpdatedAt")
 
   @@unique([userId, instanceId])
 }
 
 // インスタンス (サーバー)
 model Instance {
-  id        String   @id @default(cuid())
-  host      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String   @id @default(cuid()) @map("Id")
+  host      String   @unique @map("Host")
+  createdAt DateTime @default(now()) @map("CreatedAt")
+  updatedAt DateTime @updatedAt @map("UpdatedAt")
 
   accounts Account[]
   columns  Column[]
@@ -62,20 +62,20 @@ model Instance {
 
 // カラム
 model Column {
-  id         String     @id @default(cuid())
+  id         String     @id @default(cuid()) @map("Id")
   user       User       @relation(fields: [userId], references: [id])
-  userId     String
+  userId     String     @map("UserId")
   deck       Deck       @relation(fields: [deckId], references: [id])
-  deckId     String
+  deckId     String     @map("DeckId")
   instance   Instance   @relation(fields: [instanceId], references: [id])
-  instanceId String
-  title      String
-  type       ColumnType
-  params     Json?
-  order      Int
-  width      Int?       @default(300)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  instanceId String     @map("InstanceId")
+  title      String     @map("Title")
+  type       ColumnType @map("Type")
+  params     Json?      @map("Params")
+  order      Int        @map("Order")
+  width      Int?       @default(300) @map("Width")
+  createdAt  DateTime   @default(now()) @map("CreatedAt")
+  updatedAt  DateTime   @updatedAt @map("UpdatedAt")
 
   deckColumn DeckColumn[]
 }
@@ -101,44 +101,44 @@ enum ColumnType {
 
 // デッキ
 model Deck {
-  id         String       @id @default(cuid())
+  id         String       @id @default(cuid()) @map("Id")
   user       User         @relation(fields: [userId], references: [id])
-  userId     String
-  name       String
-  order      Int
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
+  userId     String       @map("UserId")
+  name       String       @map("Name")
+  order      Int          @map("Order")
+  createdAt  DateTime     @default(now()) @map("CreatedAt")
+  updatedAt  DateTime     @updatedAt @map("UpdatedAt")
   columns    Column[]
   deckColumn DeckColumn[]
 }
 
 // デッキとカラムを紐付ける中間テーブル
 model DeckColumn {
-  id       String @id @default(cuid())
+  id       String @id @default(cuid()) @map("Id")
   deck     Deck   @relation(fields: [deckId], references: [id], onDelete: Cascade)
-  deckId   String
+  deckId   String @map("DeckId")
   column   Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
-  columnId String
+  columnId String @map("ColumnId")
 
   @@unique([deckId, columnId])
 }
 
 // 投稿 (Note) - キャッシュ用
 model CachedNote {
-  id         String    @id // Misskeyの投稿ID
-  userId     String // 投稿者のユーザーID
-  text       String? // 投稿のテキスト
-  cw         String? // CWの内容
-  createdAt  DateTime // 投稿日時
-  updatedAt  DateTime?
-  replyId    String?
-  renoteId   String?
-  visibility String?
-  emojis     Json?
-  fileIds    Json?
-  files      Json?
-  tags       Json?
-  poll       Json?
-  user       Json? // 投稿者のユーザー情報(アイコンのURLなど最低限の物)
-  instance   String? // 投稿元インスタンス
+  id         String    @id @map("Id") // Misskeyの投稿ID
+  userId     String    @map("UserId") // 投稿者のユーザーID
+  text       String?   @map("Text") // 投稿のテキスト
+  cw         String?   @map("Cw") // CWの内容
+  createdAt  DateTime  @map("CreatedAt") // 投稿日時
+  updatedAt  DateTime? @map("UpdatedAt")
+  replyId    String?   @map("ReplyId")
+  renoteId   String?   @map("RenoteId")
+  visibility String?   @map("Visibility")
+  emojis     Json?     @map("Emojis")
+  fileIds    Json?     @map("FileIds")
+  files      Json?     @map("Files")
+  tags       Json?     @map("Tags")
+  poll       Json?     @map("Poll")
+  user       Json?     @map("User") // 投稿者のユーザー情報(アイコンのURLなど最低限の物)
+  instance   String?   @map("Instance") // 投稿元インスタンス
 }

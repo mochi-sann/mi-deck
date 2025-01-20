@@ -7,70 +7,70 @@
 ```mermaid
 erDiagram
 "User" {
-  String id PK
-  String username UK
-  String password
-  DateTime createdAt
-  DateTime updatedAt
+  String Id PK
+  String Username UK
+  String Password
+  DateTime CreatedAt
+  DateTime UpdatedAt
 }
 "Account" {
-  String id PK
-  String userId FK
-  String instanceId FK
-  String token
-  String username
-  DateTime createdAt
-  DateTime updatedAt
+  String Id PK
+  String UserId FK
+  String InstanceId FK
+  String Token
+  String Username
+  DateTime CreatedAt
+  DateTime UpdatedAt
 }
 "Instance" {
-  String id PK
-  String host UK
-  DateTime createdAt
-  DateTime updatedAt
+  String Id PK
+  String Host UK
+  DateTime CreatedAt
+  DateTime UpdatedAt
 }
 "Column" {
-  String id PK
-  String userId FK
-  String deckId FK
-  String instanceId FK
-  String title
-  ColumnType type
-  Json params "nullable"
-  Int order
-  Int width "nullable"
-  DateTime createdAt
-  DateTime updatedAt
+  String Id PK
+  String UserId FK
+  String DeckId FK
+  String InstanceId FK
+  String Title
+  ColumnType Type
+  Json Params "nullable"
+  Int Order
+  Int Width "nullable"
+  DateTime CreatedAt
+  DateTime UpdatedAt
 }
 "Deck" {
-  String id PK
-  String userId FK
-  String name
-  Int order
-  DateTime createdAt
-  DateTime updatedAt
+  String Id PK
+  String UserId FK
+  String Name
+  Int Order
+  DateTime CreatedAt
+  DateTime UpdatedAt
 }
 "DeckColumn" {
-  String id PK
-  String deckId FK
-  String columnId FK
+  String Id PK
+  String DeckId FK
+  String ColumnId FK
 }
 "CachedNote" {
-  String id PK
-  String userId
-  String text "nullable"
-  String cw "nullable"
-  DateTime createdAt
-  DateTime updatedAt "nullable"
-  String replyId "nullable"
-  String renoteId "nullable"
-  String visibility "nullable"
-  Json emojis "nullable"
-  Json fileIds "nullable"
-  Json files "nullable"
-  Json tags "nullable"
-  Json poll "nullable"
-  Json user "nullable"
-  String instance "nullable"
+  String Id PK
+  String UserId
+  String Text "nullable"
+  String Cw "nullable"
+  DateTime CreatedAt
+  DateTime UpdatedAt "nullable"
+  String ReplyId "nullable"
+  String RenoteId "nullable"
+  String Visibility "nullable"
+  Json Emojis "nullable"
+  Json FileIds "nullable"
+  Json Files "nullable"
+  Json Tags "nullable"
+  Json Poll "nullable"
+  Json User "nullable"
+  String Instance "nullable"
 }
 "Account" }o--|| "User" : user
 "Account" }o--|| "Instance" : instance
@@ -85,79 +85,79 @@ erDiagram
 ### `User`
 
 **Properties**
-  - `id`: 
-  - `username`: 
-  - `password`: 
-  - `createdAt`: 
-  - `updatedAt`: 
+  - `Id`: 
+  - `Username`: 
+  - `Password`: 
+  - `CreatedAt`: 
+  - `UpdatedAt`: 
 
 ### `Account`
 
 **Properties**
-  - `id`: 
-  - `userId`: 
-  - `instanceId`: 
-  - `token`: 
-  - `username`: 
-  - `createdAt`: 
-  - `updatedAt`: 
+  - `Id`: 
+  - `UserId`: 
+  - `InstanceId`: 
+  - `Token`: 
+  - `Username`: 
+  - `CreatedAt`: 
+  - `UpdatedAt`: 
 
 ### `Instance`
 
 **Properties**
-  - `id`: 
-  - `host`: 
-  - `createdAt`: 
-  - `updatedAt`: 
+  - `Id`: 
+  - `Host`: 
+  - `CreatedAt`: 
+  - `UpdatedAt`: 
 
 ### `Column`
 
 **Properties**
-  - `id`: 
-  - `userId`: 
-  - `deckId`: 
-  - `instanceId`: 
-  - `title`: 
-  - `type`: 
-  - `params`: 
-  - `order`: 
-  - `width`: 
-  - `createdAt`: 
-  - `updatedAt`: 
+  - `Id`: 
+  - `UserId`: 
+  - `DeckId`: 
+  - `InstanceId`: 
+  - `Title`: 
+  - `Type`: 
+  - `Params`: 
+  - `Order`: 
+  - `Width`: 
+  - `CreatedAt`: 
+  - `UpdatedAt`: 
 
 ### `Deck`
 
 **Properties**
-  - `id`: 
-  - `userId`: 
-  - `name`: 
-  - `order`: 
-  - `createdAt`: 
-  - `updatedAt`: 
+  - `Id`: 
+  - `UserId`: 
+  - `Name`: 
+  - `Order`: 
+  - `CreatedAt`: 
+  - `UpdatedAt`: 
 
 ### `DeckColumn`
 
 **Properties**
-  - `id`: 
-  - `deckId`: 
-  - `columnId`: 
+  - `Id`: 
+  - `DeckId`: 
+  - `ColumnId`: 
 
 ### `CachedNote`
 
 **Properties**
-  - `id`: 
-  - `userId`: 
-  - `text`: 
-  - `cw`: 
-  - `createdAt`: 
-  - `updatedAt`: 
-  - `replyId`: 
-  - `renoteId`: 
-  - `visibility`: 
-  - `emojis`: 
-  - `fileIds`: 
-  - `files`: 
-  - `tags`: 
-  - `poll`: 
-  - `user`: 
-  - `instance`: 
+  - `Id`: 
+  - `UserId`: 
+  - `Text`: 
+  - `Cw`: 
+  - `CreatedAt`: 
+  - `UpdatedAt`: 
+  - `ReplyId`: 
+  - `RenoteId`: 
+  - `Visibility`: 
+  - `Emojis`: 
+  - `FileIds`: 
+  - `Files`: 
+  - `Tags`: 
+  - `Poll`: 
+  - `User`: 
+  - `Instance`: 
