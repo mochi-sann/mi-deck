@@ -49,11 +49,6 @@ erDiagram
   DateTime CreatedAt
   DateTime UpdatedAt
 }
-"DeckColumn" {
-  String Id PK
-  String DeckId FK
-  String ColumnId FK
-}
 "CachedNote" {
   String Id PK
   String UserId
@@ -86,8 +81,6 @@ erDiagram
 "Column" }o--|| "Deck" : deck
 "Column" }o--|| "Instance" : instance
 "Deck" }o--|| "User" : user
-"DeckColumn" }o--|| "Deck" : deck
-"DeckColumn" }o--|| "Column" : column
 "UserSetting" |o--|| "User" : user
 ```
 
@@ -143,13 +136,6 @@ erDiagram
   - `Order`: 
   - `CreatedAt`: 
   - `UpdatedAt`: 
-
-### `DeckColumn`
-
-**Properties**
-  - `Id`: 
-  - `DeckId`: 
-  - `ColumnId`: 
 
 ### `CachedNote`
 

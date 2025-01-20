@@ -77,8 +77,6 @@ model Column {
   width      Int?       @default(300) @map("Width")
   createdAt  DateTime   @default(now()) @map("CreatedAt")
   updatedAt  DateTime   @updatedAt @map("UpdatedAt")
-
-  deckColumn DeckColumn[]
 }
 
 // カラムの種類
@@ -102,26 +100,14 @@ enum ColumnType {
 
 // デッキ
 model Deck {
-  id         String       @id @default(cuid()) @map("Id")
-  user       User         @relation(fields: [userId], references: [id])
-  userId     String       @map("UserId")
-  name       String       @map("Name")
-  order      Int          @map("Order")
-  createdAt  DateTime     @default(now()) @map("CreatedAt")
-  updatedAt  DateTime     @updatedAt @map("UpdatedAt")
-  columns    Column[]
-  deckColumn DeckColumn[]
-}
-
-// デッキとカラムを紐付ける中間テーブル
-model DeckColumn {
-  id       String @id @default(cuid()) @map("Id")
-  deck     Deck   @relation(fields: [deckId], references: [id], onDelete: Cascade)
-  deckId   String @map("DeckId")
-  column   Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
-  columnId String @map("ColumnId")
-
-  @@unique([deckId, columnId])
+  id        String   @id @default(cuid()) @map("Id")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @map("UserId")
+  name      String   @map("Name")
+  order     Int      @map("Order")
+  createdAt DateTime @default(now()) @map("CreatedAt")
+  updatedAt DateTime @updatedAt @map("UpdatedAt")
+  columns   Column[]
 }
 
 // 投稿 (Note) - キャッシュ用

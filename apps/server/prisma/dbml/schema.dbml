@@ -54,7 +54,6 @@ Table Column {
   width Int [default: 300]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  deckColumn DeckColumn [not null]
 }
 
 Table Deck {
@@ -66,19 +65,6 @@ Table Deck {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   columns Column [not null]
-  deckColumn DeckColumn [not null]
-}
-
-Table DeckColumn {
-  id String [pk]
-  deck Deck [not null]
-  deckId String [not null]
-  column Column [not null]
-  columnId String [not null]
-
-  indexes {
-    (deckId, columnId) [unique]
-  }
 }
 
 Table CachedNote {
@@ -144,9 +130,5 @@ Ref: Column.deckId > Deck.id
 Ref: Column.instanceId > Instance.id
 
 Ref: Deck.userId > User.id
-
-Ref: DeckColumn.deckId > Deck.id [delete: Cascade]
-
-Ref: DeckColumn.columnId > Column.id [delete: Cascade]
 
 Ref: UserSetting.userId > User.id
