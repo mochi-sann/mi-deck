@@ -2,77 +2,101 @@
 //// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 //// ------------------------------------------------------
 
-Table user {
+Table User {
   id String [pk]
-  email String [unique, not null]
-  name String
+  username String [unique, not null]
   password String [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  serverSession server_session [not null]
-  userSettings user_setting [not null]
-  userRole UserRole [not null, default: 'USER']
-  userInfo user_info [not null]
+  accounts Account [not null]
+  decks Deck [not null]
+  columns Column [not null]
 }
 
-Table user_setting {
+Table Account {
   id String [pk]
+  user User [not null]
   userId String [not null]
-  user user [not null]
-  key String [not null]
-  value String [not null]
+  instance Instance [not null]
+  instanceId String [not null]
+  token String [not null]
+  username String [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-}
-
-Table server_session {
-  id String [pk]
-  userId String [not null]
-  user user [not null]
-  origin String [not null]
-  serverToken String [not null]
-  serverType ServerType [not null]
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
-  panels panel [not null]
-  serverInfo server_info
-  serverUserInfo user_info
 
   indexes {
-    (origin, userId) [unique]
+    (userId, instanceId) [unique]
   }
 }
 
-Table server_info {
+Table Instance {
   id String [pk]
-  serverSessionId String [unique, not null]
-  serverSession server_session [not null]
-  name String [not null]
-  iconUrl String [not null]
-  faviconUrl String [not null]
-  themeColor String [not null]
+  host String [unique, not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  accounts Account [not null]
+  columns Column [not null]
 }
 
-Table user_info {
+Table Column {
   id String [pk]
-  name String [not null]
-  username String [not null]
-  avatarUrl String [not null]
+  user User [not null]
+  userId String [not null]
+  deck Deck [not null]
+  deckId String [not null]
+  instance Instance [not null]
+  instanceId String [not null]
+  title String [not null]
+  type ColumnType [not null]
+  params Json
+  order Int [not null]
+  width Int [default: 300]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  serverSession server_session [not null]
-  serverSEssionId String [unique, not null]
-  User user
-  userId String
+  DeckColumn DeckColumn [not null]
 }
 
-Table panel {
+Table Deck {
   id String [pk]
-  serverSessionId String [not null]
-  serverSession server_session [not null]
-  type String [not null]
+  user User [not null]
+  userId String [not null]
+  name String [not null]
+  order Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  columns Column [not null]
+  DeckColumn DeckColumn [not null]
+}
+
+Table DeckColumn {
+  id String [pk]
+  deck Deck [not null]
+  deckId String [not null]
+  column Column [not null]
+  columnId String [not null]
+
+  indexes {
+    (deckId, columnId) [unique]
+  }
+}
+
+Table CachedNote {
+  id String [pk]
+  userId String [not null]
+  text String
+  cw String
+  createdAt DateTime [not null]
+  updatedAt DateTime
+  replyId String
+  renoteId String
+  visibility String
+  emojis Json
+  fileIds Json
+  files Json
+  tags Json
+  poll Json
+  user Json
+  instance String
 }
 
 Enum UserRole {
@@ -80,19 +104,36 @@ Enum UserRole {
   USER
 }
 
-Enum ServerType {
-  Misskey
-  OtherServer
+Enum ColumnType {
+  HOME
+  LOCAL_TIMELINE
+  SOCIAL_TIMELINE
+  GLOBAL_TIMELINE
+  NOTIFICATIONS
+  DIRECT_MESSAGES
+  LIST
+  SEARCH
+  HASHTAG
+  USER
+  ANTENNA
+  CHANNEL
+  CLIP
+  GALLERY
+  PAGE
 }
 
-Ref: user_setting.userId > user.id
+Ref: Account.userId > User.id
 
-Ref: server_session.userId > user.id
+Ref: Account.instanceId > Instance.id
 
-Ref: server_info.serverSessionId - server_session.id
+Ref: Column.userId > User.id
 
-Ref: user_info.serverSEssionId - server_session.id
+Ref: Column.deckId > Deck.id
 
-Ref: user_info.userId > user.id
+Ref: Column.instanceId > Instance.id
 
-Ref: panel.serverSessionId > server_session.id
+Ref: Deck.userId > User.id
+
+Ref: DeckColumn.deckId > Deck.id [delete: Cascade]
+
+Ref: DeckColumn.columnId > Column.id [delete: Cascade]

@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -29,95 +23,122 @@ enum UserRole {
 }
 
 model User {
-  id            String          @id @default(uuid())
-  email         String          @unique
-  name          String?
-  password      String
-  createdAt     DateTime        @default(now()) @map("created_at")
-  updatedAt     DateTime        @updatedAt @map("updated_at")
-  serverSession ServerSession[]
-  userSettings  UserSetting[]
-  userRole      UserRole        @default(USER) @map("user_role")
-  userInfo      UserInfo[]
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@map("user")
+  accounts Account[]
+  decks    Deck[]
+  columns  Column[]
 }
 
-model UserSetting {
-  id        String   @id @default(uuid())
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
-  key       String
-  value     String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+// Misskeyアカウント
+model Account {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  instance   Instance @relation(fields: [instanceId], references: [id])
+  instanceId String
+  token      String
+  username   String // Misskeyでのユーザー名
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  @@index([userId])
-  @@map("user_setting")
+  @@unique([userId, instanceId])
 }
 
-enum ServerType {
-  Misskey
-  OtherServer // 将来のサーバータイプを追加
+// インスタンス (サーバー)
+model Instance {
+  id        String   @id @default(cuid())
+  host      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accounts Account[]
+  columns  Column[]
 }
 
-model ServerSession {
-  id             String      @id @default(uuid())
-  userId         String      @map("user_id")
-  user           User        @relation(fields: [userId], references: [id])
-  origin         String // 修正されたフィールド名
-  serverToken    String      @map("server_token")
-  serverType     ServerType  @map("server_type")
-  createdAt      DateTime    @default(now()) @map("created_at")
-  updatedAt      DateTime    @updatedAt @map("updated_at")
-  panels         Panel[]
-  serverInfo     ServerInfo?
-  serverUserInfo UserInfo?
+// カラム
+model Column {
+  id         String     @id @default(cuid())
+  user       User       @relation(fields: [userId], references: [id])
+  userId     String
+  deck       Deck       @relation(fields: [deckId], references: [id])
+  deckId     String
+  instance   Instance   @relation(fields: [instanceId], references: [id])
+  instanceId String
+  title      String
+  type       ColumnType
+  params     Json?
+  order      Int
+  width      Int?       @default(300)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 
-  @@unique([origin, userId])
-  @@index([userId])
-  @@map("server_session")
+  deckColumn DeckColumn[]
 }
 
-model ServerInfo {
-  id              String        @id @default(uuid())
-  serverSessionId String        @unique @map("server_session_id")
-  serverSession   ServerSession @relation(fields: [serverSessionId], references: [id])
-  name            String
-  // softwareName    String?        @map("software_name")
-  // softwareVersion String?        @map("software_version")
-  iconUrl         String        @map("icon_url")
-  faviconUrl      String        @map("favicon_url")
-  themeColor      String        @map("theme_color")
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
-
-  @@index([serverSessionId])
-  @@map("server_info")
+// カラムの種類
+enum ColumnType {
+  HOME
+  LOCAL_TIMELINE
+  SOCIAL_TIMELINE
+  GLOBAL_TIMELINE
+  NOTIFICATIONS
+  DIRECT_MESSAGES
+  LIST
+  SEARCH
+  HASHTAG
+  USER
+  ANTENNA
+  CHANNEL
+  CLIP
+  GALLERY
+  PAGE
 }
 
-model UserInfo {
-  id              String        @id @default(uuid())
-  name            String
-  username        String
-  avatarUrl       String        @map("avater_url")
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
-  serverSession   ServerSession @relation(fields: [serverSEssionId], references: [id])
-  serverSEssionId String        @unique @map("server_s_ession_id")
-  User            User?         @relation(fields: [userId], references: [id])
-  userId          String?
-
-  @@index([serverSEssionId])
-  @@map("user_info")
+// デッキ
+model Deck {
+  id         String       @id @default(cuid())
+  user       User         @relation(fields: [userId], references: [id])
+  userId     String
+  name       String
+  order      Int
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  columns    Column[]
+  deckColumn DeckColumn[]
 }
 
-model Panel {
-  id              String        @id @default(uuid())
-  serverSessionId String        @map("server_session_id")
-  serverSession   ServerSession @relation(fields: [serverSessionId], references: [id])
-  type            String
+// デッキとカラムを紐付ける中間テーブル
+model DeckColumn {
+  id       String @id @default(cuid())
+  deck     Deck   @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  deckId   String
+  column   Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  columnId String
 
-  @@index([serverSessionId])
-  @@map("panel")
+  @@unique([deckId, columnId])
+}
+
+// 投稿 (Note) - キャッシュ用
+model CachedNote {
+  id         String    @id // Misskeyの投稿ID
+  userId     String // 投稿者のユーザーID
+  text       String? // 投稿のテキスト
+  cw         String? // CWの内容
+  createdAt  DateTime // 投稿日時
+  updatedAt  DateTime?
+  replyId    String?
+  renoteId   String?
+  visibility String?
+  emojis     Json?
+  fileIds    Json?
+  files      Json?
+  tags       Json?
+  poll       Json?
+  user       Json? // 投稿者のユーザー情報(アイコンのURLなど最低限の物)
+  instance   String? // 投稿元インスタンス
 }

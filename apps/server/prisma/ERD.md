@@ -6,124 +6,158 @@
 ## default
 ```mermaid
 erDiagram
-"user" {
+"User" {
   String id PK
-  String email UK
-  String name "nullable"
+  String username UK
   String password
-  DateTime created_at
-  DateTime updated_at
-  UserRole user_role
+  DateTime createdAt
+  DateTime updatedAt
 }
-"user_setting" {
+"Account" {
   String id PK
-  String user_id FK
-  String key
-  String value
-  DateTime created_at
-  DateTime updated_at
-}
-"server_session" {
-  String id PK
-  String user_id FK
-  String origin
-  String server_token
-  ServerType server_type
-  DateTime created_at
-  DateTime updated_at
-}
-"server_info" {
-  String id PK
-  String server_session_id FK
-  String name
-  String icon_url
-  String favicon_url
-  String theme_color
-  DateTime created_at
-  DateTime updated_at
-}
-"user_info" {
-  String id PK
-  String name
+  String userId FK
+  String instanceId FK
+  String token
   String username
-  String avater_url
-  DateTime created_at
-  DateTime updated_at
-  String server_s_ession_id FK
-  String userId FK "nullable"
+  DateTime createdAt
+  DateTime updatedAt
 }
-"panel" {
+"Instance" {
   String id PK
-  String server_session_id FK
-  String type
+  String host UK
+  DateTime createdAt
+  DateTime updatedAt
 }
-"user_setting" }o--|| "user" : user
-"server_session" }o--|| "user" : user
-"server_info" |o--|| "server_session" : serverSession
-"user_info" |o--|| "server_session" : serverSession
-"user_info" }o--o| "user" : User
-"panel" }o--|| "server_session" : serverSession
+"Column" {
+  String id PK
+  String userId FK
+  String deckId FK
+  String instanceId FK
+  String title
+  ColumnType type
+  Json params "nullable"
+  Int order
+  Int width "nullable"
+  DateTime createdAt
+  DateTime updatedAt
+}
+"Deck" {
+  String id PK
+  String userId FK
+  String name
+  Int order
+  DateTime createdAt
+  DateTime updatedAt
+}
+"DeckColumn" {
+  String id PK
+  String deckId FK
+  String columnId FK
+}
+"CachedNote" {
+  String id PK
+  String userId
+  String text "nullable"
+  String cw "nullable"
+  DateTime createdAt
+  DateTime updatedAt "nullable"
+  String replyId "nullable"
+  String renoteId "nullable"
+  String visibility "nullable"
+  Json emojis "nullable"
+  Json fileIds "nullable"
+  Json files "nullable"
+  Json tags "nullable"
+  Json poll "nullable"
+  Json user "nullable"
+  String instance "nullable"
+}
+"Account" }o--|| "User" : user
+"Account" }o--|| "Instance" : instance
+"Column" }o--|| "User" : user
+"Column" }o--|| "Deck" : deck
+"Column" }o--|| "Instance" : instance
+"Deck" }o--|| "User" : user
+"DeckColumn" }o--|| "Deck" : deck
+"DeckColumn" }o--|| "Column" : column
 ```
 
-### `user`
+### `User`
 
 **Properties**
   - `id`: 
-  - `email`: 
-  - `name`: 
-  - `password`: 
-  - `created_at`: 
-  - `updated_at`: 
-  - `user_role`: 
-
-### `user_setting`
-
-**Properties**
-  - `id`: 
-  - `user_id`: 
-  - `key`: 
-  - `value`: 
-  - `created_at`: 
-  - `updated_at`: 
-
-### `server_session`
-
-**Properties**
-  - `id`: 
-  - `user_id`: 
-  - `origin`: 
-  - `server_token`: 
-  - `server_type`: 
-  - `created_at`: 
-  - `updated_at`: 
-
-### `server_info`
-
-**Properties**
-  - `id`: 
-  - `server_session_id`: 
-  - `name`: 
-  - `icon_url`: 
-  - `favicon_url`: 
-  - `theme_color`: 
-  - `created_at`: 
-  - `updated_at`: 
-
-### `user_info`
-
-**Properties**
-  - `id`: 
-  - `name`: 
   - `username`: 
-  - `avater_url`: 
-  - `created_at`: 
-  - `updated_at`: 
-  - `server_s_ession_id`: 
-  - `userId`: 
+  - `password`: 
+  - `createdAt`: 
+  - `updatedAt`: 
 
-### `panel`
+### `Account`
 
 **Properties**
   - `id`: 
-  - `server_session_id`: 
+  - `userId`: 
+  - `instanceId`: 
+  - `token`: 
+  - `username`: 
+  - `createdAt`: 
+  - `updatedAt`: 
+
+### `Instance`
+
+**Properties**
+  - `id`: 
+  - `host`: 
+  - `createdAt`: 
+  - `updatedAt`: 
+
+### `Column`
+
+**Properties**
+  - `id`: 
+  - `userId`: 
+  - `deckId`: 
+  - `instanceId`: 
+  - `title`: 
   - `type`: 
+  - `params`: 
+  - `order`: 
+  - `width`: 
+  - `createdAt`: 
+  - `updatedAt`: 
+
+### `Deck`
+
+**Properties**
+  - `id`: 
+  - `userId`: 
+  - `name`: 
+  - `order`: 
+  - `createdAt`: 
+  - `updatedAt`: 
+
+### `DeckColumn`
+
+**Properties**
+  - `id`: 
+  - `deckId`: 
+  - `columnId`: 
+
+### `CachedNote`
+
+**Properties**
+  - `id`: 
+  - `userId`: 
+  - `text`: 
+  - `cw`: 
+  - `createdAt`: 
+  - `updatedAt`: 
+  - `replyId`: 
+  - `renoteId`: 
+  - `visibility`: 
+  - `emojis`: 
+  - `fileIds`: 
+  - `files`: 
+  - `tags`: 
+  - `poll`: 
+  - `user`: 
+  - `instance`: 
