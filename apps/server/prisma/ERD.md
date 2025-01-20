@@ -72,6 +72,14 @@ erDiagram
   Json User "nullable"
   String Instance "nullable"
 }
+"UserSetting" {
+  String id PK
+  String userId FK
+  String theme "nullable"
+  String locale "nullable"
+  DateTime createdAt
+  DateTime updatedAt
+}
 "Account" }o--|| "User" : user
 "Account" }o--|| "Instance" : instance
 "Column" }o--|| "User" : user
@@ -80,6 +88,7 @@ erDiagram
 "Deck" }o--|| "User" : user
 "DeckColumn" }o--|| "Deck" : deck
 "DeckColumn" }o--|| "Column" : column
+"UserSetting" |o--|| "User" : user
 ```
 
 ### `User`
@@ -161,3 +170,13 @@ erDiagram
   - `Poll`: 
   - `User`: 
   - `Instance`: 
+
+### `UserSetting`
+
+**Properties**
+  - `id`: 
+  - `userId`: 
+  - `theme`: 
+  - `locale`: 
+  - `createdAt`: 
+  - `updatedAt`: 

@@ -29,9 +29,10 @@ model User {
   createdAt DateTime @default(now()) @map("CreatedAt")
   updatedAt DateTime @updatedAt @map("UpdatedAt")
 
-  accounts Account[]
-  decks    Deck[]
-  columns  Column[]
+  accounts    Account[]
+  decks       Deck[]
+  columns     Column[]
+  UserSetting UserSetting[]
 }
 
 // Misskeyアカウント
@@ -141,4 +142,14 @@ model CachedNote {
   poll       Json?     @map("Poll")
   user       Json?     @map("User") // 投稿者のユーザー情報(アイコンのURLなど最低限の物)
   instance   String?   @map("Instance") // 投稿元インスタンス
+}
+
+model UserSetting {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
+  theme     String?  @default("default")
+  locale    String?  @default("jp")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

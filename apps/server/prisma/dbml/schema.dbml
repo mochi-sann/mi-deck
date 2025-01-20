@@ -11,6 +11,7 @@ Table User {
   accounts Account [not null]
   decks Deck [not null]
   columns Column [not null]
+  UserSetting UserSetting [not null]
 }
 
 Table Account {
@@ -99,6 +100,16 @@ Table CachedNote {
   instance String
 }
 
+Table UserSetting {
+  id String [pk]
+  user User [not null]
+  userId String [unique, not null]
+  theme String [default: 'default']
+  locale String [default: 'jp']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
 Enum UserRole {
   ADMIN
   USER
@@ -137,3 +148,5 @@ Ref: Deck.userId > User.id
 Ref: DeckColumn.deckId > Deck.id [delete: Cascade]
 
 Ref: DeckColumn.columnId > Column.id [delete: Cascade]
+
+Ref: UserSetting.userId > User.id
