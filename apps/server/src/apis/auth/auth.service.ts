@@ -29,7 +29,7 @@ export class AuthService {
     }
     // TODO: Generate a JWT and return it here
     // instead of the user object
-    const payload = { id: user.id, name: user.name, email: user.email };
+    const payload = { id: user.id, username: user.username, email: user.email };
     return new LoginEntity({
       accessToken: await this.jwtService.signAsync(payload),
     });
@@ -55,7 +55,7 @@ export class AuthService {
       data: {
         email,
         password: hashedPassword,
-        name: username,
+        username: username,
       },
     });
     const payload = { id: user.id, name: user.name, email: user.email };
@@ -69,7 +69,7 @@ export class AuthService {
         id: userId,
       },
       select: {
-        name: true,
+        username: true,
         email: true,
         id: true,
       },

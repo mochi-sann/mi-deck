@@ -12,6 +12,7 @@ erDiagram
   String Password
   DateTime CreatedAt
   DateTime UpdatedAt
+  String email UK
 }
 "Account" {
   String Id PK
@@ -92,6 +93,7 @@ erDiagram
   - `Password`: 
   - `CreatedAt`: 
   - `UpdatedAt`: 
+  - `email`: 
 
 ### `Account`
 

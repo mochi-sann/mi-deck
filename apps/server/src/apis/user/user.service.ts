@@ -28,9 +28,9 @@ export class UserService {
     });
     return user;
   }
-  async findUserByEmail(email: string) {
+  async findUserByEmail(username: string) {
     return await this.prisma.user.findUnique({
-      where: { email },
+      where: { username },
     });
   }
   async login(email: string, password: string) {
@@ -56,19 +56,23 @@ export class UserService {
 
     return { token };
   }
-  async getUserInfo(userId: string) {
-    const User = await this.prisma.user.findUnique({
+  async getUserInfo(userId: string): Promise<{
+    id: string;
+    username: string;
+    createdAt: Date;
+    updatedAt: Date;
+  } | null> {
+    const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
       },
       select: {
-        email: true,
         id: true,
-        name: true,
+        username: true,
         createdAt: true,
         updatedAt: true,
       },
     });
-    return User;
+    return user;
   }
 }

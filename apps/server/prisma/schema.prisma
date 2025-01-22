@@ -28,6 +28,7 @@ model User {
   password  String   @map("Password")
   createdAt DateTime @default(now()) @map("CreatedAt")
   updatedAt DateTime @updatedAt @map("UpdatedAt")
+  email    String  @unique
 
   accounts    Account[]
   decks       Deck[]
