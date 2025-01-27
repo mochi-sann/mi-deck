@@ -1,7 +1,9 @@
 package auth
 
 import (
-    "golang.org/x/crypto/bcrypt"
+	"mi-deck-api/domain/repository"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginUseCase struct {
