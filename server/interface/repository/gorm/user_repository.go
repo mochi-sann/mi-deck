@@ -1,4 +1,4 @@
-package gorm
+package gorm_repository
 
 import (
 	"mi-deck-api/domain/model"
