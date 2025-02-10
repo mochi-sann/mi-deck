@@ -13,22 +13,22 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
 
-  web:
+  misskey-web:
     # build: .
     image : misskey/misskey:2025.2.0
     restart: always
     links:
-      - db
+      - misskey-db
       - redis
 #     - mcaptcha
 #     - meilisearch
     depends_on:
-      db:
+      misskey-db:
         condition: service_healthy
       redis:
         condition: service_healthy
     ports:
-      - "3001:3000"
+      - "3002:3000"
     networks:
       - internal_network
       - external_network
@@ -50,7 +50,7 @@ services:
       interval: 5s
       retries: 20
 
-  db:
+  misskey-db:
     restart: always
     image: postgres:15-alpine
     networks:
@@ -58,7 +58,7 @@ services:
     env_file:
       - .config/docker.env
     volumes:
-      - ./db:/var/lib/postgresql/data
+      - ./misskey-db:/var/lib/postgresql/data
     healthcheck:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
@@ -80,7 +80,7 @@ services:
 #      PORT: 7493
 #      MCAPTCHA_redis_URL: "redis://mcaptcha_redis/"
 #    depends_on:
-#      db:
+#      misskey-db:
 #        condition: service_healthy
 #      mcaptcha_redis:
 #        condition: service_healthy
