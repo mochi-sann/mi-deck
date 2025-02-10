@@ -18,10 +18,15 @@ services:
     ports:
       - '80:80'
       - '443:443'
+    links:
+      - misskey-web
+
+    # restart: always
     environment:
-      DOMAINS: "misskey.example.com -> http://misskey-web:3000"
+      DOMAINS: "local-misskey.local -> http://misskey-web:3000"
       STAGE: local
       WEBSOCKET: "true"
+      HSTS_MAX_AGE: 6  # in seconds
       # DOMAINS: 'example.com'
       # STAGE: 'production' # Don't use production until staging works
     volumes:
@@ -44,7 +49,7 @@ services:
   misskey-web:
     # build: .
     image : misskey/misskey:2025.2.0
-    restart: always
+    # restart: always
     links:
       - misskey-db
       - redis
@@ -68,7 +73,7 @@ services:
       - ./.config:/misskey/.config:ro
 
   redis:
-    restart: always
+    # restart: always
     image: redis:7-alpine
     networks:
       - internal_network
@@ -80,7 +85,7 @@ services:
       retries: 20
 
   misskey-db:
-    restart: always
+    # restart: always
     image: postgres:15-alpine
     networks:
       - internal_network
