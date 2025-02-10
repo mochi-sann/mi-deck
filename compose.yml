@@ -13,6 +13,34 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
 
+  https-portal:
+    image: steveltn/https-portal:1
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      DOMAINS: "misskey.example.com -> http://misskey-web:3000"
+      STAGE: local
+      WEBSOCKET: "true"
+      # DOMAINS: 'example.com'
+      # STAGE: 'production' # Don't use production until staging works
+    volumes:
+      - https-portal-data:/var/lib/https-portal
+    networks:
+      - app-network
+
+
+  # https-portal:
+  #   image: steveltn/https-portal:1
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   environment:
+  #     DOMAINS: "misskey.local -> http://misskey-web:3000"
+  #     STAGE: "local"
+  #   # restart: always
+  #   networks:
+  #     - app-network
   misskey-web:
     # build: .
     image : misskey/misskey:2025.2.0
@@ -30,6 +58,7 @@ services:
     ports:
       - "3002:3000"
     networks:
+      - app-network
       - internal_network
       - external_network
     # env_file:
@@ -111,4 +140,8 @@ networks:
   internal_network:
     internal: true
   external_network:
+  app-network:
+    driver: bridge
 
+volumes:
+    https-portal-data: # Recommended, to avoid re-signing when upgrading HTTPS-PORTAL
