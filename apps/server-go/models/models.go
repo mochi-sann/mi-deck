@@ -17,7 +17,7 @@ type User struct {
 	ID            uuid.UUID       `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
 	Email         string          `gorm:"unique;not null"`
 	Name          *string         `gorm:"size:255"`
-	Password      string          `gorm:"not null"`
+	Password      string          `gorm:"not null" json:"-"`
 	CreatedAt     time.Time       `gorm:"autoCreateTime"`
 	UpdatedAt     time.Time       `gorm:"autoUpdateTime"`
 	ServerSession []ServerSession `gorm:"foreignKey:UserID"`

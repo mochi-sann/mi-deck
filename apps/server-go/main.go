@@ -94,12 +94,22 @@ func setupRoutes(router *gin.Engine) {
 			"message": "hello world",
 		})
 	})
+
+	// Auth routes
+	authGroup := router.Group("/api/v1/auth")
+	{
+		authGroup.POST("/login", auth.Login)
+		authGroup.POST("/signup", auth.SignUp)
+	}
+
 	// API v1 グループ
 	v1 := router.Group("/api/v1")
+	v1.Use(auth.AuthMiddleware())
 	{
 		v1.GET("/users", routes.GetUsers)
-		v1.GET("/users/:id", routes.GetUser) 
+		v1.GET("/users/:id", routes.GetUser)
 		v1.POST("/users", routes.CreateUser)
+		v1.GET("/auth/me", auth.Me)
 		// 他のAPIルートを追加
 	}
 }
