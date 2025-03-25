@@ -6,6 +6,7 @@ import (
 	"os"
 	"server-go/database"
 	"server-go/routes"
+  "server-go/auth"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"

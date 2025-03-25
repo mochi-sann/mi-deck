@@ -2,22 +2,21 @@ package auth
 
 import (
 	"net/http"
-
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"server-go/database"
 	"server-go/models"
+
+	"github.com/gin-gonic/gin"
 )
 
 type LoginRequest struct {
-	Email    string `json:"email" binding:"required,email"`
+	Email    string `json:"email"    binding:"required,email"`
 	Password string `json:"password" binding:"required,min=8"`
 }
 
 type SignUpRequest struct {
-	Email    string `json:"email" binding:"required,email"`
+	Email    string `json:"email"    binding:"required,email"`
 	Password string `json:"password" binding:"required,min=8"`
-	Name     string `json:"name" binding:"required"`
+	Name     string `json:"name"     binding:"required"`
 }
 
 func Login(c *gin.Context) {
@@ -56,7 +55,7 @@ func SignUp(c *gin.Context) {
 	}
 
 	db := c.MustGet("db").(*database.DB)
-	
+
 	// Check if user exists
 	var existingUser models.User
 	if err := db.Where("email = ?", req.Email).First(&existingUser).Error; err == nil {
