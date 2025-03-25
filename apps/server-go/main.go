@@ -50,13 +50,13 @@ func setupRoutes(router *gin.Engine) {
 	// メインルート
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "こんにちは",
+			"message": "hello world",
 		})
 	})
 
 	// API v1 グループ
-	v1 := router.Group("/api/v1")
-	{
-		// ここにAPIルートを追加
-	}
+	// v1 := router.Group("/api/v1")
+	// {
+	// 	// ここにAPIルートを追加
+	// }
 }
