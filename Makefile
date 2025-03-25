@@ -1,7 +1,7 @@
 .PHONY: run migrate dev build test
 
 run:
-	go run go/cmd/server/main.go
+	go run cmd/server/main.go
 
 migrate:
 	go run cmd/migrate/main.go
