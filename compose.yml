@@ -92,7 +92,7 @@ services:
     env_file:
       - .config/docker.env
     volumes:
-      - ./misskey-db:/var/lib/postgresql/data
+      - misskey-db:/var/lib/postgresql/data
     healthcheck:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
@@ -150,3 +150,4 @@ networks:
 
 volumes:
     https-portal-data: # Recommended, to avoid re-signing when upgrading HTTPS-PORTAL
+    misskey-db:
