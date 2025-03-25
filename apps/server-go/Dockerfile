@@ -3,7 +3,7 @@ FROM golang:1.24-alpine
 WORKDIR /app
 
 # Airをインストール
-RUN go install github.com/cosmtrek/air@latest
+RUN go install github.com/air-verse/air@latest
 
 # 依存関係をコピーしてインストール
 COPY go.mod go.sum ./

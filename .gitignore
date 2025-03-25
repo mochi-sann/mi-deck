@@ -132,3 +132,4 @@ apps/front/src/routeTree.gen.ts
 redis/dump.rdb
 server/test.db
 .aider*
+apps/server-go/tmp
