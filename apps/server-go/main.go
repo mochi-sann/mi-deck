@@ -6,6 +6,7 @@ import (
 	"os"
 	"server-go/database"
 	"server-go/models"
+	"server-go/routes"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -80,66 +81,6 @@ func DatabaseMiddleware() gin.HandlerFunc {
 	}
 }
 
-// getUsers godoc
-// @Summary Get all users
-// @Description Get a list of all users
-// @Tags users
-// @Accept json
-// @Produce json
-// @Success 200 {array} models.User
-// @Failure 500 {object} map[string]string
-// @Router /api/v1/users [get]
-func getUsers(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
-
-	var users []models.User
-	if err := db.Preload("ServerSession").Find(&users).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, users)
-}
-
-// getUser godoc
-// @Summary Get a user by ID
-// @Description Get user details by ID
-// @Tags users
-// @Accept json
-// @Produce json
-// @Param id path string true "User ID"
-// @Success 200 {object} models.User
-// @Failure 404 {object} map[string]string
-// @Router /api/v1/users/{id} [get]
-func getUser(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
-	id := c.Param("id")
-
-	var user models.User
-	if err := db.Preload("ServerSession").First(&user, "id = ?", id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
-		return
-	}
-
-	c.JSON(http.StatusOK, user)
-}
-
-func createUser(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
-
-	var user models.User
-	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err := db.Create(&user).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusCreated, user)
-}
 
 func setupRoutes(router *gin.Engine) {
 	// ヘルスチェック
@@ -158,9 +99,9 @@ func setupRoutes(router *gin.Engine) {
 	// API v1 グループ
 	v1 := router.Group("/api/v1")
 	{
-		v1.GET("/users", getUsers)
-		v1.GET("/users/:id", getUser)
-		v1.POST("/users", createUser)
+		v1.GET("/users", routes.GetUsers)
+		v1.GET("/users/:id", routes.GetUser) 
+		v1.POST("/users", routes.CreateUser)
 		// 他のAPIルートを追加
 	}
 }
