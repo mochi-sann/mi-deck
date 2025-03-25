@@ -144,6 +144,20 @@ definitions:
       value:
         type: string
     type: object
+  routes.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -183,14 +197,14 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a new user with the input payload
+      description: Create a new user with name, email and password
       parameters:
       - description: User data
         in: body
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/routes.CreateUserRequest'
       produces:
       - application/json
       responses:

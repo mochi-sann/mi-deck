@@ -5,13 +5,11 @@ import (
 	"net/http"
 	"os"
 	"server-go/database"
-	"server-go/models"
 	"server-go/routes"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"gorm.io/gorm"
 )
 
 // @title Server API

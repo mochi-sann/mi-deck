@@ -5,8 +5,8 @@ tmp_dir = "tmp"
   cmd = "go build -o ./tmp/main ."
   bin = "tmp/main"
   full_bin = "APP_ENV=dev GIN_MODE=debug ./tmp/main"
-  pre_cmd = "swag init -g main.go"
-  exclude_dir = ["tmp", "vendor"]
+  pre_cmd = [ "swag init -g main.go" ]
+  exclude_dir = ["tmp", "vendor", "docs"]
   include_ext = ["go"]
   kill_delay = "1s"
   delay = 1000
