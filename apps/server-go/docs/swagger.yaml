@@ -1,0 +1,212 @@
+basePath: /
+definitions:
+  models.Panel:
+    properties:
+      id:
+        type: string
+      serverSession:
+        $ref: '#/definitions/models.ServerSession'
+      serverSessionID:
+        type: string
+      type:
+        type: string
+    type: object
+  models.ServerInfo:
+    properties:
+      createdAt:
+        type: string
+      faviconUrl:
+        type: string
+      iconUrl:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      serverSession:
+        $ref: '#/definitions/models.ServerSession'
+      serverSessionID:
+        type: string
+      themeColor:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.ServerSession:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      origin:
+        type: string
+      panels:
+        items:
+          $ref: '#/definitions/models.Panel'
+        type: array
+      serverInfo:
+        $ref: '#/definitions/models.ServerInfo'
+      serverToken:
+        type: string
+      serverType:
+        $ref: '#/definitions/models.ServerType'
+      serverUserInfo:
+        $ref: '#/definitions/models.UserInfo'
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: string
+    type: object
+  models.ServerType:
+    enum:
+    - Misskey
+    - OtherServer
+    type: string
+    x-enum-varnames:
+    - ServerTypeMisskey
+    - ServerTypeOtherServer
+  models.User:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      serverSession:
+        items:
+          $ref: '#/definitions/models.ServerSession'
+        type: array
+      updatedAt:
+        type: string
+      userInfo:
+        items:
+          $ref: '#/definitions/models.UserInfo'
+        type: array
+      userRole:
+        $ref: '#/definitions/models.UserRole'
+      userSettings:
+        items:
+          $ref: '#/definitions/models.UserSetting'
+        type: array
+    type: object
+  models.UserInfo:
+    properties:
+      avatarUrl:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      serverSession:
+        $ref: '#/definitions/models.ServerSession'
+      serverSessionID:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: string
+      username:
+        type: string
+    type: object
+  models.UserRole:
+    enum:
+    - ADMIN
+    - USER
+    type: string
+    x-enum-varnames:
+    - UserRoleAdmin
+    - UserRoleUser
+  models.UserSetting:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      key:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: string
+      value:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+  description: This is a sample server for the application.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Server API
+  version: "1.0"
+paths:
+  /api/v1/users:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all users
+      tags:
+      - users
+  /api/v1/users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get user details by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a user by ID
+      tags:
+      - users
+schemes:
+- http
+swagger: "2.0"
