@@ -7,10 +7,37 @@ migrate:
 	go run cmd/migrate/main.go
 
 dev:
-	gin --appPort 8080 --port 3000 --bin ./bin/server --path ./cmd/server run
+	go build -o bin/server cmd/server/main.go
+	gin --appPort 8080 --port 3000 --bin ./bin/server --path . run
 
 build:
 	go build -o bin/server cmd/server/main.go
 
 test:
 	go test ./...
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  cmd = "go build -o ./bin/server ./cmd/server/main.go"
+  bin = "./bin/server"
+  full_bin = "./bin/server"
+  exclude_dir = ["bin", "tmp", "vendor"]
+  exclude_file = []
+  include_ext = ["go", "tpl", "tmpl", "html"]
+  kill_delay = "1s"
+  delay = 1000
+  stop_on_error = true
+  send_interrupt = false
+
+[log]
+  time = false
+
+[color]
+  main = "magenta"
+  watcher = "cyan"
+  build = "yellow"
+  runner = "green"
+
+[misc]
+  clean_on_exit = true
