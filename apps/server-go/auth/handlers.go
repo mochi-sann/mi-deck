@@ -2,8 +2,8 @@ package auth
 
 import (
 	"net/http"
-	"server-go/database"
 	"server-go/models"
+	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,7 +26,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	db := c.MustGet("db").(*database.DB)
+	db := c.MustGet("db").(*gorm.DB)
 	var user models.User
 	if err := db.Where("email = ?", req.Email).First(&user).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
@@ -97,7 +97,7 @@ func Me(c *gin.Context) {
 		return
 	}
 
-	userClaims := claims.(*auth.Claims)
+	userClaims := claims.(*Claims)
 	c.JSON(http.StatusOK, gin.H{
 		"id":    userClaims.UserID,
 		"email": userClaims.Email,

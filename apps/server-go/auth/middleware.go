@@ -1,5 +1,13 @@
 package auth
 
+// Claims is exported so it can be used in handlers.go
+type Claims struct {
+	UserID string `json:"sub"`
+	Email  string `json:"email"`
+	Name   string `json:"name"`
+	RegisteredClaims
+}
+
 import (
 	"net/http"
 	"strings"
