@@ -53,7 +53,7 @@ func main() {
 	// ミドルウェア設定
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
-	router.Use(DatabaseMiddleware())
+	router.Use(DatabaseMiddleware(database.DB))
 
 	// ルート設定
 	setupRoutes(router)
@@ -73,9 +73,9 @@ func main() {
 	}
 }
 
-func DatabaseMiddleware() gin.HandlerFunc {
+func DatabaseMiddleware(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Set("db", database.DB)
+		c.Set("db", db)
 		c.Next()
 	}
 }

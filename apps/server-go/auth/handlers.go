@@ -2,7 +2,7 @@ package auth
 
 import (
 	"net/http"
-	"server-go/database"
+	"gorm.io/gorm"
 	"server-go/models"
 
 	"github.com/gin-gonic/gin"
