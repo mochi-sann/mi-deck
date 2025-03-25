@@ -14,22 +14,43 @@ import (
 var DB *gorm.DB
 
 func InitDB() {
-	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+	// First connect to default postgres database to check/create our db
+	adminDsn := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=postgres port=%s sslmode=disable",
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
-		"newdb",
 		os.Getenv("DB_PORT"),
 	)
-  log.Println(dsn)
+	
+	adminDB, err := gorm.Open(postgres.Open(adminDsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
+	if err != nil {
+		log.Fatalf("Failed to connect to admin database: %v", err)
+	}
 
-	var err error
+	// Create database if it doesn't exist
+	err = adminDB.Exec("CREATE DATABASE newdb").Error
+	if err != nil {
+		log.Printf("Note: database may already exist: %v", err)
+	}
+
+	// Now connect to our application database
+	dsn := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=newdb port=%s sslmode=disable",
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_PORT"),
+	)
+	log.Println(dsn)
+
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
+		log.Fatalf("Failed to connect to application database: %v", err)
 	}
 
 	log.Println("Database connection established")
