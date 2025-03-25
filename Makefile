@@ -7,8 +7,7 @@ migrate:
 	go run cmd/migrate/main.go
 
 dev:
-	go build -o bin/server cmd/server/main.go
-	gin --appPort 8080 --port 3000 --bin ./bin/server --path . run
+	air
 
 build:
 	go build -o bin/server cmd/server/main.go
