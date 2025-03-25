@@ -50,7 +50,7 @@ type ServerSession struct {
 	ID           string       `gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
 	UserID       string       `gorm:"type:uuid;index"`
 	User         User         `gorm:"foreignKey:UserID"`
-	Origin       string       `gorm:"not null"`
+	Origin       string       `gorm:"not null;uniqueIndex:idx_origin_user_id"`
 	ServerToken  string       `gorm:"not null"`
 	ServerType   ServerType   `gorm:"type:server_type;not null"`
 	CreatedAt    time.Time    `gorm:"autoCreateTime"`
@@ -58,8 +58,6 @@ type ServerSession struct {
 	Panels       []Panel      `gorm:"foreignKey:ServerSessionID"`
 	ServerInfo   *ServerInfo  `gorm:"foreignKey:ServerSessionID"`
 	ServerUserInfo *UserInfo  `gorm:"foreignKey:ServerSessionID"`
-	
-	gorm.UniqueConstraint{Field: "origin", Name: "idx_origin_user_id"}
 }
 
 type ServerInfo struct {
