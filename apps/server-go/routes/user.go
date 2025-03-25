@@ -52,13 +52,20 @@ func GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// CreateUserRequest represents the request body for creating a user
+type CreateUserRequest struct {
+	Name     string `json:"name" binding:"required"`
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=8"`
+}
+
 // CreateUser godoc
 // @Summary Create a new user
-// @Description Create a new user with the input payload
+// @Description Create a new user with name, email and password
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param user body models.User true "User data"
+// @Param user body CreateUserRequest true "User data"
 // @Success 201 {object} models.User
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
@@ -66,10 +73,17 @@ func GetUser(c *gin.Context) {
 func CreateUser(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 
-	var user models.User
-	if err := c.ShouldBindJSON(&user); err != nil {
+	var req CreateUserRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	// Create new user from request
+	user := models.User{
+		Name:     &req.Name,
+		Email:    req.Email,
+		Password: req.Password, // Note: In production, you should hash the password
 	}
 
 	if err := db.Create(&user).Error; err != nil {
