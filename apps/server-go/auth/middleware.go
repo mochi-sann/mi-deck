@@ -1,19 +1,19 @@
 package auth
 
-// Claims is exported so it can be used in handlers.go
-type Claims struct {
-	UserID string `json:"sub"`
-	Email  string `json:"email"`
-	Name   string `json:"name"`
-	RegisteredClaims
-}
-
 import (
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 )
+
+// Claims is exported so it can be used in handlers.go
+// type Claims struct {
+// 	UserID string `json:"sub"`
+// 	Email  string `json:"email"`
+// 	Name   string `json:"name"`
+// 	RegisteredClaims
+// }
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {

@@ -4,13 +4,14 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"server-go/auth"
 	"server-go/database"
 	"server-go/routes"
-  "server-go/auth"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"gorm.io/gorm"
 )
 
 // @title Server API

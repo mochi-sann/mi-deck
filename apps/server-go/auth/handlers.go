@@ -54,7 +54,7 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
-	db := c.MustGet("db").(*database.DB)
+	db := c.MustGet("db").(*gorm.DB)
 
 	// Check if user exists
 	var existingUser models.User

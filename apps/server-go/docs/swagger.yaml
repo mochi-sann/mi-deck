@@ -77,8 +77,6 @@ definitions:
         type: string
       name:
         type: string
-      password:
-        type: string
       serverSession:
         items:
           $ref: '#/definitions/models.ServerSession'

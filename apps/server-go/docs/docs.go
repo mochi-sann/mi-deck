@@ -267,9 +267,6 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "password": {
-                    "type": "string"
-                },
                 "serverSession": {
                     "type": "array",
                     "items": {
