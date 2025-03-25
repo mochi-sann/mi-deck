@@ -33,6 +33,12 @@ func InitDB() {
 
 	log.Println("Database connection established")
 
+	// Enable required extensions
+	err = DB.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`).Error
+	if err != nil {
+		log.Fatalf("Failed to create uuid-ossp extension: %v", err)
+	}
+
 	// Create custom enum types first
 	err = DB.Exec(`CREATE TYPE user_role AS ENUM ('ADMIN', 'USER')`).Error
 	if err != nil {
