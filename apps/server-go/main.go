@@ -8,8 +8,25 @@ import (
 	"server-go/models"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
 )
+
+// @title Server API
+// @version 1.0
+// @description This is a sample server for the application.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.email support@example.com
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:8080
+// @BasePath /
+// @schemes http
 
 func init() {
 	// Load environment variables
@@ -40,6 +57,9 @@ func main() {
 
 	// ルート設定
 	setupRoutes(router)
+	
+	// Swaggerドキュメント
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// サーバー起動
 	srv := &http.Server{
@@ -60,6 +80,15 @@ func DatabaseMiddleware() gin.HandlerFunc {
 	}
 }
 
+// getUsers godoc
+// @Summary Get all users
+// @Description Get a list of all users
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.User
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/users [get]
 func getUsers(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 
@@ -72,6 +101,16 @@ func getUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+// getUser godoc
+// @Summary Get a user by ID
+// @Description Get user details by ID
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {object} models.User
+// @Failure 404 {object} map[string]string
+// @Router /api/v1/users/{id} [get]
 func getUser(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	id := c.Param("id")
