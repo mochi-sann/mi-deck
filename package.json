@@ -24,10 +24,10 @@
   "license": "",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@dotenvx/dotenvx": "^1.31.3",
-    "@types/node": "^20",
-    "lefthook": "^1.9.0",
-    "typescript": "^5.7.2"
+    "@dotenvx/dotenvx": "^1.35.0",
+    "@types/node": "^20.17.17",
+    "lefthook": "^1.10.10",
+    "typescript": "^5.7.3"
   },
   "volta": {
     "node": "22.12.0"
