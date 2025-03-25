@@ -1,5 +1,17 @@
 
 services:
+  server-go:
+    build: ./apps/server-go
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./apps/server-go:/app
+    environment:
+      AIR_WORKDIR: /app
+    command: air -c .air.toml
+    depends_on:
+      - postgres
+
   postgres:
     container_name: new-db 
     image: postgres:latest
