@@ -131,3 +131,4 @@ dist
 apps/front/src/routeTree.gen.ts
 redis/dump.rdb
 server/test.db
+.aider*
