@@ -11,7 +11,7 @@ func main() {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			return
 		}
-		fmt.Fprint(w, "hello world")
+		fmt.Fprint(w, "こんにちは")
 	})
 
 	fmt.Println("Server starting on :8080...")
