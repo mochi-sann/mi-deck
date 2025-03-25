@@ -1,13 +1,13 @@
 .PHONY: run migrate dev build test
 
 run:
-	go run cmd/server/main.go
+	go run go/cmd/server/main.go
 
 migrate:
 	go run cmd/migrate/main.go
 
 dev:
-	air
+	$(go env GOPATH)/bin/air
 
 build:
 	go build -o bin/server cmd/server/main.go
