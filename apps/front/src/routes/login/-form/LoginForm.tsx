@@ -22,16 +22,16 @@ export const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const search = Route.useSearch();
   const onSubmit = async (data: LoginFormType) => {
-    const SignUpResponse = await mutateAsync({
-      email: data.email,
-      password: data.password,
-    });
-    console.log(SignUpResponse);
-    console.log(
-      ...[search.redirect, "👀 [LoginForm.tsx:41]: search.redirect"].reverse(),
-    );
-    navigate({ to: search.redirect });
-    console.log(data, SignUpResponse);
+    try {
+      await mutateAsync({
+        email: data.email,
+        password: data.password,
+      });
+      navigate({ to: search.redirect || '/' });
+    } catch (error) {
+      // Error is already handled by react-query-auth
+      console.error('Login failed:', error);
+    }
   };
 
   return (

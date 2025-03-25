@@ -22,19 +22,28 @@ export type UserType = {
 };
 
 const getuserInfo = async (jwt: string): Promise<UserType | null> => {
-  const userResponse = await fetchClient.GET("/v1/auth/me", {
-    headers: {
-      authorization: `Bearer ${jwt}`,
-    },
-  });
-  if (userResponse.response.status >= 400 || !userResponse.data?.id) {
-    console.log(userResponse.response.status);
-    // throw new Error("Login failed");
+  try {
+    const userResponse = await fetchClient.GET("/v1/auth/me", {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    if (userResponse.error || !userResponse.data) {
+      AuthTokenStorage.clearToken();
+      return null;
+    }
+
+    return {
+      id: userResponse.data.id,
+      email: userResponse.data.email,
+      name: userResponse.data.name,
+      isAuth: true
+    };
+  } catch (error) {
+    AuthTokenStorage.clearToken();
     return null;
   }
-  return userResponse.data
-    ? { isAuth: !!userResponse.data.id, ...userResponse.data }
-    : null;
 };
 async function userFn() {
   console.log("userFn");

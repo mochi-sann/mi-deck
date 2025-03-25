@@ -20,18 +20,24 @@ export class AuthService {
   async login(email: string, pass: string): Promise<LoginEntity> {
     const user = await this.userService.findUserByEmail(email);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid credentials');
     }
+    
     const isPasswordValid = await bcrypt.compare(pass, user.password);
-    const { password, ...result } = user;
     if (!isPasswordValid) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid credentials');
     }
-    // TODO: Generate a JWT and return it here
-    // instead of the user object
-    const payload = { id: user.id, name: user.name, email: user.email };
+
+    const payload = { 
+      sub: user.id,
+      email: user.email,
+      name: user.name 
+    };
+    
     return new LoginEntity({
-      accessToken: await this.jwtService.signAsync(payload),
+      accessToken: await this.jwtService.signAsync(payload, {
+        expiresIn: '1d',
+      }),
     });
   }
 
