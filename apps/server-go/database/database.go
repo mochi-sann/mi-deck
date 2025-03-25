@@ -33,6 +33,17 @@ func InitDB() {
 
 	log.Println("Database connection established")
 
+	// Create custom enum types first
+	err = DB.Exec(`CREATE TYPE user_role AS ENUM ('ADMIN', 'USER')`).Error
+	if err != nil {
+		log.Printf("Note: user_role enum may already exist: %v", err)
+	}
+
+	err = DB.Exec(`CREATE TYPE server_type AS ENUM ('Misskey', 'OtherServer')`).Error
+	if err != nil {
+		log.Printf("Note: server_type enum may already exist: %v", err)
+	}
+
 	// Auto migrate all models
 	err = DB.AutoMigrate(
 		&models.User{},
