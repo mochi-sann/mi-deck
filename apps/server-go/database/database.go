@@ -19,9 +19,10 @@ func InitDB() {
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME"),
+		"newdb",
 		os.Getenv("DB_PORT"),
 	)
+  log.Println(dsn)
 
 	var err error
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
