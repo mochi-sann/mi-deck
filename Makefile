@@ -7,7 +7,7 @@ migrate:
 	go run cmd/migrate/main.go
 
 dev:
-	$(go env GOPATH)/bin/air
+	./bin/air
 
 build:
 	go build -o bin/server cmd/server/main.go
