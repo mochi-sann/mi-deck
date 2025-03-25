@@ -2,6 +2,7 @@ FROM golang:1.24
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y postgresql-client
 # Airをインストール
 RUN go install github.com/air-verse/air@latest
 

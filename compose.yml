@@ -8,6 +8,8 @@ services:
       - ./apps/server-go:/app
     environment:
       AIR_WORKDIR: /app
+    env_file:
+      - .env
     command: air -c .air.toml
     depends_on:
       - postgres
