@@ -57,7 +57,7 @@ func main() {
 
 	// ルート設定
 	setupRoutes(router)
-	
+
 	// Swaggerドキュメント
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -79,7 +79,6 @@ func DatabaseMiddleware(db *gorm.DB) gin.HandlerFunc {
 		c.Next()
 	}
 }
-
 
 func setupRoutes(router *gin.Engine) {
 	// ヘルスチェック
