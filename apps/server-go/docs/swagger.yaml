@@ -1,5 +1,17 @@
 basePath: /
 definitions:
+  auth.ErrorResponse:
+    properties:
+      error:
+        example: error message
+        type: string
+    type: object
+  auth.LoginEntity:
+    properties:
+      accessToken:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+    type: object
   auth.LoginRequest:
     properties:
       email:
@@ -10,6 +22,18 @@ definitions:
     required:
     - email
     - password
+    type: object
+  auth.MeEntity:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      name:
+        example: John Doe
+        type: string
     type: object
   auth.SignUpRequest:
     properties:
@@ -295,27 +319,19 @@ paths:
         "200":
           description: Returns access token
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/auth.LoginEntity'
         "400":
           description: Invalid request format
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/auth.ErrorResponse'
         "401":
           description: Invalid credentials
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/auth.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/auth.ErrorResponse'
       summary: User login
       tags:
       - auth
@@ -345,15 +361,11 @@ paths:
         "200":
           description: Returns user details
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/auth.MeEntity'
         "401":
           description: Unauthorized
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/auth.ErrorResponse'
       security:
       - Bearer: []
       summary: Get current user profile
@@ -377,27 +389,19 @@ paths:
         "201":
           description: Returns access token
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/auth.LoginEntity'
         "400":
           description: Invalid request format
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/auth.ErrorResponse'
         "409":
           description: Email already exists
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/auth.ErrorResponse'
         "500":
           description: Internal server error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/auth.ErrorResponse'
       summary: Register new user
       tags:
       - auth

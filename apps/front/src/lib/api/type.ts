@@ -190,9 +190,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            [key: string]: string;
-                        };
+                        "application/json": components["schemas"]["auth.LoginEntity"];
                     };
                 };
                 /** @description Invalid request format */
@@ -201,9 +199,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            [key: string]: string;
-                        };
+                        "application/json": components["schemas"]["auth.ErrorResponse"];
                     };
                 };
                 /** @description Invalid credentials */
@@ -212,9 +208,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            [key: string]: string;
-                        };
+                        "application/json": components["schemas"]["auth.ErrorResponse"];
                     };
                 };
                 /** @description Internal server error */
@@ -223,9 +217,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            [key: string]: string;
-                        };
+                        "application/json": components["schemas"]["auth.ErrorResponse"];
                     };
                 };
             };
@@ -299,9 +291,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            [key: string]: string;
-                        };
+                        "application/json": components["schemas"]["auth.MeEntity"];
                     };
                 };
                 /** @description Unauthorized */
@@ -310,9 +300,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            [key: string]: string;
-                        };
+                        "application/json": components["schemas"]["auth.ErrorResponse"];
                     };
                 };
             };
@@ -358,9 +346,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            [key: string]: string;
-                        };
+                        "application/json": components["schemas"]["auth.LoginEntity"];
                     };
                 };
                 /** @description Invalid request format */
@@ -369,9 +355,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            [key: string]: string;
-                        };
+                        "application/json": components["schemas"]["auth.ErrorResponse"];
                     };
                 };
                 /** @description Email already exists */
@@ -380,9 +364,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            [key: string]: string;
-                        };
+                        "application/json": components["schemas"]["auth.ErrorResponse"];
                     };
                 };
                 /** @description Internal server error */
@@ -391,9 +373,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            [key: string]: string;
-                        };
+                        "application/json": components["schemas"]["auth.ErrorResponse"];
                     };
                 };
             };
@@ -408,9 +388,25 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        "auth.ErrorResponse": {
+            /** @example error message */
+            error?: string;
+        };
+        "auth.LoginEntity": {
+            /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
+            accessToken?: string;
+        };
         "auth.LoginRequest": {
             email: string;
             password: string;
+        };
+        "auth.MeEntity": {
+            /** @example user@example.com */
+            email?: string;
+            /** @example 550e8400-e29b-41d4-a716-446655440000 */
+            id?: string;
+            /** @example John Doe */
+            name?: string;
         };
         "auth.SignUpRequest": {
             email: string;

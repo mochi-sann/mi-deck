@@ -116,33 +116,25 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: string
+                $ref: "#/components/schemas/auth.LoginEntity"
         "400":
           description: Invalid request format
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: string
+                $ref: "#/components/schemas/auth.ErrorResponse"
         "401":
           description: Invalid credentials
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: string
+                $ref: "#/components/schemas/auth.ErrorResponse"
         "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: string
+                $ref: "#/components/schemas/auth.ErrorResponse"
   /v1/auth/logout:
     post:
       security:
@@ -168,17 +160,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: string
+                $ref: "#/components/schemas/auth.MeEntity"
         "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: string
+                $ref: "#/components/schemas/auth.ErrorResponse"
   /v1/auth/signup:
     post:
       description: Create new user account and get access token
@@ -198,37 +186,41 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: string
+                $ref: "#/components/schemas/auth.LoginEntity"
         "400":
           description: Invalid request format
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: string
+                $ref: "#/components/schemas/auth.ErrorResponse"
         "409":
           description: Email already exists
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: string
+                $ref: "#/components/schemas/auth.ErrorResponse"
         "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: string
+                $ref: "#/components/schemas/auth.ErrorResponse"
 servers:
   - url: http://localhost:8080
 components:
   schemas:
+    auth.ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: error message
+    auth.LoginEntity:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     auth.LoginRequest:
       type: object
       required:
@@ -240,6 +232,18 @@ components:
         password:
           type: string
           minLength: 8
+    auth.MeEntity:
+      type: object
+      properties:
+        email:
+          type: string
+          example: user@example.com
+        id:
+          type: string
+          example: 550e8400-e29b-41d4-a716-446655440000
+        name:
+          type: string
+          example: John Doe
     auth.SignUpRequest:
       type: object
       required:

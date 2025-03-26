@@ -7,6 +7,8 @@ import (
 	"server-go/auth"
 	"server-go/database"
 
+	_ "server-go/docs"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -59,10 +61,11 @@ func main() {
 	setupRoutes(router)
 
 	// Swaggerドキュメント設定
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, 
-		ginSwagger.URL("http://localhost:8080/swagger/doc.json"),
-		ginSwagger.DefaultModelsExpandDepth(-1),
-	))
+	router.GET(
+		"/swagger/*any",
+		ginSwagger.WrapHandler(swaggerFiles.Handler),
+	) // ginSwagger.URL("http://localhost:8080/swagger/doc.json"),
+	// ginSwagger.DefaultModelsExpandDepth(-1),
 
 	// サーバー起動
 	srv := &http.Server{

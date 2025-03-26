@@ -11,9 +11,9 @@ export const AuthTokenStorage = {
   clearToken: () => window.localStorage.removeItem(AuthTokenStorageKey),
 };
 
-export type LoginCredentials = components["schemas"]["LoginDto"];
+export type LoginCredentials = components["schemas"]["auth.LoginRequest"];
 
-export type SignUpCredentials = components["schemas"]["SignUpDto"];
+export type SignUpCredentials = components["schemas"]["auth.SignUpRequest"];
 export type UserType = {
   id: string;
   email: string;
@@ -25,7 +25,7 @@ const getuserInfo = async (jwt: string): Promise<UserType | null> => {
   try {
     const userResponse = await fetchClient.GET("/v1/auth/me", {
       headers: {
-        Authorization: `Bearer ${jwt}`,
+        authorization: `Bearer ${jwt}`,
       },
     });
 
@@ -35,10 +35,10 @@ const getuserInfo = async (jwt: string): Promise<UserType | null> => {
     }
 
     return {
-      id: userResponse.data.id,
-      email: userResponse.data.email,
-      name: userResponse.data.name,
-      isAuth: true
+      id: userResponse.data?.id || "",
+      email: userResponse.data?.email || "",
+      name: userResponse.data?.name || "",
+      isAuth: true,
     };
   } catch (error) {
     AuthTokenStorage.clearToken();
@@ -63,7 +63,10 @@ async function handleUserResponse(jwt: string) {
 
 async function loginFn(data: LoginCredentials) {
   const response = await fetchClient.POST("/v1/auth/login", {
-    body: data,
+    body: {
+      email: data.email,
+      password: data.password,
+    },
   });
   if (response.response.status >= 400 || !response.data?.accessToken) {
     throw new Error("Login failed");
@@ -73,7 +76,7 @@ async function loginFn(data: LoginCredentials) {
 }
 
 async function registerFn(data: SignUpCredentials) {
-  const response = await fetchClient.POST("/v1/auth/signUp", {
+  const response = await fetchClient.POST("/v1/auth/signup", {
     body: data,
   });
   if (response.response.status >= 400 || !response.data?.accessToken) {
