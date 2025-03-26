@@ -98,20 +98,20 @@ func setupRoutes(router *gin.Engine) {
 	})
 
 	// Auth routes
-	authGroup := router.Group("/api/v1/auth")
+	authGroup := router.Group("/v1/auth")
 	{
 		authGroup.POST("/login", auth.Login)
 		authGroup.POST("/signup", auth.SignUp)
+		authGroup.GET("/me", auth.AuthMiddleware(), auth.Me)
+		authGroup.POST("/logout", auth.AuthMiddleware(), auth.Logout)
 	}
 
-	// API v1 グループ
-	v1 := router.Group("/api/v1")
-	v1.Use(auth.AuthMiddleware())
+	// Protected API routes
+	apiGroup := router.Group("/v1")
+	apiGroup.Use(auth.AuthMiddleware())
 	{
-		v1.GET("/users", routes.GetUsers)
-		v1.GET("/users/:id", routes.GetUser)
-		v1.POST("/users", routes.CreateUser)
-		v1.GET("/auth/me", auth.Me)
-		// 他のAPIルートを追加
+		// Server sessions routes would go here
+		// apiGroup.POST("/server-sessions", serverSessions.Create)
+		// etc...
 	}
 }
