@@ -58,8 +58,11 @@ func main() {
 	// ルート設定
 	setupRoutes(router)
 
-	// Swaggerドキュメント
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// Swaggerドキュメント設定
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, 
+		ginSwagger.URL("http://localhost:8080/swagger/doc.json"),
+		ginSwagger.DefaultModelsExpandDepth(-1),
+	))
 
 	// サーバー起動
 	srv := &http.Server{
