@@ -26,10 +26,10 @@ type SignUpRequest struct {
 // @Accept json
 // @Produce json
 // @Param request body LoginRequest true "Login credentials"
-// @Success 200 {object} map[string]string "Returns access token"
-// @Failure 400 {object} map[string]string "Invalid request format"
-// @Failure 401 {object} map[string]string "Invalid credentials"
-// @Failure 500 {object} map[string]string "Internal server error"
+// @Success 200 {object} LoginEntity "Returns access token"
+// @Failure 400 {object} ErrorResponse "Invalid request format"
+// @Failure 401 {object} ErrorResponse "Invalid credentials"
+// @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /v1/auth/login [post]
 func Login(c *gin.Context) {
 	var req LoginRequest
@@ -66,10 +66,10 @@ func Login(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param request body SignUpRequest true "Sign up details"
-// @Success 201 {object} map[string]string "Returns access token"
-// @Failure 400 {object} map[string]string "Invalid request format"
-// @Failure 409 {object} map[string]string "Email already exists"
-// @Failure 500 {object} map[string]string "Internal server error"
+// @Success 201 {object} LoginEntity "Returns access token"
+// @Failure 400 {object} ErrorResponse "Invalid request format"
+// @Failure 409 {object} ErrorResponse "Email already exists"
+// @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /v1/auth/signup [post]
 func SignUp(c *gin.Context) {
 	var req SignUpRequest
@@ -122,8 +122,8 @@ func SignUp(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security Bearer
-// @Success 200 {object} map[string]string "Returns user details"
-// @Failure 401 {object} map[string]string "Unauthorized"
+// @Success 200 {object} MeEntity "Returns user details"
+// @Failure 401 {object} ErrorResponse "Unauthorized"
 // @Router /v1/auth/me [get]
 func Me(c *gin.Context) {
 	claims, exists := c.Get("user")
