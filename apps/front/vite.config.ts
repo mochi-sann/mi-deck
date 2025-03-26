@@ -22,7 +22,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       "/api": {
-        target: process.env.SERVER_ENDPOINT || "http://localhost:3001",
+        target: process.env.SERVER_ENDPOINT || "http://localhost:8080",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
