@@ -1,0 +1,413 @@
+openapi: 3.0.0
+info:
+  description: This is a sample server for the application.
+  title: Server API
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: API Support
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: "1.0"
+paths:
+  /api/v1/users:
+    get:
+      description: Get a list of all users
+      tags:
+        - users
+      summary: Get all users
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/models.User"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+    post:
+      description: Create a new user with name, email and password
+      tags:
+        - users
+      summary: Create a new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/routes.CreateUserRequest"
+        description: User data
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/models.User"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  "/api/v1/users/{id}":
+    get:
+      description: Get user details by ID
+      tags:
+        - users
+      summary: Get a user by ID
+      parameters:
+        - description: User ID
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/models.User"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /v1/auth/login:
+    post:
+      description: Authenticate user and get access token
+      tags:
+        - auth
+      summary: User login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/auth.LoginRequest"
+        description: Login credentials
+        required: true
+      responses:
+        "200":
+          description: Returns access token
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "400":
+          description: Invalid request format
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /v1/auth/logout:
+    post:
+      security:
+        - Bearer: []
+      description: Invalidate current session (client should discard token)
+      tags:
+        - auth
+      summary: Logout current user
+      responses:
+        "204":
+          description: No content
+  /v1/auth/me:
+    get:
+      security:
+        - Bearer: []
+      description: Get details of currently authenticated user
+      tags:
+        - auth
+      summary: Get current user profile
+      responses:
+        "200":
+          description: Returns user details
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /v1/auth/signup:
+    post:
+      description: Create new user account and get access token
+      tags:
+        - auth
+      summary: Register new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/auth.SignUpRequest"
+        description: Sign up details
+        required: true
+      responses:
+        "201":
+          description: Returns access token
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "400":
+          description: Invalid request format
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "409":
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+servers:
+  - url: http://localhost:8080
+components:
+  schemas:
+    auth.LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+          minLength: 8
+    auth.SignUpRequest:
+      type: object
+      required:
+        - email
+        - password
+        - username
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+          minLength: 8
+        username:
+          type: string
+    models.Panel:
+      type: object
+      properties:
+        id:
+          type: string
+        serverSession:
+          $ref: "#/components/schemas/models.ServerSession"
+        serverSessionID:
+          type: string
+        type:
+          type: string
+    models.ServerInfo:
+      type: object
+      properties:
+        createdAt:
+          type: string
+        faviconUrl:
+          type: string
+        iconUrl:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        serverSession:
+          $ref: "#/components/schemas/models.ServerSession"
+        serverSessionID:
+          type: string
+        themeColor:
+          type: string
+        updatedAt:
+          type: string
+    models.ServerSession:
+      type: object
+      properties:
+        createdAt:
+          type: string
+        id:
+          type: string
+        origin:
+          type: string
+        panels:
+          type: array
+          items:
+            $ref: "#/components/schemas/models.Panel"
+        serverInfo:
+          $ref: "#/components/schemas/models.ServerInfo"
+        serverToken:
+          type: string
+        serverType:
+          $ref: "#/components/schemas/models.ServerType"
+        serverUserInfo:
+          $ref: "#/components/schemas/models.UserInfo"
+        updatedAt:
+          type: string
+        user:
+          $ref: "#/components/schemas/models.User"
+        userID:
+          type: string
+    models.ServerType:
+      type: string
+      enum:
+        - Misskey
+        - OtherServer
+      x-enum-varnames:
+        - ServerTypeMisskey
+        - ServerTypeOtherServer
+    models.User:
+      type: object
+      properties:
+        createdAt:
+          type: string
+        email:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        serverSession:
+          type: array
+          items:
+            $ref: "#/components/schemas/models.ServerSession"
+        updatedAt:
+          type: string
+        userInfo:
+          type: array
+          items:
+            $ref: "#/components/schemas/models.UserInfo"
+        userRole:
+          $ref: "#/components/schemas/models.UserRole"
+        userSettings:
+          type: array
+          items:
+            $ref: "#/components/schemas/models.UserSetting"
+    models.UserInfo:
+      type: object
+      properties:
+        avatarUrl:
+          type: string
+        createdAt:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        serverSession:
+          $ref: "#/components/schemas/models.ServerSession"
+        serverSessionID:
+          type: string
+        updatedAt:
+          type: string
+        user:
+          $ref: "#/components/schemas/models.User"
+        userID:
+          type: string
+        username:
+          type: string
+    models.UserRole:
+      type: string
+      enum:
+        - ADMIN
+        - USER
+      x-enum-varnames:
+        - UserRoleAdmin
+        - UserRoleUser
+    models.UserSetting:
+      type: object
+      properties:
+        createdAt:
+          type: string
+        id:
+          type: string
+        key:
+          type: string
+        updatedAt:
+          type: string
+        user:
+          $ref: "#/components/schemas/models.User"
+        userID:
+          type: string
+        value:
+          type: string
+    routes.CreateUserRequest:
+      type: object
+      required:
+        - email
+        - name
+        - password
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        password:
+          type: string
+          minLength: 8
+
