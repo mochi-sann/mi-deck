@@ -101,21 +101,16 @@ func setupRoutes(router *gin.Engine) {
 		})
 	})
 
-	// Auth routes
-	authGroup := router.Group("/v1/auth")
-	{
-		authGroup.POST("/login", auth.Login)
-		authGroup.POST("/signup", auth.SignUp)
-		authGroup.GET("/me", auth.AuthMiddleware(), auth.Me)
-		authGroup.POST("/logout", auth.AuthMiddleware(), auth.Logout)
-	}
-
-	// Protected API routes
+	// API routes
 	apiGroup := router.Group("/v1")
-	apiGroup.Use(auth.AuthMiddleware())
 	{
-		// Server sessions routes would go here
-		// apiGroup.POST("/server-sessions", serverSessions.Create)
-		// etc...
+		auth.RegisterAuthRoutes(apiGroup)
+		
+		// Protected routes
+		protectedGroup := apiGroup.Group("")
+		protectedGroup.Use(auth.AuthMiddleware())
+		{
+			server_sessions.RegisterServerSessionRoutes(protectedGroup)
+		}
 	}
 }
