@@ -49,6 +49,30 @@ definitions:
     - password
     - username
     type: object
+  controllers.CreateServerSessionRequest:
+    properties:
+      origin:
+        type: string
+      serverType:
+        enum:
+        - Misskey
+        - OtherServer
+        type: string
+    required:
+    - origin
+    - serverType
+    type: object
+  controllers.UpdateServerInfoRequest:
+    properties:
+      faviconUrl:
+        type: string
+      iconUrl:
+        type: string
+      name:
+        type: string
+      themeColor:
+        type: string
+    type: object
   models.Panel:
     properties:
       id:
@@ -405,6 +429,113 @@ paths:
       summary: Register new user
       tags:
       - auth
+  /v1/server-sessions:
+    get:
+      consumes:
+      - application/json
+      description: Get all server sessions for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.ServerSession'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List server sessions
+      tags:
+      - ServerSessions
+    post:
+      consumes:
+      - application/json
+      description: Create a new server session for the authenticated user
+      parameters:
+      - description: Server session data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateServerSessionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ServerSession'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a server session
+      tags:
+      - ServerSessions
+  /v1/server-sessions/{id}/info:
+    put:
+      consumes:
+      - application/json
+      description: Update server information for a session
+      parameters:
+      - description: Server Session ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Server info data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.UpdateServerInfoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ServerInfo'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update server info
+      tags:
+      - ServerSessions
 schemes:
 - http
 swagger: "2.0"
