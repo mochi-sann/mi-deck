@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"server-go/auth"
+	"server-go/controllers"
 	"server-go/database"
 
 	_ "server-go/docs"
@@ -114,8 +115,9 @@ func setupRoutes(router *gin.Engine) {
 	apiGroup := router.Group("/v1")
 	apiGroup.Use(auth.AuthMiddleware())
 	{
-		// Server sessions routes would go here
-		// apiGroup.POST("/server-sessions", serverSessions.Create)
-		// etc...
+		sessionsController := controllers.NewServerSessionsController(database.DB)
+		apiGroup.POST("/server-sessions", sessionsController.CreateServerSession)
+		apiGroup.GET("/server-sessions", sessionsController.ListServerSessions)
+		apiGroup.PUT("/server-sessions/:id/info", sessionsController.UpdateServerInfo)
 	}
 }
