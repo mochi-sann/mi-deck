@@ -25,12 +25,6 @@ type User struct {
 	UserRole      UserRole        `gorm:"type:user_role;not null;default:'USER'"`
 	UserInfo      []UserInfo      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 
-	// Indexes
-	Indexes []struct {
-		gorm.Index
-		Fields []string
-		Type   string
-	} `gorm:"index:,type:hash"`
 }
 
 type UserSetting struct {
@@ -52,7 +46,7 @@ const (
 
 type ServerSession struct {
 	ID             uuid.UUID   `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
-	UserID         uuid.UUID   `gorm:"type:uuid;index:idx_server_session_user"`
+	UserID         uuid.UUID   `gorm:"type:uuid;index"`
 	User           User        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Origin         string      `gorm:"type:varchar(255);not null"`
 	ServerToken    string      `gorm:"type:varchar(255);not null"`
@@ -63,17 +57,11 @@ type ServerSession struct {
 	ServerInfo     *ServerInfo `gorm:"foreignKey:ServerSessionID;constraint:OnDelete:CASCADE"`
 	ServerUserInfo *UserInfo   `gorm:"foreignKey:ServerSessionID;constraint:OnDelete:CASCADE"`
 
-	// Composite unique index for origin and user_id
-	Indexes []struct {
-		gorm.Index
-		Fields []string
-		Unique bool
-	} `gorm:"index:,unique;composite:origin,user_id"`
 }
 
 type ServerInfo struct {
 	ID              uuid.UUID     `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
-	ServerSessionID uuid.UUID     `gorm:"type:uuid;uniqueIndex"`
+	ServerSessionID uuid.UUID     `gorm:"type:uuid;unique"`
 	ServerSession   ServerSession `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Name            string        `gorm:"not null"`
 	IconUrl         string        `gorm:"column:icon_url"`
@@ -91,7 +79,7 @@ type UserInfo struct {
 	CreatedAt       time.Time     `gorm:"autoCreateTime"`
 	UpdatedAt       time.Time     `gorm:"autoUpdateTime"`
 	ServerSession   ServerSession `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:ServerSessionID"`
-	ServerSessionID uuid.UUID     `gorm:"type:uuid;uniqueIndex"`
+	ServerSessionID uuid.UUID     `gorm:"type:uuid;unique"`
 	User            *User         `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;foreignKey:UserID"`
 	UserID          *uuid.UUID    `gorm:"type:uuid"`
 }
