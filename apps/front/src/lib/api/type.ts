@@ -396,6 +396,23 @@ export interface components {
             /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
             accessToken?: string;
         };
+        "models.ServerSession": {
+            id?: string;
+            origin?: string;
+            serverToken?: string;
+            serverType?: "Misskey" | "OtherServer";
+            createdAt?: string;
+            updatedAt?: string;
+        };
+        "models.ServerInfo": {
+            id?: string;
+            name?: string;
+            iconUrl?: string;
+            faviconUrl?: string;
+            themeColor?: string;
+            createdAt?: string;
+            updatedAt?: string;
+        };
         "auth.LoginRequest": {
             email: string;
             password: string;

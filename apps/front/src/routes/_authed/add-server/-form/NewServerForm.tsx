@@ -4,22 +4,32 @@ import { MenuFieldSet } from "../../../../Component/forms/MenuFieldSet";
 import { TextFieldSet } from "../../../../Component/forms/TextFieldSet";
 import { FormStyle } from "../../../../Component/forms/formStyle";
 import { Button } from "../../../../Component/ui/button";
-import { MiAuthReq } from "../../../../lib/miAuth";
+import { useServerSessions } from "../../../../hooks/useServerSessions";
+import { useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
+
 type NewServerFormType = {
-  serverOrigin: string;
-  serverType: string;
+  origin: string;
+  serverType: "Misskey" | "OtherServer";
 };
+
 export const NewServerForm: React.FC = () => {
+  const navigate = useNavigate();
+  const { createSession, isLoading } = useServerSessions();
   const { handleSubmit, control, formState } = useForm<NewServerFormType>();
+
   const onSubmit = async (data: NewServerFormType) => {
-    console.log(...[data, "👀 [NewServerForm.tsx:14]: data"].reverse());
-    const MisskeySessionToken = MiAuthReq(data.serverOrigin);
-    console.log(
-      ...[
-        MisskeySessionToken,
-        "👀 [NewServerForm.tsx:17]: MisskeySessionUrl",
-      ].reverse(),
-    );
+    try {
+      await createSession({
+        origin: data.origin,
+        serverType: data.serverType,
+      });
+      toast.success("サーバーが追加されました");
+      navigate({ to: "/_authed/dashboard" });
+    } catch (error) {
+      toast.error("サーバーの追加に失敗しました");
+      console.error("Failed to add server:", error);
+    }
   };
   return (
     <div>
@@ -29,28 +39,37 @@ export const NewServerForm: React.FC = () => {
           label="サーバーのURL"
           type="text"
           control={control}
-          name="serverOrigin"
-          validation="Please enter a valid serverOrigin address"
+          name="origin"
+          validation="サーバーのURLを入力してください"
           rules={{
-            required: "Please enter a valid serverOrigin address",
+            required: "サーバーのURLは必須です",
+            pattern: {
+              value: /^https?:\/\/.+/,
+              message: "有効なURLを入力してください",
+            },
           }}
         />
         <MenuFieldSet
           name="serverType"
           collection={[
             { label: "Misskey", value: "Misskey" },
-            { label: "Mastodon", value: "Mastodon" },
+            { label: "その他", value: "OtherServer" },
           ]}
           label="サーバータイプ"
           control={control}
-          validation="Please select a serverType"
+          validation="サーバータイプを選択してください"
           rules={{
-            required: "Please select a serverType",
+            required: "サーバータイプは必須です",
           }}
-          placeholder="サーバーを選んでください"
+          placeholder="サーバータイプを選択"
         />
-        <Button variant={"solid"} buttonWidth={"full"} type="submit">
-          サーバーを追加する
+        <Button 
+          variant={"solid"} 
+          buttonWidth={"full"} 
+          type="submit"
+          disabled={isLoading}
+        >
+          {isLoading ? "追加中..." : "サーバーを追加する"}
         </Button>
         {JSON.stringify(formState.errors)}
       </form>
