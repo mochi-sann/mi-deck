@@ -72,17 +72,34 @@ func InitDB() {
 		log.Printf("Note: server_type enum may already exist: %v", err)
 	}
 
-	// Auto migrate all models
-	err = DB.AutoMigrate(
-		&models.User{},
-		&models.UserSetting{},
-		&models.ServerSession{},
-		&models.ServerInfo{},
-		&models.UserInfo{},
-		&models.Panel{},
-	)
+	// Run migrations in transaction
+	err = DB.Transaction(func(tx *gorm.DB) error {
+		// Create tables
+		if err := tx.AutoMigrate(
+			&models.User{},
+			&models.UserSetting{},
+			&models.ServerSession{},
+			&models.ServerInfo{},
+			&models.UserInfo{},
+			&models.Panel{},
+		); err != nil {
+			return err
+		}
+
+		// Create indexes that can't be defined in models
+		if err := tx.Exec(`
+			CREATE UNIQUE INDEX IF NOT EXISTS idx_user_email ON users (email);
+			CREATE INDEX IF NOT EXISTS idx_server_session_user ON server_sessions (user_id);
+			CREATE UNIQUE INDEX IF NOT EXISTS idx_server_session_origin_user ON server_sessions (origin, user_id);
+		`).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 	if err != nil {
-		log.Fatalf("Failed to auto migrate models: %v", err)
+		log.Fatalf("Failed to run migrations: %v", err)
 	}
 
 	log.Println("Database migration completed")

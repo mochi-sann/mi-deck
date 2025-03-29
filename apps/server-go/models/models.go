@@ -14,16 +14,23 @@ const (
 )
 
 type User struct {
-	ID            uuid.UUID       `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
-	Email         string          `gorm:"unique;not null"`
-	Name          *string         `gorm:"size:255"`
-	Password      string          `gorm:"not null" json:"-"`
-	CreatedAt     time.Time       `gorm:"autoCreateTime"`
-	UpdatedAt     time.Time       `gorm:"autoUpdateTime"`
-	ServerSession []ServerSession `gorm:"foreignKey:UserID"`
-	UserSettings  []UserSetting   `gorm:"foreignKey:UserID"`
-	UserRole      UserRole        `gorm:"type:user_role;default:'USER'"`
-	UserInfo      []UserInfo      `gorm:"foreignKey:UserID"`
+	ID            uuid.UUID       `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	Email         string          `gorm:"type:varchar(255);uniqueIndex;not null"`
+	Name          *string         `gorm:"type:varchar(255)"`
+	Password      string          `gorm:"type:varchar(255);not null" json:"-"`
+	CreatedAt     time.Time       `gorm:"type:timestamptz;not null;default:now()"`
+	UpdatedAt     time.Time       `gorm:"type:timestamptz;not null;default:now()"`
+	ServerSession []ServerSession `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	UserSettings  []UserSetting   `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	UserRole      UserRole        `gorm:"type:user_role;not null;default:'USER'"`
+	UserInfo      []UserInfo      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+
+	// Indexes
+	Indexes []struct {
+		gorm.Index
+		Fields []string
+		Type   string
+	} `gorm:"index:,type:hash"`
 }
 
 type UserSetting struct {
@@ -44,20 +51,24 @@ const (
 )
 
 type ServerSession struct {
-	ID             uuid.UUID   `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
-	UserID         uuid.UUID   `gorm:"type:uuid;index"`
+	ID             uuid.UUID   `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	UserID         uuid.UUID   `gorm:"type:uuid;index:idx_server_session_user"`
 	User           User        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Origin         string      `gorm:"not null"`
-	ServerToken    string      `gorm:"not null"`
+	Origin         string      `gorm:"type:varchar(255);not null"`
+	ServerToken    string      `gorm:"type:varchar(255);not null"`
 	ServerType     ServerType  `gorm:"type:server_type;not null"`
-	CreatedAt      time.Time   `gorm:"autoCreateTime"`
-	UpdatedAt      time.Time   `gorm:"autoUpdateTime"`
-	Panels         []Panel     `gorm:"foreignKey:ServerSessionID"`
-	ServerInfo     *ServerInfo `gorm:"foreignKey:ServerSessionID"`
-	ServerUserInfo *UserInfo   `gorm:"foreignKey:ServerSessionID"`
+	CreatedAt      time.Time   `gorm:"type:timestamptz;not null;default:now()"`
+	UpdatedAt      time.Time   `gorm:"type:timestamptz;not null;default:now()"`
+	Panels         []Panel     `gorm:"foreignKey:ServerSessionID;constraint:OnDelete:CASCADE"`
+	ServerInfo     *ServerInfo `gorm:"foreignKey:ServerSessionID;constraint:OnDelete:CASCADE"`
+	ServerUserInfo *UserInfo   `gorm:"foreignKey:ServerSessionID;constraint:OnDelete:CASCADE"`
 
-	// Unique constraint for origin and user_id
-	// gorm.uniqueIndex `gorm:"composite:origin_user_id"`
+	// Composite unique index for origin and user_id
+	Indexes []struct {
+		gorm.Index
+		Fields []string
+		Unique bool
+	} `gorm:"index:,unique;composite:origin,user_id"`
 }
 
 type ServerInfo struct {
