@@ -27,9 +27,13 @@ func runMigrations(db *gorm.DB) error {
 	}
 
 	// Get current migration version
-	var currentVersion int64
-	var dirty bool
-	db.Raw("SELECT version, dirty FROM schema_migrations ORDER BY version DESC LIMIT 1").Scan(&currentVersion, &dirty)
+	var migrationStatus struct {
+		Version int64
+		Dirty   bool
+	}
+	db.Raw("SELECT version, dirty FROM schema_migrations ORDER BY version DESC LIMIT 1").Scan(&migrationStatus)
+	currentVersion := migrationStatus.Version
+	dirty := migrationStatus.Dirty
 
 	if dirty {
 		return fmt.Errorf("database is in dirty state, manual intervention required")
