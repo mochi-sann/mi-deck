@@ -1,6 +1,5 @@
 -- Enable extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- Create enum types
 CREATE TYPE user_role AS ENUM ('ADMIN', 'USER');
