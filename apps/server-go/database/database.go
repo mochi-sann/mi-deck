@@ -152,6 +152,11 @@ func InitDB() {
 	if err != nil {
 		log.Fatalf("Failed to create uuid-ossp extension: %v", err)
 	}
+	
+	err = DB.Exec(`CREATE EXTENSION IF NOT EXISTS "pgcrypto"`).Error
+	if err != nil {
+		log.Fatalf("Failed to create pgcrypto extension: %v", err)
+	}
 
 	// Create custom enum types first
 	err = DB.Exec(`CREATE TYPE user_role AS ENUM ('ADMIN', 'USER')`).Error
