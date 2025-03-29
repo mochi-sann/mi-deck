@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"server-go/models"
+	"path/filepath"
+	"sort"
+	"strconv"
+	"strings"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -12,6 +15,95 @@ import (
 )
 
 var DB *gorm.DB
+
+func runMigrations(db *gorm.DB) error {
+	// Create migrations table if not exists
+	err := db.Exec(`CREATE TABLE IF NOT EXISTS schema_migrations (
+		version BIGINT PRIMARY KEY,
+		dirty BOOLEAN NOT NULL
+	)`).Error
+	if err != nil {
+		return err
+	}
+
+	// Get current migration version
+	var currentVersion int64
+	var dirty bool
+	db.Raw("SELECT version, dirty FROM schema_migrations ORDER BY version DESC LIMIT 1").Scan(&currentVersion, &dirty)
+
+	if dirty {
+		return fmt.Errorf("database is in dirty state, manual intervention required")
+	}
+
+	// Find migration files
+	migrationFiles, err := filepath.Glob("migrations/*.up.sql")
+	if err != nil {
+		return err
+	}
+
+	// Sort migrations by version
+	sort.Slice(migrationFiles, func(i, j int) bool {
+		verI := getMigrationVersion(migrationFiles[i])
+		verJ := getMigrationVersion(migrationFiles[j])
+		return verI < verJ
+	})
+
+	// Run new migrations
+	for _, file := range migrationFiles {
+		version := getMigrationVersion(file)
+		if version <= currentVersion {
+			continue
+		}
+
+		// Read migration file
+		content, err := os.ReadFile(file)
+		if err != nil {
+			return err
+		}
+
+		// Start transaction
+		tx := db.Begin()
+		if tx.Error != nil {
+			return tx.Error
+		}
+
+		// Mark as dirty
+		if err := tx.Exec("INSERT INTO schema_migrations (version, dirty) VALUES (?, true)", version).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+
+		// Execute migration
+		if err := tx.Exec(string(content)).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+
+		// Update version and clear dirty flag
+		if err := tx.Exec("UPDATE schema_migrations SET dirty = false WHERE version = ?", version).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			return err
+		}
+
+		log.Printf("Applied migration %d", version)
+	}
+
+	return nil
+}
+
+func getMigrationVersion(filename string) int64 {
+	base := filepath.Base(filename)
+	parts := strings.Split(base, "_")
+	if len(parts) == 0 {
+		return 0
+	}
+	version, _ := strconv.ParseInt(parts[0], 10, 64)
+	return version
+}
 
 func InitDB() {
 	// First connect to default postgres database to check/create our db
@@ -72,17 +164,10 @@ func InitDB() {
 		log.Printf("Note: server_type enum may already exist: %v", err)
 	}
 
-	// Auto migrate all models
-	err = DB.AutoMigrate(
-		&models.User{},
-		&models.UserSetting{},
-		&models.ServerSession{},
-		&models.ServerInfo{},
-		&models.UserInfo{},
-		&models.Panel{},
-	)
+	// Run SQL migrations
+	err = runMigrations(DB)
 	if err != nil {
-		log.Fatalf("Failed to auto migrate models: %v", err)
+		log.Fatalf("Failed to run migrations: %v", err)
 	}
 
 	log.Println("Database migration completed")
