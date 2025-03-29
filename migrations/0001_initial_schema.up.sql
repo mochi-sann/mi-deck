@@ -30,3 +30,5 @@ CREATE TABLE user_settings (
 
 -- Create indexes
 CREATE UNIQUE INDEX idx_user_email ON users (email);
+CREATE INDEX idx_server_session_user ON server_sessions (user_id);
+CREATE UNIQUE INDEX idx_server_session_origin_user ON server_sessions (origin, user_id);

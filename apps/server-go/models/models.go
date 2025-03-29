@@ -25,12 +25,6 @@ type User struct {
 	UserRole      UserRole        `gorm:"type:user_role;not null;default:'USER'"`
 	UserInfo      []UserInfo      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 
-	// Indexes
-	Indexes []struct {
-		gorm.Index
-		Fields []string
-		Type   string
-	} `gorm:"index:,type:hash"`
 }
 
 type UserSetting struct {
@@ -63,12 +57,6 @@ type ServerSession struct {
 	ServerInfo     *ServerInfo `gorm:"foreignKey:ServerSessionID;constraint:OnDelete:CASCADE"`
 	ServerUserInfo *UserInfo   `gorm:"foreignKey:ServerSessionID;constraint:OnDelete:CASCADE"`
 
-	// Composite unique index for origin and user_id
-	Indexes []struct {
-		gorm.Index
-		Fields []string
-		Unique bool
-	} `gorm:"index:,unique;composite:origin,user_id"`
 }
 
 type ServerInfo struct {
