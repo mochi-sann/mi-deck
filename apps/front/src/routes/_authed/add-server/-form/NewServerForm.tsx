@@ -25,7 +25,7 @@ export const NewServerForm: React.FC = () => {
         serverType: data.serverType,
       });
       toast.success("サーバーが追加されました");
-      navigate({ to: "/_authed/dashboard" });
+      navigate({ to: "/dassboard" });
     } catch (error) {
       toast.error("サーバーの追加に失敗しました");
       console.error("Failed to add server:", error);
