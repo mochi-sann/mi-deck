@@ -26,6 +26,7 @@
     "@biomejs/biome": "1.9.4",
     "@dotenvx/dotenvx": "^1.35.0",
     "@types/node": "^20.17.17",
+    "dotenv": "^16.4.7",
     "lefthook": "^1.10.10",
     "typescript": "^5.7.3"
   },

@@ -1,6 +1,6 @@
+import { config } from "dotenv";
 import swc from "unplugin-swc";
 import { defineConfig } from "vitest/config";
-import { config } from "dotenv";
 
 config({ path: ".env.test" });
 
@@ -14,12 +14,8 @@ export default defineConfig({
     setupFiles: ["./test/setup.ts"],
     alias: {
       "~": new URL("./src", import.meta.url).pathname,
-      "@test": new URL("./test", import.meta.url).pathname
-    }
+      "@test": new URL("./test", import.meta.url).pathname,
+    },
   },
-  plugins: [
-    swc.vite({
-      module: { type: "es6" },
-    }),
-  ],
+  plugins: [swc.vite()],
 });

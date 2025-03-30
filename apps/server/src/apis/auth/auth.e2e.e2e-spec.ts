@@ -2,10 +2,10 @@ import type { ExecutionContext, INestApplication } from "@nestjs/common";
 import { Test, type TestingModule } from "@nestjs/testing";
 import { PrismaClient } from "@prisma/client/extension";
 import request from "supertest";
+import { setupDatabase } from "test/setup";
 import { beforeAll, beforeEach, describe, it } from "vitest";
 import { AuthGuard } from "~/apis/auth/auth.gurd";
-import { AppModule } from "./../src/app.module";
-import { setupDatabase } from "./setup";
+import { AuthModule } from "./auth.module";
 
 describe("AppController (e2e)", () => {
   let app: INestApplication;
@@ -27,7 +27,7 @@ describe("AppController (e2e)", () => {
     });
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AuthModule],
     })
       .overrideGuard(AuthGuard)
       .useValue({
@@ -45,14 +45,14 @@ describe("AppController (e2e)", () => {
     await app.init();
   });
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication();
-    await app.init();
-  });
+  // beforeEach(async () => {
+  //   const moduleFixture: TestingModule = await Test.createTestingModule({
+  //     imports: [AuthModule],
+  //   }).compile();
+  //
+  //   app = moduleFixture.createNestApplication();
+  //   await app.init();
+  // });
 
   it("/ (GET)", () => {
     return request(app.getHttpServer())
