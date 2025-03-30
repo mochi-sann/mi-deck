@@ -1,27 +1,28 @@
-import { Test, TestingModule } from "@nestjs/testing";
 import { JwtService } from "@nestjs/jwt";
-import { AuthController } from "./auth.controller";
-import { AuthService } from "./auth.service";
-import { AuthGuard } from "./auth.gurd";
+import { Test, TestingModule } from "@nestjs/testing";
+import { beforeEach, describe, expect, it, vitest } from "vitest";
 import { PrismaService } from "../../lib/prisma.service";
+import { AuthController } from "./auth.controller";
+import { AuthGuard } from "./auth.gurd";
+import { AuthService } from "./auth.service";
 
 describe("AuthController", () => {
   let controller: AuthController;
   let authService: AuthService;
 
   const mockJwtService = {
-    sign: jest.fn(),
-    verify: jest.fn(),
+    sign: vitest.fn(),
+    verify: vitest.fn(),
   };
 
   const mockAuthGuard = {
-    canActivate: jest.fn(() => true),
+    canActivate: vitest.fn(() => true),
   };
 
   const mockPrismaService = {
     user: {
-      findUnique: jest.fn(),
-      create: jest.fn(),
+      findUnique: vitest.fn(),
+      create: vitest.fn(),
     },
   };
 
