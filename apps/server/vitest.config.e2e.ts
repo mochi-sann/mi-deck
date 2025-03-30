@@ -1,5 +1,8 @@
 import swc from "unplugin-swc";
 import { defineConfig } from "vitest/config";
+import { config } from "dotenv";
+
+config({ path: ".env.test" });
 
 const timeout = process.env.PWDEBUG
   ? Number.POSITIVE_INFINITY
@@ -11,13 +14,18 @@ export default defineConfig({
   test: {
     include: ["**/*.e2e-spec.ts"],
     globals: true,
-    root: ".",
+    root: "./",
+    environment: "node",
     testTimeout: timeout,
     hookTimeout: timeout,
+    setupFiles: ["./test/setup-e2e.ts"],
+    alias: {
+      "~": new URL("./src", import.meta.url).pathname,
+      "@test": new URL("./test", import.meta.url).pathname
+    }
   },
   plugins: [
     swc.vite({
-      // Explicitly set the module type to avoid inheriting this value from a `.swcrc` config file
       module: { type: "es6" },
     }),
   ],
