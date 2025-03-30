@@ -8,31 +8,31 @@ services:
     env_file:
       - .env
     volumes:
-      - ./postgres/init:/docker-entrypoint-initdb.d
+      - postgres-db:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
 
-  https-portal:
-    image: steveltn/https-portal:1
-    ports:
-      - '80:80'
-      - '443:443'
-    links:
-      - misskey-web
-
-    # restart: always
-    environment:
-      DOMAINS: "local-misskey.local -> http://misskey-web:3000"
-      STAGE: local
-      WEBSOCKET: "true"
-      HSTS_MAX_AGE: 6  # in seconds
-      # DOMAINS: 'example.com'
-      # STAGE: 'production' # Don't use production until staging works
-    volumes:
-      - https-portal-data:/var/lib/https-portal
-    networks:
-      - app-network
+  # https-portal:
+  #   image: steveltn/https-portal:1
+  #   ports:
+  #     - '80:80'
+  #     - '443:443'
+  #   links:
+  #     - misskey-web
+  #
+  #   # restart: always
+  #   environment:
+  #     DOMAINS: "local-misskey.local -> http://misskey-web:3000"
+  #     STAGE: local
+  #     WEBSOCKET: "true"
+  #     HSTS_MAX_AGE: 6  # in seconds
+  #     # DOMAINS: 'example.com'
+  #     # STAGE: 'production' # Don't use production until staging works
+  #   volumes:
+  #     - https-portal-data:/var/lib/https-portal
+  #   networks:
+  #     - app-network
 
 
   # https-portal:
@@ -92,7 +92,7 @@ services:
     env_file:
       - .config/docker.env
     volumes:
-      - ./misskey-db:/var/lib/postgresql/data
+      - misskey-db:/var/lib/postgresql/data
     healthcheck:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
@@ -149,4 +149,6 @@ networks:
     driver: bridge
 
 volumes:
-    https-portal-data: # Recommended, to avoid re-signing when upgrading HTTPS-PORTAL
+  misskey-db: 
+  postgres-db:
+    # https-portal-data: # Recommended, to avoid re-signing when upgrading HTTPS-PORTAL

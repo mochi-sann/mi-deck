@@ -1,5 +1,5 @@
-import { afterAll, beforeAll } from 'vitest';
-import { PrismaService } from '~/lib/prisma.service';
+import { afterAll, beforeAll } from "vitest";
+import { PrismaService } from "~/lib/prisma.service";
 
 let prisma: PrismaService;
 
