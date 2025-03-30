@@ -24,5 +24,5 @@ export default defineConfig({
       "@test": new URL("./test", import.meta.url).pathname,
     },
   },
-  plugins: [swc.vite()],
+  plugins: [],
 });
