@@ -71,12 +71,26 @@ describe("AuthController (e2e)", () => {
         "👀 [auth.e2e.spec.ts:68]: loginResponse.body",
       ].reverse(),
     );
-    expect(loginResponse.body).key("accessToken");
+    expect(loginResponse.body).toHaveProperty("accessToken"); // More specific check
+
+    // Extract the access token from the login response
+    const accessToken = loginResponse.body.accessToken;
 
     const meResponse = await request(app.getHttpServer())
       .get("/v1/auth/me")
-      .send({ email: "1@example.com", password: "password" })
+      // Add the Authorization header with the Bearer token
+      .set('Authorization', `Bearer ${accessToken}`)
+      // .send({ email: "1@example.com", password: "password" }) // GET request doesn't need send()
       .expect(200);
-    expect(meResponse.body);
+
+    // Check the response body for the user's details (excluding password)
+    expect(meResponse.body).toEqual(
+      expect.objectContaining({
+        email: "1@example.com",
+        name: "test user",
+        // ID is generated, so we just check for its presence and type
+        id: expect.any(String),
+      }),
+    );
   });
 });
