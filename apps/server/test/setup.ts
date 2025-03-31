@@ -8,6 +8,11 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 export async function setupDatabase() {
   // 作成するDB名
   const newDbName = `worker_${process.env.VITEST_POOL_ID}`;
+  const dbUrl = new URL(process.env.DATABASE_URL ?? "");
+  console.log(...[dbUrl, '👀 [setup.ts:12]: dbUrl'].reverse());
+  const baseUrl = dbUrl.href.substring(0, dbUrl.href.lastIndexOf("/"));
+  process.env.DATABASE_URL = `${baseUrl}/${newDbName}`;
+  console.log(...[process.env.DATABASE_URL, '👀 [setup.ts:15]: process.env.DATABASE_URL'].reverse());
 
   // DBの作成
   const prisma = new PrismaClient();
@@ -28,9 +33,6 @@ export async function setupDatabase() {
   console.log(`DB Created: ${newDbName}`);
 
   // 環境変数上書き
-  const dbUrl = new URL(process.env.DATABASE_URL ?? "");
-  const baseUrl = dbUrl.href.substring(0, dbUrl.href.lastIndexOf("/"));
-  process.env.DATABASE_URL = `${baseUrl}/${newDbName}`;
 
   // DB初期化処理
   execSync("npx prisma migrate reset --force", {
@@ -60,7 +62,6 @@ export async function setupDatabase() {
     },
     stdio: "inherit",
   });
-
 
   console.log("DB Setup End");
 }

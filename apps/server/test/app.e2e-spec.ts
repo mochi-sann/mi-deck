@@ -12,19 +12,26 @@ describe("AppController (e2e)", () => {
   let prisma: PrismaClient;
   beforeAll(async () => {
     await setupDatabase();
+
+    console.log(
+      ...[
+        process.env.DATABSE_URL,
+        "👀 [app.e2e-spec.ts:19]: process.env.DATABSE_URL",
+      ].reverse(),
+    );
     prisma = new PrismaClient();
-    await prisma.user.createMany({
-      data: [
-        {
-          id: "650e8400-e29b-41d4-a716-446655440001",
-          name: "user1",
-          authId: "10",
-          lastSigninAt: new Date(),
-          gender: "male",
-          birthdate: new Date(),
-        },
-      ],
-    });
+    // await prisma.user.createMany({
+    //   data: [
+    //     {
+    //       id: "650e8400-e29b-41d4-a716-446655440001",
+    //       name: "user1",
+    //       authId: "10",
+    //       lastSigninAt: new Date(),
+    //       gender: "male",
+    //       birthdate: new Date(),
+    //     },
+    //   ],
+    // });
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
