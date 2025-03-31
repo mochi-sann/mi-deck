@@ -1,4 +1,3 @@
-import { userInfo } from "node:os";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ServerType } from "@prisma/client";
 import { APIClient } from "misskey-js/api.js";
@@ -134,12 +133,6 @@ export class ServerSessionsService {
         console.error(err);
         throw new UnauthorizedException("can not get server info");
       });
-    console.log(
-      ...[
-        misskeyServerInfo,
-        "👀 [server-sessions.service.ts:128]: serverInfo",
-      ].reverse(),
-    );
 
     const serverInfoDb = await this.prisma.serverInfo.upsert({
       where: {
@@ -163,6 +156,12 @@ export class ServerSessionsService {
         },
       },
     });
+    console.log(
+      ...[
+        serverInfoDb,
+        "👀 [server-sessions.service.ts:160]: serverInfoDb",
+      ].reverse(),
+    );
     return new ServerInfoEntity(serverInfoDb);
   }
 }

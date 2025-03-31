@@ -153,6 +153,24 @@ paths:
         '200':
           description: ''
       tags: *ref_1
+  /v1/timeline/{serverSerssionId}:
+    get:
+      operationId: TimelineController_findOne
+      parameters:
+        - name: serverSerssionId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      tags:
+        - timeline
 info:
   title: mi-deck api
   description: mi-deck api description

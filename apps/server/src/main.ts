@@ -1,9 +1,5 @@
 import * as fs from "node:fs";
 import { NestFactory } from "@nestjs/core";
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from "@nestjs/platform-fastify";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { apiReference } from "@scalar/nestjs-api-reference";
 import { dump } from "js-yaml";
@@ -11,16 +7,9 @@ import { AppModule } from "./app.module";
 import { PORT } from "./lib/env";
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    new FastifyAdapter({
-      logger: true,
-    }),
-    {
-      cors: false,
-      logger: ["error", "warn", "log"],
-    },
-  );
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+  });
   app.setGlobalPrefix("v1");
   const options = new DocumentBuilder()
     .setTitle("mi-deck api")
@@ -34,7 +23,6 @@ async function bootstrap() {
   app.use(
     "/api-docs",
     apiReference({
-      withFastify: true,
       spec: {
         content: document,
       },

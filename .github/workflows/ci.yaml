@@ -32,4 +32,3 @@ jobs:
       - name: pnpm run build
         run: pnpm build
 
-      # ビルドの成果物
