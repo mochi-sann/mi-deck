@@ -9,10 +9,15 @@ export async function setupDatabase() {
   // 作成するDB名
   const newDbName = `worker_${process.env.VITEST_POOL_ID}`;
   const dbUrl = new URL(process.env.DATABASE_URL ?? "");
-  console.log(...[dbUrl, '👀 [setup.ts:12]: dbUrl'].reverse());
+  console.log(...[dbUrl, "👀 [setup.ts:12]: dbUrl"].reverse());
   const baseUrl = dbUrl.href.substring(0, dbUrl.href.lastIndexOf("/"));
   process.env.DATABASE_URL = `${baseUrl}/${newDbName}`;
-  console.log(...[process.env.DATABASE_URL, '👀 [setup.ts:15]: process.env.DATABASE_URL'].reverse());
+  console.log(
+    ...[
+      process.env.DATABASE_URL,
+      "👀 [setup.ts:15]: process.env.DATABASE_URL",
+    ].reverse(),
+  );
 
   // DBの作成
   const prisma = new PrismaClient();
@@ -64,8 +69,7 @@ export async function setupDatabase() {
   });
 
   // Add small delay to ensure Prisma client is ready
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   console.log("DB Setup End");
 }
 

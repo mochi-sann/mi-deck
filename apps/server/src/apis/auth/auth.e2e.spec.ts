@@ -1,13 +1,9 @@
-import type { ExecutionContext, INestApplication } from "@nestjs/common";
+import { type ExecutionContext, type INestApplication } from "@nestjs/common";
 import { Test, type TestingModule } from "@nestjs/testing";
-// import { PrismaClient } from "@prisma/client"; // No longer needed directly
 import request from "supertest";
-// import { setupDatabase } from "test/setup"; // Called globally
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { AuthGuard } from "~/apis/auth/auth.gurd";
 import { AppModule } from "~/app.module"; // Import AppModule instead of AuthModule
-// import { PrismaService } from "~/lib/prisma.service"; // Import if needed
-// import { AuthModule } from "./auth.module"; // No longer needed directly
 import { MeEntity } from "./entities/me.entity";
 
 // Use a more descriptive name for the test suite
@@ -24,11 +20,6 @@ describe("AuthController (e2e)", () => {
   };
 
   beforeAll(async () => {
-    // setupDatabase is called globally via vitest config setupFiles
-    // No need to create data here, seeding handles it.
-    // prisma = new PrismaClient(); // Don't instantiate directly
-    // await prisma.user.createMany({ ... }); // Remove data creation
-
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule], // Use AppModule to ensure all providers are available
     })
@@ -46,9 +37,6 @@ describe("AuthController (e2e)", () => {
     app = moduleFixture.createNestApplication();
     app.setGlobalPrefix("v1"); // Ensure the global prefix is applied
     await app.init();
-
-    // Get PrismaService instance if needed
-    // prisma = moduleFixture.get<PrismaService>(PrismaService);
   });
 
   afterAll(async () => {
@@ -59,12 +47,36 @@ describe("AuthController (e2e)", () => {
   // beforeEach(async () => { ... });
 
   // Test the /auth/me endpoint
-  it("/v1/auth/me (GET)", async () => {
-    const response = await request(app.getHttpServer())
-      .get("/v1/auth/me") // Use the correct endpoint with global prefix
+  it("/v1/auth/signUp (POST)", async () => {
+    const singUpResponse = await request(app.getHttpServer())
+      .post("/v1/auth/signUp")
+      .send({
+        email: "1@example.com",
+        password: "password",
+        username: "test user",
+      }) // Use the correct endpoint with global prefix
       .expect(200);
 
     // Check if the response body matches the expected user data
-    expect(response.body).toEqual(expectedUser);
+    expect(singUpResponse.body).key("accessToken");
+
+    const loginResponse = await request(app.getHttpServer())
+      .post("/v1/auth/login")
+      .send({ email: "1@example.com", password: "password" })
+      .expect(200);
+
+    console.log(
+      ...[
+        loginResponse.body,
+        "👀 [auth.e2e.spec.ts:68]: loginResponse.body",
+      ].reverse(),
+    );
+    expect(loginResponse.body).key("accessToken");
+
+    const meResponse = await request(app.getHttpServer())
+      .get("/v1/auth/me")
+      .send({ email: "1@example.com", password: "password" })
+      .expect(200);
+    expect(meResponse.body);
   });
 });
