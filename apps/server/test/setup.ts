@@ -63,6 +63,9 @@ export async function setupDatabase() {
     stdio: "inherit",
   });
 
+  // Add small delay to ensure Prisma client is ready
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
   console.log("DB Setup End");
 }
 

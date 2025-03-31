@@ -19,7 +19,14 @@ describe("AppController (e2e)", () => {
         "👀 [app.e2e-spec.ts:19]: process.env.DATABSE_URL",
       ].reverse(),
     );
-    prisma = new PrismaClient();
+    prisma = new PrismaClient({
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL,
+        },
+      },
+    });
+    await prisma.$connect();
     // await prisma.user.createMany({
     //   data: [
     //     {
