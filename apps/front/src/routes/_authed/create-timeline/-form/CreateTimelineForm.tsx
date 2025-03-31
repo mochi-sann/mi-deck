@@ -8,9 +8,10 @@ import { TextFieldSet } from "../../../../Component/forms/TextFieldSet";
 import { MenuFieldSet } from "../../../../Component/forms/MenuFieldSet";
 import { Text } from "../../../../Component/ui/text";
 import { useQuery } from "@tanstack/react-query";
+import { Spinner } from "../../../../Component/ui/spinner";
 
 type CreateTimelineFormType = components["schemas"]["CreateTimelineDto"];
-
+// Define the schema based on CreateTimelineDto
 const schema = z.object({
   serverSessionId: z.string().uuid("Server Session ID is required."),
   name: z.string().min(1, "Timeline name is required."),
@@ -29,19 +30,24 @@ export function CreateTimelineForm() {
     error: sessionsError,
   } = useQuery({
     queryKey: ["serverSessions"],
+    // Fetch server sessions to populate the dropdown
     queryFn: async () => {
+      // The getList operation expects a 201 status for success according to type.ts
       const res = await $api.get("/v1/server-sessions");
-      if (res.status !== 200) { // Assuming 200 is the success code based on type.ts update
-        throw new Error("Failed to fetch server sessions");
+      if (res.status !== 201) {
+        console.error("Failed to fetch server sessions:", res);
+        throw new Error(`Failed to fetch server sessions. Status: ${res.status}`);
       }
-      return res.data;
+      // Ensure the response data is an array before returning
+      return Array.isArray(res.data) ? res.data : [];
     },
   });
 
+  // Mutation hook for creating the timeline
   const { mutate, status, error } = $api.useMutation(
     "post",
-    "/v1/timeline",
-    {},
+    "/v1/timeline", // Use the correct endpoint path
+    {}, // Options can be added here if needed (e.g., onSuccess, onError callbacks)
   );
 
   const {
@@ -59,24 +65,39 @@ export function CreateTimelineForm() {
     },
   });
 
+    },
+  });
+
+  // Handle form submission
   const onSubmit = (data: CreateTimelineFormType) => {
-    console.log("Form Data:", data);
-    mutate(data);
+     // Ensure params is an empty object if not needed or empty, rather than undefined
+     const submissionData = {
+      ...data,
+      params: data.params ?? {},
+    };
+    console.log("Submitting Form Data:", submissionData);
+    mutate(submissionData);
   };
 
-  const selectedType = watch("type");
+  const selectedType = watch("type"); // Watch the 'type' field to conditionally render inputs
 
-  if (isLoadingSessions) return <Text>Loading server sessions...</Text>;
+  // Display loading state while fetching server sessions
+  if (isLoadingSessions) return <Spinner label="Loading server sessions..." />;
+  // Display error state if fetching sessions failed
   if (sessionsError)
-    return <Text color="red.500">Error loading server sessions.</Text>;
+    return <Text color="red.500">Error loading server sessions: {sessionsError.message}</Text>;
+  // Display message if no sessions are available
   if (!serverSessions || serverSessions.length === 0)
     return <Text>No server sessions found. Please add a server first.</Text>;
 
+  // Prepare options for the server session dropdown
   const serverOptions = serverSessions.map((session) => ({
-    label: `${session.origin} (${session.serverType})`, // Adjust label as needed
+    // Use a more descriptive label, perhaps including the server name if available later
+    label: `${session.origin} (${session.serverType})`,
     value: session.id,
   }));
 
+  // Options for the timeline type dropdown
   const timelineTypeOptions = [
     { label: "Home", value: "Home" },
     { label: "Local", value: "Local" },
@@ -118,30 +139,38 @@ export function CreateTimelineForm() {
       {selectedType === "List" && (
         <TextFieldSet
           control={control}
-          name="params.listId" // Assuming params structure
+          control={control}
+          name="params.listId" // Use dot notation for nested fields in react-hook-form
           label="List ID"
           placeholder="Enter List ID"
           type="text"
-          // Add validation if needed
-          validation={""} // errors.params?.listId?.message ?? ""
+          validation={errors.params?.listId?.message ?? ""} // Display validation errors
         />
       )}
       {selectedType === "User" && (
         <TextFieldSet
           control={control}
-          name="params.userId" // Assuming params structure
+          name="params.userId" // Use dot notation
           label="User ID"
           placeholder="Enter User ID"
           type="text"
-          // Add validation if needed
-          validation={""} // errors.params?.userId?.message ?? ""
+          validation={errors.params?.userId?.message ?? ""} // Display validation errors
         />
       )}
 
-      <Button type="submit" disabled={status === "pending"} mt="4">
-        {status === "pending" ? "Creating..." : "Create Timeline"}
+      {/* Display general form errors from refine */}
+       {errors.root?.message && (
+         <Text color="red.500" mt="2">
+           {errors.root.message}
+         </Text>
+       )}
+
+
+      <Button type="submit" loading={status === "pending"} loadingText="Creating..." mt="4">
+        Create Timeline
       </Button>
 
+      {/* Display API call error */}
       {status === "error" && (
         <Text color="red.500" mt="2">
           Error: {error?.message || "Failed to create timeline."}
