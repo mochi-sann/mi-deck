@@ -1,17 +1,6 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Request,
-  UseGuards,
-} from "@nestjs/common";
+import { Controller, Get, Param, Request, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "../auth/auth.gurd";
-import { CreateTimelineDto } from "./dto/create-timeline.dto";
-import { UpdateTimelineDto } from "./dto/update-timeline.dto";
 import { TimelineService } from "./timeline.service";
 
 @ApiTags("timeline")
@@ -36,18 +25,5 @@ export class TimelineController {
       ].reverse(),
     );
     return this.timelineService.findOne(serverSerssionId, req.user.id);
-  }
-
-  @Patch(":id")
-  update(
-    @Param("id") id: string,
-    @Body() updateTimelineDto: UpdateTimelineDto,
-  ) {
-    return this.timelineService.update(+id, updateTimelineDto);
-  }
-
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.timelineService.remove(+id);
   }
 }

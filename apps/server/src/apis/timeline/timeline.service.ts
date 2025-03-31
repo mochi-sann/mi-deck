@@ -37,12 +37,4 @@ export class TimelineService {
 
     return Timeline;
   }
-
-  update(id: number, updateTimelineDto: UpdateTimelineDto) {
-    return `This action updates a #${id} timeline`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} timeline`;
-  }
 }
