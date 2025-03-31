@@ -59,20 +59,19 @@ describe("AuthController (e2e)", () => {
       }) // Use the correct endpoint with global prefix
       .expect(200);
 
-    // Check if the response body matches the expected user data
-    expect(singUpResponse.body).key("accessToken");
+    // Check if the response body has the accessToken property
+    expect(singUpResponse.body).toHaveProperty("accessToken");
+  });
 
+  // Test the /auth/login endpoint
+  it("/v1/auth/login (POST)", async () => {
+    // Use the credentials from the signUp test
     const loginResponse = await request(app.getHttpServer())
       .post("/v1/auth/login")
       .send({ email: "1@example.com", password: "password" })
       .expect(200);
 
-    console.log(
-      ...[
-        loginResponse.body,
-        "👀 [auth.e2e.spec.ts:68]: loginResponse.body",
-      ].reverse(),
-    );
-    expect(loginResponse.body).toHaveProperty("accessToken"); // More specific check
+    // Check if the response body has the accessToken property
+    expect(loginResponse.body).toHaveProperty("accessToken");
   });
 });
