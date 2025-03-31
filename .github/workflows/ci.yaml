@@ -79,10 +79,10 @@ jobs:
       - run: echo '${{ toJSON(steps.node_modules_cache_id.outputs) }}'
         # キャッシュがあれば、npm install をスキップする
       - run: pnpm install
-      - run: pnpm run db:migrate:reset
+      - run: pnpm run server db:migrate:reset
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydb?schema=public
-      - run: pnpm run  server test:e2e:api
+      - run: pnpm run server test:e2e:api
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydb?schema=public
         # ビルドの成果物
