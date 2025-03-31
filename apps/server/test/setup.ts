@@ -53,6 +53,15 @@ export async function setupDatabase() {
     stdio: "inherit", // Show seed output
   });
 
+  // Explicitly generate Prisma Client after setting the DATABASE_URL
+  execSync("npx prisma generate", {
+    env: {
+      ...process.env,
+    },
+    stdio: "inherit",
+  });
+
+
   console.log("DB Setup End");
 }
 
