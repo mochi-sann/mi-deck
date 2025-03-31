@@ -1,3 +1,4 @@
+import { MisskeyJsTest } from "@/Component/logics/MisskeyJsTest";
 import { Timeline } from "@/Component/logics/Timeline";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
@@ -9,7 +10,7 @@ function DashBoard() {
   return (
     <div>
       Hello "/_authed/dassboard"!
-      <Timeline />
+      <MisskeyJsTest />
     </div>
   );
 }
