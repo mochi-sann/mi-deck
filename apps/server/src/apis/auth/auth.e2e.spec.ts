@@ -74,4 +74,14 @@ describe("AuthController (e2e)", () => {
     // Check if the response body has the accessToken property
     expect(loginResponse.body).toHaveProperty("accessToken");
   });
+
+  // Test the /auth/me endpoint
+  it("/v1/auth/me (GET)", async () => {
+    const response = await request(app.getHttpServer())
+      .get("/v1/auth/me") // Use the correct endpoint with global prefix
+      .expect(200);
+
+    // Check if the response body matches the expected user data
+    expect(response.body).toEqual(expectedUser);
+  });
 });
