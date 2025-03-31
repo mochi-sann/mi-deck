@@ -1,4 +1,3 @@
-import { userInfo } from "node:os";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ServerType } from "@prisma/client";
 import { APIClient } from "misskey-js/api.js";

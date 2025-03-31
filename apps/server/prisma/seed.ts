@@ -1,5 +1,5 @@
 import { parseArgs } from "node:util";
-import { PrismaClient, ServerType } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { userAndLocalMisskey } from "./seed/userAndLocalMisskey";
 const options: { environment: { type: "string" } } = {
   environment: { type: "string" },
