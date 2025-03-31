@@ -32,4 +32,57 @@ jobs:
       - name: pnpm run build
         run: pnpm build
 
-      # ビルドの成果物
+  test-e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.14.0]
+
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub PostgreSQL image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DBNAME: mydb
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/mydb?schema=public"
+          TZ: 'Asia/Tokyo'
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - uses: actions/cache@v3
+        id: node_modules_cache_id
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+      - run: echo '${{ toJSON(steps.node_modules_cache_id.outputs) }}'
+        # キャッシュがあれば、npm install をスキップする
+      - run: pnpm install
+      - run: pnpm run db:migrate:reset
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydb?schema=public
+      - run: pnpm run  server test:e2e:api
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydb?schema=public
+        # ビルドの成果物
