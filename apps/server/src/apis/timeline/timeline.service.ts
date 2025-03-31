@@ -3,7 +3,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { TimelineType } from "@prisma/client";
+import { TimelineType } from "@prisma/client"; // This will be valid after prisma generate
 import { APIClient } from "misskey-js/api.js";
 import { PrismaService } from "~/lib/prisma.service";
 import { CreateTimelineDto } from "./dto/create-timeline.dto";

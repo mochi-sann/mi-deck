@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { TimelineType } from "@prisma/client";
+import { TimelineType } from "@prisma/client"; // This will be valid after prisma generate
 import {
   IsEnum,
   IsNotEmpty,
@@ -35,7 +35,7 @@ export class CreateTimelineDto {
 
   @IsOptional()
   @IsString()
-  @ValidateIf((o) => o.type === TimelineType.LIST)
+  @ValidateIf((o) => o.type === TimelineType.LIST) // Ensure enum value matches Prisma definition
   @IsNotEmpty({
     message: "listId is required when type is LIST",
   })
@@ -47,7 +47,7 @@ export class CreateTimelineDto {
 
   @IsOptional()
   @IsString()
-  @ValidateIf((o) => o.type === TimelineType.CHANNEL)
+  @ValidateIf((o) => o.type === TimelineType.CHANNEL) // Ensure enum value matches Prisma definition
   @IsNotEmpty({
     message: "channelId is required when type is CHANNEL",
   })
