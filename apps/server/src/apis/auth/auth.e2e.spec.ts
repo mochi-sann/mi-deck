@@ -13,11 +13,11 @@ describe("AuthController (e2e)", () => {
   // let prisma: PrismaService; // Get from moduleFixture if needed
 
   // Define the expected user based on seed data
-  const seededUserId = "650e8400-e29b-41d4-a716-446655440000"; // Match the ID in prisma/seed.ts
+  const seededUserId = "f8895928-12d9-47e6-85a3-8de88aaaa7a8"; // Match the ID in prisma/seed.ts
   const expectedUser: MeEntity = {
     id: seededUserId,
-    email: "test@example.com", // Match the email in prisma/seed.ts
-    name: "Test User", // Match the name in prisma/seed.ts
+    email: "example2@example.com",
+    name: "hoge",
   };
 
   beforeAll(async () => {
@@ -78,7 +78,7 @@ describe("AuthController (e2e)", () => {
   // Test the /auth/me endpoint
   it("/v1/auth/me (GET)", async () => {
     const response = await request(app.getHttpServer())
-      .get("/v1/auth/me") // Use the correct endpoint with global prefix
+      .get("/v1/auth/me")
       .expect(200);
 
     // Check if the response body matches the expected user data
