@@ -10,6 +10,7 @@
     "start": "dotenvx run -- pnpm -r run start",
     "front": "dotenvx run -- pnpm -F @mi-deck/front",
     "server": "dotenvx run -- pnpm -F @mi-deck/server",
+    "test:e2e:server": "dotenvx run -- pnpm -F @mi-deck/server run test:e2e",
     "format": "biome format --write .",
     "check": "biome check --write . --unsafe"
   },

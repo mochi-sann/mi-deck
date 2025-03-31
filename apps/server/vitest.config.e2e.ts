@@ -1,8 +1,8 @@
-import { config } from "dotenv";
 import swc from "unplugin-swc";
 import { defineConfig } from "vitest/config";
+// import { config } from "dotenv";
 
-config({ path: ".env.test" });
+// config({ path: ".env.test" }); // Use dotenvx in root package.json instead
 
 const timeout = process.env.PWDEBUG
   ? Number.POSITIVE_INFINITY
@@ -18,11 +18,14 @@ export default defineConfig({
     environment: "node",
     testTimeout: timeout,
     hookTimeout: timeout,
-    setupFiles: ["./test/setup-e2e.ts"],
+    setupFiles: ["./test/setup.ts"], // Corrected setup file path
     alias: {
       "~": new URL("./src", import.meta.url).pathname,
       "@test": new URL("./test", import.meta.url).pathname,
     },
   },
-  plugins: [],
+  plugins: [
+    // @ts-expect-error - swc types mismatch
+    swc.vite(), // Add swc plugin for NestJS compilation
+  ],
 });

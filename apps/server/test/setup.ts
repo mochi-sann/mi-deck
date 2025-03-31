@@ -45,5 +45,16 @@ export async function setupDatabase() {
     },
   });
 
+  // Seed the database for testing
+  execSync("npx prisma db seed -- --environment test", {
+    env: {
+      ...process.env,
+    },
+    stdio: "inherit", // Show seed output
+  });
+
   console.log("DB Setup End");
 }
+
+// Execute the setup function when this file is run by Vitest
+setupDatabase();
