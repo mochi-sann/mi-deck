@@ -1,3 +1,4 @@
+import { Timeline } from "@/Component/logics/Timeline";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/_authed/dassboard")({
@@ -5,5 +6,10 @@ export const Route = createLazyFileRoute("/_authed/dassboard")({
 });
 
 function DashBoard() {
-  return <div>Hello "/_authed/dassboard"!</div>;
+  return (
+    <div>
+      Hello "/_authed/dassboard"!
+      <Timeline />
+    </div>
+  );
 }

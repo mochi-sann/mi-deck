@@ -153,6 +153,55 @@ paths:
         '200':
           description: ''
       tags: *ref_1
+  /v1/timeline/{serverSerssionId}:
+    get:
+      operationId: TimelineController_findOne
+      parameters:
+        - name: serverSerssionId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      tags: &ref_2
+        - timeline
+  /v1/timeline/{id}:
+    patch:
+      operationId: TimelineController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTimelineDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+    delete:
+      operationId: TimelineController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
 info:
   title: mi-deck api
   description: mi-deck api description
@@ -301,3 +350,6 @@ components:
         - iconUrl
         - faviconUrl
         - themeColor
+    UpdateTimelineDto:
+      type: object
+      properties: {}
