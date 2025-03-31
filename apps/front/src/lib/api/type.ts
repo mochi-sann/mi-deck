@@ -139,9 +139,25 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["TimelineController_findOne"];
+        get: operations["TimelineController_findAllByServerSession"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TimelineController_create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -211,6 +227,36 @@ export interface components {
             iconUrl: string;
             faviconUrl: string;
             themeColor: string;
+        };
+        CreateTimelineDto: {
+            /**
+             * @description The ID of the server session this timeline belongs to
+             * @example a1b2c3d4-e5f6-7890-1234-567890abcdef
+             */
+            serverSessionId: string;
+            /** @description The name of the timeline */
+            name: string;
+            /**
+             * @description The type of the timeline
+             * @enum {string}
+             */
+            type: "Home" | "Local" | "Global" | "List" | "User";
+            /** @description Optional parameters for the timeline (e.g., listId) */
+            params?: Record<string, never>;
+        };
+        TimelineEntity: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            serverSessionId: string;
+            name: string;
+            /** @enum {string} */
+            type: "Home" | "Local" | "Global" | "List" | "User";
+            params?: Record<string, never>;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
     };
     responses: never;
@@ -480,6 +526,74 @@ export interface operations {
                 content?: never;
             };
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TimelineController_findAllByServerSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                serverSerssionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimelineEntity"][];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TimelineController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTimelineDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimelineEntity"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -49,6 +49,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         <Link to="/add-server" className={link()}>
           add-server
         </Link>
+        <Link to="/create-timeline" className={link()}>
+          Create Timeline
+        </Link>
       </div>
       <hr />
       <Layout>
