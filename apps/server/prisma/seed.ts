@@ -28,6 +28,7 @@ async function main() {
       break;
 
     case "test": // テスト環境
+      await userAndLocalMisskey();
       console.log("test");
       break;
     default:
