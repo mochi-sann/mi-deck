@@ -23,7 +23,6 @@ async function bootstrap() {
   app.use(
     "/api-docs",
     apiReference({
-      withFastify: true,
       spec: {
         content: document,
       },
