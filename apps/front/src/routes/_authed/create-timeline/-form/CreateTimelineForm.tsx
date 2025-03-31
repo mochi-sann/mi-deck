@@ -65,9 +65,6 @@ export function CreateTimelineForm() {
     },
   });
 
-    },
-  });
-
   // Handle form submission
   const onSubmit = (data: CreateTimelineFormType) => {
      // Ensure params is an empty object if not needed or empty, rather than undefined
@@ -158,10 +155,10 @@ export function CreateTimelineForm() {
         />
       )}
 
-      {/* Display general form errors from refine */}
-       {errors.root?.message && (
+      {/* Display general form errors from refine (now targeting params) */}
+       {errors.params?.message && !errors.params.listId && !errors.params.userId && ( // Show only if specific field errors aren't present
          <Text color="red.500" mt="2">
-           {errors.root.message}
+           {errors.params.message}
          </Text>
        )}
 
