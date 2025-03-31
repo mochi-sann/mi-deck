@@ -54,30 +54,47 @@ export class TimelineService {
   async findOne(serverSessionId: string, userId: string) {
     const serverSession = await this.prisma.serverSession.findUnique({
       where: {
-        id: id,
+        id: serverSessionId, // Correctly use the parameter
+        userId: userId, // Ensure the user owns the session
       },
     });
+
+    if (!serverSession) {
+      // Throw ForbiddenException if the session doesn't exist or doesn't belong to the user
+      throw new ForbiddenException(
+        `Server session with ID ${serverSessionId} not found or access denied.`,
+      );
+    }
+
     console.log(
       ...[
         serverSession,
-        "👀 [timeline.service.ts:19]: serverSession",
+        "👀 [timeline.service.ts:60]: serverSession", // Line number might change after adding 'create'
       ].reverse(),
     );
     const client = new APIClient({
       origin: serverSession.origin,
       credential: serverSession.serverToken,
     });
-    const Timeline = await client
+
+    // TODO: This currently fetches 'notes/timeline' (Home).
+    // Adapt this based on the *configured* timeline type if needed,
+    // or keep it specifically for fetching the home timeline notes.
+    // For now, it fetches the home timeline associated with the session.
+    const timelineNotes = await client
       .request("notes/timeline", {
-        limit: 100,
+        limit: 100, // Example limit
       })
       .then((res) => res)
       .catch((err) => {
-        console.log(err);
-        throw new UnauthorizedException("can not get server info");
+        console.error("Error fetching timeline notes:", err);
+        // Consider more specific error handling based on Misskey API errors
+        throw new UnauthorizedException(
+          `Could not fetch timeline notes from ${serverSession.origin}`,
+        );
       });
-    console.log(Timeline);
+    console.log(timelineNotes);
 
-    return Timeline;
+    return timelineNotes; // Returns the array of notes
   }
 }
