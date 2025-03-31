@@ -1,5 +1,5 @@
 import { JwtService } from "@nestjs/jwt";
-import { Test, type TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
 import { beforeEach, describe, expect, it, vitest } from "vitest";
 import { PrismaService } from "../../lib/prisma.service";
 import { AuthController } from "./auth.controller";

@@ -1,5 +1,5 @@
 import { beforeEach, describe } from "node:test";
-import { Test, type TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
 import { ServersessionsController } from "./server-sessions.controller";
 
 describe("ServersessionsController", () => {

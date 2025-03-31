@@ -1,11 +1,11 @@
-import type { ExecutionContext, INestApplication } from "@nestjs/common";
+import { type ExecutionContext, type INestApplication } from "@nestjs/common";
 import { Test, type TestingModule } from "@nestjs/testing";
 import request from "supertest";
 import { setupDatabase } from "test/setup";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { AuthGuard } from "~/apis/auth/auth.gurd";
 import { AppModule } from "~/app.module"; // Import AppModule instead of AuthModule
-import type { MeEntity } from "./entities/me.entity";
+import { MeEntity } from "./entities/me.entity";
 
 // Use a more descriptive name for the test suite
 describe("AuthController (e2e)", () => {

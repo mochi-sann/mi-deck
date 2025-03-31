@@ -12,11 +12,11 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "../auth/auth.gurd";
-import type { CreateServerSessionDto } from "./dto/creste.dto";
-import type { UpdateServerInfoDto } from "./dto/udpate-server-info.dto";
+import { CreateServerSessionDto } from "./dto/creste.dto";
+import { UpdateServerInfoDto } from "./dto/udpate-server-info.dto";
 import { CreateServerSessionResponseEntity } from "./entities/create-server.entity";
 import { ServerInfoEntity } from "./entities/server-info.entity";
-import type { ServerSessionsService } from "./server-sessions.service";
+import { ServerSessionsService } from "./server-sessions.service";
 
 @Controller("server-sessions")
 @ApiTags("server-sessions")

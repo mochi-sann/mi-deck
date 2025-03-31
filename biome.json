@@ -18,8 +18,7 @@
       "apps/front/dist/**",
       "apps/front/src/routeTree.gen.ts",
       "apps/front/styled-system/**",
-      "apps/front/src/lib/api/type.ts",
-      "misskey-db"
+      "apps/front/src/lib/api/type.ts"
     ]
   },
   "formatter": {
@@ -34,9 +33,10 @@
     "rules": {
       "recommended": true,
       "style": {
-        "noNonNullAssertion": "error",
+        "noNonNullAssertion": "off",
         "useTemplate": "off",
         "noUselessElse": "off",
+        "useImportType": "off",
         "useNamingConvention": "error"
       }
     }

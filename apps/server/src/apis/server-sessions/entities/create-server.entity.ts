@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import type { $Enums } from "@prisma/client";
+import { $Enums } from "@prisma/client";
 import { IsString } from "class-validator";
 
 export class CreateServerSessionResponseEntity {

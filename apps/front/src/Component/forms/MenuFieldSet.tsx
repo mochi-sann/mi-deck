@@ -1,7 +1,7 @@
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import {
-  type FieldValues,
-  type UseControllerProps,
+  FieldValues,
+  UseControllerProps,
   useController,
 } from "react-hook-form";
 import { Field } from "../ui/field";

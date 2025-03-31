@@ -1,8 +1,8 @@
 import createFetchClient from "openapi-fetch";
-import type { Middleware } from "openapi-fetch";
+import { Middleware } from "openapi-fetch";
 import createClient from "openapi-react-query";
 import { AuthTokenStorage } from "../configureAuth";
-import type { paths } from "./type";
+import { paths } from "./type";
 
 const JwtMiddleware: Middleware = {
   async onRequest({ request, options }) {

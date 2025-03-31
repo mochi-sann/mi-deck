@@ -1,4 +1,4 @@
-import { Link, type LinkComponent } from "@tanstack/react-router";
+import { Link, LinkComponent } from "@tanstack/react-router";
 import type React from "react";
 
 export type LinkProps = LinkComponent<"a">;

@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Request, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "../auth/auth.gurd";
-import type { TimelineService } from "./timeline.service";
+import { TimelineService } from "./timeline.service";
 
 @ApiTags("timeline")
 @Controller("timeline")
