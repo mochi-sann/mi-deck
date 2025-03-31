@@ -12,7 +12,7 @@ export const MisskeyJsTest: React.FC = () => {
     origin: "http://localhost:3002",
     credential: "PK00RQIpfmS1diD38HCzB1Pmz055BvFG",
   });
-  const { isPending, error, data } = useQuery({
+  const { data } = useQuery({
     queryKey: ["timeline"],
     queryFn: async () => {
       return await client
