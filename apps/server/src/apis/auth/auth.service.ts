@@ -3,10 +3,10 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
+import type { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
-import { PrismaService } from "../../lib/prisma.service";
-import { UserService } from "../user/user.service";
+import type { PrismaService } from "../../lib/prisma.service";
+import type { UserService } from "../user/user.service";
 import { LoginEntity } from "./entities/login.entity";
 import { MeEntity } from "./entities/me.entity";
 @Injectable()

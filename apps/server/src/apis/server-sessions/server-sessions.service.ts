@@ -2,9 +2,9 @@ import { userInfo } from "node:os";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ServerType } from "@prisma/client";
 import { APIClient } from "misskey-js/api.js";
-import { User } from "misskey-js/entities.js";
-import { PrismaService } from "../../lib/prisma.service";
-import { CreateServerSessionDto } from "./dto/creste.dto";
+import type { User } from "misskey-js/entities.js";
+import type { PrismaService } from "../../lib/prisma.service";
+import type { CreateServerSessionDto } from "./dto/creste.dto";
 import { CreateServerSessionResponseEntity } from "./entities/create-server.entity";
 import { ServerInfoEntity } from "./entities/server-info.entity";
 

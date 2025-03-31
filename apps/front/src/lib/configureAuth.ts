@@ -1,6 +1,6 @@
 import { configureAuth } from "react-query-auth";
 import { fetchClient } from "./api/fetchClient";
-import { components } from "./api/type";
+import type { components } from "./api/type";
 
 const AuthTokenStorageKey = "mi-deck-auth-token";
 export const AuthTokenStorage = {

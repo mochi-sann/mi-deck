@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { APIClient } from "misskey-js/api.js";
-import { PrismaService } from "~/lib/prisma.service";
+import type { PrismaService } from "~/lib/prisma.service";
 import { CreateTimelineDto } from "./dto/create-timeline.dto";
 import { UpdateTimelineDto } from "./dto/update-timeline.dto";
 

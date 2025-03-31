@@ -10,9 +10,9 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "./auth.gurd";
-import { AuthService } from "./auth.service";
-import { LoginDto } from "./dto/login.dto";
-import { SignUpDto } from "./dto/sign-up.dto";
+import type { AuthService } from "./auth.service";
+import type { LoginDto } from "./dto/login.dto";
+import type { SignUpDto } from "./dto/sign-up.dto";
 import { LoginEntity } from "./entities/login.entity";
 import { MeEntity } from "./entities/me.entity";
 
