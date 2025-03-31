@@ -55,7 +55,7 @@ jobs:
       - run: pnpm run server db:migrate:reset
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydb?schema=public
-      - run: pnpm run server test:e2e:api
+      - run: pnpm run server test:e2e
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydb?schema=public
         # ビルドの成果物
