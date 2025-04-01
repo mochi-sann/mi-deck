@@ -138,21 +138,6 @@ paths:
       security:
         - bearer: []
       tags: *ref_1
-  /v1/server-sessions/{id}:
-    put:
-      operationId: ServersessionsController_update
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags: *ref_1
-    delete:
-      operationId: ServersessionsController_delete
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags: *ref_1
   /v1/timeline:
     post:
       operationId: TimelineController_create

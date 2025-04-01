@@ -1,12 +1,10 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
   Injectable,
   Post,
-  Put,
   Request,
   UseGuards,
 } from "@nestjs/common";
@@ -84,8 +82,4 @@ export class ServersessionsController {
       userId,
     );
   }
-  @Put(":id")
-  update() {}
-  @Delete(":id")
-  delete() {}
 }
