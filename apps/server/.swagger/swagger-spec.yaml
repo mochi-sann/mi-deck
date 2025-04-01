@@ -153,24 +153,63 @@ paths:
         '200':
           description: ''
       tags: *ref_1
-  /v1/timeline/{serverSerssionId}:
+  /v1/timeline:
+    post:
+      operationId: TimelineController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTimelineDto'
+      responses:
+        '201':
+          description: Timeline configuration created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimelineEntity'
+        '400':
+          description: Bad Request (validation failed).
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden (user does not own the server session).
+      security:
+        - bearer: []
+      summary: Create a new timeline configuration
+      tags: &ref_2
+        - timeline
+  /v1/timeline/{serverSessionId}:
     get:
+      description: >-
+        Currently fetches the home timeline notes. Adapt as needed for specific
+        configured timelines.
       operationId: TimelineController_findOne
       parameters:
-        - name: serverSerssionId
+        - name: serverSessionId
           required: true
           in: path
           schema:
             type: string
       responses:
         '200':
-          description: ''
+          description: Returns an array of notes.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
         '401':
-          description: ''
+          description: Unauthorized.
+        '403':
+          description: Forbidden (session not found or access denied).
       security:
         - bearer: []
-      tags:
-        - timeline
+      summary: Get timeline notes for a specific server session
+      tags: *ref_2
 info:
   title: mi-deck api
   description: mi-deck api description
@@ -319,3 +358,74 @@ components:
         - iconUrl
         - faviconUrl
         - themeColor
+    CreateTimelineDto:
+      type: object
+      properties:
+        serverSessionId:
+          type: string
+          description: The ID of the server session this timeline belongs to
+          example: a1b2c3d4-e5f6-7890-1234-567890abcdef
+        name:
+          type: string
+          description: User-defined name for the timeline
+          example: My Home Timeline
+        type:
+          type: string
+          description: Type of the timeline
+          enum:
+            - HOME
+            - LOCAL
+            - GLOBAL
+            - LIST
+            - USER
+            - CHANNEL
+          example: HOME
+        listId:
+          type: string
+          description: Required if type is LIST. The ID of the Misskey list.
+          example: abcdef1234567890
+        channelId:
+          type: string
+          description: Required if type is CHANNEL. The ID of the Misskey channel.
+          example: ghijkl9876543210
+      required:
+        - serverSessionId
+        - name
+        - type
+    TimelineEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        serverSessionId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+            - HOME
+            - LOCAL
+            - GLOBAL
+            - LIST
+            - USER
+            - CHANNEL
+        listId:
+          type: object
+        channelId:
+          type: object
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - serverSessionId
+        - name
+        - type
+        - createdAt
+        - updatedAt

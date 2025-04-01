@@ -1,14 +1,10 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { $api } from "../../../../lib/api/api";
-import { components } from "../../../../lib/api/type";
-import { Button } from "../../../../Component/ui/button";
-import { TextFieldSet } from "../../../../Component/forms/TextFieldSet";
-import { MenuFieldSet } from "../../../../Component/forms/MenuFieldSet";
-import { Text } from "../../../../Component/ui/text";
+import { MenuFieldSet } from "@/Component/forms/MenuFieldSet";
+import { TextFieldSet } from "@/Component/forms/TextFieldSet";
+import { $api } from "@/lib/api/fetchClient";
+import { components } from "@/lib/api/type";
 import { useQuery } from "@tanstack/react-query";
-import { Spinner } from "../../../../Component/ui/spinner";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 type CreateTimelineFormType = components["schemas"]["CreateTimelineDto"];
 // Define the schema based on CreateTimelineDto
@@ -36,7 +32,9 @@ export function CreateTimelineForm() {
       const res = await $api.get("/v1/server-sessions");
       if (res.status !== 201) {
         console.error("Failed to fetch server sessions:", res);
-        throw new Error(`Failed to fetch server sessions. Status: ${res.status}`);
+        throw new Error(
+          `Failed to fetch server sessions. Status: ${res.status}`,
+        );
       }
       // Ensure the response data is an array before returning
       return Array.isArray(res.data) ? res.data : [];
@@ -67,8 +65,8 @@ export function CreateTimelineForm() {
 
   // Handle form submission
   const onSubmit = (data: CreateTimelineFormType) => {
-     // Ensure params is an empty object if not needed or empty, rather than undefined
-     const submissionData = {
+    // Ensure params is an empty object if not needed or empty, rather than undefined
+    const submissionData = {
       ...data,
       params: data.params ?? {},
     };
@@ -82,7 +80,11 @@ export function CreateTimelineForm() {
   if (isLoadingSessions) return <Spinner label="Loading server sessions..." />;
   // Display error state if fetching sessions failed
   if (sessionsError)
-    return <Text color="red.500">Error loading server sessions: {sessionsError.message}</Text>;
+    return (
+      <Text color="red.500">
+        Error loading server sessions: {sessionsError.message}
+      </Text>
+    );
   // Display message if no sessions are available
   if (!serverSessions || serverSessions.length === 0)
     return <Text>No server sessions found. Please add a server first.</Text>;
@@ -156,14 +158,20 @@ export function CreateTimelineForm() {
       )}
 
       {/* Display general form errors from refine (now targeting params) */}
-       {errors.params?.message && !errors.params.listId && !errors.params.userId && ( // Show only if specific field errors aren't present
-         <Text color="red.500" mt="2">
-           {errors.params.message}
-         </Text>
-       )}
+      {errors.params?.message &&
+        !errors.params.listId &&
+        !errors.params.userId && ( // Show only if specific field errors aren't present
+          <Text color="red.500" mt="2">
+            {errors.params.message}
+          </Text>
+        )}
 
-
-      <Button type="submit" loading={status === "pending"} loadingText="Creating..." mt="4">
+      <Button
+        type="submit"
+        loading={status === "pending"}
+        loadingText="Creating..."
+        mt="4"
+      >
         Create Timeline
       </Button>
 

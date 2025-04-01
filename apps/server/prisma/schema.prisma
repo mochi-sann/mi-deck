@@ -73,6 +73,7 @@ model ServerSession {
   panels         Panel[]
   serverInfo     ServerInfo?
   serverUserInfo UserInfo?
+  Timeline       Timeline[]
 
   @@unique([origin, userId])
   @@index([userId])

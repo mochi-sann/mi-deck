@@ -141,6 +141,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Create a new timeline configuration */
         post: operations["TimelineController_create"];
         delete?: never;
         options?: never;
@@ -148,13 +149,17 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/timeline/{serverSerssionId}": {
+    "/v1/timeline/{serverSessionId}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
+        /**
+         * Get timeline notes for a specific server session
+         * @description Currently fetches the home timeline notes. Adapt as needed for specific configured timelines.
+         */
         get: operations["TimelineController_findOne"];
         put?: never;
         post?: never;
@@ -235,25 +240,26 @@ export interface components {
              */
             serverSessionId: string;
             /**
-             * @description The name of the timeline
+             * @description User-defined name for the timeline
              * @example My Home Timeline
              */
             name: string;
             /**
-             * @description The type of the timeline
-             * @example Home
+             * @description Type of the timeline
+             * @example HOME
              * @enum {string}
              */
-            type: "Home" | "Local" | "Global" | "List" | "User";
+            type: "HOME" | "LOCAL" | "GLOBAL" | "LIST" | "USER" | "CHANNEL";
             /**
-             * @description Additional parameters for specific timeline types (e.g., listId, userId)
-             * @example {
-             *       "listId": "someListId"
-             *     }
+             * @description Required if type is LIST. The ID of the Misskey list.
+             * @example abcdef1234567890
              */
-            params?: {
-                [key: string]: unknown;
-            };
+            listId?: string;
+            /**
+             * @description Required if type is CHANNEL. The ID of the Misskey channel.
+             * @example ghijkl9876543210
+             */
+            channelId?: string;
         };
         TimelineEntity: {
             /** Format: uuid */
@@ -262,8 +268,9 @@ export interface components {
             serverSessionId: string;
             name: string;
             /** @enum {string} */
-            type: "Home" | "Local" | "Global" | "List" | "User";
-            params?: Record<string, never>;
+            type: "HOME" | "LOCAL" | "GLOBAL" | "LIST" | "USER" | "CHANNEL";
+            listId?: Record<string, never>;
+            channelId?: Record<string, never>;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -519,31 +526,6 @@ export interface operations {
             };
         };
     };
-    TimelineController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                serverSerssionId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     TimelineController_create: {
         parameters: {
             query?: never;
@@ -557,6 +539,7 @@ export interface operations {
             };
         };
         responses: {
+            /** @description Timeline configuration created successfully. */
             201: {
                 headers: {
                     [name: string]: unknown;
@@ -565,19 +548,58 @@ export interface operations {
                     "application/json": components["schemas"]["TimelineEntity"];
                 };
             };
+            /** @description Bad Request (validation failed). */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
+            /** @description Unauthorized. */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
-            404: {
+            /** @description Forbidden (user does not own the server session). */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TimelineController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                serverSessionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns an array of notes. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>[];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden (session not found or access denied). */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
