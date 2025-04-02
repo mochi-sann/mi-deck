@@ -212,11 +212,55 @@ describe("TimelineController (e2e)", () => {
       const names = response.body.map((t: TimelineEntity) => t.name);
       expect(names).toContain("Test Home Timeline");
       expect(names).toContain("Test List Timeline");
-      console.log(...[response.body, '👀 [timeline.e2e.spec.ts:215]: response.body'].reverse());
-      
-      
+      // console.log(...[response.body, '👀 [timeline.e2e.spec.ts:215]: response.body'].reverse());
 
-      // Verify structure and specific fields of the returned timelines
+      // Compare structure excluding dynamic fields (id, serverSessionId, createdAt, updatedAt)
+      const expectedTimelines = [
+        {
+          name: "Test Home Timeline",
+          type: "HOME",
+          listId: null,
+          channelId: null,
+          serverSession: {
+            userId: seededUserId, // Use the correct variable name
+            origin: "https://test.example.com",
+            serverToken: "test-token",
+            serverType: "Misskey",
+          },
+        },
+        {
+          name: "Test List Timeline",
+          type: "LIST",
+          listId: "list-abc-123",
+          channelId: null,
+          serverSession: {
+            userId: seededUserId, // Use the correct variable name
+            origin: "https://test.example.com",
+            serverToken: "test-token",
+            serverType: "Misskey",
+          },
+        },
+      ];
+
+      const transformTimeline = (timeline: any) => ({
+        name: timeline.name,
+        type: timeline.type,
+        listId: timeline.listId,
+        channelId: timeline.channelId,
+        serverSession: {
+          userId: timeline.serverSession.userId,
+          origin: timeline.serverSession.origin,
+          serverToken: timeline.serverSession.serverToken,
+          serverType: timeline.serverSession.serverType,
+        },
+      });
+
+      const actualTimelines = response.body.map(transformTimeline);
+
+      // Use expect.arrayContaining to allow for different order
+      expect(actualTimelines).toEqual(expect.arrayContaining(expectedTimelines));
+      // Ensure the lengths match exactly
+      expect(actualTimelines.length).toEqual(expectedTimelines.length);
     });
   });
 
