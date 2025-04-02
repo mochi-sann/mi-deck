@@ -21,6 +21,7 @@ describe("TimelineController (e2e)", () => {
   let prisma: PrismaService;
   let timelineService: TimelineService; // Store TimelineService instance
   let serverSessionId: string; // Store the created server session ID
+  let createdTimelineIds: string[] = []; // Store IDs of created timelines for cleanup
 
   const seededUserId = "f8895928-12d9-47e6-85a3-8de88aaaa7a8"; // Match the ID in prisma/seed.ts
   const mockUser: MeEntity = {
