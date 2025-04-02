@@ -23,7 +23,7 @@ export function CreateTimelineFormPresentation() {
   if (sessionsError)
     return (
       <Text color="red.500">
-        Error loading server sessions: {sessionsError.message}
+        Error loading server sessions: {(sessionsError as Error).message}
       </Text>
     );
   // Display message if no sessions are available

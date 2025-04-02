@@ -196,7 +196,7 @@ export function CreateTimelineForm(props: CreateTimelineFormProps) {
       {/* Display API call error */}
       {status === "error" && (
         <Text color="red.500" mt="2">
-          Error: {error?.message || "Failed to create timeline."}
+          Error: {(error as Error)?.message || "Failed to create timeline."}
         </Text>
       )}
       {status === "success" && (
