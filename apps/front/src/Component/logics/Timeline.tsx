@@ -4,11 +4,11 @@ import type React from "react";
 export const Timeline: React.FC = () => {
   const { isPending, error, data } = $api.useQuery(
     "get",
-    "/v1/timeline/{serverSerssionId}",
+    "/v1/timeline/{serverSessionId}",
     {
       params: {
         path: {
-          serverSerssionId: "f8895928-12d9-47e6-85a3-8de88aaaa7a8",
+          serverSessionId: "f8895928-12d9-47e6-85a3-8de88aaaa7a8",
         },
       },
     },
