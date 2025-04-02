@@ -1,8 +1,8 @@
 import { Spinner } from "@/Component/ui/spinner";
 import { Text } from "@/Component/ui/text";
 import { $api } from "@/lib/api/fetchClient";
-import { CreateTimelineForm } from "./CreateTimelineForm";
 import { Suspense } from "react";
+import { CreateTimelineForm } from "./CreateTimelineForm";
 
 // Define the type based on the API schema, making conditional fields optional initially
 // Define the schema based on CreateTimelineDto matching the API spec
@@ -39,7 +39,7 @@ export function CreateTimelineFormPresentation() {
   return (
     <div>
       <Suspense fallback={<Spinner label="Loading form..." />}>
-          <CreateTimelineForm serverSessions={serverSessions} />
+        <CreateTimelineForm serverSessions={serverSessions} />
       </Suspense>
     </div>
   );

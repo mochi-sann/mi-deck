@@ -118,7 +118,9 @@ describe("TimelineService", () => {
         mockTimelines.map((t) => ({
           ...t,
           serverSession: mockServerSession, // Include the related server session
-        })) as unknown as Prisma.PrismaPromise<(Timeline & { serverSession: ServerSession })[]>, // Adjust type hint
+        })) as unknown as Prisma.PrismaPromise<
+          (Timeline & { serverSession: ServerSession })[]
+        >, // Adjust type hint
       );
 
       const result = await service.findAllByUserId(mockUserId);

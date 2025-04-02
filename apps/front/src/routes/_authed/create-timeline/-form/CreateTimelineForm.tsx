@@ -20,7 +20,10 @@ type CreateTimelineFormType = Omit<
 // Define the schema based on CreateTimelineDto matching the API spec
 const schema = z
   .object({
-    serverSessionId: z.string().uuid("Server Session ID is required."),
+    serverSessionId: z
+      .string()
+      .uuid("Server Session ID is required.")
+      .transform((value) => String(value)),
     name: z.string().min(1, "Timeline name is required."),
     // Use uppercase enum values and include CHANNEL
     type: z.enum(["HOME", "LOCAL", "GLOBAL", "LIST", "USER", "CHANNEL"], {
@@ -135,12 +138,13 @@ export function CreateTimelineForm(props: CreateTimelineFormProps) {
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <pre>{JSON.stringify(watch(), null, 2)}</pre>
       <MenuFieldSet
         control={control}
         name="serverSessionId"
         label="Server Session"
         placeholder="Select a server session"
-        collection={serverOptions|| []}
+        collection={serverOptions || []}
         validation={errors.serverSessionId?.message ?? ""}
       />
 
@@ -196,7 +200,10 @@ export function CreateTimelineForm(props: CreateTimelineFormProps) {
       {/* Display API call error */}
       {status === "error" && (
         <Text color="red.500" mt="2">
-          Error: {error instanceof Error ? error.message : "Failed to create timeline."}
+          Error:{" "}
+          {error instanceof Error
+            ? error.message
+            : "Failed to create timeline."}
         </Text>
       )}
       {status === "success" && (

@@ -258,7 +258,9 @@ describe("TimelineController (e2e)", () => {
       const actualTimelines = response.body.map(transformTimeline);
 
       // Use expect.arrayContaining to allow for different order
-      expect(actualTimelines).toEqual(expect.arrayContaining(expectedTimelines));
+      expect(actualTimelines).toEqual(
+        expect.arrayContaining(expectedTimelines),
+      );
       // Ensure the lengths match exactly
       expect(actualTimelines.length).toEqual(expectedTimelines.length);
     });
