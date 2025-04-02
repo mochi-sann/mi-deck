@@ -6,18 +6,52 @@ import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-type CreateTimelineFormType = components["schemas"]["CreateTimelineDto"];
-// Define the schema based on CreateTimelineDto
-const schema = z.object({
-  serverSessionId: z.string().uuid("Server Session ID is required."),
-  name: z.string().min(1, "Timeline name is required."),
-  type: z.enum(["Home", "Local", "Global", "List", "User"], {
-    errorMap: () => ({ message: "Timeline type is required." }),
-  }),
-  // params は type が 'List' または 'User' の場合に必要になる可能性がある
-  // ここでは簡単化のため、バリデーションは省略
-  params: z.record(z.any()).optional(),
-});
+// Define the type based on the API schema, making conditional fields optional initially
+type CreateTimelineFormType = Omit<
+  components["schemas"]["CreateTimelineDto"],
+  "listId" | "channelId" // Omit these as they are handled by refine
+> & {
+  listId?: string;
+  channelId?: string;
+};
+
+// Define the schema based on CreateTimelineDto matching the API spec
+const schema = z
+  .object({
+    serverSessionId: z.string().uuid("Server Session ID is required."),
+    name: z.string().min(1, "Timeline name is required."),
+    // Use uppercase enum values and include CHANNEL
+    type: z.enum(["HOME", "LOCAL", "GLOBAL", "LIST", "USER", "CHANNEL"], {
+      errorMap: () => ({ message: "Timeline type is required." }),
+    }),
+    // listId and channelId are optional at the top level
+    listId: z.string().optional(),
+    channelId: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.type === "LIST") {
+        return !!data.listId && data.listId.trim().length > 0;
+      }
+      return true;
+    },
+    {
+      message: "List ID is required when type is LIST.",
+      path: ["listId"], // Specify the path for the error message
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.type === "CHANNEL") {
+        return !!data.channelId && data.channelId.trim().length > 0;
+      }
+      return true;
+    },
+    {
+      message: "Channel ID is required when type is CHANNEL.",
+      path: ["channelId"], // Specify the path for the error message
+    },
+  );
 
 export function CreateTimelineForm() {
   const {
@@ -55,21 +89,31 @@ export function CreateTimelineForm() {
     watch,
   } = useForm<CreateTimelineFormType>({
     resolver: zodResolver(schema),
+    // Update default values to match the new schema structure
     defaultValues: {
       serverSessionId: "",
       name: "",
-      type: "Home",
-      params: {},
+      type: "HOME", // Default to uppercase
+      listId: "", // Initialize optional fields
+      channelId: "",
     },
   });
 
   // Handle form submission
   const onSubmit = (data: CreateTimelineFormType) => {
-    // Ensure params is an empty object if not needed or empty, rather than undefined
-    const submissionData = {
+    // Prepare data for submission, removing empty optional fields
+    const submissionData: components["schemas"]["CreateTimelineDto"] = {
       ...data,
-      params: data.params ?? {},
+      listId: data.type === "LIST" ? data.listId : undefined,
+      channelId: data.type === "CHANNEL" ? data.channelId : undefined,
     };
+    // Remove undefined keys before sending
+    Object.keys(submissionData).forEach((key) => {
+      if (submissionData[key as keyof typeof submissionData] === undefined) {
+        delete submissionData[key as keyof typeof submissionData];
+      }
+    });
+
     console.log("Submitting Form Data:", submissionData);
     mutate(submissionData);
   };
@@ -96,13 +140,14 @@ export function CreateTimelineForm() {
     value: session.id,
   }));
 
-  // Options for the timeline type dropdown
+  // Options for the timeline type dropdown - use uppercase values and add CHANNEL
   const timelineTypeOptions = [
-    { label: "Home", value: "Home" },
-    { label: "Local", value: "Local" },
-    { label: "Global", value: "Global" },
-    { label: "List", value: "List" },
-    { label: "User", value: "User" },
+    { label: "Home", value: "HOME" },
+    { label: "Local", value: "LOCAL" },
+    { label: "Global", value: "GLOBAL" },
+    { label: "List", value: "LIST" },
+    { label: "User", value: "USER" }, // Assuming USER type exists, though not in CreateTimelineDto enum
+    { label: "Channel", value: "CHANNEL" },
   ];
 
   return (
