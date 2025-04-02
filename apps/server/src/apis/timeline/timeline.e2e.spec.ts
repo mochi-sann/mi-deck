@@ -212,6 +212,9 @@ describe("TimelineController (e2e)", () => {
       const names = response.body.map((t: TimelineEntity) => t.name);
       expect(names).toContain("Test Home Timeline");
       expect(names).toContain("Test List Timeline");
+      console.log(...[response.body, '👀 [timeline.e2e.spec.ts:215]: response.body'].reverse());
+      
+      
 
       // Verify structure and specific fields of the returned timelines
     });
