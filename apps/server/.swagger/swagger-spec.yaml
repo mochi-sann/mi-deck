@@ -166,11 +166,29 @@ paths:
       summary: Create a new timeline configuration
       tags: &ref_2
         - timeline
+    get:
+      operationId: TimelineController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: Returns an array of timeline configurations.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimelineEntity'
+        '401':
+          description: Unauthorized.
+      security:
+        - bearer: []
+      summary: Get all timeline configurations for the user
+      tags: *ref_2
   /v1/timeline/{serverSessionId}:
     get:
       description: >-
-        Currently fetches the home timeline notes. Adapt as needed for specific
-        configured timelines.
+        Fetches notes for a timeline associated with the given server session
+        ID. Needs clarification if it should fetch based on Timeline ID instead.
       operationId: TimelineController_findOne
       parameters:
         - name: serverSessionId

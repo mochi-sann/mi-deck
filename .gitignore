@@ -132,3 +132,5 @@ apps/front/src/routeTree.gen.ts
 redis/dump.rdb
 server/test.db
 .aider*
+!.aider.conf.yml
+!.aiderignore
