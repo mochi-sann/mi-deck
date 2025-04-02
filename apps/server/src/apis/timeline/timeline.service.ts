@@ -49,8 +49,26 @@ export class TimelineService {
     return new TimelineEntity(newTimeline);
   }
 
+  // Method to find all timeline configurations for a user
+  async findAllByUserId(userId: string): Promise<TimelineEntity[]> {
+    const timelines = await this.prisma.timeline.findMany({
+      where: {
+        serverSession: {
+          userId: userId, // Filter timelines based on the user ID of the associated server session
+        },
+      },
+      include: {
+        serverSession: true, // Include serverSession to ensure the relation exists
+      },
+    });
+
+    // Map Prisma models to TimelineEntity objects
+    return timelines.map((timeline) => new TimelineEntity(timeline));
+  }
+
   // Existing method to fetch notes from a Misskey timeline (e.g., Home timeline)
-  // Consider renaming or creating specific methods if fetching different timeline types is needed here.
+  // This method fetches notes based on a SERVER SESSION ID, not a timeline configuration ID.
+  // Consider if this should fetch based on a specific TimelineEntity ID instead.
   async findOne(serverSessionId: string, userId: string) {
     const serverSession = await this.prisma.serverSession.findUnique({
       where: {
