@@ -1,7 +1,13 @@
 import { MenuFieldSet } from "@/Component/forms/MenuFieldSet";
 import { TextFieldSet } from "@/Component/forms/TextFieldSet";
+import { MenuFieldSet } from "@/Component/forms/MenuFieldSet";
+import { TextFieldSet } from "@/Component/forms/TextFieldSet";
+import { Button } from "@/Component/ui/button";
+import { Spinner } from "@/Component/ui/spinner";
+import { Text } from "@/Component/ui/text";
 import { $api } from "@/lib/api/fetchClient";
 import { components } from "@/lib/api/type";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -180,36 +186,28 @@ export function CreateTimelineForm() {
       />
 
       {/* Conditional fields based on type */}
-      {selectedType === "List" && (
+      {selectedType === "LIST" && (
         <TextFieldSet
           control={control}
-          control={control}
-          name="params.listId" // Use dot notation for nested fields in react-hook-form
+          name="listId" // Use correct field name from schema
           label="List ID"
           placeholder="Enter List ID"
           type="text"
-          validation={errors.params?.listId?.message ?? ""} // Display validation errors
+          validation={errors.listId?.message ?? ""} // Display validation errors for listId
         />
       )}
-      {selectedType === "User" && (
+      {selectedType === "CHANNEL" && (
         <TextFieldSet
           control={control}
-          name="params.userId" // Use dot notation
-          label="User ID"
-          placeholder="Enter User ID"
+          name="channelId" // Use correct field name from schema
+          label="Channel ID"
+          placeholder="Enter Channel ID"
           type="text"
-          validation={errors.params?.userId?.message ?? ""} // Display validation errors
+          validation={errors.channelId?.message ?? ""} // Display validation errors for channelId
         />
       )}
 
-      {/* Display general form errors from refine (now targeting params) */}
-      {errors.params?.message &&
-        !errors.params.listId &&
-        !errors.params.userId && ( // Show only if specific field errors aren't present
-          <Text color="red.500" mt="2">
-            {errors.params.message}
-          </Text>
-        )}
+      {/* Removed general error display as refine targets specific paths */}
 
       <Button
         type="submit"
