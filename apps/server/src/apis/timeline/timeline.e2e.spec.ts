@@ -247,7 +247,7 @@ describe("TimelineController (e2e)", () => {
         .get("/v1/timeline")
         .expect(200);
 
-      expect(response.body).toEqual([
+      expect(response.body.channelId).toEqual([
         {
           channelId: null,
           createdAt: "2025-04-02T06:29:46.438Z",
