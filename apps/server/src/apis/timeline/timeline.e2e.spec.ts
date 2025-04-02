@@ -15,6 +15,7 @@ import { AuthGuard } from "../auth/auth.gurd";
 import { MeEntity } from "../auth/entities/me.entity";
 import { CreateTimelineDto } from "./dto/create-timeline.dto";
 import { TimelineService } from "./timeline.service"; // Import TimelineService for mocking
+import { TimelineEntity } from "./entities/timeline.entity";
 
 describe("TimelineController (e2e)", () => {
   let app: INestApplication;
@@ -246,7 +247,27 @@ describe("TimelineController (e2e)", () => {
         .get("/v1/timeline")
         .expect(200);
 
-      expect(response.body).toEqual([]);
+      expect(response.body).toEqual([
+        {
+          channelId: null,
+          createdAt: "2025-04-02T06:29:46.438Z",
+          id: "989792c3-9f8e-4b46-a8f7-6c58bef523f7",
+          listId: null,
+          name: "Invalid List Timeline",
+          serverSession: {
+            createdAt: "2025-04-02T06:29:46.354Z",
+            id: "127b798b-f95f-48d7-840c-99cdc0ecfeda",
+            origin: "https://test.example.com",
+            serverToken: "test-token",
+            serverType: "Misskey",
+            updatedAt: "2025-04-02T06:29:46.354Z",
+            userId: "f8895928-12d9-47e6-85a3-8de88aaaa7a8",
+          },
+          serverSessionId: "127b798b-f95f-48d7-840c-99cdc0ecfeda",
+          type: "LIST",
+          updatedAt: "2025-04-02T06:29:46.438Z",
+        },
+      ]);
     });
 
     // Add test for unauthorized access if AuthGuard mock wasn't used globally
