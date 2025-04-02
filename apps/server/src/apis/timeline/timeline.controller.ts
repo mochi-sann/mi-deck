@@ -72,7 +72,6 @@ export class TimelineController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: "Get timeline notes for a specific server session",
-    summary: "Get timeline notes for a specific server session", // Or specific timeline?
     description:
       "Fetches notes for a timeline associated with the given server session ID. Needs clarification if it should fetch based on Timeline ID instead.",
   })
