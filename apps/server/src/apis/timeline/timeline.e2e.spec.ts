@@ -224,19 +224,29 @@ describe("TimelineController (e2e)", () => {
       // Check if the response contains the expected timeline names (order might vary)
       const names = response.body.map((t: TimelineEntity) => t.name);
       expect(names).toContain("Test Home Timeline");
-      expect(names).toContain("Test List Timeline");
+     expect(names).toContain("Test List Timeline");
 
-      // Verify structure of one element
-      const timeline = response.body[0];
-      expect(timeline).toHaveProperty("id");
-      expect(timeline).toHaveProperty("serverSessionId", serverSessionId);
-      expect(timeline).toHaveProperty("name");
-      expect(timeline).toHaveProperty("type");
-      expect(timeline).toHaveProperty("createdAt");
-      expect(timeline).toHaveProperty("updatedAt");
-    });
+     // Verify structure and specific fields of the returned timelines
+     response.body.forEach((timeline: TimelineEntity) => {
+       expect(timeline).toHaveProperty("id"); // Check existence
+       expect(timeline).toHaveProperty("createdAt"); // Check existence
+       expect(timeline).toHaveProperty("updatedAt"); // Check existence
+       expect(timeline.serverSessionId).toBe(serverSessionId); // Check exact value
 
-    it("should return an empty array if the user has no timelines", async () => {
+       // Check specific properties based on the name (assuming names are unique in this test setup)
+       if (timeline.name === "Test Home Timeline") {
+         expect(timeline.type).toBe(TimelineType.HOME);
+         expect(timeline.listId).toBeNull();
+         expect(timeline.channelId).toBeNull();
+       } else if (timeline.name === "Test List Timeline") {
+         expect(timeline.type).toBe(TimelineType.LIST);
+         expect(timeline.listId).toBe("list-abc-123"); // Check exact value
+         expect(timeline.channelId).toBeNull();
+       }
+     });
+   });
+
+   it("should return an empty array if the user has no timelines", async () => {
       // Delete existing timelines for this test
       await prisma.timeline.deleteMany({
         where: { id: { in: createdTimelineIds } },
@@ -244,33 +254,13 @@ describe("TimelineController (e2e)", () => {
       createdTimelineIds = []; // Reset the array
 
       const response = await request(app.getHttpServer())
-        .get("/v1/timeline")
-        .expect(200);
+       .get("/v1/timeline")
+       .expect(200);
 
-      expect(response.body.channelId).toEqual([
-        {
-          channelId: null,
-          createdAt: "2025-04-02T06:29:46.438Z",
-          id: "989792c3-9f8e-4b46-a8f7-6c58bef523f7",
-          listId: null,
-          name: "Invalid List Timeline",
-          serverSession: {
-            createdAt: "2025-04-02T06:29:46.354Z",
-            id: "127b798b-f95f-48d7-840c-99cdc0ecfeda",
-            origin: "https://test.example.com",
-            serverToken: "test-token",
-            serverType: "Misskey",
-            updatedAt: "2025-04-02T06:29:46.354Z",
-            userId: "f8895928-12d9-47e6-85a3-8de88aaaa7a8",
-          },
-          serverSessionId: "127b798b-f95f-48d7-840c-99cdc0ecfeda",
-          type: "LIST",
-          updatedAt: "2025-04-02T06:29:46.438Z",
-        },
-      ]);
-    });
+     expect(response.body).toEqual([]); // Correct assertion for empty array
+   });
 
-    // Add test for unauthorized access if AuthGuard mock wasn't used globally
+   // Add test for unauthorized access if AuthGuard mock wasn't used globally
     // it('should return 401 if user is not authenticated', async () => { ... });
   });
 });
