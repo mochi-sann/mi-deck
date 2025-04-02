@@ -47,14 +47,34 @@ export class TimelineController {
     return this.timelineService.create(createTimelineDto, userId);
   }
 
-  // Existing endpoint to get notes (currently home timeline) for a session
-  @Get(":serverSessionId")
+  @Get()
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Get all timeline configurations for the user" })
+  @ApiResponse({
+    status: 200,
+    description: "Returns an array of timeline configurations.",
+    type: [TimelineEntity], // Indicate it returns an array of TimelineEntity
+  })
+  @ApiResponse({ status: 401, description: "Unauthorized." })
+  findAll(@Request() req) {
+    const userId = req.user.id;
+    // TODO: Implement findAllByUserId in TimelineService
+    // return this.timelineService.findAllByUserId(userId);
+    // Placeholder until service method is implemented:
+    return this.timelineService.findAllByUserId(userId); // Assuming this method will be added
+  }
+
+  // Existing endpoint to get notes (currently home timeline) for a specific timeline configuration
+  // Consider changing the path parameter if it should be timeline ID instead of session ID
+  @Get(":serverSessionId") // Or perhaps :timelineId ?
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: "Get timeline notes for a specific server session",
+    summary: "Get timeline notes for a specific server session", // Or specific timeline?
     description:
-      "Currently fetches the home timeline notes. Adapt as needed for specific configured timelines.",
+      "Fetches notes for a timeline associated with the given server session ID. Needs clarification if it should fetch based on Timeline ID instead.",
   })
   @ApiResponse({
     status: 200,
