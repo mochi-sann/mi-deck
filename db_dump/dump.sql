@@ -4819,8 +4819,14 @@ ALTER TABLE ONLY public.user_ip ALTER COLUMN id SET DEFAULT nextval('public.user
 --
 
 COPY public.__chart__active_users (id, date, "unique_temp___registeredWithinWeek", "___registeredWithinWeek", "unique_temp___registeredWithinMonth", "___registeredWithinMonth", "unique_temp___registeredWithinYear", "___registeredWithinYear", "unique_temp___registeredOutsideWeek", "___registeredOutsideWeek", "unique_temp___registeredOutsideMonth", "___registeredOutsideMonth", "unique_temp___registeredOutsideYear", "___registeredOutsideYear", "___readWrite", unique_temp___read, ___read, unique_temp___write, ___write) FROM stdin;
-1	1743328800	{a5z29df4lul70001}	1	{a5z29df4lul70001}	1	{a5z29df4lul70001}	1	{}	0	{}	0	{}	0	0	{a5z29df4lul70001}	1	{}	0
-2	1743332400	{a5z29df4lul70001}	1	{a5z29df4lul70001}	1	{a5z29df4lul70001}	1	{}	0	{}	0	{}	0	0	{a5z29df4lul70001}	1	{}	0
+3	1743393600	{a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001}	1	{}	0	{}	0	{}	0	0	{a5z29df4lul70001,a5z29df4lul70001}	1	{}	0
+4	1743400800	{a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001}	1	{}	0	{}	0	{}	0	0	{a5z29df4lul70001,a5z29df4lul70001}	1	{}	0
+5	1743404400	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{}	0	{}	0	{}	0	0	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{}	0
+7	1743415200	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{}	0	{}	0	{}	0	0	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{}	0
+6	1743411600	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{}	0	{}	0	{}	0	0	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{}	0
+8	1743418800	{a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001}	1	{}	0	{}	0	{}	0	0	{a5z29df4lul70001,a5z29df4lul70001}	1	{}	0
+1	1743328800	{}	1	{}	1	{}	1	{}	0	{}	0	{}	0	0	{}	1	{}	0
+2	1743332400	{}	1	{}	1	{}	1	{}	0	{}	0	{}	0	0	{}	1	{}	0
 \.
 
 
@@ -4845,11 +4851,41 @@ COPY public.__chart__drive (id, date, "___local_incCount", "___local_incSize", "
 --
 
 COPY public.__chart__federation (id, date, "unique_temp___deliveredInstances", "___deliveredInstances", "unique_temp___inboxInstances", "___inboxInstances", unique_temp___stalled, ___stalled, ___sub, ___pub, ___pubsub, "___subActive", "___pubActive") FROM stdin;
+30	1743469200	{}	0	{}	0	{}	0	0	0	0	0	0
+31	1743472800	{}	0	{}	0	{}	0	0	0	0	0	0
+6	1743382800	{}	0	{}	0	{}	0	0	0	0	0	0
+7	1743386400	{}	0	{}	0	{}	0	0	0	0	0	0
+8	1743390000	{}	0	{}	0	{}	0	0	0	0	0	0
+9	1743393600	{}	0	{}	0	{}	0	0	0	0	0	0
+10	1743397200	{}	0	{}	0	{}	0	0	0	0	0	0
+11	1743400800	{}	0	{}	0	{}	0	0	0	0	0	0
+12	1743404400	{}	0	{}	0	{}	0	0	0	0	0	0
+13	1743408000	{}	0	{}	0	{}	0	0	0	0	0	0
+14	1743411600	{}	0	{}	0	{}	0	0	0	0	0	0
+15	1743415200	{}	0	{}	0	{}	0	0	0	0	0	0
+16	1743418800	{}	0	{}	0	{}	0	0	0	0	0	0
+17	1743422400	{}	0	{}	0	{}	0	0	0	0	0	0
+18	1743426000	{}	0	{}	0	{}	0	0	0	0	0	0
+19	1743429600	{}	0	{}	0	{}	0	0	0	0	0	0
+20	1743433200	{}	0	{}	0	{}	0	0	0	0	0	0
+21	1743436800	{}	0	{}	0	{}	0	0	0	0	0	0
+22	1743440400	{}	0	{}	0	{}	0	0	0	0	0	0
+23	1743444000	{}	0	{}	0	{}	0	0	0	0	0	0
+24	1743447600	{}	0	{}	0	{}	0	0	0	0	0	0
+25	1743451200	{}	0	{}	0	{}	0	0	0	0	0	0
+26	1743454800	{}	0	{}	0	{}	0	0	0	0	0	0
+27	1743458400	{}	0	{}	0	{}	0	0	0	0	0	0
+28	1743462000	{}	0	{}	0	{}	0	0	0	0	0	0
 1	1743328800	{}	0	{}	0	{}	0	0	0	0	0	0
 2	1743332400	{}	0	{}	0	{}	0	0	0	0	0	0
 3	1743336000	{}	0	{}	0	{}	0	0	0	0	0	0
 4	1743339600	{}	0	{}	0	{}	0	0	0	0	0	0
 5	1743343200	{}	0	{}	0	{}	0	0	0	0	0	0
+29	1743465600	{}	0	{}	0	{}	0	0	0	0	0	0
+32	1743501600	{}	0	{}	0	{}	0	0	0	0	0	0
+33	1743505200	{}	0	{}	0	{}	0	0	0	0	0	0
+34	1743508800	{}	0	{}	0	{}	0	0	0	0	0	0
+35	1743512400	{}	0	{}	0	{}	0	0	0	0	0	0
 \.
 
 
@@ -4882,6 +4918,7 @@ COPY public.__chart__network (id, date, "___incomingRequests", "___outgoingReque
 --
 
 COPY public.__chart__notes (id, date, ___local_total, ___local_inc, ___local_dec, ___local_diffs_normal, ___local_diffs_reply, ___local_diffs_renote, ___remote_total, ___remote_inc, ___remote_dec, ___remote_diffs_normal, ___remote_diffs_reply, ___remote_diffs_renote, "___local_diffs_withFile", "___remote_diffs_withFile") FROM stdin;
+1	1743465600	1	0	0	0	0	0	0	0	0	0	0	0	0	0
 \.
 
 
@@ -4914,6 +4951,7 @@ COPY public.__chart__per_user_notes (id, date, "group", ___total, ___inc, ___dec
 --
 
 COPY public.__chart__per_user_pv (id, date, "group", unique_temp___upv_user, ___upv_user, ___pv_user, unique_temp___upv_visitor, ___upv_visitor, ___pv_visitor) FROM stdin;
+1	1743400800	a5zycyyd32fb0001	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	6	{}	0	0
 \.
 
 
@@ -4955,6 +4993,7 @@ COPY public.__chart__test_unique (id, date, "group", ___foo) FROM stdin;
 
 COPY public.__chart__users (id, date, ___local_total, ___local_inc, ___local_dec, ___remote_total, ___remote_inc, ___remote_dec) FROM stdin;
 1	1743328800	1	1	0	0	0	0
+2	1743465600	2	0	0	0	0	0
 \.
 
 
@@ -4963,7 +5002,8 @@ COPY public.__chart__users (id, date, ___local_total, ___local_inc, ___local_dec
 --
 
 COPY public.__chart_day__active_users (id, date, "unique_temp___registeredWithinWeek", "___registeredWithinWeek", "unique_temp___registeredWithinMonth", "___registeredWithinMonth", "unique_temp___registeredWithinYear", "___registeredWithinYear", "unique_temp___registeredOutsideWeek", "___registeredOutsideWeek", "unique_temp___registeredOutsideMonth", "___registeredOutsideMonth", "unique_temp___registeredOutsideYear", "___registeredOutsideYear", "___readWrite", unique_temp___read, ___read, unique_temp___write, ___write) FROM stdin;
-1	1743292800	{a5z29df4lul70001}	1	{a5z29df4lul70001}	1	{a5z29df4lul70001}	1	{}	0	{}	0	{}	0	0	{a5z29df4lul70001}	1	{}	0
+2	1743379200	{a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001}	1	{}	0	{}	0	{}	0	0	{a5z29df4lul70001,a5z29df4lul70001}	1	{}	0
+1	1743292800	{}	1	{}	1	{}	1	{}	0	{}	0	{}	0	0	{}	1	{}	0
 \.
 
 
@@ -4988,7 +5028,9 @@ COPY public.__chart_day__drive (id, date, "___local_incCount", "___local_incSize
 --
 
 COPY public.__chart_day__federation (id, date, "unique_temp___deliveredInstances", "___deliveredInstances", "unique_temp___inboxInstances", "___inboxInstances", unique_temp___stalled, ___stalled, ___sub, ___pub, ___pubsub, "___subActive", "___pubActive") FROM stdin;
+2	1743379200	{}	0	{}	0	{}	0	0	0	0	0	0
 1	1743292800	{}	0	{}	0	{}	0	0	0	0	0	0
+3	1743465600	{}	0	{}	0	{}	0	0	0	0	0	0
 \.
 
 
@@ -5021,6 +5063,7 @@ COPY public.__chart_day__network (id, date, "___incomingRequests", "___outgoingR
 --
 
 COPY public.__chart_day__notes (id, date, ___local_total, ___local_inc, ___local_dec, ___local_diffs_normal, ___local_diffs_reply, ___local_diffs_renote, ___remote_total, ___remote_inc, ___remote_dec, ___remote_diffs_normal, ___remote_diffs_reply, ___remote_diffs_renote, "___local_diffs_withFile", "___remote_diffs_withFile") FROM stdin;
+1	1743465600	1	0	0	0	0	0	0	0	0	0	0	0	0	0
 \.
 
 
@@ -5053,6 +5096,7 @@ COPY public.__chart_day__per_user_notes (id, date, "group", ___total, ___inc, __
 --
 
 COPY public.__chart_day__per_user_pv (id, date, "group", unique_temp___upv_user, ___upv_user, ___pv_user, unique_temp___upv_visitor, ___upv_visitor, ___pv_visitor) FROM stdin;
+1	1743379200	a5zycyyd32fb0001	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	6	{}	0	0
 \.
 
 
@@ -5070,6 +5114,7 @@ COPY public.__chart_day__per_user_reaction (id, date, "group", ___local_count, _
 
 COPY public.__chart_day__users (id, date, ___local_total, ___local_inc, ___local_dec, ___remote_total, ___remote_inc, ___remote_dec) FROM stdin;
 1	1743292800	1	1	0	0	0	0
+2	1743465600	2	0	0	0	0	0
 \.
 
 
@@ -5095,7 +5140,7 @@ COPY public.abuse_user_report (id, "targetUserId", "reporterId", "assigneeId", r
 
 COPY public.access_token (id, token, hash, "userId", "appId", "lastUsedAt", session, name, description, "iconUrl", permission, fetched) FROM stdin;
 a5z4yywalul70006	nKsSRdlVEbypRhM2BM8ftQLFqp2r8UjQ	nKsSRdlVEbypRhM2BM8ftQLFqp2r8UjQ	a5z29df4lul70001	\N	2025-03-30 11:43:38.794+00	e5cc2d14-2bb2-4893-b388-181377c66c64	mi-desk-app-test	\N	\N	{read:account,write:account,read:blocks,write:blocks,read:drive,write:drive,read:favorites,write:favorites,read:following,write:following,read:messaging,write:messaging,read:mutes,write:mutes,write:notes,read:notifications,write:notifications,read:reactions,write:reactions,write:votes,read:pages,write:pages,write:page-likes,read:page-likes,read:user-groups,write:user-groups,read:channels,write:channels,read:gallery,write:gallery,read:gallery-likes,write:gallery-likes,read:flash,write:flash,read:flash-likes,write:flash-likes,read:admin:abuse-user-reports,write:admin:delete-account,write:admin:delete-all-files-of-a-user,read:admin:index-stats,read:admin:table-stats,read:admin:user-ips,read:admin:meta,write:admin:reset-password,write:admin:resolve-abuse-user-report,write:admin:send-email,read:admin:server-info,read:admin:show-moderation-log,read:admin:show-user,write:admin:suspend-user,write:admin:unset-user-avatar,write:admin:unset-user-banner,write:admin:unsuspend-user,write:admin:meta,write:admin:user-note,write:admin:roles,read:admin:roles,write:admin:relays,read:admin:relays,write:admin:invite-codes,read:admin:invite-codes,write:admin:announcements,read:admin:announcements,write:admin:avatar-decorations,read:admin:avatar-decorations,write:admin:federation,write:admin:account,read:admin:account,write:admin:emoji,read:admin:emoji,write:admin:queue,read:admin:queue,write:admin:promo,write:admin:drive,read:admin:drive,write:admin:ad,read:admin:ad,write:invite-codes,read:invite-codes,write:clip-favorite,read:clip-favorite,read:federation,write:report-abuse}	f
-a5z9alxqlul70007	PK00RQIpfmS1diD38HCzB1Pmz055BvFG	PK00RQIpfmS1diD38HCzB1Pmz055BvFG	a5z29df4lul70001	\N	2025-03-30 15:14:47.615+00	ea03d249-7aee-4aed-9792-71b462fb7a61	mi-desk-app-test	\N	\N	{read:account,write:account,read:blocks,write:blocks,read:drive,write:drive,read:favorites,write:favorites,read:following,write:following,read:messaging,write:messaging,read:mutes,write:mutes,write:notes,read:notifications,write:notifications,read:reactions,write:reactions,write:votes,read:pages,write:pages,write:page-likes,read:page-likes,read:user-groups,write:user-groups,read:channels,write:channels,read:gallery,write:gallery,read:gallery-likes,write:gallery-likes,read:flash,write:flash,read:flash-likes,write:flash-likes,read:admin:abuse-user-reports,write:admin:delete-account,write:admin:delete-all-files-of-a-user,read:admin:index-stats,read:admin:table-stats,read:admin:user-ips,read:admin:meta,write:admin:reset-password,write:admin:resolve-abuse-user-report,write:admin:send-email,read:admin:server-info,read:admin:show-moderation-log,read:admin:show-user,write:admin:suspend-user,write:admin:unset-user-avatar,write:admin:unset-user-banner,write:admin:unsuspend-user,write:admin:meta,write:admin:user-note,write:admin:roles,read:admin:roles,write:admin:relays,read:admin:relays,write:admin:invite-codes,read:admin:invite-codes,write:admin:announcements,read:admin:announcements,write:admin:avatar-decorations,read:admin:avatar-decorations,write:admin:federation,write:admin:account,read:admin:account,write:admin:emoji,read:admin:emoji,write:admin:queue,read:admin:queue,write:admin:promo,write:admin:drive,read:admin:drive,write:admin:ad,read:admin:ad,write:invite-codes,read:invite-codes,write:clip-favorite,read:clip-favorite,read:federation,write:report-abuse}	t
+a5z9alxqlul70007	PK00RQIpfmS1diD38HCzB1Pmz055BvFG	PK00RQIpfmS1diD38HCzB1Pmz055BvFG	a5z29df4lul70001	\N	2025-03-31 11:10:53.634+00	ea03d249-7aee-4aed-9792-71b462fb7a61	mi-desk-app-test	\N	\N	{read:account,write:account,read:blocks,write:blocks,read:drive,write:drive,read:favorites,write:favorites,read:following,write:following,read:messaging,write:messaging,read:mutes,write:mutes,write:notes,read:notifications,write:notifications,read:reactions,write:reactions,write:votes,read:pages,write:pages,write:page-likes,read:page-likes,read:user-groups,write:user-groups,read:channels,write:channels,read:gallery,write:gallery,read:gallery-likes,write:gallery-likes,read:flash,write:flash,read:flash-likes,write:flash-likes,read:admin:abuse-user-reports,write:admin:delete-account,write:admin:delete-all-files-of-a-user,read:admin:index-stats,read:admin:table-stats,read:admin:user-ips,read:admin:meta,write:admin:reset-password,write:admin:resolve-abuse-user-report,write:admin:send-email,read:admin:server-info,read:admin:show-moderation-log,read:admin:show-user,write:admin:suspend-user,write:admin:unset-user-avatar,write:admin:unset-user-banner,write:admin:unsuspend-user,write:admin:meta,write:admin:user-note,write:admin:roles,read:admin:roles,write:admin:relays,read:admin:relays,write:admin:invite-codes,read:admin:invite-codes,write:admin:announcements,read:admin:announcements,write:admin:avatar-decorations,read:admin:avatar-decorations,write:admin:federation,write:admin:account,read:admin:account,write:admin:emoji,read:admin:emoji,write:admin:queue,read:admin:queue,write:admin:promo,write:admin:drive,read:admin:drive,write:admin:ad,read:admin:ad,write:invite-codes,read:invite-codes,write:clip-favorite,read:clip-favorite,read:federation,write:report-abuse}	t
 \.
 
 
@@ -5328,7 +5373,7 @@ COPY public.messaging_message (id, "createdAt", "userId", "recipientId", text, "
 --
 
 COPY public.meta (id, name, description, "maintainerName", "maintainerEmail", "disableRegistration", langs, "hiddenTags", "blockedHosts", "mascotImageUrl", "bannerUrl", "iconUrl", "cacheRemoteFiles", "enableRecaptcha", "recaptchaSiteKey", "recaptchaSecretKey", "urlPreviewSummaryProxyUrl", "enableEmail", email, "smtpSecure", "smtpHost", "smtpPort", "smtpUser", "smtpPass", "enableServiceWorker", "swPublicKey", "swPrivateKey", "pinnedUsers", "termsOfServiceUrl", "repositoryUrl", "feedbackUrl", "useObjectStorage", "objectStorageBucket", "objectStoragePrefix", "objectStorageBaseUrl", "objectStorageEndpoint", "objectStorageRegion", "objectStorageAccessKey", "objectStorageSecretKey", "objectStoragePort", "objectStorageUseSSL", "objectStorageUseProxy", "enableHcaptcha", "hcaptchaSiteKey", "hcaptchaSecretKey", "objectStorageSetPublicRead", "backgroundImageUrl", "logoImageUrl", "objectStorageS3ForcePathStyle", "deeplAuthKey", "deeplIsPro", "emailRequiredForSignup", "themeColor", "defaultLightTheme", "defaultDarkTheme", "sensitiveMediaDetection", "sensitiveMediaDetectionSensitivity", "setSensitiveFlagAutomatically", "enableIpLogging", "enableSensitiveMediaDetectionForVideos", "enableActiveEmailValidation", "enableTurnstile", "turnstileSiteKey", "turnstileSecretKey", policies, "sensitiveWords", "enableChartsForRemoteUser", "enableChartsForFederatedInstances", "serverRules", "preservedUsernames", "serverErrorImageUrl", "notFoundImageUrl", "infoImageUrl", "enableServerMachineStats", "enableIdenticonGeneration", "cacheRemoteSensitiveFiles", "app192IconUrl", "app512IconUrl", "manifestJsonOverride", "shortName", "impressumUrl", "privacyPolicyUrl", "perLocalUserUserTimelineCacheMax", "perRemoteUserUserTimelineCacheMax", "perUserHomeTimelineCacheMax", "perUserListTimelineCacheMax", "notesPerOneAd", "silencedHosts", "enableFanoutTimeline", "enableFanoutTimelineDbFallback", "verifymailAuthKey", "enableVerifymailApi", "bannedEmailDomains", "truemailInstance", "truemailAuthKey", "enableTruemailApi", "enableMcaptcha", "mcaptchaSitekey", "mcaptchaSecretKey", "mcaptchaInstanceUrl", "prohibitedWords", "urlPreviewEnabled", "urlPreviewTimeout", "urlPreviewMaximumContentLength", "urlPreviewRequireContentLength", "urlPreviewUserAgent", "mediaSilencedHosts", "inquiryUrl", "enableReactionsBuffering", "enableStatsForFederatedInstances", federation, "federationHosts", "enableTestcaptcha", "prohibitedWordsForNameOfUser", "googleAnalyticsMeasurementId", "rootUserId") FROM stdin;
-x	\N	\N	\N	\N	t	{}	{}	{}	\N	\N	\N	f	f	\N	\N	\N	f	\N	f	\N	\N	\N	\N	f	\N	\N	{}	\N	https://github.com/misskey-dev/misskey	https://github.com/misskey-dev/misskey/issues/new	f	\N	\N	\N	\N	\N	\N	\N	\N	t	t	f	\N	\N	f	\N	\N	t	\N	f	f	\N	\N	\N	none	medium	f	f	f	t	f	\N	\N	{}	{}	t	t	{}	{admin,administrator,root,system,maintainer,host,mod,moderator,owner,superuser,staff,auth,i,me,everyone,all,mention,mentions,example,user,users,account,accounts,official,help,helps,support,supports,info,information,informations,announce,announces,announcement,announcements,notice,notification,notifications,dev,developer,developers,tech,misskey}	\N	\N	\N	f	t	t	\N	\N	{}	\N	\N	\N	300	100	300	300	0	{}	t	t	\N	f	{}	\N	\N	f	f	\N	\N	\N	{}	t	10000	10485760	f	\N	{}	\N	f	t	all	{}	f	{}	\N	a5z29df4lul70001
+x	テストサーバー	テストサーバー	hoge		t	{}	{}	{}	\N	\N		f	f	\N	\N	\N	f	\N	f	\N	\N	\N	\N	f	\N	\N	{}		https://github.com/misskey-dev/misskey	https://github.com/misskey-dev/misskey/issues/new	f	\N	\N	\N	\N	\N	\N	\N	\N	t	t	f	\N	\N	f	\N	\N	t	\N	f	f	#99f589	\N	\N	none	medium	f	f	f	t	f	\N	\N	{}	{}	t	t	{}	{admin,administrator,root,system,maintainer,host,mod,moderator,owner,superuser,staff,auth,i,me,everyone,all,mention,mentions,example,user,users,account,accounts,official,help,helps,support,supports,info,information,informations,announce,announces,announcement,announcements,notice,notification,notifications,dev,developer,developers,tech,misskey}	\N	\N	\N	f	t	t	\N	\N	{}	\N			300	100	300	300	0	{}	t	t	\N	f	{}	\N	\N	f	f	\N	\N	\N	{}	t	10000	10485760	f	\N	{}		f	t	all	{}	f	{}	\N	a5z29df4lul70001
 \.
 
 
@@ -5655,6 +5700,8 @@ COPY public.migrations (id, "timestamp", name) FROM stdin;
 --
 
 COPY public.moderation_log (id, "userId", type, info) FROM stdin;
+a609am4gjz000006	a5z29df4lul70001	updateServerSettings	{"after": {"id": "x", "name": "テストサーバー", "email": null, "langs": [], "iconUrl": null, "policies": {}, "smtpHost": null, "smtpPass": null, "smtpPort": null, "smtpUser": null, "bannerUrl": null, "shortName": null, "deeplIsPro": false, "federation": "all", "hiddenTags": [], "inquiryUrl": "", "rootUserId": "a5z29df4lul70001", "smtpSecure": false, "themeColor": null, "description": "テストサーバー", "enableEmail": false, "feedbackUrl": "https://github.com/misskey-dev/misskey/issues/new", "pinnedUsers": [], "serverRules": [], "swPublicKey": null, "blockedHosts": [], "deeplAuthKey": null, "impressumUrl": "", "infoImageUrl": null, "logoImageUrl": null, "swPrivateKey": null, "app192IconUrl": null, "app512IconUrl": null, "notesPerOneAd": 0, "repositoryUrl": "https://github.com/misskey-dev/misskey", "silencedHosts": [], "enableHcaptcha": false, "enableMcaptcha": false, "maintainerName": "hoge", "mascotImageUrl": null, "sensitiveWords": [], "enableIpLogging": false, "enableRecaptcha": false, "enableTurnstile": false, "federationHosts": [], "hcaptchaSiteKey": null, "maintainerEmail": "", "mcaptchaSitekey": null, "prohibitedWords": [], "truemailAuthKey": null, "cacheRemoteFiles": false, "defaultDarkTheme": null, "notFoundImageUrl": null, "privacyPolicyUrl": "", "recaptchaSiteKey": null, "truemailInstance": null, "turnstileSiteKey": null, "useObjectStorage": false, "defaultLightTheme": null, "enableTestcaptcha": false, "enableTruemailApi": false, "hcaptchaSecretKey": null, "mcaptchaSecretKey": null, "objectStoragePort": null, "termsOfServiceUrl": "", "urlPreviewEnabled": true, "urlPreviewTimeout": 10000, "verifymailAuthKey": null, "backgroundImageUrl": null, "bannedEmailDomains": [], "mediaSilencedHosts": [], "preservedUsernames": ["admin", "administrator", "root", "system", "maintainer", "host", "mod", "moderator", "owner", "superuser", "staff", "auth", "i", "me", "everyone", "all", "mention", "mentions", "example", "user", "users", "account", "accounts", "official", "help", "helps", "support", "supports", "info", "information", "informations", "announce", "announces", "announcement", "announcements", "notice", "notification", "notifications", "dev", "developer", "developers", "tech", "misskey"], "recaptchaSecretKey": null, "turnstileSecretKey": null, "disableRegistration": true, "enableServiceWorker": false, "enableVerifymailApi": false, "mcaptchaInstanceUrl": null, "objectStorageBucket": null, "objectStoragePrefix": null, "objectStorageRegion": null, "objectStorageUseSSL": true, "serverErrorImageUrl": null, "urlPreviewUserAgent": null, "enableFanoutTimeline": true, "manifestJsonOverride": "{}", "objectStorageBaseUrl": null, "objectStorageEndpoint": null, "objectStorageUseProxy": true, "emailRequiredForSignup": false, "objectStorageAccessKey": null, "objectStorageSecretKey": null, "sensitiveMediaDetection": "none", "enableReactionsBuffering": false, "enableServerMachineStats": false, "cacheRemoteSensitiveFiles": true, "enableChartsForRemoteUser": true, "enableIdenticonGeneration": true, "urlPreviewSummaryProxyUrl": null, "objectStorageSetPublicRead": false, "enableActiveEmailValidation": true, "perUserHomeTimelineCacheMax": 300, "perUserListTimelineCacheMax": 300, "googleAnalyticsMeasurementId": null, "prohibitedWordsForNameOfUser": [], "objectStorageS3ForcePathStyle": true, "setSensitiveFlagAutomatically": false, "enableFanoutTimelineDbFallback": true, "urlPreviewMaximumContentLength": 10485760, "urlPreviewRequireContentLength": false, "enableStatsForFederatedInstances": true, "perLocalUserUserTimelineCacheMax": 300, "enableChartsForFederatedInstances": true, "perRemoteUserUserTimelineCacheMax": 100, "sensitiveMediaDetectionSensitivity": "medium", "enableSensitiveMediaDetectionForVideos": false}, "before": {"id": "x", "name": null, "email": null, "langs": [], "iconUrl": null, "policies": {}, "smtpHost": null, "smtpPass": null, "smtpPort": null, "smtpUser": null, "bannerUrl": null, "shortName": null, "deeplIsPro": false, "federation": "all", "hiddenTags": [], "inquiryUrl": null, "rootUserId": "a5z29df4lul70001", "smtpSecure": false, "themeColor": null, "description": null, "enableEmail": false, "feedbackUrl": "https://github.com/misskey-dev/misskey/issues/new", "pinnedUsers": [], "serverRules": [], "swPublicKey": null, "blockedHosts": [], "deeplAuthKey": null, "impressumUrl": null, "infoImageUrl": null, "logoImageUrl": null, "swPrivateKey": null, "app192IconUrl": null, "app512IconUrl": null, "notesPerOneAd": 0, "repositoryUrl": "https://github.com/misskey-dev/misskey", "silencedHosts": [], "enableHcaptcha": false, "enableMcaptcha": false, "maintainerName": null, "mascotImageUrl": null, "sensitiveWords": [], "enableIpLogging": false, "enableRecaptcha": false, "enableTurnstile": false, "federationHosts": [], "hcaptchaSiteKey": null, "maintainerEmail": null, "mcaptchaSitekey": null, "prohibitedWords": [], "truemailAuthKey": null, "cacheRemoteFiles": false, "defaultDarkTheme": null, "notFoundImageUrl": null, "privacyPolicyUrl": null, "recaptchaSiteKey": null, "truemailInstance": null, "turnstileSiteKey": null, "useObjectStorage": false, "defaultLightTheme": null, "enableTestcaptcha": false, "enableTruemailApi": false, "hcaptchaSecretKey": null, "mcaptchaSecretKey": null, "objectStoragePort": null, "termsOfServiceUrl": null, "urlPreviewEnabled": true, "urlPreviewTimeout": 10000, "verifymailAuthKey": null, "backgroundImageUrl": null, "bannedEmailDomains": [], "mediaSilencedHosts": [], "preservedUsernames": ["admin", "administrator", "root", "system", "maintainer", "host", "mod", "moderator", "owner", "superuser", "staff", "auth", "i", "me", "everyone", "all", "mention", "mentions", "example", "user", "users", "account", "accounts", "official", "help", "helps", "support", "supports", "info", "information", "informations", "announce", "announces", "announcement", "announcements", "notice", "notification", "notifications", "dev", "developer", "developers", "tech", "misskey"], "recaptchaSecretKey": null, "turnstileSecretKey": null, "disableRegistration": true, "enableServiceWorker": false, "enableVerifymailApi": false, "mcaptchaInstanceUrl": null, "objectStorageBucket": null, "objectStoragePrefix": null, "objectStorageRegion": null, "objectStorageUseSSL": true, "serverErrorImageUrl": null, "urlPreviewUserAgent": null, "enableFanoutTimeline": true, "manifestJsonOverride": "{}", "objectStorageBaseUrl": null, "objectStorageEndpoint": null, "objectStorageUseProxy": true, "emailRequiredForSignup": false, "objectStorageAccessKey": null, "objectStorageSecretKey": null, "sensitiveMediaDetection": "none", "enableReactionsBuffering": false, "enableServerMachineStats": false, "cacheRemoteSensitiveFiles": true, "enableChartsForRemoteUser": true, "enableIdenticonGeneration": true, "urlPreviewSummaryProxyUrl": null, "objectStorageSetPublicRead": false, "enableActiveEmailValidation": true, "perUserHomeTimelineCacheMax": 300, "perUserListTimelineCacheMax": 300, "googleAnalyticsMeasurementId": null, "prohibitedWordsForNameOfUser": [], "objectStorageS3ForcePathStyle": true, "setSensitiveFlagAutomatically": false, "enableFanoutTimelineDbFallback": true, "urlPreviewMaximumContentLength": 10485760, "urlPreviewRequireContentLength": false, "enableStatsForFederatedInstances": true, "perLocalUserUserTimelineCacheMax": 300, "enableChartsForFederatedInstances": true, "perRemoteUserUserTimelineCacheMax": 100, "sensitiveMediaDetectionSensitivity": "medium", "enableSensitiveMediaDetectionForVideos": false}}
+a609blt6jz000007	a5z29df4lul70001	updateServerSettings	{"after": {"id": "x", "name": "テストサーバー", "email": null, "langs": [], "iconUrl": "", "policies": {}, "smtpHost": null, "smtpPass": null, "smtpPort": null, "smtpUser": null, "bannerUrl": null, "shortName": null, "deeplIsPro": false, "federation": "all", "hiddenTags": [], "inquiryUrl": "", "rootUserId": "a5z29df4lul70001", "smtpSecure": false, "themeColor": "#99f589", "description": "テストサーバー", "enableEmail": false, "feedbackUrl": "https://github.com/misskey-dev/misskey/issues/new", "pinnedUsers": [], "serverRules": [], "swPublicKey": null, "blockedHosts": [], "deeplAuthKey": null, "impressumUrl": "", "infoImageUrl": null, "logoImageUrl": null, "swPrivateKey": null, "app192IconUrl": null, "app512IconUrl": null, "notesPerOneAd": 0, "repositoryUrl": "https://github.com/misskey-dev/misskey", "silencedHosts": [], "enableHcaptcha": false, "enableMcaptcha": false, "maintainerName": "hoge", "mascotImageUrl": null, "sensitiveWords": [], "enableIpLogging": false, "enableRecaptcha": false, "enableTurnstile": false, "federationHosts": [], "hcaptchaSiteKey": null, "maintainerEmail": "", "mcaptchaSitekey": null, "prohibitedWords": [], "truemailAuthKey": null, "cacheRemoteFiles": false, "defaultDarkTheme": null, "notFoundImageUrl": null, "privacyPolicyUrl": "", "recaptchaSiteKey": null, "truemailInstance": null, "turnstileSiteKey": null, "useObjectStorage": false, "defaultLightTheme": null, "enableTestcaptcha": false, "enableTruemailApi": false, "hcaptchaSecretKey": null, "mcaptchaSecretKey": null, "objectStoragePort": null, "termsOfServiceUrl": "", "urlPreviewEnabled": true, "urlPreviewTimeout": 10000, "verifymailAuthKey": null, "backgroundImageUrl": null, "bannedEmailDomains": [], "mediaSilencedHosts": [], "preservedUsernames": ["admin", "administrator", "root", "system", "maintainer", "host", "mod", "moderator", "owner", "superuser", "staff", "auth", "i", "me", "everyone", "all", "mention", "mentions", "example", "user", "users", "account", "accounts", "official", "help", "helps", "support", "supports", "info", "information", "informations", "announce", "announces", "announcement", "announcements", "notice", "notification", "notifications", "dev", "developer", "developers", "tech", "misskey"], "recaptchaSecretKey": null, "turnstileSecretKey": null, "disableRegistration": true, "enableServiceWorker": false, "enableVerifymailApi": false, "mcaptchaInstanceUrl": null, "objectStorageBucket": null, "objectStoragePrefix": null, "objectStorageRegion": null, "objectStorageUseSSL": true, "serverErrorImageUrl": null, "urlPreviewUserAgent": null, "enableFanoutTimeline": true, "manifestJsonOverride": "{}", "objectStorageBaseUrl": null, "objectStorageEndpoint": null, "objectStorageUseProxy": true, "emailRequiredForSignup": false, "objectStorageAccessKey": null, "objectStorageSecretKey": null, "sensitiveMediaDetection": "none", "enableReactionsBuffering": false, "enableServerMachineStats": false, "cacheRemoteSensitiveFiles": true, "enableChartsForRemoteUser": true, "enableIdenticonGeneration": true, "urlPreviewSummaryProxyUrl": null, "objectStorageSetPublicRead": false, "enableActiveEmailValidation": true, "perUserHomeTimelineCacheMax": 300, "perUserListTimelineCacheMax": 300, "googleAnalyticsMeasurementId": null, "prohibitedWordsForNameOfUser": [], "objectStorageS3ForcePathStyle": true, "setSensitiveFlagAutomatically": false, "enableFanoutTimelineDbFallback": true, "urlPreviewMaximumContentLength": 10485760, "urlPreviewRequireContentLength": false, "enableStatsForFederatedInstances": true, "perLocalUserUserTimelineCacheMax": 300, "enableChartsForFederatedInstances": true, "perRemoteUserUserTimelineCacheMax": 100, "sensitiveMediaDetectionSensitivity": "medium", "enableSensitiveMediaDetectionForVideos": false}, "before": {"id": "x", "name": "テストサーバー", "email": null, "langs": [], "iconUrl": null, "policies": {}, "smtpHost": null, "smtpPass": null, "smtpPort": null, "smtpUser": null, "bannerUrl": null, "shortName": null, "deeplIsPro": false, "federation": "all", "hiddenTags": [], "inquiryUrl": "", "rootUserId": "a5z29df4lul70001", "smtpSecure": false, "themeColor": null, "description": "テストサーバー", "enableEmail": false, "feedbackUrl": "https://github.com/misskey-dev/misskey/issues/new", "pinnedUsers": [], "serverRules": [], "swPublicKey": null, "blockedHosts": [], "deeplAuthKey": null, "impressumUrl": "", "infoImageUrl": null, "logoImageUrl": null, "swPrivateKey": null, "app192IconUrl": null, "app512IconUrl": null, "notesPerOneAd": 0, "repositoryUrl": "https://github.com/misskey-dev/misskey", "silencedHosts": [], "enableHcaptcha": false, "enableMcaptcha": false, "maintainerName": "hoge", "mascotImageUrl": null, "sensitiveWords": [], "enableIpLogging": false, "enableRecaptcha": false, "enableTurnstile": false, "federationHosts": [], "hcaptchaSiteKey": null, "maintainerEmail": "", "mcaptchaSitekey": null, "prohibitedWords": [], "truemailAuthKey": null, "cacheRemoteFiles": false, "defaultDarkTheme": null, "notFoundImageUrl": null, "privacyPolicyUrl": "", "recaptchaSiteKey": null, "truemailInstance": null, "turnstileSiteKey": null, "useObjectStorage": false, "defaultLightTheme": null, "enableTestcaptcha": false, "enableTruemailApi": false, "hcaptchaSecretKey": null, "mcaptchaSecretKey": null, "objectStoragePort": null, "termsOfServiceUrl": "", "urlPreviewEnabled": true, "urlPreviewTimeout": 10000, "verifymailAuthKey": null, "backgroundImageUrl": null, "bannedEmailDomains": [], "mediaSilencedHosts": [], "preservedUsernames": ["admin", "administrator", "root", "system", "maintainer", "host", "mod", "moderator", "owner", "superuser", "staff", "auth", "i", "me", "everyone", "all", "mention", "mentions", "example", "user", "users", "account", "accounts", "official", "help", "helps", "support", "supports", "info", "information", "informations", "announce", "announces", "announcement", "announcements", "notice", "notification", "notifications", "dev", "developer", "developers", "tech", "misskey"], "recaptchaSecretKey": null, "turnstileSecretKey": null, "disableRegistration": true, "enableServiceWorker": false, "enableVerifymailApi": false, "mcaptchaInstanceUrl": null, "objectStorageBucket": null, "objectStoragePrefix": null, "objectStorageRegion": null, "objectStorageUseSSL": true, "serverErrorImageUrl": null, "urlPreviewUserAgent": null, "enableFanoutTimeline": true, "manifestJsonOverride": "{}", "objectStorageBaseUrl": null, "objectStorageEndpoint": null, "objectStorageUseProxy": true, "emailRequiredForSignup": false, "objectStorageAccessKey": null, "objectStorageSecretKey": null, "sensitiveMediaDetection": "none", "enableReactionsBuffering": false, "enableServerMachineStats": false, "cacheRemoteSensitiveFiles": true, "enableChartsForRemoteUser": true, "enableIdenticonGeneration": true, "urlPreviewSummaryProxyUrl": null, "objectStorageSetPublicRead": false, "enableActiveEmailValidation": true, "perUserHomeTimelineCacheMax": 300, "perUserListTimelineCacheMax": 300, "googleAnalyticsMeasurementId": null, "prohibitedWordsForNameOfUser": [], "objectStorageS3ForcePathStyle": true, "setSensitiveFlagAutomatically": false, "enableFanoutTimelineDbFallback": true, "urlPreviewMaximumContentLength": 10485760, "urlPreviewRequireContentLength": false, "enableStatsForFederatedInstances": true, "perLocalUserUserTimelineCacheMax": 300, "enableChartsForFederatedInstances": true, "perRemoteUserUserTimelineCacheMax": 100, "sensitiveMediaDetectionSensitivity": "medium", "enableSensitiveMediaDetectionForVideos": false}}
 \.
 
 
@@ -5810,6 +5857,7 @@ COPY public.renote_muting (id, "muteeId", "muterId") FROM stdin;
 --
 
 COPY public.retention_aggregation (id, "createdAt", "userIds", data, "updatedAt", "usersCount", "dateKey") FROM stdin;
+a61aps3g3zx50002	2025-04-01 00:00:00.12+00	{a5zycyyd32fb0001}	{}	2025-04-01 00:00:00.12+00	1	2025-4-1
 \.
 
 
@@ -5893,8 +5941,8 @@ system.proxy	2025-03-31 01:26:20.926+00
 --
 
 COPY public."user" (id, "updatedAt", "lastFetchedAt", username, "usernameLower", name, "followersCount", "followingCount", "notesCount", "avatarId", "bannerId", tags, "isSuspended", "isLocked", "isBot", "isCat", emojis, host, inbox, "sharedInbox", featured, uri, token, "isExplorable", "followersUri", "lastActiveDate", "hideOnlineStatus", "isDeleted", "avatarUrl", "bannerUrl", "avatarBlurhash", "bannerBlurhash", "movedToUri", "alsoKnownAs", "movedAt", "isHibernated", "avatarDecorations", score, "requireSigninToViewContents", "makeNotesFollowersOnlyBefore", "makeNotesHiddenBefore") FROM stdin;
+a5z29df4lul70001	2025-03-31 01:26:27.94+00	\N	hoge	hoge	ホゲユーザー	0	0	1	\N	\N	{}	f	f	f	f	{}	\N	\N	\N	\N	\N	TD6ozXdrIB4cc6Pi	t	\N	2025-04-01 00:45:09.461+00	f	f	\N	\N	\N	\N	\N	\N	\N	f	[]	0	f	\N	\N
 a5zycyyd32fb0001	\N	\N	system.proxy	system.proxy	\N	0	0	0	\N	\N	{}	f	t	t	f	{}	\N	\N	\N	\N	\N	Qg5md5K2G0HKo9CW	f	\N	\N	f	f	\N	\N	\N	\N	\N	\N	\N	f	[]	0	f	\N	\N
-a5z29df4lul70001	2025-03-31 01:26:27.94+00	\N	hoge	hoge	ほげ	0	0	1	\N	\N	{}	f	f	f	f	{}	\N	\N	\N	\N	\N	TD6ozXdrIB4cc6Pi	t	\N	2025-03-31 01:26:30.427+00	f	f	\N	\N	\N	\N	\N	\N	\N	f	[]	0	f	\N	\N
 \.
 
 
@@ -6002,7 +6050,7 @@ COPY public.user_pending (id, code, username, email, password) FROM stdin;
 
 COPY public.user_profile ("userId", location, birthday, description, fields, url, email, "emailVerifyCode", "emailVerified", "twoFactorTempSecret", "twoFactorSecret", "twoFactorEnabled", password, "clientData", "autoAcceptFollowed", "alwaysMarkNsfw", "carefulBot", "userHost", "securityKeysAvailable", "usePasswordLessLogin", "pinnedPageId", room, "injectFeaturedNote", "enableWordMute", "mutedWords", "noCrawle", "receiveAnnouncementEmail", "emailNotificationTypes", lang, "mutedInstances", "publicReactions", "autoSensitive", "moderationNote", achievements, "loggedInDates", "preventAiLearning", "twoFactorBackupSecret", "verifiedLinks", "notificationRecieveConfig", "hardMutedWords", "followingVisibility", "followersVisibility", "followedMessage") FROM stdin;
 a5zycyyd32fb0001	\N	\N	\N	[]	\N	\N	\N	f	\N	\N	f	$2a$08$wuO3Ekvd4QSmlYvOgcfi5ewCwWF778.ZlJElm52hiHnHji0LbtL8G	{}	f	f	f	\N	f	f	\N	{}	t	f	[]	f	t	["follow", "receiveFollowRequest"]	\N	[]	t	f		[]	{}	t	\N	{}	{}	[]	public	public	\N
-a5z29df4lul70001	\N	\N	\N	[]	\N	\N	\N	f	\N	\N	f	$2a$08$TyZYZsajvlKoP3Sf8AfBLeYTN5knapLCSVxHToXCcAACDgtoEwyk2	{}	t	f	f	\N	f	f	\N	{}	t	f	[]	f	t	["follow", "receiveFollowRequest"]	\N	[]	t	f		[{"name": "client30min", "unlockedAt": 1743332267511}, {"name": "client60min", "unlockedAt": 1743334065619}, {"name": "notes1", "unlockedAt": 1743384387962}]	{2025/3/30,2025/3/31}	t	\N	{}	{}	[]	public	public	\N
+a5z29df4lul70001	\N	\N	\N	[]	\N	\N	\N	f	\N	\N	f	$2a$08$TyZYZsajvlKoP3Sf8AfBLeYTN5knapLCSVxHToXCcAACDgtoEwyk2	{}	t	f	f	\N	f	f	\N	{}	t	f	[]	f	t	["follow", "receiveFollowRequest"]	\N	[]	t	f		[{"name": "client30min", "unlockedAt": 1743332267511}, {"name": "client60min", "unlockedAt": 1743334065619}, {"name": "notes1", "unlockedAt": 1743384387962}, {"name": "profileFilled", "unlockedAt": 1743402645490}]	{2025/3/30,2025/3/31}	t	\N	{}	{}	[]	public	public	\N
 \.
 
 
@@ -6034,7 +6082,7 @@ COPY public.webhook (id, "userId", name, "on", url, secret, active, "latestSentA
 -- Name: __chart__active_users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart__active_users_id_seq', 2, true);
+SELECT pg_catalog.setval('public.__chart__active_users_id_seq', 8, true);
 
 
 --
@@ -6055,7 +6103,7 @@ SELECT pg_catalog.setval('public.__chart__drive_id_seq', 1, false);
 -- Name: __chart__federation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart__federation_id_seq', 5, true);
+SELECT pg_catalog.setval('public.__chart__federation_id_seq', 35, true);
 
 
 --
@@ -6083,7 +6131,7 @@ SELECT pg_catalog.setval('public.__chart__network_id_seq', 1, false);
 -- Name: __chart__notes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart__notes_id_seq', 1, false);
+SELECT pg_catalog.setval('public.__chart__notes_id_seq', 1, true);
 
 
 --
@@ -6111,7 +6159,7 @@ SELECT pg_catalog.setval('public.__chart__per_user_notes_id_seq', 1, false);
 -- Name: __chart__per_user_pv_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart__per_user_pv_id_seq', 1, false);
+SELECT pg_catalog.setval('public.__chart__per_user_pv_id_seq', 1, true);
 
 
 --
@@ -6146,14 +6194,14 @@ SELECT pg_catalog.setval('public.__chart__test_unique_id_seq', 1, false);
 -- Name: __chart__users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart__users_id_seq', 1, true);
+SELECT pg_catalog.setval('public.__chart__users_id_seq', 2, true);
 
 
 --
 -- Name: __chart_day__active_users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart_day__active_users_id_seq', 1, true);
+SELECT pg_catalog.setval('public.__chart_day__active_users_id_seq', 2, true);
 
 
 --
@@ -6174,7 +6222,7 @@ SELECT pg_catalog.setval('public.__chart_day__drive_id_seq', 1, false);
 -- Name: __chart_day__federation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart_day__federation_id_seq', 1, true);
+SELECT pg_catalog.setval('public.__chart_day__federation_id_seq', 3, true);
 
 
 --
@@ -6202,7 +6250,7 @@ SELECT pg_catalog.setval('public.__chart_day__network_id_seq', 1, false);
 -- Name: __chart_day__notes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart_day__notes_id_seq', 1, false);
+SELECT pg_catalog.setval('public.__chart_day__notes_id_seq', 1, true);
 
 
 --
@@ -6230,7 +6278,7 @@ SELECT pg_catalog.setval('public.__chart_day__per_user_notes_id_seq', 1, false);
 -- Name: __chart_day__per_user_pv_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart_day__per_user_pv_id_seq', 1, false);
+SELECT pg_catalog.setval('public.__chart_day__per_user_pv_id_seq', 1, true);
 
 
 --
@@ -6244,7 +6292,7 @@ SELECT pg_catalog.setval('public.__chart_day__per_user_reaction_id_seq', 1, fals
 -- Name: __chart_day__users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart_day__users_id_seq', 1, true);
+SELECT pg_catalog.setval('public.__chart_day__users_id_seq', 2, true);
 
 
 --
