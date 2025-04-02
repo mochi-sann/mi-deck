@@ -3,7 +3,6 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { TimelineType } from "@prisma/client"; // This will be valid after prisma generate
 import { APIClient } from "misskey-js/api.js";
 import { PrismaService } from "~/lib/prisma.service";
 import { CreateTimelineDto } from "./dto/create-timeline.dto";
@@ -18,6 +17,13 @@ export class TimelineService {
     createTimelineDto: CreateTimelineDto,
     userId: string,
   ): Promise<TimelineEntity> {
+    console.log(
+      ...[
+        { createTimelineDto: createTimelineDto.serverSessionId, userId },
+        "👀 [timeline.service.ts:21]: {createTimelineDto , userId}",
+      ].reverse(),
+    );
+
     // 1. Verify the server session belongs to the user
     const serverSession = await this.prisma.serverSession.findUnique({
       where: { id: createTimelineDto.serverSessionId },

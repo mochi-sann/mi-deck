@@ -16,3 +16,6 @@ Example: To start the dev server for the front-end, use `pnpm run front -- dev`.
 Example: To lint the front-end, use `pnpm run front -- lint`.
 
 Note the use of `--` after `pnpm run server` or `pnpm run front` to pass the subsequent arguments correctly to the underlying pnpm command within the script.
+
+
+if you see login page type in login email is `example2@example.com` password is `password`

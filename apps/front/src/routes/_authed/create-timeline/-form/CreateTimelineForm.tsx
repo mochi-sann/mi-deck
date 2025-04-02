@@ -1,14 +1,11 @@
 import { MenuFieldSet } from "@/Component/forms/MenuFieldSet";
 import { TextFieldSet } from "@/Component/forms/TextFieldSet";
-import { MenuFieldSet } from "@/Component/forms/MenuFieldSet";
-import { TextFieldSet } from "@/Component/forms/TextFieldSet";
 import { Button } from "@/Component/ui/button";
 import { Spinner } from "@/Component/ui/spinner";
 import { Text } from "@/Component/ui/text";
 import { $api } from "@/lib/api/fetchClient";
 import { components } from "@/lib/api/type";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -64,23 +61,7 @@ export function CreateTimelineForm() {
     data: serverSessions,
     isLoading: isLoadingSessions,
     error: sessionsError,
-  } = useQuery({
-    queryKey: ["serverSessions"],
-    // Fetch server sessions to populate the dropdown
-    queryFn: async () => {
-      // The getList operation expects a 201 status for success according to type.ts
-      const res = await $api.get("/v1/server-sessions");
-      if (res.status !== 201) {
-        console.error("Failed to fetch server sessions:", res);
-        throw new Error(
-          `Failed to fetch server sessions. Status: ${res.status}`,
-        );
-      }
-      // Ensure the response data is an array before returning
-      return Array.isArray(res.data) ? res.data : [];
-    },
-  });
-
+  } = $api.useQuery("get", "/v1/server-sessions");
   // Mutation hook for creating the timeline
   const { mutate, status, error } = $api.useMutation(
     "post",
@@ -106,23 +87,6 @@ export function CreateTimelineForm() {
   });
 
   // Handle form submission
-  const onSubmit = (data: CreateTimelineFormType) => {
-    // Prepare data for submission, removing empty optional fields
-    const submissionData: components["schemas"]["CreateTimelineDto"] = {
-      ...data,
-      listId: data.type === "LIST" ? data.listId : undefined,
-      channelId: data.type === "CHANNEL" ? data.channelId : undefined,
-    };
-    // Remove undefined keys before sending
-    Object.keys(submissionData).forEach((key) => {
-      if (submissionData[key as keyof typeof submissionData] === undefined) {
-        delete submissionData[key as keyof typeof submissionData];
-      }
-    });
-
-    console.log("Submitting Form Data:", submissionData);
-    mutate(submissionData);
-  };
 
   const selectedType = watch("type"); // Watch the 'type' field to conditionally render inputs
 
@@ -156,6 +120,26 @@ export function CreateTimelineForm() {
     { label: "Channel", value: "CHANNEL" },
   ];
 
+  const onSubmit = (data: CreateTimelineFormType) => {
+    console.log("data", data);
+    // Prepare data for submission, removing empty optional fields
+    const submissionData: components["schemas"]["CreateTimelineDto"] = {
+      ...data,
+      listId: data.type === "LIST" ? data.listId : undefined,
+      channelId: data.type === "CHANNEL" ? data.channelId : undefined,
+    };
+    // Remove undefined keys before sending
+    // Object.keys(submissionData).forEach((key) => {
+    //   if (submissionData[key as keyof typeof submissionData] === undefined) {
+    //     delete submissionData[key as keyof typeof submissionData];
+    //   }
+    // });
+
+    console.log("Submitting Form Data:", submissionData);
+    mutate({
+      body: submissionData,
+    });
+  };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <MenuFieldSet
@@ -206,8 +190,6 @@ export function CreateTimelineForm() {
           validation={errors.channelId?.message ?? ""} // Display validation errors for channelId
         />
       )}
-
-      {/* Removed general error display as refine targets specific paths */}
 
       <Button
         type="submit"

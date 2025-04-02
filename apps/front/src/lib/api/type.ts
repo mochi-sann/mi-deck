@@ -123,7 +123,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Get all timeline configurations for the user */
+        get: operations["TimelineController_findAll"];
         put?: never;
         /** Create a new timeline configuration */
         post: operations["TimelineController_create"];
@@ -142,7 +143,7 @@ export interface paths {
         };
         /**
          * Get timeline notes for a specific server session
-         * @description Currently fetches the home timeline notes. Adapt as needed for specific configured timelines.
+         * @description Fetches notes for a timeline associated with the given server session ID. Needs clarification if it should fetch based on Timeline ID instead.
          */
         get: operations["TimelineController_findOne"];
         put?: never;
@@ -468,6 +469,33 @@ export interface operations {
                     "application/json": components["schemas"]["ServerInfoEntity"];
                 };
             };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TimelineController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns an array of timeline configurations. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimelineEntity"][];
+                };
+            };
+            /** @description Unauthorized. */
             401: {
                 headers: {
                     [name: string]: unknown;
