@@ -1,7 +1,6 @@
 import { MenuFieldSet } from "@/Component/forms/MenuFieldSet";
 import { TextFieldSet } from "@/Component/forms/TextFieldSet";
 import { Button } from "@/Component/ui/button";
-import { Spinner } from "@/Component/ui/spinner";
 import { Text } from "@/Component/ui/text";
 import { $api } from "@/lib/api/fetchClient";
 import { components } from "@/lib/api/type";
@@ -55,20 +54,25 @@ const schema = z
       path: ["channelId"], // Specify the path for the error message
     },
   );
-
-export function CreateTimelineForm() {
-  const {
-    data: serverSessions,
-    isLoading: isLoadingSessions,
-    error: sessionsError,
-  } = $api.useQuery("get", "/v1/server-sessions");
-  // Mutation hook for creating the timeline
+type CreateTimelineFormProps = {
+  serverSessions:
+    | {
+        id: string;
+        userId: string;
+        origin: string;
+        serverToken: string;
+        serverType: "Misskey" | "OtherServer";
+        createdAt: string;
+        updatedAt: string;
+      }[]
+    | undefined;
+};
+export function CreateTimelineForm(props: CreateTimelineFormProps) {
   const { mutate, status, error } = $api.useMutation(
     "post",
     "/v1/timeline", // Use the correct endpoint path
     {}, // Options can be added here if needed (e.g., onSuccess, onError callbacks)
   );
-
   const {
     control,
     handleSubmit,
@@ -91,20 +95,9 @@ export function CreateTimelineForm() {
   const selectedType = watch("type"); // Watch the 'type' field to conditionally render inputs
 
   // Display loading state while fetching server sessions
-  if (isLoadingSessions) return <Spinner label="Loading server sessions..." />;
-  // Display error state if fetching sessions failed
-  if (sessionsError)
-    return (
-      <Text color="red.500">
-        Error loading server sessions: {sessionsError.message}
-      </Text>
-    );
-  // Display message if no sessions are available
-  if (!serverSessions || serverSessions.length === 0)
-    return <Text>No server sessions found. Please add a server first.</Text>;
 
   // Prepare options for the server session dropdown
-  const serverOptions = serverSessions.map((session) => ({
+  const serverOptions = props.serverSessions?.map((session) => ({
     // Use a more descriptive label, perhaps including the server name if available later
     label: `${session.origin} (${session.serverType})`,
     value: session.id,
@@ -147,7 +140,7 @@ export function CreateTimelineForm() {
         name="serverSessionId"
         label="Server Session"
         placeholder="Select a server session"
-        collection={serverOptions}
+        collection={serverOptions|| []}
         validation={errors.serverSessionId?.message ?? ""}
       />
 
