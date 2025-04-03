@@ -19,6 +19,7 @@ import { AuthGuard } from "../auth/auth.gurd";
 import { CreateTimelineDto } from "./dto/create-timeline.dto";
 import { TimelineEntity } from "./entities/timeline.entity";
 import { TimelineService } from "./timeline.service";
+import { TimelineWithServerSessionEntity } from "./entities/timelineWithServerSession.entity";
 
 @ApiTags("timeline")
 @Controller("timeline")
@@ -54,7 +55,7 @@ export class TimelineController {
   @ApiResponse({
     status: 200,
     description: "Returns an array of timeline configurations.",
-    type: [TimelineEntity], // Indicate it returns an array of TimelineEntity
+    type: [TimelineWithServerSessionEntity], // Indicate it returns an array of TimelineEntity
   })
   @ApiResponse({ status: 401, description: "Unauthorized." })
   findAll(@Request() req) {

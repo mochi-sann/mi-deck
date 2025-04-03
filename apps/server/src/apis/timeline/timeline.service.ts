@@ -62,7 +62,8 @@ export class TimelineService {
   }
 
   // Method to find all timeline configurations for a user
-  async findAllByUserId(userId: string): Promise<TimelineWithServerSession[]> { // Update return type
+  async findAllByUserId(userId: string): Promise<TimelineWithServerSession[]> {
+    // Update return type
     const timelines = await this.prisma.timeline.findMany({
       where: {
         serverSession: {
@@ -70,7 +71,14 @@ export class TimelineService {
         },
       },
       include: {
-        serverSession: true, // Include serverSession to ensure the relation exists
+        serverSession: {
+          select: {
+            id: true,
+            origin: true,
+            serverType: true,
+            serverToken: true,
+          },
+        }, // Include serverSession to ensure the relation exists
       },
     });
 

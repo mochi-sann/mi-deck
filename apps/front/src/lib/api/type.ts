@@ -261,6 +261,42 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
+        ServerSessionInfo: {
+            /**
+             * Format: uuid
+             * @description ID of the server session
+             */
+            id: string;
+            /**
+             * @description Origin URL of the server
+             * @example https://misskey.io
+             */
+            origin: string;
+            /**
+             * @description Type of the server
+             * @enum {string}
+             */
+            serverType: "Misskey" | "OtherServer";
+            /** @description Token for the server session */
+            serverToken: string;
+        };
+        TimelineWithServerSessionEntity: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            serverSessionId: string;
+            name: string;
+            /** @enum {string} */
+            type: "HOME" | "LOCAL" | "GLOBAL" | "LIST" | "USER" | "CHANNEL";
+            listId?: Record<string, never>;
+            channelId?: Record<string, never>;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** @description Associated server session details */
+            serverSession: components["schemas"]["ServerSessionInfo"];
+        };
     };
     responses: never;
     parameters: never;
@@ -492,7 +528,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TimelineEntity"][];
+                    "application/json": components["schemas"]["TimelineWithServerSessionEntity"][];
                 };
             };
             /** @description Unauthorized. */

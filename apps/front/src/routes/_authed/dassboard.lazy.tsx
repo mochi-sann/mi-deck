@@ -39,7 +39,12 @@ function DashBoard() {
                   {timelines.map((timeline) => (
                     <li key={timeline.id} className="mb-2 p-2 border rounded">
                       <Text fontWeight="bold">name : {timeline.name}</Text>
-                      <Text fontWeight="bold">origin {timeline.serverSessionId}</Text>
+                      <Text fontWeight="bold">
+                        serverId {timeline.serverSessionId}
+                      </Text>
+                      <Text fontWeight="bold">
+                        origin {timeline.serverSession.origin}
+                      </Text>
                       <Text size="sm" color="gray.600">
                         Type: {timeline.type}
                       </Text>

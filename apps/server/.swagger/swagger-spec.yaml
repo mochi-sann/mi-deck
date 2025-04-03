@@ -177,7 +177,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/TimelineEntity'
+                  $ref: '#/components/schemas/TimelineWithServerSessionEntity'
         '401':
           description: Unauthorized.
       security:
@@ -408,7 +408,7 @@ components:
           type: string
         type:
           type: string
-          enum:
+          enum: &ref_3
             - HOME
             - LOCAL
             - GLOBAL
@@ -432,3 +432,64 @@ components:
         - type
         - createdAt
         - updatedAt
+    ServerSessionInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the server session
+        origin:
+          type: string
+          example: https://misskey.io
+          description: Origin URL of the server
+        serverType:
+          type: string
+          enum:
+            - Misskey
+            - OtherServer
+          description: Type of the server
+        serverToken:
+          type: string
+          description: Token for the server session
+      required:
+        - id
+        - origin
+        - serverType
+        - serverToken
+    TimelineWithServerSessionEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        serverSessionId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum: *ref_3
+        listId:
+          type: object
+        channelId:
+          type: object
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        serverSession:
+          description: Associated server session details
+          allOf:
+            - $ref: '#/components/schemas/ServerSessionInfo'
+      required:
+        - id
+        - serverSessionId
+        - name
+        - type
+        - createdAt
+        - updatedAt
+        - serverSession
