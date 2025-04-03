@@ -3,10 +3,11 @@ import { Spinner } from "@/Component/ui/spinner";
 import { Heading } from "@/Component/ui/styled/heading";
 import { Text } from "@/Component/ui/styled/text";
 import { $api } from "@/lib/api/fetchClient";
-import type { components } from "@/lib/api/schema";
 import { css } from "styled-system/css";
 import { useEffect, useState } from "react";
-import { APIClient, Note } from "misskey-js"; // Import misskey-js
+import { components } from "@/lib/api/type";
+import { Note } from "misskey-js/entities.js";
+import { APIClient } from "misskey-js/api.js";
 
 type TimelineEntityType =
   components["schemas"]["TimelineWithServerSessionEntity"];
@@ -79,9 +80,7 @@ function TimelineContent({
       {notes.length > 0 ? (
         notes.map((note) => (
           <li key={note.id} className="mb-1 p-1 border-b">
-            <Text fontSize="xs" noOfLines={3}>
-              {note.text || <i>(No Text)</i>}
-            </Text>
+            <Text fontSize="xs">{note.text || <i>(No Text)</i>}</Text>
             <Text fontSize="2xs" color="gray.500" textAlign="right">
               @{note.user.username}
             </Text>
@@ -124,7 +123,7 @@ export function TimelineList() {
               typedTimelines.map((timeline) => (
                 <Card.Root key={timeline.id}>
                   <Card.Header>
-                    <Heading as="h4" size="sm" isTruncated>
+                    <Heading as="h4" size="sm">
                       {timeline.name} ({timeline.type} @{" "}
                       {new URL(timeline.serverSession.origin).hostname})
                     </Heading>
