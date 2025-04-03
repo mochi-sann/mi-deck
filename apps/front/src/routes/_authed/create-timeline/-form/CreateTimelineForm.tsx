@@ -138,7 +138,6 @@ export function CreateTimelineForm(props: CreateTimelineFormProps) {
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <pre>{JSON.stringify(watch(), null, 2)}</pre>
       <MenuFieldSet
         control={control}
         name="serverSessionId"
