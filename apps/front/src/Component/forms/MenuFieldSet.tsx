@@ -47,8 +47,9 @@ export const MenuFieldSet = <T extends FieldValues>(
           positioning={{ sameWidth: true }}
           width="full"
           onValueChange={(value) => {
+            console.log("value", value.value[0]);
             // Only pass the selected value to react-hook-form
-            onChange(value[0]);
+            onChange(value.value[0]);
           }}
           {...OtherField}
           collection={collection}

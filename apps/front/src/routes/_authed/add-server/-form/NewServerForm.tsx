@@ -10,8 +10,7 @@ type NewServerFormType = {
   serverType: string;
 };
 export const NewServerForm: React.FC = () => {
-  const { handleSubmit, control, formState, watch } =
-    useForm<NewServerFormType>();
+  const { handleSubmit, control } = useForm<NewServerFormType>();
   const onSubmit = async (data: NewServerFormType) => {
     console.log(...[data, "👀 [NewServerForm.tsx:14]: data"].reverse());
     const MisskeySessionToken = MiAuthReq(data.serverOrigin);
@@ -53,7 +52,6 @@ export const NewServerForm: React.FC = () => {
         <Button variant={"solid"} buttonWidth={"full"} type="submit">
           サーバーを追加する
         </Button>
-        {JSON.stringify(watch())}
       </form>
     </div>
   );
