@@ -43,8 +43,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         <Link to="/login" className={link()}>
           login
         </Link>{" "}
-        <Link to="/dassboard" className={link()}>
-          dassboard
+        <Link to="/dashboard" className={link()}>
+          dashboard
         </Link>
         <Link to="/add-server" className={link()}>
           add-server

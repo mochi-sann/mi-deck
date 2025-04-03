@@ -7,7 +7,7 @@ import { Spinner } from "@/Component/ui/spinner";
 import { Card } from "@/Component/ui/card";
 import React from "react";
 
-export const Route = createLazyFileRoute("/_authed/dassboard")({
+export const Route = createLazyFileRoute("/_authed/dashboard")({
   component: DashBoard,
 });
 
@@ -15,7 +15,7 @@ function DashBoard() {
   const { data: timelines, status } = $api.useQuery("get", "/v1/timeline", {});
   return (
     <div>
-      Hello "/_authed/dassboard"!
+      Hello "/_authed/dashboard"!
       <MisskeyJsTest />
       <Heading as="h2" size="lg" mb="4">
         Dashboard
