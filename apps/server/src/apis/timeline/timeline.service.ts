@@ -3,13 +3,13 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { ServerSession } from "@prisma/client";
+import { ServerSession } from "@prisma/client"; // Keep this import
 import { APIClient } from "misskey-js/api.js";
 import { PrismaService } from "~/lib/prisma.service";
 import { CreateTimelineDto } from "./dto/create-timeline.dto";
 import { TimelineEntity } from "./entities/timeline.entity";
 
-// 返り値の型定義を追加
+// Define the return type including selected server session fields
 type TimelineWithServerSession = TimelineEntity & {
   serverSession: Pick<ServerSession, "id" | "origin" | "serverType">;
 };
@@ -62,7 +62,7 @@ export class TimelineService {
   }
 
   // Method to find all timeline configurations for a user
-  async findAllByUserId(userId: string): Promise<TimelineEntity[]> {
+  async findAllByUserId(userId: string): Promise<TimelineWithServerSession[]> { // Update return type
     const timelines = await this.prisma.timeline.findMany({
       where: {
         serverSession: {
@@ -74,8 +74,31 @@ export class TimelineService {
       },
     });
 
-    // Map Prisma models to TimelineEntity objects
-    return timelines.map((timeline) => new TimelineEntity(timeline));
+    // Map Prisma models to the desired structure including serverSession info
+    return timelines.map((timeline) => {
+      // Ensure serverSession is included and not null (should always be true due to include)
+      if (!timeline.serverSession) {
+        // This case should ideally not happen with the current query logic
+        // Log an error or handle appropriately if it does
+        console.error(
+          `Server session data missing for timeline ID: ${timeline.id}`,
+        );
+        // Depending on requirements, you might throw an error or return a partial object
+        // For now, let's throw an error to indicate an unexpected state
+        throw new Error(
+          `Inconsistent data: Server session missing for timeline ${timeline.id}`,
+        );
+      }
+      return {
+        ...new TimelineEntity(timeline), // Spread properties from TimelineEntity
+        serverSession: {
+          // Select specific fields from the included serverSession
+          id: timeline.serverSession.id,
+          origin: timeline.serverSession.origin,
+          serverType: timeline.serverSession.serverType,
+        },
+      };
+    });
   }
 
   // Existing method to fetch notes from a Misskey timeline (e.g., Home timeline)
