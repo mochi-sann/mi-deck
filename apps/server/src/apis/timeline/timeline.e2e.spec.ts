@@ -242,6 +242,7 @@ describe("TimelineController (e2e)", () => {
         },
       ];
 
+      // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
       const transformTimeline = (timeline: any) => ({
         name: timeline.name,
         type: timeline.type,
