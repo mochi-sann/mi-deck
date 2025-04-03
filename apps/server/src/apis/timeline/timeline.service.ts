@@ -3,10 +3,16 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
+import { ServerSession } from "@prisma/client"; // 追加
 import { APIClient } from "misskey-js/api.js";
 import { PrismaService } from "~/lib/prisma.service";
 import { CreateTimelineDto } from "./dto/create-timeline.dto";
 import { TimelineEntity } from "./entities/timeline.entity";
+
+// 返り値の型定義を追加
+type TimelineWithServerSession = TimelineEntity & {
+  serverSession: Pick<ServerSession, "id" | "origin" | "serverType">;
+};
 
 @Injectable()
 export class TimelineService {
