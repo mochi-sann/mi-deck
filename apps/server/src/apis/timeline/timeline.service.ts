@@ -23,12 +23,6 @@ export class TimelineService {
     createTimelineDto: CreateTimelineDto,
     userId: string,
   ): Promise<TimelineEntity> {
-    console.log(
-      ...[
-        { createTimelineDto: createTimelineDto.serverSessionId, userId },
-        "👀 [timeline.service.ts:21]: {createTimelineDto , userId}",
-      ].reverse(),
-    );
 
     // 1. Verify the server session belongs to the user
     const serverSession = await this.prisma.serverSession.findUnique({

@@ -222,9 +222,7 @@ describe("TimelineController (e2e)", () => {
           listId: null,
           channelId: null,
           serverSession: {
-            userId: seededUserId, // Use the correct variable name
             origin: "https://test.example.com",
-            serverToken: "test-token",
             serverType: "Misskey",
           },
         },
@@ -234,9 +232,7 @@ describe("TimelineController (e2e)", () => {
           listId: "list-abc-123",
           channelId: null,
           serverSession: {
-            userId: seededUserId, // Use the correct variable name
             origin: "https://test.example.com",
-            serverToken: "test-token",
             serverType: "Misskey",
           },
         },
@@ -249,9 +245,7 @@ describe("TimelineController (e2e)", () => {
         listId: timeline.listId,
         channelId: timeline.channelId,
         serverSession: {
-          userId: timeline.serverSession.userId,
           origin: timeline.serverSession.origin,
-          serverToken: timeline.serverSession.serverToken,
           serverType: timeline.serverSession.serverType,
         },
       });
