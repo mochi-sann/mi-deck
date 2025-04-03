@@ -4,10 +4,10 @@ import { Heading } from "@/Component/ui/styled/heading";
 import { Text } from "@/Component/ui/styled/text";
 import { $api } from "@/lib/api/fetchClient";
 import { css } from "styled-system/css";
-import { useEffect, useState } from "react";
 import { components } from "@/lib/api/type";
 import { Note } from "misskey-js/entities.js";
 import { APIClient } from "misskey-js/api.js";
+import { useQuery } from "@tanstack/react-query"; // Import useQuery
 
 type TimelineEntityType =
   components["schemas"]["TimelineWithServerSessionEntity"];
@@ -39,45 +39,46 @@ function TimelineContent({
   token: string;
   type: string;
 }) {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  // Define the query key
+  const queryKey = ["timelineNotes", origin, type, token]; // Include token in key if it can change
 
-  useEffect(() => {
-    const fetchNotes = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const client = new APIClient({ origin, credential: token });
-        const endpoint = timelineTypeToEndpoint(type);
-        // Fetch last 10 notes for simplicity
-        const fetchedNotes = await client.request(endpoint, { limit: 10 });
-        setNotes(fetchedNotes);
-      } catch (err) {
-        console.error("Failed to fetch timeline notes:", err);
-        setError(
-          err instanceof Error ? err : new Error("Failed to fetch notes"),
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Define the query function
+  const fetchNotes = async (): Promise<Note[]> => {
+    const client = new APIClient({ origin, credential: token });
+    const endpoint = timelineTypeToEndpoint(type);
+    // Fetch last 10 notes for simplicity
+    const fetchedNotes = await client.request(endpoint, { limit: 10 });
+    return fetchedNotes;
+  };
 
-    fetchNotes();
-    // Re-fetch if origin, token, or type changes (though unlikely for a single rendered timeline)
-  }, [origin, token, type]);
+  // Use the useQuery hook
+  const {
+    data: notes,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Note[], Error>({
+    queryKey: queryKey,
+    queryFn: fetchNotes,
+    // Optional: Configure staleTime, cacheTime, refetch options etc.
+    // staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
-  if (loading) {
+  if (isLoading) {
     return <Spinner size="sm" label="Loading notes..." />;
   }
 
-  if (error) {
-    return <Text color="red.500">Error loading notes: {error.message}</Text>;
+  if (isError) {
+    return (
+      <Text color="red.500">
+        Error loading notes: {error?.message || "Unknown error"}
+      </Text>
+    );
   }
 
   return (
     <ul>
-      {notes.length > 0 ? (
+      {notes && notes.length > 0 ? (
         notes.map((note) => (
           <li key={note.id} className="mb-1 p-1 border-b">
             <Text fontSize="xs">{note.text || <i>(No Text)</i>}</Text>
