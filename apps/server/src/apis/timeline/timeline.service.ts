@@ -3,7 +3,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { ServerSession } from "@prisma/client"; // 追加
+import { ServerSession } from "@prisma/client";
 import { APIClient } from "misskey-js/api.js";
 import { PrismaService } from "~/lib/prisma.service";
 import { CreateTimelineDto } from "./dto/create-timeline.dto";
