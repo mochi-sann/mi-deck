@@ -138,39 +138,81 @@ paths:
       security:
         - bearer: []
       tags: *ref_1
-  /v1/server-sessions/{id}:
-    put:
-      operationId: ServersessionsController_update
+  /v1/timeline:
+    post:
+      operationId: TimelineController_create
       parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTimelineDto'
       responses:
-        '200':
-          description: ''
-      tags: *ref_1
-    delete:
-      operationId: ServersessionsController_delete
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags: *ref_1
-  /v1/timeline/{serverSerssionId}:
+        '201':
+          description: Timeline configuration created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimelineEntity'
+        '400':
+          description: Bad Request (validation failed).
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden (user does not own the server session).
+      security:
+        - bearer: []
+      summary: Create a new timeline configuration
+      tags: &ref_2
+        - timeline
     get:
+      operationId: TimelineController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: Returns an array of timeline configurations.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimelineWithServerSessionEntity'
+        '401':
+          description: Unauthorized.
+      security:
+        - bearer: []
+      summary: Get all timeline configurations for the user
+      tags: *ref_2
+  /v1/timeline/{serverSessionId}:
+    get:
+      description: >-
+        Fetches notes for a timeline associated with the given server session
+        ID. Needs clarification if it should fetch based on Timeline ID instead.
       operationId: TimelineController_findOne
       parameters:
-        - name: serverSerssionId
+        - name: serverSessionId
           required: true
           in: path
           schema:
             type: string
       responses:
         '200':
-          description: ''
+          description: Returns an array of notes.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
         '401':
-          description: ''
+          description: Unauthorized.
+        '403':
+          description: Forbidden (session not found or access denied).
       security:
         - bearer: []
-      tags:
-        - timeline
+      summary: Get timeline notes for a specific server session
+      tags: *ref_2
 info:
   title: mi-deck api
   description: mi-deck api description
@@ -319,3 +361,135 @@ components:
         - iconUrl
         - faviconUrl
         - themeColor
+    CreateTimelineDto:
+      type: object
+      properties:
+        serverSessionId:
+          type: string
+          description: The ID of the server session this timeline belongs to
+          example: a1b2c3d4-e5f6-7890-1234-567890abcdef
+        name:
+          type: string
+          description: User-defined name for the timeline
+          example: My Home Timeline
+        type:
+          type: string
+          description: Type of the timeline
+          enum:
+            - HOME
+            - LOCAL
+            - GLOBAL
+            - LIST
+            - USER
+            - CHANNEL
+          example: HOME
+        listId:
+          type: string
+          description: Required if type is LIST. The ID of the Misskey list.
+          example: abcdef1234567890
+        channelId:
+          type: string
+          description: Required if type is CHANNEL. The ID of the Misskey channel.
+          example: ghijkl9876543210
+      required:
+        - serverSessionId
+        - name
+        - type
+    TimelineEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        serverSessionId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum: &ref_3
+            - HOME
+            - LOCAL
+            - GLOBAL
+            - LIST
+            - USER
+            - CHANNEL
+        listId:
+          type: object
+        channelId:
+          type: object
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - serverSessionId
+        - name
+        - type
+        - createdAt
+        - updatedAt
+    ServerSessionInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the server session
+        origin:
+          type: string
+          example: https://misskey.io
+          description: Origin URL of the server
+        serverType:
+          type: string
+          enum:
+            - Misskey
+            - OtherServer
+          description: Type of the server
+        serverToken:
+          type: string
+          description: Token for the server session
+      required:
+        - id
+        - origin
+        - serverType
+        - serverToken
+    TimelineWithServerSessionEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        serverSessionId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum: *ref_3
+        listId:
+          type: object
+        channelId:
+          type: object
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        serverSession:
+          description: Associated server session details
+          allOf:
+            - $ref: '#/components/schemas/ServerSessionInfo'
+      required:
+        - id
+        - serverSessionId
+        - name
+        - type
+        - createdAt
+        - updatedAt
+        - serverSession

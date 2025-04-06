@@ -57,12 +57,23 @@ erDiagram
   String server_session_id FK
   String type
 }
+"timeline" {
+  String id PK
+  String server_session_id FK
+  String name
+  TimelineType type
+  String list_id "nullable"
+  String channel_id "nullable"
+  DateTime created_at
+  DateTime updated_at
+}
 "user_setting" }o--|| "user" : user
 "server_session" }o--|| "user" : user
 "server_info" |o--|| "server_session" : serverSession
 "user_info" |o--|| "server_session" : serverSession
 "user_info" }o--o| "user" : User
 "panel" }o--|| "server_session" : serverSession
+"timeline" }o--|| "server_session" : serverSession
 ```
 
 ### `user`
@@ -127,3 +138,15 @@ erDiagram
   - `id`: 
   - `server_session_id`: 
   - `type`: 
+
+### `timeline`
+
+**Properties**
+  - `id`: 
+  - `server_session_id`: 
+  - `name`: 
+  - `type`: 
+  - `list_id`: 
+  - `channel_id`: 
+  - `created_at`: 
+  - `updated_at`: 

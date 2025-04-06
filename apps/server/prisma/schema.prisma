@@ -73,6 +73,7 @@ model ServerSession {
   panels         Panel[]
   serverInfo     ServerInfo?
   serverUserInfo UserInfo?
+  Timeline       Timeline[]
 
   @@unique([origin, userId])
   @@index([userId])
@@ -120,4 +121,28 @@ model Panel {
 
   @@index([serverSessionId])
   @@map("panel")
+}
+
+enum TimelineType {
+  HOME
+  LOCAL
+  GLOBAL
+  LIST
+  USER
+  CHANNEL // Misskeyのチャンネル用
+}
+
+model Timeline {
+  id              String        @id @default(uuid())
+  serverSessionId String        @map("server_session_id")
+  serverSession   ServerSession @relation(fields: [serverSessionId], references: [id], onDelete: Cascade) // onDeleteを追加してセッション削除時にタイムラインも削除
+  name            String
+  type            TimelineType
+  listId          String?       @map("list_id") // LISTタイプの場合に使用
+  channelId       String?       @map("channel_id") // CHANNELタイプの場合に使用
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  @@index([serverSessionId])
+  @@map("timeline")
 }

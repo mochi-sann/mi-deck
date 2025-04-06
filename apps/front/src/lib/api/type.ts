@@ -116,29 +116,35 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/server-sessions/{id}": {
+    "/v1/timeline": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put: operations["ServersessionsController_update"];
-        post?: never;
-        delete: operations["ServersessionsController_delete"];
+        /** Get all timeline configurations for the user */
+        get: operations["TimelineController_findAll"];
+        put?: never;
+        /** Create a new timeline configuration */
+        post: operations["TimelineController_create"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v1/timeline/{serverSerssionId}": {
+    "/v1/timeline/{serverSessionId}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
+        /**
+         * Get timeline notes for a specific server session
+         * @description Fetches notes for a timeline associated with the given server session ID. Needs clarification if it should fetch based on Timeline ID instead.
+         */
         get: operations["TimelineController_findOne"];
         put?: never;
         post?: never;
@@ -211,6 +217,85 @@ export interface components {
             iconUrl: string;
             faviconUrl: string;
             themeColor: string;
+        };
+        CreateTimelineDto: {
+            /**
+             * @description The ID of the server session this timeline belongs to
+             * @example a1b2c3d4-e5f6-7890-1234-567890abcdef
+             */
+            serverSessionId: string;
+            /**
+             * @description User-defined name for the timeline
+             * @example My Home Timeline
+             */
+            name: string;
+            /**
+             * @description Type of the timeline
+             * @example HOME
+             * @enum {string}
+             */
+            type: "HOME" | "LOCAL" | "GLOBAL" | "LIST" | "USER" | "CHANNEL";
+            /**
+             * @description Required if type is LIST. The ID of the Misskey list.
+             * @example abcdef1234567890
+             */
+            listId?: string;
+            /**
+             * @description Required if type is CHANNEL. The ID of the Misskey channel.
+             * @example ghijkl9876543210
+             */
+            channelId?: string;
+        };
+        TimelineEntity: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            serverSessionId: string;
+            name: string;
+            /** @enum {string} */
+            type: "HOME" | "LOCAL" | "GLOBAL" | "LIST" | "USER" | "CHANNEL";
+            listId?: Record<string, never>;
+            channelId?: Record<string, never>;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ServerSessionInfo: {
+            /**
+             * Format: uuid
+             * @description ID of the server session
+             */
+            id: string;
+            /**
+             * @description Origin URL of the server
+             * @example https://misskey.io
+             */
+            origin: string;
+            /**
+             * @description Type of the server
+             * @enum {string}
+             */
+            serverType: "Misskey" | "OtherServer";
+            /** @description Token for the server session */
+            serverToken: string;
+        };
+        TimelineWithServerSessionEntity: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            serverSessionId: string;
+            name: string;
+            /** @enum {string} */
+            type: "HOME" | "LOCAL" | "GLOBAL" | "LIST" | "USER" | "CHANNEL";
+            listId?: Record<string, never>;
+            channelId?: Record<string, never>;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** @description Associated server session details */
+            serverSession: components["schemas"]["ServerSessionInfo"];
         };
     };
     responses: never;
@@ -428,7 +513,7 @@ export interface operations {
             };
         };
     };
-    ServersessionsController_update: {
+    TimelineController_findAll: {
         parameters: {
             query?: never;
             header?: never;
@@ -437,7 +522,17 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
+            /** @description Returns an array of timeline configurations. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimelineWithServerSessionEntity"][];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -445,16 +540,44 @@ export interface operations {
             };
         };
     };
-    ServersessionsController_delete: {
+    TimelineController_create: {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTimelineDto"];
+            };
+        };
         responses: {
-            200: {
+            /** @description Timeline configuration created successfully. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimelineEntity"];
+                };
+            };
+            /** @description Bad Request (validation failed). */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden (user does not own the server session). */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -467,19 +590,30 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                serverSerssionId: string;
+                serverSessionId: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
+            /** @description Returns an array of notes. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>[];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
-            401: {
+            /** @description Forbidden (session not found or access denied). */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };

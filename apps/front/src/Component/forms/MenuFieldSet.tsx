@@ -46,7 +46,10 @@ export const MenuFieldSet = <T extends FieldValues>(
         <Select.Root
           positioning={{ sameWidth: true }}
           width="full"
-          onValueChange={onChange}
+          onValueChange={(value) => {
+            // Only pass the selected value to react-hook-form
+            onChange(value.value[0]);
+          }}
           {...OtherField}
           collection={collection}
         >

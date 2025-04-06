@@ -1,38 +1,145 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
+import { ServerSession } from "@prisma/client"; // Keep this import
 import { APIClient } from "misskey-js/api.js";
 import { PrismaService } from "~/lib/prisma.service";
+import { CreateTimelineDto } from "./dto/create-timeline.dto";
+import { TimelineEntity } from "./entities/timeline.entity";
+
+// Define the return type including selected server session fields
+type TimelineWithServerSession = TimelineEntity & {
+  serverSession: Pick<ServerSession, "id" | "origin" | "serverType">;
+};
 
 @Injectable()
 export class TimelineService {
   constructor(private prisma: PrismaService) {}
 
-  async findOne(id: string, userId: string) {
+  // Method to create a timeline configuration
+  async create(
+    createTimelineDto: CreateTimelineDto,
+    userId: string,
+  ): Promise<TimelineEntity> {
+    // 1. Verify the server session belongs to the user
     const serverSession = await this.prisma.serverSession.findUnique({
-      where: {
-        id: id,
+      where: { id: createTimelineDto.serverSessionId },
+    });
+
+    if (!serverSession) {
+      throw new ForbiddenException(
+        `Server session with ID ${createTimelineDto.serverSessionId} not found.`,
+      );
+    }
+
+    if (serverSession.userId !== userId) {
+      throw new ForbiddenException(
+        `You do not have permission to access server session ${createTimelineDto.serverSessionId}.`,
+      );
+    }
+
+    // 2. Create the timeline configuration in the database
+    const newTimeline = await this.prisma.timeline.create({
+      data: {
+        serverSessionId: createTimelineDto.serverSessionId,
+        name: createTimelineDto.name,
+        type: createTimelineDto.type,
+        listId: createTimelineDto.listId, // Will be null if not provided or not applicable
+        channelId: createTimelineDto.channelId, // Will be null if not provided or not applicable
       },
     });
+
+    return new TimelineEntity(newTimeline);
+  }
+
+  // Method to find all timeline configurations for a user
+  async findAllByUserId(userId: string): Promise<TimelineWithServerSession[]> {
+    // Update return type
+    const timelines = await this.prisma.timeline.findMany({
+      where: {
+        serverSession: {
+          userId: userId, // Filter timelines based on the user ID of the associated server session
+        },
+      },
+      include: {
+        serverSession: true,
+      },
+    });
+
+    // Map Prisma models to the desired structure including serverSession info
+    return timelines.map((timeline) => {
+      // Ensure serverSession is included and not null (should always be true due to include)
+      if (!timeline.serverSession) {
+        // This case should ideally not happen with the current query logic
+        // Log an error or handle appropriately if it does
+        console.error(
+          `Server session data missing for timeline ID: ${timeline.id}`,
+        );
+        // Depending on requirements, you might throw an error or return a partial object
+        // For now, let's throw an error to indicate an unexpected state
+        throw new Error(
+          `Inconsistent data: Server session missing for timeline ${timeline.id}`,
+        );
+      }
+      return {
+        ...new TimelineEntity(timeline), // Spread properties from TimelineEntity
+        serverSession: {
+          // Select specific fields from the included serverSession
+          ...timeline.serverSession,
+        },
+      };
+    });
+  }
+
+  // Existing method to fetch notes from a Misskey timeline (e.g., Home timeline)
+  // This method fetches notes based on a SERVER SESSION ID, not a timeline configuration ID.
+  // Consider if this should fetch based on a specific TimelineEntity ID instead.
+  async findOne(serverSessionId: string, userId: string) {
+    const serverSession = await this.prisma.serverSession.findUnique({
+      where: {
+        id: serverSessionId, // Correctly use the parameter
+        userId: userId, // Ensure the user owns the session
+      },
+    });
+
+    if (!serverSession) {
+      // Throw ForbiddenException if the session doesn't exist or doesn't belong to the user
+      throw new ForbiddenException(
+        `Server session with ID ${serverSessionId} not found or access denied.`,
+      );
+    }
+
     console.log(
       ...[
         serverSession,
-        "👀 [timeline.service.ts:19]: serverSession",
+        "👀 [timeline.service.ts:60]: serverSession", // Line number might change after adding 'create'
       ].reverse(),
     );
     const client = new APIClient({
       origin: serverSession.origin,
       credential: serverSession.serverToken,
     });
-    const Timeline = await client
+
+    // TODO: This currently fetches 'notes/timeline' (Home).
+    // Adapt this based on the *configured* timeline type if needed,
+    // or keep it specifically for fetching the home timeline notes.
+    // For now, it fetches the home timeline associated with the session.
+    const timelineNotes = await client
       .request("notes/timeline", {
-        limit: 100,
+        limit: 100, // Example limit
       })
       .then((res) => res)
       .catch((err) => {
-        console.log(err);
-        throw new UnauthorizedException("can not get server info");
+        console.error("Error fetching timeline notes:", err);
+        // Consider more specific error handling based on Misskey API errors
+        throw new UnauthorizedException(
+          `Could not fetch timeline notes from ${serverSession.origin}`,
+        );
       });
-    console.log(Timeline);
+    console.log(timelineNotes);
 
-    return Timeline;
+    return timelineNotes; // Returns the array of notes
   }
 }
