@@ -78,9 +78,16 @@ export function TimelineContent({
 
   return (
     <Flex
-      className={css({ flexDirection: "column", gap: "2", padding: "0" })} // Reset padding
+      as="ul" // Keep as ul for the list container
+      className={css({
+        flexDirection: "column",
+        // Remove gap and padding from here, apply within MisskeyNote or its container
+        padding: "0",
+        listStyle: "none", // Ensure no list bullets
+      })}
     >
       {typedNotes && typedNotes.length > 0 ? (
+        // Render MisskeyNote directly, it's now an <article> but can be a child of <ul>
         typedNotes.map((note) => <MisskeyNote key={note.id} note={note} />)
       ) : (
         <Text size="sm">No notes found.</Text>
