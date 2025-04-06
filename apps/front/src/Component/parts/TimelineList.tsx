@@ -31,14 +31,26 @@ export function TimelineList() {
         {status === "success" && (
           <div
             className={css({
-              display: "grid",
+              display: "flex",
+              flex: "1",
+              overflowX: "auto",
+              overflowY: "scroll",
+              overscrollBehavior: "contain",
+              p: "4",
               gap: "4",
-              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", // Responsive grid
+              // gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", // Responsive grid
             })}
           >
             {typedTimelines && typedTimelines.length > 0 ? (
               typedTimelines.map((timeline) => (
-                <Card.Root key={timeline.id}>
+                <Card.Root
+                  key={timeline.id}
+                  className={css({
+                    width: "300px",
+                    display: "flex",
+                    flexShrink: 0,
+                  })}
+                >
                   <Card.Header>
                     <Heading as="h4" size="sm">
                       {timeline.name} ({timeline.type} @{" "}

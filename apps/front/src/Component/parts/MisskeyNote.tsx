@@ -47,6 +47,16 @@ export function MisskeyNote({ note }: { note: Note }) {
             {note.text || <i>(No Text)</i>}
           </Text>
         </Box>
+        <div>
+          {note.files?.map((file) => (
+            <img
+              key={file.id}
+              src={file.url}
+              alt="Note Attachment"
+              style={{ maxWidth: "100%", height: "auto", marginTop: "8px" }}
+            />
+          ))}
+        </div>
 
         {/* Optional: Actions (Reply, Renote, Like) - Add later if needed */}
         {/* <Flex mt="2" gap="4"> ... </Flex> */}
