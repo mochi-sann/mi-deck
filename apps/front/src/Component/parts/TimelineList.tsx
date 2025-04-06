@@ -44,7 +44,6 @@ export function TimelineList() {
                       {timeline.name} ({timeline.type} @{" "}
                       {new URL(timeline.serverSession.origin).hostname})
                     </Heading>
-                    <pre>token :{timeline.serverSession.serverToken}</pre>
                   </Card.Header>
                   <Card.Body>
                     <TimelineContent
