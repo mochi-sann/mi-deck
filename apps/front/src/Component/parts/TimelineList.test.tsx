@@ -62,7 +62,8 @@ describe("TimelineList", () => {
     } as any); // Use 'as any' or refine mock type
 
     render(<TimelineList />);
-    expect(screen.getByLabelText(/loading timelines/i)).toBeInTheDocument();
+    // Use getByText instead of getByLabelText for the spinner's accessible text
+    expect(screen.getByText(/loading timelines/i)).toBeInTheDocument();
   });
 
   it("should display error message on failure", async () => {
