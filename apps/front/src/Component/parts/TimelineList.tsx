@@ -11,25 +11,6 @@ import { css } from "styled-system/css";
 type TimelineEntityType =
   components["schemas"]["TimelineWithServerSessionEntity"];
 
-// Map timeline types from backend to misskey-js API endpoints
-const timelineTypeToEndpoint = (
-  type: string,
-): "notes/timeline" | "notes/local-timeline" => {
-  switch (type.toLowerCase()) {
-    case "home":
-      return "notes/timeline";
-    case "local":
-      return "notes/local-timeline";
-    // case "social": // Assuming 'social' maps to hybrid
-    //   return "notes/hybrid-timeline";
-    // case "global":
-    // return "notes/global-timeline";
-    default:
-      console.warn(`Unknown timeline type: ${type}, falling back to home.`);
-      return "notes/timeline"; // Fallback or throw error
-  }
-};
-
 // Component to fetch and display posts for a single timeline
 function TimelineContent({
   origin,
@@ -54,7 +35,6 @@ function TimelineContent({
     origin,
     credential: serverToken,
   });
-  const endpoints = timelineTypeToEndpoint(type);
   const {
     data: notes,
     isLoading,
