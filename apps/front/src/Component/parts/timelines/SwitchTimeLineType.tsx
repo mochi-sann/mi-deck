@@ -55,7 +55,7 @@ export const SwitchTimeLineType: React.FC<SwitchTimeLineTypeProps> = (
     // case "CHANNEL":
     default:
       <div>
-        <p>not matchd timelint type</p>
+        <p>No matching timeline type</p>
       </div>;
   }
   return (
