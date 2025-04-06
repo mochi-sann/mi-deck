@@ -1,0 +1,9 @@
+version: 2
+updates:
+  - package-ecosystem: "swift"
+    directory: "/Hoge"  
+    schedule:
+      interval: "daily"
+      timezone: "Asia/Tokyo"
+      time: "10:00"
+    target-branch: "main"
