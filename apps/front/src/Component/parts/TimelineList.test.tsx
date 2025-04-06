@@ -19,35 +19,34 @@ const mockTimelines: TimelineEntityType[] = [
   {
     id: "timeline-1",
     name: "Timeline 1",
-    type: "home", // Example type
+    type: "HOME", // Example type
     serverSessionId: "session-1",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     serverSession: {
       id: "session-1",
       origin: "https://example1.com",
-      serverType: "misskey", // Example type
-      userId: "user-1",
+      serverType: "Misskey", // Example type
       serverToken: "token-1",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      // createdAt: new Date().toISOString(),
+      // updatedAt: new Date().toISOString(),
     },
   },
   {
     id: "timeline-2",
     name: "Timeline 2",
-    type: "local", // Example type
+    type: "LOCAL", // Example type
     serverSessionId: "session-2",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     serverSession: {
       id: "session-2",
       origin: "https://example2.org",
-      serverType: "misskey", // Example type
-      userId: "user-1",
+      serverType: "Misskey", // Example type
+      // userId: "user-1",
       serverToken: "token-2",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      // createdAt: new Date().toISOString(),
+      // updatedAt: new Date().toISOString(),
     },
   },
 ];
@@ -59,7 +58,7 @@ describe("TimelineList", () => {
       data: undefined,
       status: "pending",
       error: null,
-    } as any); // Use 'as any' or refine mock type
+    }); // Use 'as any' or refine mock type
 
     render(<TimelineList />);
     // Use getByText instead of getByLabelText for the spinner's accessible text
@@ -72,13 +71,11 @@ describe("TimelineList", () => {
       data: undefined,
       status: "error",
       error: new Error("Failed to fetch"),
-    } as any); // Use 'as any' or refine mock type
+    }); // Use 'as any' or refine mock type
 
     render(<TimelineList />);
     await waitFor(() => {
-      expect(
-        screen.getByText(/failed to load timelines/i),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/failed to load timelines/i)).toBeInTheDocument();
     });
   });
 
