@@ -23,7 +23,6 @@ export class TimelineService {
     createTimelineDto: CreateTimelineDto,
     userId: string,
   ): Promise<TimelineEntity> {
-
     // 1. Verify the server session belongs to the user
     const serverSession = await this.prisma.serverSession.findUnique({
       where: { id: createTimelineDto.serverSessionId },
@@ -65,14 +64,7 @@ export class TimelineService {
         },
       },
       include: {
-        serverSession: {
-          select: {
-            id: true,
-            origin: true,
-            serverType: true,
-            serverToken: true,
-          },
-        }, // Include serverSession to ensure the relation exists
+        serverSession: true,
       },
     });
 
@@ -95,9 +87,7 @@ export class TimelineService {
         ...new TimelineEntity(timeline), // Spread properties from TimelineEntity
         serverSession: {
           // Select specific fields from the included serverSession
-          id: timeline.serverSession.id,
-          origin: timeline.serverSession.origin,
-          serverType: timeline.serverSession.serverType,
+          ...timeline.serverSession,
         },
       };
     });

@@ -3,26 +3,27 @@ import { Spinner } from "@/Component/ui/spinner";
 import { Heading } from "@/Component/ui/styled/heading";
 import { Text } from "@/Component/ui/styled/text";
 import { $api } from "@/lib/api/fetchClient";
-import { css } from "styled-system/css";
 import { components } from "@/lib/api/type";
-import { Note } from "misskey-js/entities.js";
-import { APIClient } from "misskey-js/api.js";
 import { useQuery } from "@tanstack/react-query"; // Import useQuery
+import { APIClient } from "misskey-js/api.js";
+import { css } from "styled-system/css";
 
 type TimelineEntityType =
   components["schemas"]["TimelineWithServerSessionEntity"];
 
 // Map timeline types from backend to misskey-js API endpoints
-const timelineTypeToEndpoint = (type: string): string => {
+const timelineTypeToEndpoint = (
+  type: string,
+): "notes/timeline" | "notes/local-timeline" => {
   switch (type.toLowerCase()) {
     case "home":
       return "notes/timeline";
     case "local":
       return "notes/local-timeline";
-    case "social": // Assuming 'social' maps to hybrid
-      return "notes/hybrid-timeline";
-    case "global":
-      return "notes/global-timeline";
+    // case "social": // Assuming 'social' maps to hybrid
+    //   return "notes/hybrid-timeline";
+    // case "global":
+    // return "notes/global-timeline";
     default:
       console.warn(`Unknown timeline type: ${type}, falling back to home.`);
       return "notes/timeline"; // Fallback or throw error
@@ -32,7 +33,7 @@ const timelineTypeToEndpoint = (type: string): string => {
 // Component to fetch and display posts for a single timeline
 function TimelineContent({
   origin,
-  token,
+  token: serverToken,
   type,
 }: {
   origin: string;
@@ -40,29 +41,49 @@ function TimelineContent({
   type: string;
 }) {
   // Define the query key
-  const queryKey = ["timelineNotes", origin, type, token]; // Include token in key if it can change
+  const queryKey = ["timelineNotes", origin, type, serverToken]; // Include token in key if it can change
 
   // Define the query function
-  const fetchNotes = async (): Promise<Note[]> => {
-    const client = new APIClient({ origin, credential: token });
-    const endpoint = timelineTypeToEndpoint(type);
-    // Fetch last 10 notes for simplicity
-    const fetchedNotes = await client.request(endpoint, { limit: 10 });
-    return fetchedNotes;
-  };
-
-  // Use the useQuery hook
+  // const fetchNotes = async (): Promise<Note[]> => {
+  //   const endpoint = timelineTypeToEndpoint(type);
+  //   // Fetch last 10 notes for simplicity
+  //   const fetchedNotes = await client.request(endpoint, { limit: 10 });
+  //   return fetchedNotes;
+  // };
+  const client = new APIClient({
+    origin,
+    credential: serverToken,
+  });
+  const endpoints = timelineTypeToEndpoint(type);
   const {
     data: notes,
     isLoading,
     isError,
     error,
-  } = useQuery<Note[], Error>({
-    queryKey: queryKey,
-    queryFn: fetchNotes,
-    // Optional: Configure staleTime, cacheTime, refetch options etc.
-    // staleTime: 5 * 60 * 1000, // 5 minutes
+  } = useQuery({
+    queryKey: ["timeline"],
+    queryFn: async () => {
+      return await client
+        .request("notes/timeline", {})
+        .then((res) => res)
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   });
+
+  // Use the useQuery hook
+  // const {
+  //   data: notes,
+  //   isLoading,
+  //   isError,
+  //   error,
+  // } = useQuery<Note[], Error>({
+  //   queryKey: queryKey,
+  //   queryFn: fetchNotes,
+  //   // Optional: Configure staleTime, cacheTime, refetch options etc.
+  //   // staleTime: 5 * 60 * 1000, // 5 minutes
+  // });
 
   if (isLoading) {
     return <Spinner size="sm" label="Loading notes..." />;
@@ -71,7 +92,7 @@ function TimelineContent({
   if (isError) {
     return (
       <Text color="red.500">
-        Error loading notes: {error?.message || "Unknown error"}
+        Error loading notes: {error && "Unknown error"}
       </Text>
     );
   }
@@ -128,15 +149,16 @@ export function TimelineList() {
                       {timeline.name} ({timeline.type} @{" "}
                       {new URL(timeline.serverSession.origin).hostname})
                     </Heading>
+                    <pre>token :{timeline.serverSession.serverToken}</pre>
                   </Card.Header>
                   <Card.Body>
-                    {/* Render the TimelineContent component */}
+                    {JSON.stringify(timeline, null, 2)}
                     <TimelineContent
                       origin={timeline.serverSession.origin}
                       // IMPORTANT: Ensure serverToken is actually available here!
                       // If not, the backend response needs to include it.
                       token={
-                        (timeline.serverSession as any).serverToken ?? "" // Assuming serverToken exists, add proper typing if possible
+                        timeline.serverSession.serverToken ?? "" // Assuming serverToken exists, add proper typing if possible
                       }
                       type={timeline.type}
                     />

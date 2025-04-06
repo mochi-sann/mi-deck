@@ -224,6 +224,7 @@ describe("TimelineController (e2e)", () => {
           serverSession: {
             origin: "https://test.example.com",
             serverType: "Misskey",
+            serverToken: "test-token",
           },
         },
         {
@@ -234,6 +235,7 @@ describe("TimelineController (e2e)", () => {
           serverSession: {
             origin: "https://test.example.com",
             serverType: "Misskey",
+            serverToken: "test-token",
           },
         },
       ];
@@ -247,6 +249,7 @@ describe("TimelineController (e2e)", () => {
         serverSession: {
           origin: timeline.serverSession.origin,
           serverType: timeline.serverSession.serverType,
+          serverToken: timeline.serverSession.serverToken,
         },
       });
 

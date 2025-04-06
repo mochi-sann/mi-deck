@@ -19,3 +19,6 @@ Note the use of `--` after `pnpm run server` or `pnpm run front` to pass the sub
 
 
 if you see login page type in login email is `example2@example.com` password is `password`
+
+Use the Misskey-js library to get information about the Misskey timeline itself, etc.
+Connect to Misskey-js directly from the front end
