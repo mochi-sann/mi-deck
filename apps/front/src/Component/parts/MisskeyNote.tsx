@@ -1,5 +1,5 @@
 import { Text } from "@/Component/ui/styled/text";
-import { Note } from "misskey-js";
+import { Note } from "misskey-js/entities.js";
 import { css } from "styled-system/css";
 
 // Component to display a single Misskey note

@@ -1,10 +1,11 @@
 import { Spinner } from "@/Component/ui/spinner";
 import { Text } from "@/Component/ui/styled/text";
 import { useQuery } from "@tanstack/react-query";
-import { APIClient, Note } from "misskey-js";
 import { css } from "styled-system/css";
 import { Flex } from "styled-system/jsx";
 import { MisskeyNote } from "./MisskeyNote"; // Import the extracted component
+import { APIClient } from "misskey-js/api.js";
+import { Note } from "misskey-js/entities.js";
 
 // Component to fetch and display posts for a single timeline
 export function TimelineContent({
@@ -77,7 +78,6 @@ export function TimelineContent({
 
   return (
     <Flex
-      as="ul" // Use ul for semantic list structure
       className={css({ flexDirection: "column", gap: "2", padding: "0" })} // Reset padding
     >
       {typedNotes && typedNotes.length > 0 ? (
