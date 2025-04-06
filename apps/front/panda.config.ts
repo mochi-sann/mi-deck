@@ -1,27 +1,13 @@
 // import { ButtonRecipe } from "./src/Component/recipes/button";
 import { defineConfig } from "@pandacss/dev";
-import { createPreset } from "@park-ui/panda-preset";
 import { recipes } from "./theme/recipe";
 
 export default defineConfig({
-  // Whether to use css reset
   preflight: true,
-  presets: [
-    createPreset({
-      accentColor: "blue",
-      grayColor: "slate",
-      borderRadius: "md",
-    }),
-  ],
-  jsxFramework: "react", // or 'solid' or 'vue'
+  presets: [],
 
-  // Where to look for your css declarations
-  include: ["./src/**/*.{js,jsx,ts,tsx}", "./pages/**/*.{js,jsx,ts,tsx}"],
-
-  // Files to exclude
+  include: ["./src/**/*.{ts,tsx,js,jsx}", "./pages/**/*.{ts,tsx,js,jsx}"],
   exclude: [],
-
-  // Useful for theme customization
   theme: {
     extend: {
       recipes: {
@@ -40,7 +26,5 @@ export default defineConfig({
       },
     },
   },
-
-  // The output directory for your css system
   outdir: "styled-system",
 });
