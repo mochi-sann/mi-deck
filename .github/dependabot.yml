@@ -2,7 +2,7 @@
 version: 2
 updates:
   # pnpm lockfile maintenance
-  - package-ecosystem: "pnpm" # Changed from npm to pnpm
+  - package-ecosystem: "npm" # Changed from npm to pnpm
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
