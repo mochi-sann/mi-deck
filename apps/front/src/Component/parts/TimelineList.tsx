@@ -7,6 +7,7 @@ import { components } from "@/lib/api/type";
 import { useQuery } from "@tanstack/react-query"; // Import useQuery
 import { APIClient } from "misskey-js/api.js";
 import { css } from "styled-system/css";
+import { Flex } from "styled-system/jsx";
 
 type TimelineEntityType =
   components["schemas"]["TimelineWithServerSessionEntity"];
@@ -78,10 +79,17 @@ function TimelineContent({
   }
 
   return (
-    <ul>
+    <Flex className={css({ flexDirection: "column", gap: "2" })}>
       {notes && notes.length > 0 ? (
         notes.map((note) => (
-          <li key={note.id} className="mb-1 p-1 border-b">
+          <li
+            key={note.id}
+            className={css({
+              p: "2",
+              border: "solid 1px",
+              borderRadius: "md",
+            })}
+          >
             <Text fontSize="xs">{note.text || <i>(No Text)</i>}</Text>
             <Text fontSize="2xs" color="gray.500" textAlign="right">
               @{note.user.username}
@@ -91,7 +99,7 @@ function TimelineContent({
       ) : (
         <Text size="sm">No notes found.</Text>
       )}
-    </ul>
+    </Flex>
   );
 }
 
@@ -132,7 +140,6 @@ export function TimelineList() {
                     <pre>token :{timeline.serverSession.serverToken}</pre>
                   </Card.Header>
                   <Card.Body>
-                    {JSON.stringify(timeline, null, 2)}
                     <TimelineContent
                       origin={timeline.serverSession.origin}
                       // IMPORTANT: Ensure serverToken is actually available here!
