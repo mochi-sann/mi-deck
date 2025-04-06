@@ -1,9 +1,30 @@
 import { Spinner } from "@/Component/ui/spinner";
 import { Text } from "@/Component/ui/styled/text";
 import { useQuery } from "@tanstack/react-query";
-import { APIClient } from "misskey-js/api.js";
+import { APIClient, Note } from "misskey-js"; // Import Note type
 import { css } from "styled-system/css";
 import { Flex } from "styled-system/jsx";
+
+// Component to display a single Misskey note
+function MisskeyNote({ note }: { note: Note }) {
+  return (
+    <li
+      key={note.id}
+      className={css({
+        p: "2",
+        border: "solid 1px",
+        borderRadius: "md",
+        borderColor: "gray.300", // Added border color for better visibility
+        listStyle: "none", // Remove default list styling
+      })}
+    >
+      <Text fontSize="xs">{note.text || <i>(No Text)</i>}</Text>
+      <Text fontSize="2xs" color="gray.500" textAlign="right">
+        @{note.user.username}
+      </Text>
+    </li>
+  );
+}
 
 // Component to fetch and display posts for a single timeline
 export function TimelineContent({
@@ -71,24 +92,16 @@ export function TimelineContent({
     );
   }
 
+  // Assuming the API returns an array of Note objects or similar structure
+  const typedNotes = notes as Note[] | undefined;
+
   return (
-    <Flex className={css({ flexDirection: "column", gap: "2" })}>
-      {notes && notes.length > 0 ? (
-        notes.map((note) => (
-          <li
-            key={note.id}
-            className={css({
-              p: "2",
-              border: "solid 1px",
-              borderRadius: "md",
-            })}
-          >
-            <Text fontSize="xs">{note.text || <i>(No Text)</i>}</Text>
-            <Text fontSize="2xs" color="gray.500" textAlign="right">
-              @{note.user.username}
-            </Text>
-          </li>
-        ))
+    <Flex
+      as="ul" // Use ul for semantic list structure
+      className={css({ flexDirection: "column", gap: "2", padding: "0" })} // Reset padding
+    >
+      {typedNotes && typedNotes.length > 0 ? (
+        typedNotes.map((note) => <MisskeyNote key={note.id} note={note} />)
       ) : (
         <Text size="sm">No notes found.</Text>
       )}
