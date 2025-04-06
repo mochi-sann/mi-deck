@@ -61,7 +61,7 @@ function TimelineContent({
     isError,
     error,
   } = useQuery({
-    queryKey: ["timeline"],
+    queryKey: queryKey,
     queryFn: async () => {
       return await client
         .request("notes/timeline", {})
