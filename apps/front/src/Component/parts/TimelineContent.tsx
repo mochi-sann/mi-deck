@@ -1,30 +1,10 @@
 import { Spinner } from "@/Component/ui/spinner";
 import { Text } from "@/Component/ui/styled/text";
 import { useQuery } from "@tanstack/react-query";
-import { APIClient, Note } from "misskey-js"; // Import Note type
+import { APIClient, Note } from "misskey-js";
 import { css } from "styled-system/css";
 import { Flex } from "styled-system/jsx";
-
-// Component to display a single Misskey note
-function MisskeyNote({ note }: { note: Note }) {
-  return (
-    <li
-      key={note.id}
-      className={css({
-        p: "2",
-        border: "solid 1px",
-        borderRadius: "md",
-        borderColor: "gray.300", // Added border color for better visibility
-        listStyle: "none", // Remove default list styling
-      })}
-    >
-      <Text fontSize="xs">{note.text || <i>(No Text)</i>}</Text>
-      <Text fontSize="2xs" color="gray.500" textAlign="right">
-        @{note.user.username}
-      </Text>
-    </li>
-  );
-}
+import { MisskeyNote } from "./MisskeyNote"; // Import the extracted component
 
 // Component to fetch and display posts for a single timeline
 export function TimelineContent({
