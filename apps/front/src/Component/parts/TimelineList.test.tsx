@@ -1,9 +1,9 @@
+import { $api } from "@/lib/api/fetchClient"; // Import the actual $api object
+import { components } from "@/lib/api/type";
 /// <reference types="@testing-library/jest-dom" />
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { TimelineList } from "./TimelineList"; // Adjust the import path as necessary
-import { $api } from "@/lib/api/fetchClient"; // Import the actual $api object
-import { components } from "@/lib/api/type";
 
 // Mock the $api.useQuery hook
 vi.mock("@/lib/api/fetchClient", () => ({
@@ -59,7 +59,7 @@ describe("TimelineList", () => {
       data: undefined,
       status: "pending",
       error: null,
-    }); // Use 'as any' or refine mock type
+    }); // Use '' or refine mock type
 
     render(<TimelineList />);
     // Use getByText instead of getByLabelText for the spinner's accessible text
@@ -72,7 +72,7 @@ describe("TimelineList", () => {
       data: undefined,
       status: "error",
       error: new Error("Failed to fetch"),
-    }); // Use 'as any' or refine mock type
+    }); // Use '' or refine mock type
 
     render(<TimelineList />);
     await waitFor(() => {
@@ -86,7 +86,7 @@ describe("TimelineList", () => {
       data: mockTimelines,
       status: "success",
       error: null,
-    } as any); // Use 'as any' or refine mock type
+    }); // Use '' or refine mock type
 
     render(<TimelineList />);
 
@@ -116,7 +116,7 @@ describe("TimelineList", () => {
       data: [],
       status: "success",
       error: null,
-    } as any); // Use 'as any' or refine mock type
+    }); // Use '' or refine mock type
 
     render(<TimelineList />);
 

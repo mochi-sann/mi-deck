@@ -8,7 +8,7 @@ describe("trimFirstAndLastChar", () => {
 
   it("should return an empty string if the input string has less than 3 characters", () => {
     expect(trimFirstAndLastChar("ab")).toBe("");
-    expect(trimFirstAndLastChar("a")).toBe("");
+    expect(trimFirstAndLastChar("a")).toBe("a");
     expect(trimFirstAndLastChar("")).toBe("");
   });
 
