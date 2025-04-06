@@ -1,14 +1,11 @@
-import { Spinner } from "@/Component/ui/spinner";
 import { Text } from "@/Component/ui/styled/text";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { APIClient } from "misskey-js/api.js";
 import { Note } from "misskey-js/entities.js";
-import { Suspense } from "react";
-import { flex } from "styled-system/patterns";
-import { MisskeyNote } from "./MisskeyNote"; // Import the extracted component
+import { TimelineNotes } from "./TimelineNotes";
 
 // Component to fetch and display posts for a single timeline
-export function TimelineContent({
+export function LocalTimelineContent({
   origin,
   token: serverToken,
   type,
@@ -26,14 +23,13 @@ export function TimelineContent({
   });
   const {
     data: notes,
-    // isLoading,
-    isError,
     error,
+    isError,
   } = useSuspenseQuery({
     queryKey: queryKey,
     queryFn: async () => {
       return await client
-        .request("notes/timeline", {})
+        .request("notes/local-timeline", {})
         .then((res) => res)
         .catch((err) => {
           console.log(err);
@@ -56,23 +52,5 @@ export function TimelineContent({
   // Assuming the API returns an array of Note objects or similar structure
   const typedNotes = notes as Note[] | undefined;
 
-  return (
-    <Suspense fallback={<Spinner size="sm" label="Loading notes..." />}>
-      <ul
-        className={flex({
-          flexDirection: "column",
-          // Remove gap and padding from here, apply within MisskeyNote or its container
-          padding: "0",
-          listStyle: "none", // Ensure no list bullets
-        })}
-      >
-        {typedNotes && typedNotes.length > 0 ? (
-          // Render MisskeyNote directly, it's now an <article> but can be a child of <ul>
-          typedNotes.map((note) => <MisskeyNote key={note.id} note={note} />)
-        ) : (
-          <Text size="sm">No notes found.</Text>
-        )}
-      </ul>
-    </Suspense>
-  );
+  return <TimelineNotes notes={typedNotes} />;
 }

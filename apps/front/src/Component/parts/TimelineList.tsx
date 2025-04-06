@@ -5,7 +5,7 @@ import { Text } from "@/Component/ui/styled/text";
 import { $api } from "@/lib/api/fetchClient";
 import { components } from "@/lib/api/type";
 import { css } from "styled-system/css";
-import { TimelineContent } from "./TimelineContent"; // Import the new component
+import { SwitchTimeLineType } from "./timelines/SwitchTimeLineType";
 
 type TimelineEntityType =
   components["schemas"]["TimelineWithServerSessionEntity"];
@@ -58,15 +58,7 @@ export function TimelineList() {
                     </Heading>
                   </Card.Header>
                   <Card.Body>
-                    <TimelineContent
-                      origin={timeline.serverSession.origin}
-                      // IMPORTANT: Ensure serverToken is actually available here!
-                      // If not, the backend response needs to include it.
-                      token={
-                        timeline.serverSession.serverToken ?? "" // Assuming serverToken exists, add proper typing if possible
-                      }
-                      type={timeline.type}
-                    />
+                    <SwitchTimeLineType timeline={timeline} />
                   </Card.Body>
                 </Card.Root>
               ))
