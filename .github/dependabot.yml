@@ -7,3 +7,43 @@ updates:
       timezone: "Asia/Tokyo"
       time: "10:00"
     target-branch: "main"
+# https://docs.github.com/ja/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+version: 2
+updates:
+  # pnpm lockfile maintenance
+  - package-ecosystem: "npm"
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "daily"
+    # Raise pull requests for version updates
+    # to pnpm against the `main` branch
+    target-branch: "main"
+    reviewers:
+      - "ai-chan-p"
+    assignees:
+      - "ai-chan-p"
+    commit-message:
+      # Prefix all commit messages with "chore(deps): "
+      prefix: "chore(deps)"
+    labels:
+      - "npm"
+      - "dependencies"
+      - "dependabot"
+
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    target-branch: "main"
+    reviewers:
+      - "ai-chan-p"
+    assignees:
+      - "ai-chan-p"
+    commit-message:
+      # Prefix all commit messages with "chore(actions): "
+      prefix: "chore(actions)"
+    labels:
+      - "github-actions"
+      - "dependencies"
+      - "dependabot"
