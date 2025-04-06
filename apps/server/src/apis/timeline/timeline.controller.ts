@@ -18,8 +18,8 @@ import {
 import { AuthGuard } from "../auth/auth.gurd";
 import { CreateTimelineDto } from "./dto/create-timeline.dto";
 import { TimelineEntity } from "./entities/timeline.entity";
-import { TimelineService } from "./timeline.service";
 import { TimelineWithServerSessionEntity } from "./entities/timelineWithServerSession.entity";
+import { TimelineService } from "./timeline.service";
 
 @ApiTags("timeline")
 @Controller("timeline")

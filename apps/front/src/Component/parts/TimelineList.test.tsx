@@ -1,6 +1,6 @@
+/// <reference types="@testing-library/jest-dom" />
 import { $api } from "@/lib/api/fetchClient"; // Import the actual $api object
 import { components } from "@/lib/api/type";
-/// <reference types="@testing-library/jest-dom" />
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { TimelineList } from "./TimelineList"; // Adjust the import path as necessary
