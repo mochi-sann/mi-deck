@@ -20,7 +20,7 @@
     "@ark-ui/react": "^4.9.2",
     "@hookform/resolvers": "^5.0.1",
     "@park-ui/panda-preset": "^0.42.0",
-    "@tanstack/react-query": "^5.71.3",
+    "@tanstack/react-query": "^5.71.10",
     "@tanstack/react-router": "^1.114.32",
     "lucide-react": "^0.469.0",
     "miauth-js": "^0.0.6",
