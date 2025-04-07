@@ -54,7 +54,7 @@ export const MenuFieldSet = <T extends FieldValues>(
         {...OtherField}
         // collection={collection}
       >
-        <SelectTrigger>
+        <SelectTrigger className="w-full">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
