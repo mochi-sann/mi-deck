@@ -18,10 +18,10 @@ export const Route = createFileRoute("/_authed")({
 
 function AuthLayout() {
   return (
-    <div className="p-2 h-full">
+    <div className="h-full p-2">
       <h1>Authenticated Route</h1>
       <Text>This route's content is only visible to authenticated users.</Text>
-      <ul className="py-2 flex gap-2">
+      <ul className="flex gap-2 py-2">
         <li>
           <LogoutButton />
         </li>

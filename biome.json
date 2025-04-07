@@ -40,6 +40,9 @@
         "useImportType": "off",
         "useNamingConvention": "error"
       },
+      "nursery": {
+        "useSortedClasses": "error"
+      },
       "correctness": {
         "noUnusedImports": "error"
       }

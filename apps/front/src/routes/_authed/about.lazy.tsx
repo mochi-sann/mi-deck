@@ -26,7 +26,7 @@ function About() {
 
   return (
     <div className="p-2">
-      <div className="text-2xl font-bold">About</div>
+      <div className="font-bold text-2xl">About</div>
       <div>
         {data
           ? data.map((d) => (
