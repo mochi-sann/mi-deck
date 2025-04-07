@@ -1,44 +1,51 @@
-import { forwardRef } from "react";
-import * as StyledAvatar from "./styled/avatar";
+import * as AvatarPrimitive from "@radix-ui/react-avatar";
+import * as React from "react";
 
-export interface AvatarProps extends StyledAvatar.RootProps {
-  name?: string;
-  src?: string;
+import { cn } from "@/lib/utils";
+
+function Avatar({
+  className,
+  ...props
+}: React.ComponentProps<typeof AvatarPrimitive.Root>) {
+  return (
+    <AvatarPrimitive.Root
+      data-slot="avatar"
+      className={cn(
+        "relative flex size-8 shrink-0 overflow-hidden rounded-full",
+        className,
+      )}
+      {...props}
+    />
+  );
 }
 
-export const Avatar = forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
-  const { name, src, ...rootProps } = props;
-
+function AvatarImage({
+  className,
+  ...props
+}: React.ComponentProps<typeof AvatarPrimitive.Image>) {
   return (
-    <StyledAvatar.Root ref={ref} {...rootProps}>
-      <StyledAvatar.Fallback>
-        {getInitials(name) || <UserIcon />}
-      </StyledAvatar.Fallback>
-      <StyledAvatar.Image src={src} alt={name} />
-    </StyledAvatar.Root>
+    <AvatarPrimitive.Image
+      data-slot="avatar-image"
+      className={cn("aspect-square size-full", className)}
+      {...props}
+    />
   );
-});
+}
 
-Avatar.displayName = "Avatar";
+function AvatarFallback({
+  className,
+  ...props
+}: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
+  return (
+    <AvatarPrimitive.Fallback
+      data-slot="avatar-fallback"
+      className={cn(
+        "bg-muted flex size-full items-center justify-center rounded-full",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
-const UserIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <title>User Icon</title>
-    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-    <circle cx="12" cy="7" r="4" />
-  </svg>
-);
-
-const getInitials = (name = "") =>
-  name
-    .split(" ")
-    .map((part) => part[0])
-    .splice(0, 2)
-    .join("")
-    .toUpperCase();
+export { Avatar, AvatarImage, AvatarFallback };
