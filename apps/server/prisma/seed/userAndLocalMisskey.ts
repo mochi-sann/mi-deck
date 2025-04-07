@@ -51,4 +51,21 @@ export const userAndLocalMisskey = async () => {
       "👀 [userAndLocalMisskey.ts:48]: NewServerInfo",
     ].reverse(),
   );
+  if (process.env.MISSKEY_SERVER_TOKEN) {
+    const MisskeyServerToken = await prisma.serverSession.create({
+      data: {
+        id: "3ae62e9f-4f08-44ef-94d5-24c4d9d5a240",
+        origin: "https://misskey.mochi33.com",
+        userId: user.id,
+        serverType: ServerType.Misskey,
+        serverToken: process.env.MISSKEY_SERVER_TOKEN,
+      },
+    });
+    console.log(
+      ...[
+        MisskeyServerToken,
+        "👀 [MochiMissksy.ts:62]: MisskeyServerToken",
+      ].reverse(),
+    );
+  }
 };
