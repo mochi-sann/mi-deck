@@ -1,11 +1,18 @@
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import {
   FieldValues,
   UseControllerProps,
   useController,
 } from "react-hook-form";
 import { Field } from "../ui/field";
-import { Select, createListCollection } from "../ui/select";
+import { FormItem } from "../ui/form";
+import { Label } from "../ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 type LabelProps = {
   placeholder: string;
@@ -36,47 +43,29 @@ export const MenuFieldSet = <T extends FieldValues>(
   });
   const { onChange, ...OtherField } = field;
   const { error } = fieldState;
-  const collection = createListCollection({
-    items: propsCollectionList,
-  });
   return (
-    <Field.Root>
-      <Field.Label />
-      <Field.Select asChild>
-        <Select.Root
-          positioning={{ sameWidth: true }}
-          width="full"
-          onValueChange={(value) => {
-            // Only pass the selected value to react-hook-form
-            onChange(value.value[0]);
-          }}
-          {...OtherField}
-          collection={collection}
-        >
-          <Select.Label>{label}</Select.Label>
-          <Select.Control {...field}>
-            <Select.Trigger width={"full"}>
-              <Select.ValueText placeholder={placeholder} />
-              <ChevronsUpDownIcon />
-            </Select.Trigger>
-          </Select.Control>
-          <Select.Positioner>
-            <Select.Content>
-              <Select.ItemGroup>
-                {collection.items.map((item) => (
-                  <Select.Item key={item.value} item={item}>
-                    <Select.ItemText>{item.label}</Select.ItemText>
-                    <Select.ItemIndicator>
-                      <CheckIcon />
-                    </Select.ItemIndicator>
-                  </Select.Item>
-                ))}
-              </Select.ItemGroup>
-            </Select.Content>
-          </Select.Positioner>
-        </Select.Root>
-      </Field.Select>
+    <FormItem>
+      <Label>{label}</Label>
+      <Select
+        onValueChange={(value) => {
+          // Only pass the selected value to react-hook-form
+          onChange(value);
+        }}
+        {...OtherField}
+        // collection={collection}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          {propsCollectionList.map((value) => (
+            <SelectItem value={value.value} key={value.value}>
+              {value.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       {error && <Field.ErrorText>{error.message}</Field.ErrorText>}
-    </Field.Root>
+    </FormItem>
   );
 };
