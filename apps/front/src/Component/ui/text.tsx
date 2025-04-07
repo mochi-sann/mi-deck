@@ -47,13 +47,13 @@ const textVariants = cva("text-foreground", {
 });
 
 export interface TextProps
-  extends React.HTMLAttributes<HTMLParagraphElement>,
-  VariantProps<typeof textVariants> {
+  extends React.HTMLAttributes<HTMLElement>, // Use HTMLElement for broader compatibility
+    VariantProps<typeof textVariants> {
   asChild?: boolean;
   as?: "p" | "span" | "div" | "label"; // Allow specifying the underlying element
 }
 
-const Text = React.forwardRef<HTMLParagraphElement, TextProps>(
+const Text = React.forwardRef<HTMLElement, TextProps>( // Use HTMLElement for the ref type
   (
     {
       className,
