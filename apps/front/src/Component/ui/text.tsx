@@ -48,7 +48,7 @@ const textVariants = cva("text-foreground", {
 
 export interface TextProps
   extends React.HTMLAttributes<HTMLParagraphElement>,
-    VariantProps<typeof textVariants> {
+  VariantProps<typeof textVariants> {
   asChild?: boolean;
   as?: "p" | "span" | "div" | "label"; // Allow specifying the underlying element
 }
@@ -70,7 +70,9 @@ const Text = React.forwardRef<HTMLParagraphElement, TextProps>(
     const Comp = asChild ? Slot : Component;
     return (
       <Comp
-        className={cn(textVariants({ variant, size, weight, align, className }))}
+        className={cn(
+          textVariants({ variant, size, weight, align, className }),
+        )}
         ref={ref}
         {...props}
       />
