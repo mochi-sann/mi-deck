@@ -5,5 +5,14 @@ export type LayoutProps = {
 };
 
 export const Layout: React.FC<LayoutProps> = (props) => {
-  return <div className={"m-auto max-w-[900px]"}>{props.children}</div>;
+  return (
+    <div className="m-0 flex h-svh w-dvw overscroll-none p-0 ">
+      <div className="h-full w-[80px] flex-[0_0_80px] bg-blue-500">
+        <p>side menu</p>
+      </div>
+      <div className="flex h-svh w-dvw flex-1 overflow-scroll bg-green-400">
+        <div>{props.children}</div>
+      </div>
+    </div>
+  );
 };

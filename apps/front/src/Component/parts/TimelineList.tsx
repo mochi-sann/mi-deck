@@ -15,11 +15,8 @@ export function TimelineList() {
   const typedTimelines = timelines as TimelineEntityType[] | undefined;
 
   return (
-    <Card>
-      <CardHeader>
-        <Text variant={"h3"}>Your Timelines</Text>
-      </CardHeader>
-      <CardContent>
+    <div>
+      <CardContent className="p-0">
         {status === "pending" && <Text>loading...</Text>}
         {status === "error" && (
           <Text color="red.500">Failed to load timelines.</Text>
@@ -27,7 +24,7 @@ export function TimelineList() {
         {status === "success" && (
           <div
             className={cn(
-              "flex flex-1 gap-4 overflow-x-auto overflow-y-scroll overscroll-contain p-4", // Translated styles
+              "flex flex-1 gap-2 overflow-x-auto overflow-y-scroll overscroll-contain p-4", // Translated styles
               // "grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))]", // Alternative: Responsive grid
             )}
           >
@@ -40,7 +37,7 @@ export function TimelineList() {
                   )}
                 >
                   <CardHeader>
-                    <Text variant={"h4"}>
+                    <Text>
                       {" "}
                       {/* Ensure variant prop is correctly passed */}
                       {timeline.name} ({timeline.type} @{" "}
@@ -58,6 +55,6 @@ export function TimelineList() {
           </div>
         )}
       </CardContent>
-    </Card>
+    </div>
   );
 }
