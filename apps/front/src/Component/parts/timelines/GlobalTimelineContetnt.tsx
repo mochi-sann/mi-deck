@@ -1,4 +1,4 @@
-import { Text } from "@/Component/ui/styled/text";
+import Text from "@/Component/ui/text";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { APIClient } from "misskey-js/api.js";
 import { Note } from "misskey-js/entities.js";
@@ -43,7 +43,7 @@ export function GlobalTimelineContent({
   //
   if (isError) {
     return (
-      <Text color="red.500">
+      <Text className="text-red-500">
         Error loading notes: {error && "Unknown error"}
       </Text>
     );

@@ -1,3 +1,5 @@
+import path from "node:path";
+import tailwindcss from "@tailwindcss/vite";
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 import viteReact from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
@@ -12,11 +14,17 @@ export default defineConfig({
     tsconfigPaths({ root: "./" }),
     TanStackRouterVite(),
     viteReact(),
+    tailwindcss(),
     // analyzer がprocess.env.BUNDLE_ANALYZEがある場合にのみ実行される
     showAnayler && analyzer(),
   ],
   esbuild: {
     drop: !IsDev ? ["console", "debugger"] : [],
+  },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
   },
   server: {
     port: 3000,

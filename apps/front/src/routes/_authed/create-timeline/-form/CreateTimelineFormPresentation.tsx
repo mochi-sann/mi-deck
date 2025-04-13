@@ -1,5 +1,5 @@
 import { Spinner } from "@/Component/ui/spinner";
-import { Text } from "@/Component/ui/text";
+import Text from "@/Component/ui/text";
 import { $api } from "@/lib/api/fetchClient";
 import { Suspense } from "react";
 import { CreateTimelineForm } from "./CreateTimelineForm";
@@ -18,7 +18,7 @@ export function CreateTimelineFormPresentation() {
   // Handle form submission
 
   // Display loading state while fetching server sessions
-  if (isLoadingSessions) return <Spinner label="Loading server sessions..." />;
+  if (isLoadingSessions) return <Spinner />;
   // Display error state if fetching sessions failed
   if (sessionsError)
     return (
@@ -38,7 +38,7 @@ export function CreateTimelineFormPresentation() {
   // }));
   return (
     <div>
-      <Suspense fallback={<Spinner label="Loading form..." />}>
+      <Suspense fallback={<Spinner />}>
         <CreateTimelineForm serverSessions={serverSessions} />
       </Suspense>
     </div>

@@ -1,12 +1,10 @@
-import { Card } from "@/Component/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/Component/ui/card";
+import Text from "@/Component/ui/text";
 import { useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useForm } from "react-hook-form";
-import { css } from "styled-system/css";
 import { TextFieldSet } from "../../../Component/forms/TextFieldSet";
-import { FormStyle } from "../../../Component/forms/formStyle";
 import { Button } from "../../../Component/ui/button";
-import { Heading } from "../../../Component/ui/heading";
 import { useLogin } from "../../../lib/configureAuth";
 import { Route } from "../route.lazy";
 
@@ -35,18 +33,15 @@ export const LoginForm: React.FC = () => {
   };
 
   return (
-    <Card.Root
-      className={css({
-        flex: 1,
-      })}
-    >
-      <Card.Header>
-        <Heading as="h2" size={"xl"}>
-          ログイン
-        </Heading>
-      </Card.Header>
-      <form className={FormStyle} onSubmit={handleSubmit(onSubmit)}>
-        <Card.Body>
+    <Card className={"flex"}>
+      <CardHeader>
+        <Text variant="h1">ログイン</Text>
+      </CardHeader>
+      <form
+        className={"flex flex-1 flex-col gap-4"}
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <CardContent>
           <TextFieldSet
             placeholder="email"
             label="メールアドレス"
@@ -69,13 +64,13 @@ export const LoginForm: React.FC = () => {
               required: "pelase enter a password",
             }}
           />
-        </Card.Body>
-        <Card.Footer>
-          <Button variant={"solid"} buttonWidth={"full"} type="submit">
+        </CardContent>
+        <CardFooter>
+          <Button variant={"default"} buttonWidth={"full"} type="submit">
             ログイン
           </Button>
-        </Card.Footer>
+        </CardFooter>
       </form>
-    </Card.Root>
+    </Card>
   );
 };

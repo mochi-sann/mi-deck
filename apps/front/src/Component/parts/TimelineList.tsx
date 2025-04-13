@@ -1,10 +1,8 @@
-import { Card } from "@/Component/ui/card";
-import { Spinner } from "@/Component/ui/spinner";
-import { Heading } from "@/Component/ui/styled/heading";
-import { Text } from "@/Component/ui/styled/text";
+import { Card, CardContent, CardHeader } from "@/Component/ui/card";
 import { $api } from "@/lib/api/fetchClient";
 import { components } from "@/lib/api/type";
-import { css } from "styled-system/css";
+import { cn } from "@/lib/utils"; // Import cn utility
+import Text from "../ui/text";
 import { SwitchTimeLineType } from "./timelines/SwitchTimeLineType";
 
 type TimelineEntityType =
@@ -17,57 +15,49 @@ export function TimelineList() {
   const typedTimelines = timelines as TimelineEntityType[] | undefined;
 
   return (
-    <Card.Root mt="6">
-      <Card.Header>
-        <Heading as="h3" size="md">
-          Your Timelines
-        </Heading>
-      </Card.Header>
-      <Card.Body>
-        {status === "pending" && <Spinner label="Loading timelines..." />}
+    <Card>
+      <CardHeader>
+        <Text variant={"h3"}>Your Timelines</Text>
+      </CardHeader>
+      <CardContent>
+        {status === "pending" && <Text>loading...</Text>}
         {status === "error" && (
           <Text color="red.500">Failed to load timelines.</Text>
         )}
         {status === "success" && (
           <div
-            className={css({
-              display: "flex",
-              flex: "1",
-              overflowX: "auto",
-              overflowY: "scroll",
-              overscrollBehavior: "contain",
-              p: "4",
-              gap: "4",
-              // gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", // Responsive grid
-            })}
+            className={cn(
+              "flex flex-1 gap-4 overflow-x-auto overflow-y-scroll overscroll-contain p-4", // Translated styles
+              // "grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))]", // Alternative: Responsive grid
+            )}
           >
             {typedTimelines && typedTimelines.length > 0 ? (
               typedTimelines.map((timeline) => (
-                <Card.Root
+                <Card
                   key={timeline.id}
-                  className={css({
-                    width: "300px",
-                    display: "flex",
-                    flexShrink: 0,
-                  })}
+                  className={cn(
+                    "flex w-[300px] shrink-0", // Translated styles
+                  )}
                 >
-                  <Card.Header>
-                    <Heading as="h4" size="sm">
+                  <CardHeader>
+                    <Text variant={"h4"}>
+                      {" "}
+                      {/* Ensure variant prop is correctly passed */}
                       {timeline.name} ({timeline.type} @{" "}
                       {new URL(timeline.serverSession.origin).hostname})
-                    </Heading>
-                  </Card.Header>
-                  <Card.Body>
+                    </Text>
+                  </CardHeader>
+                  <CardContent>
                     <SwitchTimeLineType timeline={timeline} />
-                  </Card.Body>
-                </Card.Root>
+                  </CardContent>
+                </Card>
               ))
             ) : (
               <Text>No timelines created yet.</Text>
             )}
           </div>
         )}
-      </Card.Body>
-    </Card.Root>
+      </CardContent>
+    </Card>
   );
 }

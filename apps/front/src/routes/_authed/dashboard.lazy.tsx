@@ -1,5 +1,5 @@
 import { TimelineList } from "@/Component/parts/TimelineList";
-import { Heading } from "@/Component/ui/styled/heading";
+import Text from "@/Component/ui/text";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/_authed/dashboard")({
@@ -9,9 +9,7 @@ export const Route = createLazyFileRoute("/_authed/dashboard")({
 function DashBoard() {
   return (
     <div>
-      <Heading as="h2" size="lg" mb="4">
-        Dashboard
-      </Heading>
+      <Text className="fint-lg mb-4">Dashboard</Text>
       <TimelineList />
     </div>
   );
