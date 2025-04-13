@@ -1,6 +1,4 @@
 import { Note } from "misskey-js/entities.js";
-import { Box, Flex } from "styled-system/jsx"; // Import layout components
-import { box } from "styled-system/patterns";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Text from "../ui/text";
 
