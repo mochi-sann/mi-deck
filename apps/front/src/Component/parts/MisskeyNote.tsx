@@ -1,7 +1,7 @@
+import { cn } from "@/lib/utils"; // Import cn utility
 import { Note } from "misskey-js/entities.js";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Text } from "../ui/text"; // Assuming Text component accepts className
-import { cn } from "@/lib/utils"; // Import cn utility
+import Text from "../ui/text";
 
 // Component to display a single Misskey note with a Twitter-like design
 export function MisskeyNote({ note }: { note: Note }) {
@@ -18,7 +18,8 @@ export function MisskeyNote({ note }: { note: Note }) {
       <div className="shrink-0">
         <Avatar>
           <AvatarImage src={note.user.avatarUrl || ""} />
-          <AvatarFallback>{note.user.name || user.username}</AvatarFallback> {/* Fallback with username */}
+          <AvatarFallback>{note.user.name || user.username}</AvatarFallback>{" "}
+          {/* Fallback with username */}
         </Avatar>
       </div>
 
@@ -26,11 +27,14 @@ export function MisskeyNote({ note }: { note: Note }) {
       <div className="flex min-w-0 grow flex-col">
         {/* Header: User Info */}
         <div className="flex flex-wrap items-center gap-1.5">
-          <Text className="font-semibold"> {/* Added font-semibold for name */}
+          <Text className="font-semibold">
+            {" "}
+            {/* Added font-semibold for name */}
             {user.name || user.username}{" "}
             {/* Display name or username if name is missing */}
           </Text>
-          <Text className="text-muted-foreground">@{user.username}</Text> {/* Use muted-foreground */}
+          <Text className="text-muted-foreground">@{user.username}</Text>{" "}
+          {/* Use muted-foreground */}
           {/* Optional: Timestamp - requires date formatting */}
           {/* <Text className="text-xs text-muted-foreground">· {formatDistanceToNow(new Date(note.createdAt))}</Text> */}
         </div>
@@ -39,12 +43,17 @@ export function MisskeyNote({ note }: { note: Note }) {
         <div className="mt-1">
           {/* Use whitespace pre-wrap to preserve line breaks */}
           {/* Assuming Text component handles text display or replace with <p> */}
-          <Text className="whitespace-pre-wrap break-words"> {/* Added whitespace and break-words */}
-            {note.text || <i className="text-muted-foreground">(No Text)</i>} {/* Style italic text */}
+          <Text className="whitespace-pre-wrap break-words">
+            {" "}
+            {/* Added whitespace and break-words */}
+            {note.text || <i className="text-muted-foreground">(No Text)</i>}{" "}
+            {/* Style italic text */}
           </Text>
         </div>
         {/* Image attachments */}
-        <div className="mt-2"> {/* Added margin-top for images */}
+        <div className="mt-2">
+          {" "}
+          {/* Added margin-top for images */}
           {note.files?.map((file) => (
             <img
               key={file.id}

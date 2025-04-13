@@ -40,7 +40,9 @@ export function TimelineList() {
                   )}
                 >
                   <CardHeader>
-                    <Text variant={"h4"}> {/* Ensure variant prop is correctly passed */}
+                    <Text variant={"h4"}>
+                      {" "}
+                      {/* Ensure variant prop is correctly passed */}
                       {timeline.name} ({timeline.type} @{" "}
                       {new URL(timeline.serverSession.origin).hostname})
                     </Text>

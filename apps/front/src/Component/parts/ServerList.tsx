@@ -1,7 +1,7 @@
 import { components } from "@/lib/api/type";
+import { cn } from "@/lib/utils"; // Import cn utility
 import type React from "react";
 import { Button } from "../ui/button";
-import { cn } from "@/lib/utils"; // Import cn utility
 
 export type ServerListProps = {
   serverInfo: components["schemas"]["CreateServerSessionResponseEntity"];
@@ -15,7 +15,9 @@ export const ServerInfoBox: React.FC<ServerListProps> = (props) => {
         "rounded border border-border p-2", // Use Tailwind classes for styling
       )}
     >
-      <pre className="overflow-x-auto text-xs"> {/* Add basic styling for pre tag */}
+      <pre className="overflow-x-auto text-xs">
+        {" "}
+        {/* Add basic styling for pre tag */}
         {JSON.stringify(props.serverInfo, null, 2)}
       </pre>
       <Button
