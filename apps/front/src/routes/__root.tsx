@@ -4,8 +4,6 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { Suspense, lazy } from "react";
-import { link } from "styled-system/recipes";
-import { css } from "../../styled-system/css";
 import { Layout } from "../Component/Layout/Layout";
 const TanStackRouterDevtools = !import.meta.env.DEV
   ? () => null // Render nothing in production
@@ -27,31 +25,11 @@ interface MyRouterContext {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
-      <div
-        className={css({
-          display: "flex",
-          gap: "8px",
-          padding: 1,
-        })}
-      >
-        <Link to="/" className={link()}>
-          Home
-        </Link>{" "}
-        <Link to="/about" className={link()}>
-          About
-        </Link>{" "}
-        <Link to="/login" className={link()}>
-          login
-        </Link>{" "}
-        <Link to="/dashboard" className={link()}>
-          dashboard
-        </Link>
-        <Link to="/add-server" className={link()}>
-          add-server
-        </Link>
-        <Link to="/create-timeline" className={link()}>
-          Create Timeline
-        </Link>
+      <div className={"display-flex gap-2 p-1"}>
+        <Link to="/">Home</Link> <Link to="/about">About</Link>{" "}
+        <Link to="/login">login</Link> <Link to="/dashboard">dashboard</Link>
+        <Link to="/add-server">add-server</Link>
+        <Link to="/create-timeline">Create Timeline</Link>
       </div>
       <hr />
       <Layout>

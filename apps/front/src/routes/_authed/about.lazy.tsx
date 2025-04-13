@@ -26,8 +26,8 @@ function About() {
 
   return (
     <div className="p-2">
-      <div className="text-2xl font-bold">About</div>
-      <div>
+      <div className="font-bold text-2xl">About</div>
+      <div className="flex flex-col gap-2">
         {data
           ? data.map((d) => (
               <ServerInfoBox onClick={onClick} key={d.id} serverInfo={d} />

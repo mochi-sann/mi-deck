@@ -1,5 +1,4 @@
 import { Link, createLazyFileRoute } from "@tanstack/react-router";
-import { link } from "styled-system/recipes";
 import { TestComponet } from "../Component/TestComponet";
 import { LogoutButton } from "./login/-componets/LogoutButton";
 
@@ -13,9 +12,7 @@ function Index() {
       <h3>Welcome Home!</h3>
       <LogoutButton />
       <TestComponet />
-      <Link to="/add-server" className={link()}>
-        add server
-      </Link>
+      <Link to="/add-server">add server</Link>
     </div>
   );
 }
