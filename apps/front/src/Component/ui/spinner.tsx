@@ -24,9 +24,11 @@ export interface SpinnerProps
 const Spinner = React.forwardRef<SVGSVGElement, SpinnerProps>(
   ({ className, size, ...props }, ref) => {
     return (
-      <div className="">
-        <LoaderCircle {...props} />
-      </div>
+      <LoaderCircle
+        ref={ref}
+        className={cn(spinnerVariants({ size }), className)}
+        {...props}
+      />
     );
   },
 );
