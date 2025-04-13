@@ -1,5 +1,5 @@
 import { Spinner } from "@/Component/ui/spinner";
-import { Text } from "@/Component/ui/text";
+import Text from "@/Component/ui/text";
 import { Note } from "misskey-js/entities.js";
 import type React from "react";
 import { Suspense } from "react";
@@ -14,7 +14,7 @@ export const TimelineNotes: React.FC<TimelineNotesProps> = (props) => {
   return (
     <div>
       {" "}
-      <Suspense fallback={<Spinner size="sm" label="Loading notes..." />}>
+      <Suspense fallback={<Spinner label="Loading notes..." />}>
         <ul
           className={flex({
             flexDirection: "column",
@@ -27,7 +27,7 @@ export const TimelineNotes: React.FC<TimelineNotesProps> = (props) => {
             // Render MisskeyNote directly, it's now an <article> but can be a child of <ul>
             props.notes.map((note) => <MisskeyNote key={note.id} note={note} />)
           ) : (
-            <Text size="sm">No notes found.</Text>
+            <Text affects={"small"}>No notes found.</Text>
           )}
         </ul>
       </Suspense>

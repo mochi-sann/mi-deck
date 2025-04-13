@@ -1,7 +1,7 @@
 import { Note } from "misskey-js/entities.js";
 import { Box, Flex } from "styled-system/jsx"; // Import layout components
 import { box } from "styled-system/patterns";
-import { Avatar } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Text from "../ui/text";
 
 // Component to display a single Misskey note with a Twitter-like design
@@ -22,8 +22,10 @@ export function MisskeyNote({ note }: { note: Note }) {
     >
       {/* Avatar Column */}
       <Box flexShrink={0}>
-        <Avatar src={note.user.avatarUrl || ""} name={note.user.name} />
-        <Avatar name="Christian Schröter" />
+        <Avatar>
+          <AvatarImage src={note.user.avatarUrl || ""} />
+          <AvatarFallback>{note.user.name} </AvatarFallback>
+        </Avatar>
       </Box>
 
       {/* Content Column */}
@@ -42,9 +44,7 @@ export function MisskeyNote({ note }: { note: Note }) {
         {/* Body: Note Text */}
         <Box mt="1">
           {/* Use whitespace pre-wrap to preserve line breaks */}
-          <Text fontSize="sm" whiteSpace="pre-wrap">
-            {note.text || <i>(No Text)</i>}
-          </Text>
+          <Text>{note.text || <i>(No Text)</i>}</Text>
         </Box>
         <div>
           {note.files?.map((file) => (

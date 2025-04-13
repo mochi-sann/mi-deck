@@ -1,5 +1,5 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { Card } from "../../../Component/ui/card";
+import { Card, CardContent, CardHeader } from "../../../Component/ui/card";
 import { Heading } from "../../../Component/ui/heading";
 import { CreateTimelineFormPresentation } from "./-form/CreateTimelineFormPresentation";
 
@@ -9,15 +9,15 @@ export const Route = createLazyFileRoute("/_authed/create-timeline")({
 
 function RouteComponent() {
   return (
-    <Card.Root maxW="md" mx="auto" mt="8">
-      <Card.Header>
+    <Card>
+      <CardHeader>
         <Heading as="h2" size="lg">
           Create New Timeline
         </Heading>
-      </Card.Header>
-      <Card.Body>
+      </CardHeader>
+      <CardContent>
         <CreateTimelineFormPresentation />
-      </Card.Body>
-    </Card.Root>
+      </CardContent>
+    </Card>
   );
 }
