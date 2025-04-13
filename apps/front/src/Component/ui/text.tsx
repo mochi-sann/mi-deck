@@ -1,84 +1,52 @@
-import { Slot } from "@radix-ui/react-slot";
-import { type VariantProps, cva } from "class-variance-authority";
-import * as React from "react";
-
 import { cn } from "@/lib/utils";
+import { type VariantProps, cva } from "class-variance-authority";
+import React from "react";
 
-const textVariants = cva("text-foreground", {
+export const TextVariants = cva("text-xl", {
   variants: {
     variant: {
+      h1: "scroll-m-20 text-4xl font-extrabold tracking-tight lg: text-5xl",
+      h2: "scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0",
+      h3: "scroll-m-20 text-2xl font-semibold tracking-tight",
+      h4: "scroll-m-20 text-xl font-semibold tracking-tight",
+      p: "leading-7 [&:not(:first-child)]:mt-6",
+    },
+    affects: {
       default: "",
-      muted: "text-muted-foreground",
-      destructive: "text-destructive",
+      lead: "text-xl text-muted-foreground",
+      large: "text-lg font-semibold",
+      small: "text-sm font-medium leading-none",
+      muted: "text-sm text-muted-foreground",
+      removeFiMargin: "[&:not(:first-child)]:mt-0",
     },
-    size: {
-      xs: "text-xs",
-      sm: "text-sm",
-      default: "text-base",
-      lg: "text-lg",
-      xl: "text-xl",
-      "2xl": "text-2xl",
-      "3xl": "text-3xl",
-    },
-    weight: {
-      thin: "font-thin",
-      extralight: "font-extralight",
-      light: "font-light",
-      normal: "font-normal",
-      medium: "font-medium",
-      semibold: "font-semibold",
-      bold: "font-bold",
-      extrabold: "font-extrabold",
-      black: "font-black",
-    },
-    align: {
-      left: "text-left",
-      center: "text-center",
-      right: "text-right",
-      justify: "text-justify",
+    colorType: {
+      default: "text-foreground",
+      denger: "text-red-500",
     },
   },
   defaultVariants: {
-    variant: "default",
-    size: "default",
-    weight: "normal",
-    align: "left",
+    variant: "p",
+    affects: "default",
+    colorType: "default",
   },
 });
 
 export interface TextProps
-  extends React.HTMLAttributes<HTMLElement>, // Use HTMLElement for broader compatibility
-    VariantProps<typeof textVariants> {
-  asChild?: boolean;
-  as?: "p" | "span" | "div" | "label"; // Allow specifying the underlying element
-}
+  extends React.HTMLAttributes<HTMLHeadingElement>,
+    VariantProps<typeof TextVariants> {}
 
-const Text = React.forwardRef<HTMLElement, TextProps>( // Use HTMLElement for the ref type
-  (
-    {
-      className,
-      variant,
-      size,
-      weight,
-      align,
-      asChild = false,
-      as: Component = "p", // Default to 'p' tag
-      ...props
-    },
-    ref,
-  ) => {
-    const Comp = asChild ? Slot : Component;
+const Text = React.forwardRef<HTMLHeadingElement, TextProps>(
+  ({ className, variant, affects, colorType, ...props }, ref) => {
+    const Comp = variant || "p";
     return (
       <Comp
-        className={cn(
-          textVariants({ variant, size, weight, align, className }),
-        )}
+        className={cn(TextVariants({ variant, colorType, affects, className }))}
         ref={ref}
         {...props}
       />
     );
   },
 );
-Text.displayName = "Text";
+Text.displayName = "H1";
 
-export { Text, textVariants };
+export default Text;

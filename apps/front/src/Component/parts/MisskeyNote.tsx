@@ -1,8 +1,8 @@
-import { Text } from "@/Component/ui/styled/text";
 import { Note } from "misskey-js/entities.js";
 import { Box, Flex } from "styled-system/jsx"; // Import layout components
 import { box } from "styled-system/patterns";
 import { Avatar } from "../ui/avatar";
+import Text from "../ui/text";
 
 // Component to display a single Misskey note with a Twitter-like design
 export function MisskeyNote({ note }: { note: Note }) {
@@ -22,20 +22,19 @@ export function MisskeyNote({ note }: { note: Note }) {
     >
       {/* Avatar Column */}
       <Box flexShrink={0}>
-        <Avatar src={note.user.avatarUrl || ""} />
+        <Avatar src={note.user.avatarUrl || ""} name={note.user.name} />
+        <Avatar name="Christian Schröter" />
       </Box>
 
       {/* Content Column */}
       <Flex direction="column" flexGrow={1} minW="0">
         {/* Header: User Info */}
         <Flex align="center" gap="1.5" wrap="wrap">
-          <Text fontWeight="bold" fontSize="sm">
+          <Text>
             {user.name || user.username}{" "}
             {/* Display name or username if name is missing */}
           </Text>
-          <Text color="gray.500" fontSize="sm">
-            @{user.username}
-          </Text>
+          <Text color="gray.500">@{user.username}</Text>
           {/* Optional: Timestamp - requires date formatting */}
           {/* <Text color="gray.500" fontSize="xs">· {formatDistanceToNow(new Date(note.createdAt))}</Text> */}
         </Flex>
