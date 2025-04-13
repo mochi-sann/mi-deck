@@ -1,6 +1,5 @@
 import { MenuFieldSet } from "@/Component/forms/MenuFieldSet";
 import { TextFieldSet } from "@/Component/forms/TextFieldSet";
-import { FormStyle } from "@/Component/forms/formStyle";
 import { Button } from "@/Component/ui/button";
 import { MiAuthReq } from "@/lib/miAuth";
 import type React from "react";
@@ -9,6 +8,7 @@ type NewServerFormType = {
   serverOrigin: string;
   serverType: string;
 };
+
 export const NewServerForm: React.FC = () => {
   const { handleSubmit, control } = useForm<NewServerFormType>();
   const onSubmit = async (data: NewServerFormType) => {
@@ -23,7 +23,10 @@ export const NewServerForm: React.FC = () => {
   };
   return (
     <div>
-      <form className={FormStyle} onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className={"flex flex-1 flex-col gap-4"}
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <TextFieldSet
           placeholder="例: misskey.io"
           label="サーバーのURL"

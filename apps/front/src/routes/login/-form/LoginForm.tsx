@@ -3,9 +3,7 @@ import Text from "@/Component/ui/text";
 import { useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useForm } from "react-hook-form";
-import { css } from "styled-system/css";
 import { TextFieldSet } from "../../../Component/forms/TextFieldSet";
-import { FormStyle } from "../../../Component/forms/formStyle";
 import { Button } from "../../../Component/ui/button";
 import { useLogin } from "../../../lib/configureAuth";
 import { Route } from "../route.lazy";
@@ -35,15 +33,14 @@ export const LoginForm: React.FC = () => {
   };
 
   return (
-    <Card
-      className={css({
-        flex: 1,
-      })}
-    >
+    <Card className={"flex"}>
       <CardHeader>
         <Text variant="h1">ログイン</Text>
       </CardHeader>
-      <form className={FormStyle} onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className={"flex flex-1 flex-col gap-4"}
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <CardContent>
           <TextFieldSet
             placeholder="email"
