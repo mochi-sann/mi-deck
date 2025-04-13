@@ -35,7 +35,7 @@ export function TimelineList() {
                     {new URL(timeline.serverSession.origin).hostname})
                   </Text>
                 </div>
-                <div className="grow overflow-y-auto px-0 py-2.5">
+                <div className="grow overflow-y-auto px-0 py-0">
                   <SwitchTimeLineType timeline={timeline} />
                 </div>
               </div>
