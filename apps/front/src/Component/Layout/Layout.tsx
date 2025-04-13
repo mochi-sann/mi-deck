@@ -10,7 +10,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
       <div className="h-full w-[80px] flex-[0_0_80px] bg-blue-500">
         <p>side menu</p>
       </div>
-      <div className="flex h-svh w-dvw flex-1 overflow-scroll bg-green-400">
+      <div className="flex h-svh w-dvw flex-1 overflow-x-auto overflow-y-hidden bg-green-400">
         <div>{props.children}</div>
       </div>
     </div>
