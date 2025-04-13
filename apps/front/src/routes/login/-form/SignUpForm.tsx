@@ -1,12 +1,12 @@
-import { Card } from "@/Component/ui/card";
+import { Button } from "@/Component/ui/button";
+import { Card, CardContent, CardFooter, CardHeader } from "@/Component/ui/card";
+import Text from "@/Component/ui/text";
 import { useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useForm } from "react-hook-form";
 import { css } from "styled-system/css";
 import { TextFieldSet } from "../../../Component/forms/TextFieldSet";
 import { FormStyle } from "../../../Component/forms/formStyle";
-import { Heading } from "../../../Component/ui/heading";
-import { Button } from "../../../Component/ui/styled/button";
 import { useRegister } from "../../../lib/configureAuth";
 import { Route } from "../route.lazy";
 
@@ -42,19 +42,17 @@ export const SignUpForm: React.FC = () => {
   };
 
   return (
-    <Card.Root
+    <Card
       className={css({
         flex: 1,
       })}
     >
-      <Card.Header>
-        <Heading as="h2" size={"xl"}>
-          登録
-        </Heading>
-      </Card.Header>
+      <CardHeader>
+        <Text variant="h2">登録</Text>
+      </CardHeader>
 
       <form className={FormStyle} onSubmit={handleSubmit(onSubmit)}>
-        <Card.Body>
+        <CardContent>
           <TextFieldSet
             placeholder="username"
             label="ユーザー名"
@@ -88,13 +86,13 @@ export const SignUpForm: React.FC = () => {
               required: "pelase enter a password",
             }}
           />
-        </Card.Body>
-        <Card.Footer>
-          <Button variant={"danger"} buttonWidth={"full"} type="submit">
+        </CardContent>
+        <CardFooter>
+          <Button variant={"destructive"} buttonWidth={"full"} type="submit">
             登録
           </Button>
-        </Card.Footer>
+        </CardFooter>
       </form>
-    </Card.Root>
+    </Card>
   );
 };
