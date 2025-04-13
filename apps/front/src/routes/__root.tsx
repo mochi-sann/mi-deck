@@ -21,7 +21,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
       <div>
-        <Outlet />{" "}
+        <Outlet />
       </div>
 
       <Suspense>
