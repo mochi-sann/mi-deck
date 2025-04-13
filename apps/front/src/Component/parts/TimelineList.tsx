@@ -28,10 +28,8 @@ export function TimelineList() {
                 key={timeline.id}
               >
                 <div className="shrink-0 border-b border-b-[#38444d] border-solid px-[15px] py-2.5">
-                  <Text className="font-[bold] text-base">
-                    {" "}
-                    {/* Ensure variant prop is correctly passed */}
-                    {timeline.name} ({timeline.type} @{" "}
+                  <Text className="font-bold font-sans text-base">
+                    {timeline.name} ({timeline.type} @
                     {new URL(timeline.serverSession.origin).hostname})
                   </Text>
                 </div>
