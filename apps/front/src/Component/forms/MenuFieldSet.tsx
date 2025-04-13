@@ -3,7 +3,6 @@ import {
   UseControllerProps,
   useController,
 } from "react-hook-form";
-import { Field } from "../ui/field";
 import { FormItem } from "../ui/form";
 import { Label } from "../ui/label";
 import {
@@ -13,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import Text from "../ui/text";
 
 type LabelProps = {
   placeholder: string;
@@ -65,7 +65,7 @@ export const MenuFieldSet = <T extends FieldValues>(
           ))}
         </SelectContent>
       </Select>
-      {error && <Field.ErrorText>{error.message}</Field.ErrorText>}
+      {error && <Text colorType={"denger"}>{error.message}</Text>}
     </FormItem>
   );
 };
