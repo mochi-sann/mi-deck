@@ -49,7 +49,7 @@ export const NewServerForm: React.FC = () => {
           }}
           placeholder="サーバーを選んでください"
         />
-        <Button variant={"solid"} buttonWidth={"full"} type="submit">
+        <Button variant={"default"} buttonWidth={"full"} type="submit">
           サーバーを追加する
         </Button>
       </form>

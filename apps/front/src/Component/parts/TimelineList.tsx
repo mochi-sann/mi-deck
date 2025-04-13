@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader } from "@/Component/ui/card";
-import { Spinner } from "@/Component/ui/spinner";
 import { $api } from "@/lib/api/fetchClient";
 import { components } from "@/lib/api/type";
 import { css } from "styled-system/css";
@@ -21,7 +20,7 @@ export function TimelineList() {
         <Text variant={"h3"}>Your Timelines</Text>
       </CardHeader>
       <CardContent>
-        {status === "pending" && <Spinner label="Loading timelines..." />}
+        {status === "pending" && <Text>loading...</Text>}
         {status === "error" && (
           <Text color="red.500">Failed to load timelines.</Text>
         )}

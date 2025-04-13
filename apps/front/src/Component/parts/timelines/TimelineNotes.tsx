@@ -14,7 +14,7 @@ export const TimelineNotes: React.FC<TimelineNotesProps> = (props) => {
   return (
     <div>
       {" "}
-      <Suspense fallback={<Spinner label="Loading notes..." />}>
+      <Suspense fallback={<Spinner />}>
         <ul
           className={flex({
             flexDirection: "column",

@@ -1,6 +1,7 @@
+import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
 
+import { cn } from "@/lib/utils";
 import { LoaderCircle } from "lucide-react";
 
 const spinnerVariants = cva("animate-spin text-primary", {
@@ -19,7 +20,7 @@ const spinnerVariants = cva("animate-spin text-primary", {
 
 export interface SpinnerProps
   extends React.SVGAttributes<SVGSVGElement>,
-  VariantProps<typeof spinnerVariants> { }
+    VariantProps<typeof spinnerVariants> {}
 
 const Spinner = React.forwardRef<SVGSVGElement, SpinnerProps>(
   ({ className, size, ...props }, ref) => {
