@@ -1,7 +1,7 @@
+import { Button } from "@/Component/ui/button";
+import Text from "@/Component/ui/text";
+import { $api } from "@/lib/api/fetchClient";
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { Button } from "../../../../../Component/ui/button";
-import { Text } from "../../../../../Component/ui/text";
-import { $api } from "../../../../../lib/api/fetchClient";
 
 export const Route = createLazyFileRoute(
   "/_authed/add-server/fallback/$origin",
@@ -30,10 +30,9 @@ function RouteComponent() {
   };
   return (
     <div>
-      にゃああああああああああああああああん Hello
       "/_authed/add-server/fallback"!
       <pre>{JSON.stringify({ search: search }, null, 2)}</pre>
-      <Button onClick={OnSubmit} loading={status === "pending"}>
+      <Button onClick={OnSubmit} isLoading={status === "pending"}>
         サーバーを追加
       </Button>
       {status === "error" ? <Text>エラーが発生しました</Text> : null}

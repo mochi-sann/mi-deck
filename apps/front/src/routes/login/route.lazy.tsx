@@ -1,6 +1,5 @@
+import Text from "@/Component/ui/text";
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { flex } from "styled-system/patterns";
-import { Heading } from "../../Component/ui/heading";
 import { useUser } from "../../lib/configureAuth";
 import { LogoutButton } from "./-componets/LogoutButton";
 import { LoginForm } from "./-form/LoginForm";
@@ -27,18 +26,12 @@ function RouteComponent() {
           </div>
         )}
         <div>
-          <Heading as={"h1"}>ログアウトする</Heading>
+          <Text variant={"h1"}>ログアウトする</Text>
           <LogoutButton />
         </div>
         <div>
-          <Heading as={"h1"}>ログインする</Heading>
-          <div
-            className={flex({
-              flexDirection: "row",
-              gap: 8,
-              padding: 4,
-            })}
-          >
+          <Text variant={"h1"}>ログインする</Text>
+          <div className={"flex flex-row gap-4 p-4"}>
             <LoginForm />
             <SignUpForm />
           </div>

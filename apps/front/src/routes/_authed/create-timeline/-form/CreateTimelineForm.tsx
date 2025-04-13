@@ -1,7 +1,7 @@
 import { MenuFieldSet } from "@/Component/forms/MenuFieldSet";
 import { TextFieldSet } from "@/Component/forms/TextFieldSet";
 import { Button } from "@/Component/ui/button";
-import { Text } from "@/Component/ui/text";
+import Text from "@/Component/ui/text";
 import { $api } from "@/lib/api/fetchClient";
 import { components } from "@/lib/api/type";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -189,23 +189,20 @@ export function CreateTimelineForm(props: CreateTimelineFormProps) {
 
       <Button
         type="submit"
-        loading={status === "pending"}
-        loadingText="Creating..."
-        mt="4"
+        isLoading={status === "pending"}
+        buttonWidth={"full"}
       >
         Create Timeline
       </Button>
 
       {/* Display API call error */}
       {status === "error" && (
-        <Text color="red.500" mt="2">
+        <Text colorType={"denger"}>
           Error: {error && "Failed to create timeline."}
         </Text>
       )}
       {status === "success" && (
-        <Text color="green.500" mt="2">
-          Timeline created successfully!
-        </Text>
+        <Text colorType={"denger"}>Timeline created successfully!</Text>
       )}
     </form>
   );

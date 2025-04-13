@@ -1,34 +1,38 @@
-import { forwardRef } from "react";
-import { styled } from "styled-system/jsx";
-import {
-  Spinner as StyledSpinner,
-  type SpinnerProps as StyledSpinnerProps,
-} from "./styled/spinner";
+import { type VariantProps, cva } from "class-variance-authority";
+import * as React from "react";
 
-export interface SpinnerProps extends StyledSpinnerProps {
-  /**
-   * For accessibility, it is important to add a fallback loading text.
-   * This text will be visible to screen readers.
-   * @default "Loading..."
-   */
-  label?: string;
-}
+import { cn } from "@/lib/utils";
+import { LoaderCircle } from "lucide-react";
 
-export const Spinner = forwardRef<HTMLDivElement, SpinnerProps>(
-  (props, ref) => {
-    const { label = "Loading...", ...rest } = props;
+const spinnerVariants = cva("animate-spin text-primary", {
+  variants: {
+    size: {
+      default: "size-8",
+      sm: "size-4",
+      lg: "size-12",
+      xl: "size-16",
+    },
+  },
+  defaultVariants: {
+    size: "default",
+  },
+});
 
+export interface SpinnerProps
+  extends React.SVGAttributes<SVGSVGElement>,
+    VariantProps<typeof spinnerVariants> {}
+
+const Spinner = React.forwardRef<SVGSVGElement, SpinnerProps>(
+  ({ className, size, ...props }, ref) => {
     return (
-      <StyledSpinner
+      <LoaderCircle
         ref={ref}
-        borderBottomColor="transparent"
-        borderLeftColor="transparent"
-        {...rest}
-      >
-        {label && <styled.span srOnly>{label}</styled.span>}
-      </StyledSpinner>
+        className={cn(spinnerVariants({ size }), className)}
+        {...props}
+      />
     );
   },
 );
-
 Spinner.displayName = "Spinner";
+
+export { Spinner, spinnerVariants };

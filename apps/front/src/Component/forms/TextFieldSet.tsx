@@ -3,8 +3,9 @@ import {
   UseControllerProps,
   useController,
 } from "react-hook-form";
-import { Field } from "../ui/field";
+import { FormItem, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 type LabelProps = {
   label: string;
@@ -25,16 +26,14 @@ export const TextFieldSet = <T extends FieldValues>(
   });
   const { error } = fieldState;
   return (
-    <Field.Root>
-      <Field.Label>
+    <FormItem>
+      <Label>
         <span>{label}</span>
         <br />
         <span>{validation}</span>
-      </Field.Label>
-      <Field.Input asChild>
-        <Input {...field} type={type} placeholder={placeholder} />
-      </Field.Input>
-      {error && <Field.ErrorText>{error.message}</Field.ErrorText>}
-    </Field.Root>
+      </Label>
+      <Input {...field} type={type} placeholder={placeholder} />
+      {error && <FormMessage>{error.message}</FormMessage>}
+    </FormItem>
   );
 };
