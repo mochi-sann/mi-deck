@@ -10,9 +10,9 @@ updates:
     # to pnpm against the `main` branch
     target-branch: "main"
     reviewers:
-      - "ai-chan-p"
+      - "mochi-sann"
     assignees:
-      - "ai-chan-p"
+      - "mochi-sann"
     commit-message:
       # Prefix all commit messages with "chore(deps): "
       prefix: "chore(deps)"
@@ -28,9 +28,9 @@ updates:
       interval: "daily"
     target-branch: "main"
     reviewers:
-      - "ai-chan-p"
+      - "mochi-sann"
     assignees:
-      - "ai-chan-p"
+      - "mochi-sann"
     commit-message:
       # Prefix all commit messages with "chore(actions): "
       prefix: "chore(actions)"
