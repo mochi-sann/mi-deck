@@ -16,9 +16,12 @@ export function MisskeyNote({ note }: { note: Note }) {
     >
       {/* Avatar Column */}
       <div className="shrink-0">
-        <Avatar>
+        <Avatar className="h-10 w-10 bg-slate-900">
           <AvatarImage src={note.user.avatarUrl || ""} />
-          <AvatarFallback>{note.user.name || user.username}</AvatarFallback>{" "}
+          <AvatarFallback className="bg-slate-800">
+            {" "}
+            {note.user.username || user.username}
+          </AvatarFallback>{" "}
           {/* Fallback with username */}
         </Avatar>
       </div>
