@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/Component/ui/card";
 import { $api } from "@/lib/api/fetchClient";
 import { components } from "@/lib/api/type";
-import { css } from "styled-system/css";
+import { cn } from "@/lib/utils"; // Import cn utility
 import Text from "../ui/text";
 import { SwitchTimeLineType } from "./timelines/SwitchTimeLineType";
 
@@ -26,29 +26,21 @@ export function TimelineList() {
         )}
         {status === "success" && (
           <div
-            className={css({
-              display: "flex",
-              flex: "1",
-              overflowX: "auto",
-              overflowY: "scroll",
-              overscrollBehavior: "contain",
-              p: "4",
-              gap: "4",
-              // gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", // Responsive grid
-            })}
+            className={cn(
+              "flex flex-1 gap-4 overflow-x-auto overflow-y-scroll overscroll-contain p-4", // Translated styles
+              // "grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))]", // Alternative: Responsive grid
+            )}
           >
             {typedTimelines && typedTimelines.length > 0 ? (
               typedTimelines.map((timeline) => (
                 <Card
                   key={timeline.id}
-                  className={css({
-                    width: "300px",
-                    display: "flex",
-                    flexShrink: 0,
-                  })}
+                  className={cn(
+                    "flex w-[300px] shrink-0", // Translated styles
+                  )}
                 >
                   <CardHeader>
-                    <Text variant="h4">
+                    <Text variant={"h4"}> {/* Ensure variant prop is correctly passed */}
                       {timeline.name} ({timeline.type} @{" "}
                       {new URL(timeline.serverSession.origin).hostname})
                     </Text>
