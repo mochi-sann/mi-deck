@@ -64,7 +64,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(
+          buttonVariants({ variant, size, className }),
+          isLoading && "opacity-75 cursor-wait", // Add loading styles conditionally
+        )}
         ref={ref}
         disabled={isLoading || props.disabled}
         {...props}
