@@ -8,15 +8,23 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
-  Text as TextIcon,
+  Text,
 } from "lucide-react";
-import { NavUser } from "../nav-user";
+import * as React from "react";
+
+import { NavMain } from "@/Component/nav-main";
+import { NavProjects } from "@/Component/nav-projects";
+import { NavUser } from "@/Component/nav-user";
+import { TeamSwitcher } from "@/Component/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarHeader,
   SidebarRail,
-} from "../ui/sidebar";
+} from "@/Component/ui/sidebar";
+
+// This is sample data.
 const data = {
   user: {
     name: "shadcn",
@@ -141,18 +149,20 @@ const data = {
     {
       name: "Text",
       url: "#",
-      icon: TextIcon,
+      icon: Text,
     },
   ],
 };
 
-export const AppSidebar = () => {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader>
+        <TeamSwitcher teams={data.teams} />
+      </SidebarHeader>
       <SidebarContent>
-        <p className="font-medium text-muted-foreground text-sm">
-          <span className="text-foreground">Playground</span>
-        </p>
+        <NavMain items={data.navMain} />
+        <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
@@ -160,4 +170,4 @@ export const AppSidebar = () => {
       <SidebarRail />
     </Sidebar>
   );
-};
+}
