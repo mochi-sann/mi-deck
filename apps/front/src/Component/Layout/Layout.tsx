@@ -5,5 +5,5 @@ export type LayoutProps = {
 };
 
 export const Layout: React.FC<LayoutProps> = (props) => {
-  return <div className={"max-w-xl"}>{props.children}</div>;
+  return <div className={"m-auto max-w-[900px]"}>{props.children}</div>;
 };
