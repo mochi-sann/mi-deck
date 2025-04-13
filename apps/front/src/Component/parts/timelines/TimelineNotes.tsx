@@ -14,14 +14,14 @@ export const TimelineNotes: React.FC<TimelineNotesProps> = (props) => {
     <div>
       {" "}
       <Suspense fallback={<Spinner />}>
-        <ul className={"flex list-none flex-col p-0"}>
+        <div className={"flex list-none flex-col p-0"}>
           {props.notes && props.notes.length > 0 ? (
             // Render MisskeyNote directly, it's now an <article> but can be a child of <ul>
             props.notes.map((note) => <MisskeyNote key={note.id} note={note} />)
           ) : (
             <Text affects={"small"}>No notes found.</Text>
           )}
-        </ul>
+        </div>
       </Suspense>
     </div>
   );

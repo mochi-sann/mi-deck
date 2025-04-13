@@ -14,7 +14,7 @@ export function TimelineList() {
   const typedTimelines = timelines as TimelineEntityType[] | undefined;
 
   return (
-    <div className="flex h-screen overflow-x-auto overflow-y-hidden bg-[#141d26] text-white">
+    <div className="flex h-screen overflow-x-auto overflow-y-hidden text-white">
       {status === "pending" && <Text>loading...</Text>}
       {status === "error" && (
         <Text color="red.500">Failed to load timelines.</Text>
@@ -24,10 +24,10 @@ export function TimelineList() {
           {typedTimelines && typedTimelines.length > 0 ? (
             typedTimelines.map((timeline) => (
               <div
-                className="flex h-full w-80 flex-[0_0_320px] flex-col border-r border-r-[#38444d] border-solid bg-[#1f2b38] text-white last:border-r-[none]"
+                className="flex h-full w-80 flex-[0_0_320px] flex-col border-r border-r-[#38444d] border-solid text-white last:border-r-[none]"
                 key={timeline.id}
               >
-                <div className="shrink-0 border-b border-b-[#38444d] border-solid bg-[#253341] px-[15px] py-2.5">
+                <div className="shrink-0 border-b border-b-[#38444d] border-solid px-[15px] py-2.5">
                   <Text className="font-[bold] text-base">
                     {" "}
                     {/* Ensure variant prop is correctly passed */}
