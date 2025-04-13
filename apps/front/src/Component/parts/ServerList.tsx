@@ -1,6 +1,5 @@
 import { components } from "@/lib/api/type";
 import type React from "react";
-import { box } from "styled-system/patterns";
 import { Button } from "../ui/button";
 
 export type ServerListProps = {
