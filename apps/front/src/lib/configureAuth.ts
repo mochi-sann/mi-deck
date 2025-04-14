@@ -1,6 +1,6 @@
-import { configureAuth } from "react-query-auth";
 import { fetchClient } from "./api/fetchClient";
 import { components } from "./api/type";
+import { configureAuth } from "./auth/authLib";
 
 const AuthTokenStorageKey = "mi-deck-auth-token";
 export const AuthTokenStorage = {
@@ -76,7 +76,9 @@ async function registerFn(data: SignUpCredentials) {
 }
 
 async function logoutFn() {
+  // リロードする
   AuthTokenStorage.clearToken();
+  window.location.reload();
 }
 
 export const { useUser, useLogin, useRegister, useLogout, AuthLoader } =

@@ -101,9 +101,6 @@ importers:
       react-hook-form:
         specifier: ^7.55.0
         version: 7.55.0(react@18.3.1)
-      react-query-auth:
-        specifier: ^2.4.3
-        version: 2.4.3(@tanstack/react-query@5.71.3(react@18.3.1))(react@18.3.1)
       tailwind-merge:
         specifier: ^3.2.0
         version: 3.2.0
@@ -4952,13 +4949,6 @@ packages:
 
   react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
-
-  react-query-auth@2.4.3:
-    resolution: {integrity: sha512-sSDX4OZSyBTvTOItiWEH/SsTfKg7AEAc7qOL1qsxx+vIx5s82VeUyj4W1vNlHY9nFeU1accm1hRW1FVF2TzaiA==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      '@tanstack/react-query': '>=4.24.6'
-      react: '>=16.8.0'
 
   react-remove-scroll-bar@2.3.8:
     resolution: {integrity: sha512-9r+yi9+mgU33AKcj6IbT9oRCO78WriSj6t/cF8DWBZJ9aOGPOTEDvdUDz1FwKim7QXWwmHqtdHnRJfhAxEG46Q==}
@@ -10684,11 +10674,6 @@ snapshots:
       react: 18.3.1
 
   react-is@17.0.2: {}
-
-  react-query-auth@2.4.3(@tanstack/react-query@5.71.3(react@18.3.1))(react@18.3.1):
-    dependencies:
-      '@tanstack/react-query': 5.71.3(react@18.3.1)
-      react: 18.3.1
 
   react-remove-scroll-bar@2.3.8(@types/react@18.3.20)(react@18.3.1):
     dependencies:
