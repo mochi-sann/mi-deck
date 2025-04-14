@@ -1,6 +1,6 @@
-import { fetchClient } from "./api/fetchClient";
 import { components } from "./api/type";
 import { configureAuth } from "./auth/authLib";
+import { getuserInfo, handleUserResponse } from "./_authInternal"; // Import internal functions
 
 const AuthTokenStorageKey = "mi-deck-auth-token";
 export const AuthTokenStorage = {
@@ -22,21 +22,8 @@ export type UserType = {
   avatarUrl: string;
 };
 
-export const getuserInfo = async (jwt: string): Promise<UserType | null> => {
-  const userResponse = await fetchClient.GET("/v1/auth/me", {
-    headers: {
-      authorization: `Bearer ${jwt}`,
-    },
-  });
-  if (userResponse.response.status >= 400 || !userResponse.data?.id) {
-    console.log(userResponse.response.status);
-    // throw new Error("Login failed");
-    return null;
-  }
-  return userResponse.data
-    ? { isAuth: !!userResponse.data.id, avatarUrl: "", ...userResponse.data }
-    : null;
-};
+// Moved getuserInfo to _authInternal.ts
+
 export async function userFn() {
   console.log("userFn");
   const token = AuthTokenStorage.getToken();
@@ -47,11 +34,7 @@ export async function userFn() {
   return await getuserInfo(token);
 }
 
-export async function handleUserResponse(jwt: string) {
-  AuthTokenStorage.setToken(jwt);
-  const user = await getuserInfo(jwt);
-  return user;
-}
+// Moved handleUserResponse to _authInternal.ts
 
 export async function loginFn(data: LoginCredentials) {
   const response = await fetchClient.POST("/v1/auth/login", {
@@ -60,7 +43,9 @@ export async function loginFn(data: LoginCredentials) {
   if (response.response.status >= 400 || !response.data?.accessToken) {
     throw new Error("Login failed");
   }
-  const user = await handleUserResponse(response.data?.accessToken);
+  // Set token here directly
+  AuthTokenStorage.setToken(response.data.accessToken);
+  const user = await getuserInfo(response.data.accessToken); // Use getuserInfo directly
   return user;
 }
 
@@ -71,7 +56,9 @@ export async function registerFn(data: SignUpCredentials) {
   if (response.response.status >= 400 || !response.data?.accessToken) {
     throw new Error("Login failed");
   }
-  const user = await handleUserResponse(response.data.accessToken);
+  // Set token here directly
+  AuthTokenStorage.setToken(response.data.accessToken);
+  const user = await getuserInfo(response.data.accessToken); // Use getuserInfo directly
   return user;
 }
 
