@@ -1,4 +1,4 @@
-import { ChevronRight, LogOut, UserRound } from "lucide-react";
+import { LogOut, Settings, UserRound } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/Component/ui/avatar";
 import {
@@ -27,12 +27,12 @@ export function NavUser() {
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger className="w-full" asChild={false}>
+          <DropdownMenuTrigger className="w-full">
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground "
             >
-              <Avatar className="h-8 w-8 rounded-lg">
+              <Avatar className="h-8 w-8 rounded-lg ">
                 <AvatarImage src={user?.avatarUrl} alt={user?.name} />
 
                 <AvatarFallback className="rounded-lg">
@@ -40,9 +40,8 @@ export function NavUser() {
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-lg leading-tight">
-                <span className="truncate font-medium">Account</span>
+                <span className="truncate font-medium">{user.name}</span>
               </div>
-              <ChevronRight className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -51,6 +50,10 @@ export function NavUser() {
             align="end"
             sideOffset={4}
           >
+            <DropdownMenuItem>
+              <Settings size={28} strokeWidth={3} absoluteStrokeWidth />
+              設定
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={LgoutMuteteAsync}>
               <LogOut />
               Log out
