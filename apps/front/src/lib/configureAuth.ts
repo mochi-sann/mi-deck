@@ -19,6 +19,7 @@ export type UserType = {
   email: string;
   name: string;
   isAuth: boolean;
+  avatarUrl: string;
 };
 
 const getuserInfo = async (jwt: string): Promise<UserType | null> => {
@@ -33,7 +34,7 @@ const getuserInfo = async (jwt: string): Promise<UserType | null> => {
     return null;
   }
   return userResponse.data
-    ? { isAuth: !!userResponse.data.id, ...userResponse.data }
+    ? { isAuth: !!userResponse.data.id, avatarUrl: "", ...userResponse.data }
     : null;
 };
 async function userFn() {

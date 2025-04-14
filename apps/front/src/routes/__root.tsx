@@ -1,5 +1,5 @@
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
-import { Suspense, lazy } from "react";
+import { Fragment, Suspense, lazy } from "react";
 const TanStackRouterDevtools = !import.meta.env.DEV
   ? () => null // Render nothing in production
   : lazy(() =>
@@ -19,14 +19,12 @@ interface MyRouterContext {
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
-    <>
-      <div>
-        <Outlet />
-      </div>
+    <Fragment>
+      <Outlet />
 
       <Suspense>
-        <TanStackRouterDevtools />
+        <TanStackRouterDevtools position="bottom-right" />
       </Suspense>
-    </>
+    </Fragment>
   ),
 });

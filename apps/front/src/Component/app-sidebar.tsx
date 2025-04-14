@@ -12,9 +12,9 @@ import {
 } from "lucide-react";
 import * as React from "react";
 
+import { NavUser } from "@/Component/Layout/Sidebar/nav-user";
 import { NavMain } from "@/Component/nav-main";
 import { NavProjects } from "@/Component/nav-projects";
-import { NavUser } from "@/Component/nav-user";
 import { TeamSwitcher } from "@/Component/team-switcher";
 import {
   Sidebar,
