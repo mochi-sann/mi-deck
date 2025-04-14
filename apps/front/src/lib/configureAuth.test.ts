@@ -1,17 +1,22 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fetchClient } from "./api/fetchClient";
 import {
   AuthTokenStorage,
   LoginCredentials,
   SignUpCredentials,
   UserType,
+  loginFn,
+  logoutFn,
+  registerFn,
+  userFn,
 } from "./configureAuth"; // Import internal functions for testing if needed, or test through exported hooks
-import * as configureAuth from "./configureAuth"; // Import all exports to test internal functions indirectly
 
 // Mock fetchClient
 vi.mock("./api/fetchClient", () => ({
   fetchClient: {
+    // biome-ignore lint/style/useNamingConvention:
     GET: vi.fn(),
+    // biome-ignore lint/style/useNamingConvention:
     POST: vi.fn(),
   },
 }));
@@ -48,7 +53,6 @@ Object.defineProperty(window, "location", {
 
 // Helper to get internal functions if needed, otherwise test via exported hooks/functions
 // This approach accesses the internal functions directly for more focused unit tests.
-const { userFn, loginFn, registerFn, logoutFn } = configureAuth;
 
 describe("configureAuth", () => {
   beforeEach(() => {
@@ -106,6 +110,7 @@ describe("configureAuth", () => {
         response: new Response(JSON.stringify(mockUser), { status: 200 }),
         error: undefined,
         // Add other required properties if the actual type expects them
+        // biome-ignore lint/suspicious/noExplicitAny:
       } as any); // Use 'as any' or a more specific mock type if available
 
       const user = await userFn();
@@ -127,6 +132,7 @@ describe("configureAuth", () => {
         data: null,
         response: new Response(null, { status: 401 }),
         error: { message: "Unauthorized" },
+        // biome-ignore lint/suspicious/noExplicitAny:
       } as any); // Use 'as any' or a more specific mock type
 
       const user = await userFn();
@@ -158,11 +164,13 @@ describe("configureAuth", () => {
           status: 200,
         }),
         error: undefined,
+        // biome-ignore lint/suspicious/noExplicitAny:
       } as any);
       vi.mocked(fetchClient.GET).mockResolvedValueOnce({
         data: mockUser,
         response: new Response(JSON.stringify(mockUser), { status: 200 }),
         error: undefined,
+        // biome-ignore lint/suspicious/noExplicitAny:
       } as any);
 
       const user = await loginFn(credentials);
@@ -182,6 +190,7 @@ describe("configureAuth", () => {
         data: null,
         response: new Response(null, { status: 401 }),
         error: { message: "Invalid credentials" },
+        // biome-ignore lint/suspicious/noExplicitAny:
       } as any);
 
       await expect(loginFn(credentials)).rejects.toThrow("Login failed");
@@ -196,11 +205,13 @@ describe("configureAuth", () => {
           status: 200,
         }),
         error: undefined,
+        // biome-ignore lint/suspicious/noExplicitAny:
       } as any);
       vi.mocked(fetchClient.GET).mockResolvedValueOnce({
         data: null,
         response: new Response(null, { status: 500 }), // Simulate failure in fetching user info
         error: { message: "Server error" },
+        // biome-ignore lint/suspicious/noExplicitAny:
       } as any);
 
       // Depending on implementation, it might return null or throw.
@@ -237,11 +248,13 @@ describe("configureAuth", () => {
           status: 201,
         }), // Assuming 201 Created
         error: undefined,
+        // biome-ignore lint/suspicious/noExplicitAny:
       } as any);
       vi.mocked(fetchClient.GET).mockResolvedValueOnce({
         data: mockUser,
         response: new Response(JSON.stringify(mockUser), { status: 200 }),
         error: undefined,
+        // biome-ignore lint/suspicious/noExplicitAny:
       } as any);
 
       const user = await registerFn(credentials);
@@ -261,6 +274,7 @@ describe("configureAuth", () => {
         data: null,
         response: new Response(null, { status: 400 }), // Assuming 400 Bad Request
         error: { message: "Registration failed" },
+        // biome-ignore lint/suspicious/noExplicitAny:
       } as any);
 
       await expect(registerFn(credentials)).rejects.toThrow("Login failed"); // Error message might need adjustment
