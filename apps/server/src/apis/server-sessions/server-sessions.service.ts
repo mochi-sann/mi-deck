@@ -1,17 +1,20 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { ServerType } from "@prisma/client";
 import { APIClient } from "misskey-js/api.js";
 import { User } from "misskey-js/entities.js";
-import { PrismaService } from "../../lib/prisma.service";
+// PrismaService is removed as it's now used in the repository
 import { CreateServerSessionDto } from "./dto/creste.dto";
 import { CreateServerSessionResponseEntity } from "./entities/create-server.entity";
 import { ServerInfoEntity } from "./entities/server-info.entity";
+import { ServerSessionsRepository } from "./server-sessions.repository"; // Import the repository
 
 @Injectable()
 export class ServerSessionsService {
-  constructor(private prisma: PrismaService) {}
+  // Inject the repository instead of PrismaService
+  constructor(private serverSessionsRepository: ServerSessionsRepository) {}
+
   async create(data: CreateServerSessionDto, userId: string) {
-    const getServerType =
+    const serverType =
       data.serverType.toLowerCase() === "misskey"
         ? ServerType.Misskey
         : ServerType.OtherServer;
@@ -63,34 +66,37 @@ export class ServerSessionsService {
     );
     return new CreateServerSessionResponseEntity(newServerSession);
   }
+
   async getList(userId: string) {
-    const serverList = await this.prisma.serverSession.findMany({
-      where: {
-        userId,
-      },
-    });
+    // Use repository to find server sessions
+    const serverList =
+      await this.serverSessionsRepository.findServerSessionsByUserId(userId);
     return serverList.map((server) => {
       return new CreateServerSessionResponseEntity(server);
     });
   }
-  async getServerSessionfromId(Id: string) {
-    const server = await this.prisma.serverSession.findUnique({
-      where: {
-        id: Id,
-      },
-    });
+
+  async getServerSessionfromId(id: string) {
+    // Use repository to find server session by ID
+    const server = await this.serverSessionsRepository.findServerSessionById(id);
+    if (!server) {
+      throw new NotFoundException(`Server session with ID ${id} not found`);
+    }
     return new CreateServerSessionResponseEntity(server);
   }
-  async getServerSessionfromUseridAndOrigin(UserId: string, origin: string) {
-    const server = await this.prisma.serverSession.findUnique({
-      where: {
-        // biome-ignore lint/style/useNamingConvention:
-        origin_userId: {
-          userId: UserId,
-          origin: origin,
-        },
-      },
-    });
+
+  async getServerSessionfromUseridAndOrigin(userId: string, origin: string) {
+    // Use repository to find server session by user ID and origin
+    const server =
+      await this.serverSessionsRepository.findServerSessionByUserIdAndOrigin(
+        userId,
+        origin,
+      );
+    if (!server) {
+      throw new NotFoundException(
+        `Server session for user ${userId} and origin ${origin} not found`,
+      );
+    }
     console.log(
       ...[server, "👀 [server-sessions.service.ts:95]: server"].reverse(),
     );
@@ -98,24 +104,23 @@ export class ServerSessionsService {
   }
   async updateOrCreateServerInfo(
     serverSessionId: string,
+    serverSessionId: string,
     origin: string,
     userId: string,
   ) {
-    const ServerInfo = await this.prisma.serverSession.findUnique({
-      where: {
-        // biome-ignore lint/style/useNamingConvention:
-        origin_userId: {
-          userId: userId,
-          origin,
-        },
-      },
-      select: {
-        serverToken: true,
-      },
-    });
+    // Use repository to get the server token
+    const serverSessionData =
+      await this.serverSessionsRepository.findServerSessionToken(userId, origin);
+
+    if (!serverSessionData?.serverToken) {
+      throw new NotFoundException(
+        `Server session token not found for user ${userId} and origin ${origin}`,
+      );
+    }
+
     const client = new APIClient({
       origin: origin,
-      credential: ServerInfo.serverToken,
+      credential: serverSessionData.serverToken,
     });
     const misskeyServerInfo = await client
       .request("meta", {
@@ -131,31 +136,20 @@ export class ServerSessionsService {
       .then((res) => res)
       .catch((err) => {
         console.error(err);
-        throw new UnauthorizedException("can not get server info");
+        throw new UnauthorizedException("Cannot get user info from Misskey server");
       });
 
-    const serverInfoDb = await this.prisma.serverInfo.upsert({
-      where: {
-        serverSessionId,
-      },
-      update: {
+    // Use repository to upsert server info
+    const serverInfoDb = await this.serverSessionsRepository.upsertServerInfo(
+      serverSessionId,
+      {
         name: misskeyServerInfo.name || "",
+        // Assuming iconUrl in ServerInfo maps to user's avatarUrl from Misskey 'i' endpoint
         iconUrl: MisskeyUserInfo.avatarUrl || "",
-        faviconUrl: misskeyServerInfo.iconUrl || "",
-        themeColor: misskeyServerInfo.themeColor || "",
+        faviconUrl: misskeyServerInfo.iconUrl || "", // From Misskey 'meta' endpoint
+        themeColor: misskeyServerInfo.themeColor || "", // From Misskey 'meta' endpoint
       },
-      create: {
-        name: misskeyServerInfo.name || "",
-        iconUrl: MisskeyUserInfo.avatarUrl || "",
-        faviconUrl: misskeyServerInfo.iconUrl || "",
-        themeColor: misskeyServerInfo.themeColor || "",
-        serverSession: {
-          connect: {
-            id: serverSessionId,
-          },
-        },
-      },
-    });
+    );
     console.log(
       ...[
         serverInfoDb,
