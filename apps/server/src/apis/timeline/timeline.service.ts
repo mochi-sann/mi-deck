@@ -1,108 +1,95 @@
 import {
   ForbiddenException,
   Injectable,
+  ForbiddenException,
+  Injectable,
+  NotFoundException, // Add NotFoundException if not already present
   UnauthorizedException,
 } from "@nestjs/common";
-import { ServerSession } from "@prisma/client"; // Keep this import
+import { ServerSession } from "@prisma/client";
 import { APIClient } from "misskey-js/api.js";
-import { PrismaService } from "~/lib/prisma.service";
+// PrismaService is removed as it's now used in the repository
 import { CreateTimelineDto } from "./dto/create-timeline.dto";
 import { TimelineEntity } from "./entities/timeline.entity";
+import {
+  TimelineRepository,
+  TimelineWithServerSessionDetails,
+} from "./timeline.repository"; // Import the repository and type
 
-// Define the return type including selected server session fields
-type TimelineWithServerSession = TimelineEntity & {
+// Define the return type including selected server session fields for the service response
+type TimelineWithServerSessionResponse = TimelineEntity & {
   serverSession: Pick<ServerSession, "id" | "origin" | "serverType">;
 };
 
 @Injectable()
 export class TimelineService {
-  constructor(private prisma: PrismaService) {}
+  // Inject the repository instead of PrismaService
+  constructor(private timelineRepository: TimelineRepository) {}
 
   // Method to create a timeline configuration
   async create(
     createTimelineDto: CreateTimelineDto,
     userId: string,
   ): Promise<TimelineEntity> {
-    // 1. Verify the server session belongs to the user
-    const serverSession = await this.prisma.serverSession.findUnique({
-      where: { id: createTimelineDto.serverSessionId },
-    });
+    // 1. Verify the server session belongs to the user using the repository
+    const serverSession =
+      await this.timelineRepository.findServerSessionByIdAndUserId(
+        createTimelineDto.serverSessionId,
+        userId,
+      );
 
     if (!serverSession) {
+      // Use NotFoundException or ForbiddenException based on whether you want to reveal existence
       throw new ForbiddenException(
-        `Server session with ID ${createTimelineDto.serverSessionId} not found.`,
+        `Server session with ID ${createTimelineDto.serverSessionId} not found or access denied.`,
       );
     }
 
-    if (serverSession.userId !== userId) {
-      throw new ForbiddenException(
-        `You do not have permission to access server session ${createTimelineDto.serverSessionId}.`,
-      );
-    }
-
-    // 2. Create the timeline configuration in the database
-    const newTimeline = await this.prisma.timeline.create({
-      data: {
-        serverSessionId: createTimelineDto.serverSessionId,
-        name: createTimelineDto.name,
-        type: createTimelineDto.type,
-        listId: createTimelineDto.listId, // Will be null if not provided or not applicable
-        channelId: createTimelineDto.channelId, // Will be null if not provided or not applicable
-      },
+    // 2. Create the timeline configuration in the database using the repository
+    const newTimeline = await this.timelineRepository.createTimeline({
+      serverSessionId: createTimelineDto.serverSessionId,
+      name: createTimelineDto.name,
+      type: createTimelineDto.type,
+      listId: createTimelineDto.listId, // Will be null if not provided or not applicable
+      channelId: createTimelineDto.channelId, // Will be null if not provided or not applicable
     });
 
     return new TimelineEntity(newTimeline);
   }
 
   // Method to find all timeline configurations for a user
-  async findAllByUserId(userId: string): Promise<TimelineWithServerSession[]> {
-    // Update return type
-    const timelines = await this.prisma.timeline.findMany({
-      where: {
-        serverSession: {
-          userId: userId, // Filter timelines based on the user ID of the associated server session
-        },
-      },
-      include: {
-        serverSession: true,
-      },
-    });
+  async findAllByUserId(
+    userId: string,
+  ): Promise<TimelineWithServerSessionResponse[]> {
+    // Use repository to find timelines
+    const timelines: TimelineWithServerSessionDetails[] =
+      await this.timelineRepository.findAllTimelinesByUserId(userId);
 
-    // Map Prisma models to the desired structure including serverSession info
+    // Map repository results to the service response structure
     return timelines.map((timeline) => {
-      // Ensure serverSession is included and not null (should always be true due to include)
-      if (!timeline.serverSession) {
-        // This case should ideally not happen with the current query logic
-        // Log an error or handle appropriately if it does
-        console.error(
-          `Server session data missing for timeline ID: ${timeline.id}`,
-        );
-        // Depending on requirements, you might throw an error or return a partial object
-        // For now, let's throw an error to indicate an unexpected state
-        throw new Error(
-          `Inconsistent data: Server session missing for timeline ${timeline.id}`,
-        );
-      }
+      // The repository already returns the necessary serverSession fields
       return {
-        ...new TimelineEntity(timeline), // Spread properties from TimelineEntity
+        ...new TimelineEntity(timeline), // Create TimelineEntity from the timeline part
         serverSession: {
-          // Select specific fields from the included serverSession
-          ...timeline.serverSession,
+          // Map the selected serverSession fields
+          id: timeline.serverSession.id,
+          origin: timeline.serverSession.origin,
+          serverType: timeline.serverSession.serverType,
         },
       };
     });
   }
 
   // Existing method to fetch notes from a Misskey timeline (e.g., Home timeline)
-  // This method fetches notes based on a SERVER SESSION ID, not a timeline configuration ID.
-  // Consider if this should fetch based on a specific TimelineEntity ID instead.
+  // This method fetches notes based on a SERVER SESSION ID.
+  // It verifies ownership before proceeding.
   async findOne(serverSessionId: string, userId: string) {
-    const serverSession = await this.prisma.serverSession.findUnique({
-      where: {
-        id: serverSessionId, // Correctly use the parameter
-        userId: userId, // Ensure the user owns the session
-      },
-    });
+    // Use repository to find the server session and verify ownership
+    const serverSession =
+      await this.timelineRepository.findServerSessionByIdAndUserId(
+        serverSessionId,
+        userId,
+      );
 
     if (!serverSession) {
       // Throw ForbiddenException if the session doesn't exist or doesn't belong to the user
