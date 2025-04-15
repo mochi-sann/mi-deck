@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { ServerType } from "@prisma/client";
 import { APIClient } from "misskey-js/api.js";
 import { User } from "misskey-js/entities.js";
@@ -36,19 +40,22 @@ export class ServerSessionsService {
       });
     // Add a check for the fetchMisskey object itself in case the fetch failed entirely
     if (!fetchMisskey || fetchMisskey.ok === false) {
-      throw new UnauthorizedException("Cannot authenticate with Misskey server");
+      throw new UnauthorizedException(
+        "Cannot authenticate with Misskey server",
+      );
     }
 
     // Use repository to create server session using UncheckedCreateInput
     // Note: Prisma.ServerSessionUncheckedCreateInput does not support nested 'create' like 'serverUserInfo'.
     // This needs to be handled separately, e.g., by updating the session after creation or adjusting the repository method.
     // TODO: Handle creation/linking of ServerUserInfo associated with this ServerSession.
-    const newServerSession = await this.serverSessionsRepository.createServerSession({
-      origin: data.origin,
-      serverType: serverType, // Use the corrected serverType variable
-      serverToken: fetchMisskey.token,
-      userId: userId, // Pass userId directly as required by UncheckedCreateInput
-    });
+    const newServerSession =
+      await this.serverSessionsRepository.createServerSession({
+        origin: data.origin,
+        serverType: serverType, // Use the corrected serverType variable
+        serverToken: fetchMisskey.token,
+        userId: userId, // Pass userId directly as required by UncheckedCreateInput
+      });
     await this.updateOrCreateServerInfo(
       newServerSession.id,
       data.origin,
@@ -68,7 +75,8 @@ export class ServerSessionsService {
 
   async getServerSessionfromId(id: string) {
     // Use repository to find server session by ID
-    const server = await this.serverSessionsRepository.findServerSessionById(id);
+    const server =
+      await this.serverSessionsRepository.findServerSessionById(id);
     if (!server) {
       throw new NotFoundException(`Server session with ID ${id} not found`);
     }
@@ -94,13 +102,15 @@ export class ServerSessionsService {
   }
   async updateOrCreateServerInfo(
     serverSessionId: string,
-    serverSessionId: string,
     origin: string,
     userId: string,
   ) {
     // Use repository to get the server token
     const serverSessionData =
-      await this.serverSessionsRepository.findServerSessionToken(userId, origin);
+      await this.serverSessionsRepository.findServerSessionToken(
+        userId,
+        origin,
+      );
 
     if (!serverSessionData?.serverToken) {
       throw new NotFoundException(
@@ -126,7 +136,9 @@ export class ServerSessionsService {
       .then((res) => res)
       .catch((err) => {
         console.error(err);
-        throw new UnauthorizedException("Cannot get user info from Misskey server");
+        throw new UnauthorizedException(
+          "Cannot get user info from Misskey server",
+        );
       });
 
     // Use repository to upsert server info

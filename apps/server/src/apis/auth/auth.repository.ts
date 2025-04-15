@@ -25,6 +25,7 @@ export class AuthRepository {
         name: true,
         createdAt: true, // Include other non-sensitive fields as needed
         updatedAt: true,
+        userRole: true,
       },
     });
   }
