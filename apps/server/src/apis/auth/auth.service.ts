@@ -27,12 +27,11 @@ export class AuthService {
       throw new UnauthorizedException("Invalid credentials");
     }
     const isPasswordValid = await bcrypt.compare(pass, user.password);
-    const { password, ...result } = user;
+    // const { password, ...result } = user; // This line is removed as 'result' is not used and password should not be exposed
     if (!isPasswordValid) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException("Invalid credentials");
     }
-    // TODO: Generate a JWT and return it here
-    // instead of the user object
+    // Generate JWT
     const payload = { id: user.id, name: user.name, email: user.email };
     return new LoginEntity({
       accessToken: await this.jwtService.signAsync(payload),
