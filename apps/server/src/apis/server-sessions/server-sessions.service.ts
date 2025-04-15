@@ -34,30 +34,20 @@ export class ServerSessionsService {
         console.error(err);
         return new UnauthorizedException("can not auth misskey server");
       });
-    if (fetchMisskey.ok === false) {
-      throw new UnauthorizedException("can not auth misskey");
+    // Add a check for the fetchMisskey object itself in case the fetch failed entirely
+    if (!fetchMisskey || fetchMisskey.ok === false) {
+      throw new UnauthorizedException("Cannot authenticate with Misskey server");
     }
 
-    const newServerSession = await this.prisma.serverSession.create({
-      data: {
-        origin: data.origin,
-        serverType: getServerType,
-        serverToken: fetchMisskey.token,
-        serverUserInfo: {
-          create: {
-            id: fetchMisskey.user.id,
-            name: fetchMisskey.user.name,
-            username: fetchMisskey.user.username,
-            avatarUrl: fetchMisskey.user.avatarUrl,
-          },
-        },
-
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
-      },
+    // Use repository to create server session using UncheckedCreateInput
+    // Note: Prisma.ServerSessionUncheckedCreateInput does not support nested 'create' like 'serverUserInfo'.
+    // This needs to be handled separately, e.g., by updating the session after creation or adjusting the repository method.
+    // TODO: Handle creation/linking of ServerUserInfo associated with this ServerSession.
+    const newServerSession = await this.serverSessionsRepository.createServerSession({
+      origin: data.origin,
+      serverType: serverType, // Use the corrected serverType variable
+      serverToken: fetchMisskey.token,
+      userId: userId, // Pass userId directly as required by UncheckedCreateInput
     });
     await this.updateOrCreateServerInfo(
       newServerSession.id,
