@@ -19,6 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import { IconButton } from "../ui/icon-button"; // Import IconButton
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import {
@@ -150,6 +151,21 @@ export const NewNote = () => {
     }
   };
 
+  // Function to remove a specific image by index
+  const handleRemoveImage = (indexToRemove: number) => {
+    // Revoke the object URL first
+    URL.revokeObjectURL(imagePreviews[indexToRemove]);
+
+    // Update states by filtering
+    setFiles((prevFiles) =>
+      prevFiles.filter((_, index) => index !== indexToRemove),
+    );
+    setImagePreviews((prevPreviews) =>
+      prevPreviews.filter((_, index) => index !== indexToRemove),
+    );
+  };
+
+
   // Effect to revoke object URLs on unmount or when files change
   useEffect(() => {
     // This is the cleanup function that runs when the component unmounts
@@ -245,16 +261,27 @@ export const NewNote = () => {
             onChange={handleFileChange}
           />
           {/* Display Image Previews */}
+          {/* Display Image Previews with Delete Buttons */}
           {imagePreviews.length > 0 && (
             <div className="mt-4 grid grid-cols-3 gap-4">
               {imagePreviews.map((previewUrl, index) => (
-                <img
-                  key={previewUrl} // Use URL as key, assuming it's unique per selection batch
-                  src={previewUrl}
-                  alt={`Preview ${index + 1}`}
-                  className="h-24 w-full rounded-md object-cover"
-                  // Consider adding loading state or placeholder if needed
-                />
+                <div key={previewUrl} className="relative">
+                  <img
+                    src={previewUrl}
+                    alt={`Preview ${index + 1}`}
+                    className="h-24 w-full rounded-md object-cover"
+                  />
+                  <IconButton
+                    type="button" // Prevent form submission
+                    variant="destructive"
+                    size="sm"
+                    className="absolute top-1 right-1 h-6 w-6 rounded-full p-1"
+                    onClick={() => handleRemoveImage(index)}
+                    aria-label={`Remove image ${index + 1}`}
+                  >
+                    <X className="h-4 w-4" />
+                  </IconButton>
+                </div>
               ))}
             </div>
           )}
