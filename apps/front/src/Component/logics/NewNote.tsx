@@ -46,6 +46,7 @@ type FormSchema = z.infer<typeof formSchema>;
 
 export const NewNote = () => {
   const [files, setFiles] = useState<File[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Add submitting state
   // const [selectedServerSessionId, setSelectedServerSessionId] = useState<
   //   string | undefined
   // >(undefined); // Managed by react-hook-form now
@@ -69,12 +70,10 @@ export const NewNote = () => {
     },
   });
 
-  // TODO: Implement actual note submission logic
+  // Handle note submission including file uploads
   async function onSubmit(values: FormSchema) {
-    // 'values' contains validated form data
+    setIsSubmitting(true); // Start submission process
     console.log("Form Submitted:", values);
-    console.log("Selected Server Session ID:", values.serverSessionId);
-    console.log("Note Content:", values.noteContent);
     const client = new APIClient({
       origin:
         serverSessions?.find(
@@ -85,24 +84,46 @@ export const NewNote = () => {
       )?.serverToken,
     });
 
-    // Handle file uploads separately for now
-    if (files.length > 0) {
-      console.log("Selected files:", files);
-      // TODO: Add actual file upload logic here, potentially combining with form data
-    }
-    await client
-      .request("notes/create", {
+    let uploadedFileIds: string[] = [];
+
+    try {
+      // Upload files if any are selected
+      if (files.length > 0) {
+        console.log("Uploading files:", files);
+        // Use Promise.all to upload files concurrently
+        const uploadPromises = files.map((file) =>
+          client.request("drive/files/create", {
+            file: file, // Pass the File object
+            name: file.name, // Optional: use original filename
+            // folderId: 'yourFolderId', // Optional: specify a folder
+            // isSensitive: false,      // Optional: mark as sensitive
+            // force: false,            // Optional: force overwrite
+          }),
+        );
+        const uploadResults = await Promise.all(uploadPromises);
+        uploadedFileIds = uploadResults.map((result) => result.id);
+        console.log("Uploaded File IDs:", uploadedFileIds);
+      }
+
+      // Create the note with text and uploaded file IDs
+      console.log("Creating note...");
+      await client.request("notes/create", {
         text: values.noteContent,
         visibility: "public", // Adjust visibility as needed
         localOnly: false,
-      })
-      .then((res) => res)
-      .catch((err) => {
-        console.log(err);
+        fileIds: uploadedFileIds.length > 0 ? uploadedFileIds : undefined, // Attach file IDs
       });
 
-    // Example: Call API mutation here
-    // mutation.mutate({ ...values, files });
+      console.log("Note created successfully!");
+      // TODO: Add success feedback (e.g., close dialog, show toast message)
+      form.reset(); // Reset form fields
+      setFiles([]); // Clear selected files
+    } catch (err) {
+      console.error("Error submitting note or uploading files:", err);
+      // TODO: Add user-friendly error feedback (e.g., show toast message)
+    } finally {
+      setIsSubmitting(false); // End submission process
+    }
   }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -200,8 +221,10 @@ export const NewNote = () => {
         </div>
 
         <DialogFooter>
-          {/* Submit button is now part of the react-hook-form */}
-          <Button type="submit">投稿</Button>
+          {/* Disable button while submitting */}
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "投稿中..." : "投稿"}
+          </Button>
         </DialogFooter>
       </form>
     </Form>
