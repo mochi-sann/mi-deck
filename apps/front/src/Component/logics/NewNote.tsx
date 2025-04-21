@@ -265,7 +265,8 @@ export const NewNote = () => {
           {imagePreviews.length > 0 && (
             <div className="mt-4 grid grid-cols-3 gap-4">
               {imagePreviews.map((previewUrl, index) => (
-                <div key={previewUrl} className="relative">
+                // Add 'group' class here
+                <div key={previewUrl} className="relative group">
                   <img
                     src={previewUrl}
                     alt={`Preview ${index + 1}`}
@@ -275,7 +276,8 @@ export const NewNote = () => {
                     type="button" // Prevent form submission
                     variant="default"
                     size="sm"
-                    className="absolute top-1 right-1 h-6 w-6 rounded-full p-1 cursor-pointer"
+                    // Add opacity and transition classes for hover effect
+                    className="absolute top-1 right-1 h-6 w-6 rounded-full p-1 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                     onClick={() => handleRemoveImage(index)}
                     aria-label={`Remove image ${index + 1}`}
                   >
