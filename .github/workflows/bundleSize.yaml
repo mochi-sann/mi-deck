@@ -25,7 +25,11 @@ jobs:
       - name: Install & Build
         run: pnpm i
       - run: pnpm run front build
-
+      - name: analyzer
+        uses: preactjs/compressed-size-action@v2
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          pattern: "./apps/front/dist/**/*.{js,css,html,json}"
       - name: Analysis
         uses: apple-yagi/filesize-analysis@v1
         with:
