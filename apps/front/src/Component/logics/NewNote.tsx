@@ -28,11 +28,17 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import { APIClient } from "misskey-js/api.js";
 
 // Define the form schema using Zod
 const formSchema = z.object({
-  serverSessionId: z.string({ required_error: "投稿先サーバーを選択してください。" }),
-  noteContent: z.string().min(1, { message: "ノートの内容を入力してください。" }),
+  serverSessionId: z.string({
+    // biome-ignore lint/style/useNamingConvention:
+    required_error: "投稿先サーバーを選択してください。",
+  }),
+  noteContent: z
+    .string()
+    .min(1, { message: "ノートの内容を入力してください。" }),
   // files: z.instanceof(FileList).optional(), // File handling needs careful consideration
 });
 
@@ -63,17 +69,36 @@ export const NewNote = () => {
   });
 
   // TODO: Implement actual note submission logic
-  function onSubmit(values: FormSchema) {
+  async function onSubmit(values: FormSchema) {
     // 'values' contains validated form data
     console.log("Form Submitted:", values);
     console.log("Selected Server Session ID:", values.serverSessionId);
     console.log("Note Content:", values.noteContent);
+    const client = new APIClient({
+      origin:
+        serverSessions?.find(
+          (serverSession) => serverSession.id === values.serverSessionId,
+        )?.origin || "",
+      credential: serverSessions?.find(
+        (serverSession) => serverSession.id === values.serverSessionId,
+      )?.serverToken,
+    });
 
     // Handle file uploads separately for now
     if (files.length > 0) {
       console.log("Selected files:", files);
       // TODO: Add actual file upload logic here, potentially combining with form data
     }
+    await client
+      .request("notes/create", {
+        text: values.noteContent,
+        visibility: "public", // Adjust visibility as needed
+        localOnly: false,
+      })
+      .then((res) => res)
+      .catch((err) => {
+        console.log(err);
+      });
 
     // Example: Call API mutation here
     // mutation.mutate({ ...values, files });
@@ -92,7 +117,9 @@ export const NewNote = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <DialogHeader>
           <DialogTitle>新しいノートを作成</DialogTitle>
-          <DialogDescription>ノートの内容を入力してください。</DialogDescription>
+          <DialogDescription>
+            ノートの内容を入力してください。
+          </DialogDescription>
         </DialogHeader>
 
         {/* Server Selection Field */}
