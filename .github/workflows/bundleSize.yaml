@@ -28,4 +28,4 @@ jobs:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           build-script: "front build"
           pattern: "./apps/front/dist/**/*.{js,css,html,json}"
-          strip-hash: "-[a-zA-Z0-9_-]{8}\\"
+          strip-hash: "-[a-zA-Z0-9_-]{8}\\."
