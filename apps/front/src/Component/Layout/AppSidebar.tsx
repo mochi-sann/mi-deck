@@ -23,7 +23,7 @@ export const AppSidebar = () => {
   return (
     // SidebarProvider should wrap Sidebar if not already done in a parent component
     // Assuming SidebarProvider is wrapping this component elsewhere based on sidebar.tsx structure
-    <Sidebar>
+    <Sidebar collapsible="icon"> {/* Add collapsible="icon" prop */}
       <SidebarContent>
         <p className="font-medium text-muted-foreground text-sm">
           <span className="text-foreground">Playground</span>
