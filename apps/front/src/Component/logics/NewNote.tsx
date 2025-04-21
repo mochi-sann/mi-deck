@@ -10,7 +10,7 @@ import { Textarea } from "../ui/textarea";
 export const NewNote = () => {
   // TODO: Implement note submission logic
   const handleSubmit = () => {
-    console.log("Submit note");
+   console.log("Submit note");
     // Add logic to submit the note content
   };
 
