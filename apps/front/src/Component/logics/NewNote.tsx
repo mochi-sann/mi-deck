@@ -1,7 +1,8 @@
 import { $api } from "@/lib/api/fetchClient";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { APIClient } from "misskey-js/api.js";
-import React, { useState, useEffect } from "react"; // Import useEffect
+import { X } from "lucide-react"; // Import X icon
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
