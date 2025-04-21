@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { $api } from "@/lib/api/fetchClient";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Import useEffect
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -46,7 +46,8 @@ type FormSchema = z.infer<typeof formSchema>;
 
 export const NewNote = () => {
   const [files, setFiles] = useState<File[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Add submitting state
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]); // State for image preview URLs
+  const [isSubmitting, setIsSubmitting] = useState(false);
   // const [selectedServerSessionId, setSelectedServerSessionId] = useState<
   //   string | undefined
   // >(undefined); // Managed by react-hook-form now
@@ -118,6 +119,7 @@ export const NewNote = () => {
       // TODO: Add success feedback (e.g., close dialog, show toast message)
       form.reset(); // Reset form fields
       setFiles([]); // Clear selected files
+      setImagePreviews([]); // Clear previews
     } catch (err) {
       console.error("Error submitting note or uploading files:", err);
       // TODO: Add user-friendly error feedback (e.g., show toast message)
@@ -127,10 +129,36 @@ export const NewNote = () => {
   }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setFiles(Array.from(event.target.files));
+    const selectedFiles = event.target.files;
+    if (selectedFiles) {
+      const fileArray = Array.from(selectedFiles);
+      setFiles(fileArray);
+
+      // Generate preview URLs
+      const newPreviews = fileArray.map((file) => URL.createObjectURL(file));
+      // Revoke previous object URLs before setting new ones
+      imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+      setImagePreviews(newPreviews);
+    } else {
+      // Clear files and previews if selection is cancelled
+      setFiles([]);
+      imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+      setImagePreviews([]);
     }
   };
+
+  // Effect to revoke object URLs on unmount or when files change
+  useEffect(() => {
+    // This is the cleanup function that runs when the component unmounts
+    // or before the effect runs again if `files` changes.
+    return () => {
+      imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+    };
+    // We depend on imagePreviews itself. When it changes (new previews are set),
+    // the old ones should have already been revoked by the handleFileChange function.
+    // The main purpose here is cleanup on unmount.
+  }, [imagePreviews]);
+
 
   return (
     // Use the Form component from ui/form
@@ -212,12 +240,26 @@ export const NewNote = () => {
             accept="image/*" // Only accept image files
             onChange={handleFileChange}
           />
-          {/* Optionally display selected file names */}
-          {files.length > 0 && (
+          {/* Display Image Previews */}
+          {imagePreviews.length > 0 && (
+            <div className="mt-4 grid grid-cols-3 gap-4">
+              {imagePreviews.map((previewUrl, index) => (
+                <img
+                  key={previewUrl} // Use URL as key, assuming it's unique per selection batch
+                  src={previewUrl}
+                  alt={`Preview ${index + 1}`}
+                  className="h-24 w-full rounded-md object-cover"
+                  // Consider adding loading state or placeholder if needed
+                />
+              ))}
+            </div>
+          )}
+          {/* Display selected file names (optional, can be removed if previews are enough) */}
+          {/* {files.length > 0 && (
             <div className="mt-2 text-muted-foreground text-sm">
               選択中のファイル: {files.map((file) => file.name).join(", ")}
             </div>
-          )}
+          )} */}
         </div>
 
         <DialogFooter>
