@@ -187,6 +187,7 @@ export const NewNote = () => {
             className="w-full"
             type="file"
             multiple
+            accept="image/*" // Only accept image files
             onChange={handleFileChange}
           />
           {/* Optionally display selected file names */}
