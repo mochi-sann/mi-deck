@@ -1,6 +1,6 @@
-import { configureAuth } from "react-query-auth";
 import { fetchClient } from "./api/fetchClient";
 import { components } from "./api/type";
+import { configureAuth } from "./auth/authLib";
 
 const AuthTokenStorageKey = "mi-deck-auth-token";
 export const AuthTokenStorage = {
@@ -19,9 +19,10 @@ export type UserType = {
   email: string;
   name: string;
   isAuth: boolean;
+  avatarUrl: string;
 };
 
-const getuserInfo = async (jwt: string): Promise<UserType | null> => {
+export const getuserInfo = async (jwt: string): Promise<UserType | null> => {
   const userResponse = await fetchClient.GET("/v1/auth/me", {
     headers: {
       authorization: `Bearer ${jwt}`,
@@ -33,10 +34,10 @@ const getuserInfo = async (jwt: string): Promise<UserType | null> => {
     return null;
   }
   return userResponse.data
-    ? { isAuth: !!userResponse.data.id, ...userResponse.data }
+    ? { isAuth: !!userResponse.data.id, avatarUrl: "", ...userResponse.data }
     : null;
 };
-async function userFn() {
+export async function userFn() {
   console.log("userFn");
   const token = AuthTokenStorage.getToken();
   console.log(...[token, "👀 [configureAuth.ts:39]: token"].reverse());
@@ -46,13 +47,13 @@ async function userFn() {
   return await getuserInfo(token);
 }
 
-async function handleUserResponse(jwt: string) {
+export async function handleUserResponse(jwt: string) {
   AuthTokenStorage.setToken(jwt);
   const user = await getuserInfo(jwt);
   return user;
 }
 
-async function loginFn(data: LoginCredentials) {
+export async function loginFn(data: LoginCredentials) {
   const response = await fetchClient.POST("/v1/auth/login", {
     body: data,
   });
@@ -63,7 +64,7 @@ async function loginFn(data: LoginCredentials) {
   return user;
 }
 
-async function registerFn(data: SignUpCredentials) {
+export async function registerFn(data: SignUpCredentials) {
   const response = await fetchClient.POST("/v1/auth/signUp", {
     body: data,
   });
@@ -74,8 +75,10 @@ async function registerFn(data: SignUpCredentials) {
   return user;
 }
 
-async function logoutFn() {
+export async function logoutFn() {
+  // リロードする
   AuthTokenStorage.clearToken();
+  window.location.reload();
 }
 
 export const { useUser, useLogin, useRegister, useLogout, AuthLoader } =

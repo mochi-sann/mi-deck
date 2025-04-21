@@ -12,7 +12,8 @@
     "server": "dotenvx run -- pnpm -F @mi-deck/server",
     "test:e2e:server": "dotenvx run -- pnpm -F @mi-deck/server run test:e2e",
     "format": "biome format --write .",
-    "check": "biome check --write . --unsafe"
+    "check": "biome check --write . --unsafe",
+    "test": "dotenvx run -- pnpm -r run test"
   },
   "engines": {
     "pnpm": "9.15",

@@ -22,13 +22,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "pnpm"
-      - name: Install & Build
-        run: pnpm i
-      - run: pnpm run front build
-
-      - name: Analysis
-        uses: apple-yagi/filesize-analysis@v1
+      - name: analyzer
+        uses: preactjs/compressed-size-action@v2
         with:
-          out_dir: "./apps/front/dist" # ファイルサイズを表示したいファイルが入っているディレクトリ
-          ext: "js|html|css" # ファイルサイズを確認したい拡張子（単数の場合 -> "bundle.js"）
-          github_token: ${{secrets.GITHUB_TOKEN}}
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          build-script: "front build"
+          pattern: "./apps/front/dist/**/*.{js,css,html,json}"
+          strip-hash: "-[a-zA-Z0-9_-]{8}\\."

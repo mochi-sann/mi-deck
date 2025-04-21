@@ -4,6 +4,7 @@ import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 
+import { SidebarProvider } from "./Component/ui/sidebar";
 import { useUser } from "./lib/configureAuth";
 import { routeTree } from "./routeTree.gen";
 
@@ -53,7 +54,9 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <InnerApp />
+      <SidebarProvider>
+        <InnerApp />
+      </SidebarProvider>
     </QueryClientProvider>
   </StrictMode>,
 );
