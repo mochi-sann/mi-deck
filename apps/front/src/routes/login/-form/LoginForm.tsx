@@ -30,6 +30,8 @@ export const LoginForm: React.FC = () => {
     );
     navigate({ to: search.redirect });
     console.log(data, SignUpResponse);
+
+    window.location.reload();
   };
 
   return (
