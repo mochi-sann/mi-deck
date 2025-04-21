@@ -166,7 +166,6 @@ export const NewNote = () => {
     );
   };
 
-
   // Effect to revoke object URLs on unmount or when files change
   useEffect(() => {
     // This is the cleanup function that runs when the component unmounts
@@ -274,9 +273,9 @@ export const NewNote = () => {
                   />
                   <IconButton
                     type="button" // Prevent form submission
-                    variant="destructive"
+                    variant="default"
                     size="sm"
-                    className="absolute top-1 right-1 h-6 w-6 rounded-full p-1"
+                    className="absolute top-1 right-1 h-6 w-6 rounded-full p-1 cursor-pointer"
                     onClick={() => handleRemoveImage(index)}
                     aria-label={`Remove image ${index + 1}`}
                   >
