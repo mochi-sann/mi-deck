@@ -2,6 +2,7 @@ import { $api } from "@/lib/api/fetchClient";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react"; // Import X icon
 import { APIClient } from "misskey-js/api.js";
+import { DriveFilesCreateResponse } from "misskey-js/entities.js";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -76,14 +77,18 @@ export const NewNote = () => {
   async function onSubmit(values: FormSchema) {
     setIsSubmitting(true); // Start submission process
     console.log("Form Submitted:", values);
-    const client = new APIClient({
-      origin:
-        serverSessions?.find(
-          (serverSession) => serverSession.id === values.serverSessionId,
-        )?.origin || "",
-      credential: serverSessions?.find(
+    const origin =
+      serverSessions?.find(
         (serverSession) => serverSession.id === values.serverSessionId,
-      )?.serverToken,
+      )?.origin || "";
+    const serverToken =
+      serverSessions?.find(
+        (serverSession) => serverSession.id === values.serverSessionId,
+      )?.serverToken || "";
+
+    const client = new APIClient({
+      origin: origin,
+      credential: serverToken,
     });
 
     let uploadedFileIds: string[] = [];
@@ -93,16 +98,19 @@ export const NewNote = () => {
       if (files.length > 0) {
         console.log("Uploading files:", files);
         // Use Promise.all to upload files concurrently
-        const uploadPromises = files.map((file) =>
-          client.request("drive/files/create", {
-            file: file, // Pass the File object
-            name: file.name, // Optional: use original filename
-            // folderId: 'yourFolderId', // Optional: specify a folder
-            // isSensitive: false,      // Optional: mark as sensitive
-            // force: false,            // Optional: force overwrite
-          }),
-        );
-        const uploadResults = await Promise.all(uploadPromises);
+        const uploadPromises = files.map(async (file) => {
+          const payload = new FormData();
+          payload.append("i", serverToken);
+          payload.append("file", file);
+          return fetch(`${origin}/api/drive/files/create`, {
+            method: "POST",
+            body: payload,
+            credentials: "omit",
+            cache: "no-cache",
+          }).then((res) => res.json());
+        });
+        const uploadResults: DriveFilesCreateResponse[] =
+          await Promise.all(uploadPromises);
         uploadedFileIds = uploadResults.map((result) => result.id);
         console.log("Uploaded File IDs:", uploadedFileIds);
       }
