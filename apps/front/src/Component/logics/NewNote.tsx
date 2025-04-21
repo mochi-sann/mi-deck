@@ -1,5 +1,6 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { $api } from "@/lib/api/fetchClient";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { APIClient } from "misskey-js/api.js";
 import React, { useState, useEffect } from "react"; // Import useEffect
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -10,6 +11,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import {
@@ -20,15 +29,6 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import { APIClient } from "misskey-js/api.js";
 
 // Define the form schema using Zod
 const formSchema = z.object({
@@ -57,7 +57,6 @@ export const NewNote = () => {
     "/v1/server-sessions",
     {},
     {
-
       // Keep previous data while loading new server list if needed
       // placeholderData: keepPreviousData,
     },
@@ -137,12 +136,16 @@ export const NewNote = () => {
       // Generate preview URLs
       const newPreviews = fileArray.map((file) => URL.createObjectURL(file));
       // Revoke previous object URLs before setting new ones
-      imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+      for (const imagePreview of imagePreviews) {
+        URL.revokeObjectURL(imagePreview);
+      }
       setImagePreviews(newPreviews);
     } else {
       // Clear files and previews if selection is cancelled
       setFiles([]);
-      imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+      for (const imagePreview of imagePreviews) {
+        URL.revokeObjectURL(imagePreview);
+      }
       setImagePreviews([]);
     }
   };
@@ -152,13 +155,14 @@ export const NewNote = () => {
     // This is the cleanup function that runs when the component unmounts
     // or before the effect runs again if `files` changes.
     return () => {
-      imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+      for (const imagePreview of imagePreviews) {
+        URL.revokeObjectURL(imagePreview);
+      }
     };
     // We depend on imagePreviews itself. When it changes (new previews are set),
     // the old ones should have already been revoked by the handleFileChange function.
     // The main purpose here is cleanup on unmount.
   }, [imagePreviews]);
-
 
   return (
     // Use the Form component from ui/form
