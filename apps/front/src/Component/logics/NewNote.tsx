@@ -55,6 +55,7 @@ export const NewNote = () => {
     "/v1/server-sessions",
     {},
     {
+
       // Keep previous data while loading new server list if needed
       // placeholderData: keepPreviousData,
     },
