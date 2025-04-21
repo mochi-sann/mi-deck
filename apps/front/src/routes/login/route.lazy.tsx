@@ -1,3 +1,4 @@
+import { LoadingSpinner } from "@/Component/ui/loading-spinner";
 import Text from "@/Component/ui/text";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { useUser } from "../../lib/configureAuth";
@@ -16,7 +17,7 @@ function RouteComponent() {
       <div className="p-2">
         <h3>Welcome login page!</h3>
         {status === "pending" ? (
-          <div>loading...</div>
+          <LoadingSpinner />
         ) : status === "error" ? (
           <div>error...</div>
         ) : (

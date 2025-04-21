@@ -1,4 +1,5 @@
 import { useUser } from "@/lib/configureAuth";
+import { LoadingSpinner } from "../ui/loading-spinner";
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +13,7 @@ export const AppSidebar = () => {
   if (status === "pending" || userData === null) {
     return (
       <div className="flex h-screen items-center justify-center">
-        Loading...
+        <LoadingSpinner />
       </div>
     );
   }
