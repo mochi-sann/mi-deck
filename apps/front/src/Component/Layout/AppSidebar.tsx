@@ -1,6 +1,12 @@
 import { useUser } from "@/lib/configureAuth";
 import { Pen } from "lucide-react";
+import { NewNote } from "../logics/NewNote";
 import { Avatar, AvatarFallback } from "../ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "../ui/dialog";
 import { LoadingSpinner } from "../ui/loading-spinner";
 import {
   Sidebar,
@@ -33,23 +39,26 @@ export const AppSidebar = () => {
         </p>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenuButton
-          size="lg"
-          className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground "
-          onClick={() => {
-            console.log("ノート");
-            // Handle click event
-          }}
-        >
-          <Avatar className="h-8 w-8 rounded-lg ">
-            <AvatarFallback className="rounded-lg">
-              <Pen />
-            </AvatarFallback>
-          </Avatar>
-          <div className="grid flex-1 text-left text-lg leading-tight">
-            <span className="truncate font-medium">ノート</span>
-          </div>
-        </SidebarMenuButton>
+        <Dialog>
+          <DialogTrigger asChild>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground "
+            >
+              <Avatar className="h-8 w-8 rounded-lg ">
+                <AvatarFallback className="rounded-lg">
+                  <Pen />
+                </AvatarFallback>
+              </Avatar>
+              <div className="grid flex-1 text-left text-lg leading-tight">
+                <span className="truncate font-medium">ノート</span>
+              </div>
+            </SidebarMenuButton>
+          </DialogTrigger>
+          <DialogContent>
+            <NewNote />
+          </DialogContent>
+        </Dialog>
         <NavUser />
         <SidebarTrigger className="mt-auto" />
       </SidebarFooter>
