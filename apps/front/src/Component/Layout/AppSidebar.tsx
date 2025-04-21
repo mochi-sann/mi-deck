@@ -2,11 +2,7 @@ import { useUser } from "@/lib/configureAuth";
 import { Pen } from "lucide-react";
 import { NewNote } from "../logics/NewNote";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "../ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { LoadingSpinner } from "../ui/loading-spinner";
 import {
   Sidebar,
