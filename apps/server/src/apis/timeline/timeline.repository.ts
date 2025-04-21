@@ -4,7 +4,7 @@ import { PrismaService } from "../../lib/prisma.service"; // Adjust path if nece
 
 // Define the type for Timeline including selected ServerSession fields
 export type TimelineWithServerSessionDetails = Timeline & {
-  serverSession: Pick<ServerSession, "id" | "origin" | "serverType" | "userId">; // Include userId for validation
+  serverSession: Pick<ServerSession, "id" | "origin" | "serverType" | "userId" | "serverToken">; // Include userId for validation
 };
 
 @Injectable()
@@ -64,6 +64,7 @@ export class TimelineRepository {
             origin: true,
             serverType: true,
             userId: true, // Include userId to ensure correct association
+            serverToken : true
           },
         },
       },

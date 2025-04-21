@@ -22,3 +22,5 @@ if you see login page type in login email is `example2@example.com` password is 
 
 Use the Misskey-js library to get information about the Misskey timeline itself, etc.
 Connect to Misskey-js directly from the front end
+
+gitのコミットは日本語でしてください

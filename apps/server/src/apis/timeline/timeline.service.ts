@@ -75,6 +75,7 @@ export class TimelineService {
           id: timeline.serverSession.id,
           origin: timeline.serverSession.origin,
           serverType: timeline.serverSession.serverType,
+          serverToken: timeline.serverSession.serverToken, // Include serverToken if needed
         },
       };
     });
