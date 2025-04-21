@@ -40,5 +40,6 @@ read: ./CONVENTIONS.md
 # map-tokens: 1024
 
 # Optional: Exclude files or patterns from being added to the chat context.
-# ignore-files:
-  # - "**/node_modules/**"
+ignore-files:
+  - "**/dist/**"
+  - "**/node_modules/**"
