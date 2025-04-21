@@ -1,7 +1,7 @@
 import { $api } from "@/lib/api/fetchClient";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { APIClient } from "misskey-js/api.js";
 import { X } from "lucide-react"; // Import X icon
+import { APIClient } from "misskey-js/api.js";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -266,7 +266,7 @@ export const NewNote = () => {
             <div className="mt-4 grid grid-cols-3 gap-4">
               {imagePreviews.map((previewUrl, index) => (
                 // Add 'group' class here
-                <div key={previewUrl} className="relative group">
+                <div key={previewUrl} className="group relative">
                   <img
                     src={previewUrl}
                     alt={`Preview ${index + 1}`}
@@ -277,7 +277,7 @@ export const NewNote = () => {
                     variant="default"
                     size="sm"
                     // Add opacity and transition classes for hover effect
-                    className="absolute top-1 right-1 h-6 w-6 rounded-full p-1 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                    className="absolute top-1 right-1 h-6 w-6 cursor-pointer rounded-full p-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
                     onClick={() => handleRemoveImage(index)}
                     aria-label={`Remove image ${index + 1}`}
                   >
