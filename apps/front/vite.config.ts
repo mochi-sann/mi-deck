@@ -16,7 +16,9 @@ export default defineConfig({
     viteReact(),
     tailwindcss(),
     // analyzer がprocess.env.BUNDLE_ANALYZEがある場合にのみ実行される
-    showAnayler && analyzer(),
+    analyzer({
+      analyzerMode: showAnayler ? "server" : "json",
+    }),
   ],
   esbuild: {
     drop: !IsDev ? ["console", "debugger"] : [],
