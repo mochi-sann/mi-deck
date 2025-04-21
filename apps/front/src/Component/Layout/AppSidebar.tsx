@@ -5,7 +5,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarRail,
-  SidebarTrigger, // Import SidebarTrigger
+  SidebarTrigger,
 } from "../ui/sidebar";
 import { NavUser } from "./Sidebar/nav-user";
 
@@ -36,6 +36,5 @@ export const AppSidebar = () => {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-    // </SidebarProvider> // Close SidebarProvider if opened here
   );
 };
