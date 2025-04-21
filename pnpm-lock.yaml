@@ -81,8 +81,8 @@ importers:
         specifier: ^0.0.6
         version: 0.0.6
       misskey-js:
-        specifier: 2025.3.1
-        version: 2025.3.1
+        specifier: 2025.4.0
+        version: 2025.4.0
       n:
         specifier: link:@hookform/resolvers/n
         version: link:@hookform/resolvers/n
@@ -232,8 +232,8 @@ importers:
         specifier: ^9.0.2
         version: 9.0.2
       misskey-js:
-        specifier: 2025.3.1
-        version: 2025.3.1
+        specifier: 2025.4.0
+        version: 2025.4.0
       reflect-metadata:
         specifier: ^0.2.0
         version: 0.2.2
@@ -4528,8 +4528,8 @@ packages:
     resolution: {integrity: sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==}
     engines: {node: '>= 8'}
 
-  misskey-js@2025.3.1:
-    resolution: {integrity: sha512-LZ+aGRyme593KcEBAfTCwIVk1so8TT/PzpA/Q9GCmWFeAF/UUuWx3h3RpdizbHaTmqey2sYOZzaGd68I2LeVjw==}
+  misskey-js@2025.4.0:
+    resolution: {integrity: sha512-f4K0MnF87DaGGsVwwS8D9nZHWNojV4DSojOWrTHOfad7ci/+ed01h5VYSaDUGNxlG8v4ZPR8BHJE/tNt3CSUPQ==}
 
   mkdirp@0.5.6:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
@@ -10302,7 +10302,7 @@ snapshots:
       minipass: 3.3.6
       yallist: 4.0.0
 
-  misskey-js@2025.3.1:
+  misskey-js@2025.4.0:
     dependencies:
       '@simplewebauthn/types': 12.0.0
       eventemitter3: 5.0.1
