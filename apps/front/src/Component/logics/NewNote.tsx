@@ -53,13 +53,13 @@ export const NewNote = () => {
   };
 
   return (
-    <>
+    <form>
       <DialogHeader>
         <DialogTitle>新しいノートを作成</DialogTitle>
         <DialogDescription>ノートの内容を入力してください。</DialogDescription>
       </DialogHeader>
       <div className="grid gap-4 py-4">
-        <div>
+        <div className="grid w-full items-center gap-1.5">
           <Label htmlFor="server-select">投稿先サーバー</Label>
           <Select
             onValueChange={setSelectedServerSessionId}
@@ -108,6 +108,6 @@ export const NewNote = () => {
           投稿
         </Button>
       </DialogFooter>
-    </>
+    </form>
   );
 };
