@@ -37,12 +37,18 @@ export const NewNote = () => {
       </DialogHeader>
       <div className="grid gap-4 py-4">
         <Textarea placeholder="ここにノートの内容を入力..." rows={4} />
-        <div className="grid w-full max-w-sm items-center gap-1.5">
+        <div className="grid w-full items-center gap-1.5">
           <Label htmlFor="picture">ファイルを選択</Label>
-          <Input id="picture" type="file" multiple onChange={handleFileChange} />
+          <Input
+            id="picture"
+            className="w-full"
+            type="file"
+            multiple
+            onChange={handleFileChange}
+          />
           {/* Optionally display selected file names */}
           {files.length > 0 && (
-            <div className="mt-2 text-sm text-muted-foreground">
+            <div className="mt-2 text-muted-foreground text-sm">
               選択中のファイル: {files.map((file) => file.name).join(", ")}
             </div>
           )}
