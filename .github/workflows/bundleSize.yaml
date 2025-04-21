@@ -6,6 +6,9 @@ jobs:
   build-head:
     name: Build head
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22]
     permissions:
       contents: read
     steps:
@@ -34,6 +37,9 @@ jobs:
   build-base:
     name: Build base
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22]
     permissions:
       contents: read
     steps:
