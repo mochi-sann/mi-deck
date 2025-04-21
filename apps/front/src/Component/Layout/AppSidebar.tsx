@@ -36,6 +36,10 @@ export const AppSidebar = () => {
         <SidebarMenuButton
           size="lg"
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground "
+          onClick={() => {
+            console.log("ノート");
+            // Handle click event
+          }}
         >
           <Avatar className="h-8 w-8 rounded-lg ">
             <AvatarFallback className="rounded-lg">
