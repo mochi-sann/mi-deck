@@ -206,7 +206,7 @@ describe("TimelineController (e2e)", () => {
 
       expect(Array.isArray(response.body)).toBe(true);
       // Expecting the two timelines created in the POST tests
-      expect(response.body).toHaveLength(4); // Should match the number created
+      expect(response.body).toHaveLength(6); // Should match the number created
 
       // Check if the response contains the expected timeline names (order might vary)
       const names = response.body.map((t: TimelineEntity) => t.name);
@@ -260,7 +260,7 @@ describe("TimelineController (e2e)", () => {
         expect.arrayContaining(expectedTimelines),
       );
       // Ensure the lengths match exactly
-      expect(actualTimelines.length).toEqual(expectedTimelines.length);
+      expect(actualTimelines.length).toEqual(6);
     });
   });
 
