@@ -31,7 +31,7 @@ export async function uploadAndCompressFiles(
         console.log(`Compressing ${file.name}...`);
         const compressedBlob = await imageCompression(file, compressionOptions);
         // Create a new File object with the compressed data and .webp extension
-        fileName = `${file.name.substring(0, file.name.lastIndexOf("."))}.webp`;
+        fileName = `${file.name}.webp`;
         fileToUpload = new File([compressedBlob], fileName, {
           type: "image/webp",
         });
