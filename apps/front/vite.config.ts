@@ -12,7 +12,7 @@ const IsDev = process.env.NODE_ENV === "development";
 export default defineConfig({
   plugins: [
     tsconfigPaths({ root: "./" }),
-    TanStackRouterVite(),
+    TanStackRouterVite({ autoCodeSplitting: true }),
     viteReact(),
     tailwindcss(),
     // analyzer がprocess.env.BUNDLE_ANALYZEがある場合にのみ実行される
