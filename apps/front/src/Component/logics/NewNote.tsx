@@ -1,4 +1,5 @@
 import { $api } from "@/lib/api/fetchClient";
+import { uploadAndCompressFiles } from "@/lib/uploadAndCompresFiles";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { APIClient } from "misskey-js/api.js";
 import { useState } from "react";
@@ -28,7 +29,6 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
-import { uploadAndCompressFiles } from "@/lib/uploadAndCompresFiles";
 
 // Define the form schema using Zod
 const formSchema = z.object({
