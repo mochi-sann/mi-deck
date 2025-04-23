@@ -123,7 +123,7 @@ export const NewNote = () => {
       // TODO: Add success feedback (e.g., close dialog, show toast message)
       form.reset(); // Reset form fields
       setFiles([]); // Clear selected files
-      setImagePreviews([]); // Clear previews // This line seems out of place now, remove if imagePreviews is gone
+      // setImagePreviews([]); // This state is no longer here
     } catch (err) {
       console.error("Error submitting note or uploading files:", err);
       // TODO: Add user-friendly error feedback (e.g., show toast message)
