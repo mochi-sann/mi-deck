@@ -1,9 +1,8 @@
 import { $api } from "@/lib/api/fetchClient";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { X } from "lucide-react"; // Import X icon
 import { APIClient } from "misskey-js/api.js";
 import { DriveFilesCreateResponse } from "misskey-js/entities.js";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -21,17 +20,14 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { IconButton } from "../ui/icon-button"; // Import IconButton
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
 import { Textarea } from "../ui/textarea";
+import { FileUpload } from "../parts/FileUpload"; // Import the new component
 
 // Define the form schema using Zod
 const formSchema = z.object({
@@ -48,8 +44,7 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 export const NewNote = () => {
-  const [files, setFiles] = useState<File[]>([]);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]); // State for image preview URLs
+  const [files, setFiles] = useState<File[]>([]); // State for selected files
   const [isSubmitting, setIsSubmitting] = useState(false);
   // const [selectedServerSessionId, setSelectedServerSessionId] = useState<
   //   string | undefined
@@ -128,7 +123,7 @@ export const NewNote = () => {
       // TODO: Add success feedback (e.g., close dialog, show toast message)
       form.reset(); // Reset form fields
       setFiles([]); // Clear selected files
-      setImagePreviews([]); // Clear previews
+      setImagePreviews([]); // Clear previews // This line seems out of place now, remove if imagePreviews is gone
     } catch (err) {
       console.error("Error submitting note or uploading files:", err);
       // TODO: Add user-friendly error feedback (e.g., show toast message)
@@ -136,57 +131,6 @@ export const NewNote = () => {
       setIsSubmitting(false); // End submission process
     }
   }
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = event.target.files;
-    if (selectedFiles) {
-      const fileArray = Array.from(selectedFiles);
-      setFiles(fileArray);
-
-      // Generate preview URLs
-      const newPreviews = fileArray.map((file) => URL.createObjectURL(file));
-      // Revoke previous object URLs before setting new ones
-      for (const imagePreview of imagePreviews) {
-        URL.revokeObjectURL(imagePreview);
-      }
-      setImagePreviews(newPreviews);
-    } else {
-      // Clear files and previews if selection is cancelled
-      setFiles([]);
-      for (const imagePreview of imagePreviews) {
-        URL.revokeObjectURL(imagePreview);
-      }
-      setImagePreviews([]);
-    }
-  };
-
-  // Function to remove a specific image by index
-  const handleRemoveImage = (indexToRemove: number) => {
-    // Revoke the object URL first
-    URL.revokeObjectURL(imagePreviews[indexToRemove]);
-
-    // Update states by filtering
-    setFiles((prevFiles) =>
-      prevFiles.filter((_, index) => index !== indexToRemove),
-    );
-    setImagePreviews((prevPreviews) =>
-      prevPreviews.filter((_, index) => index !== indexToRemove),
-    );
-  };
-
-  // Effect to revoke object URLs on unmount or when files change
-  useEffect(() => {
-    // This is the cleanup function that runs when the component unmounts
-    // or before the effect runs again if `files` changes.
-    return () => {
-      for (const imagePreview of imagePreviews) {
-        URL.revokeObjectURL(imagePreview);
-      }
-    };
-    // We depend on imagePreviews itself. When it changes (new previews are set),
-    // the old ones should have already been revoked by the handleFileChange function.
-    // The main purpose here is cleanup on unmount.
-  }, [imagePreviews]);
 
   return (
     // Use the Form component from ui/form
@@ -257,51 +201,8 @@ export const NewNote = () => {
           )}
         />
 
-        {/* File Input (Still using useState for now) */}
-        <div className="grid w-full items-center gap-1.5">
-          <Label htmlFor="picture">ファイルを選択</Label>
-          <Input
-            id="picture"
-            className="w-full"
-            type="file"
-            multiple
-            accept="image/*" // Only accept image files
-            onChange={handleFileChange}
-          />
-          {/* Display Image Previews */}
-          {/* Display Image Previews with Delete Buttons */}
-          {imagePreviews.length > 0 && (
-            <div className="mt-4 grid grid-cols-3 gap-4">
-              {imagePreviews.map((previewUrl, index) => (
-                // Add 'group' class here
-                <div key={previewUrl} className="group relative">
-                  <img
-                    src={previewUrl}
-                    alt={`Preview ${index + 1}`}
-                    className="h-24 w-full rounded-md object-cover"
-                  />
-                  <IconButton
-                    type="button" // Prevent form submission
-                    variant="default"
-                    size="sm"
-                    // Add opacity and transition classes for hover effect
-                    className="absolute top-1 right-1 h-6 w-6 cursor-pointer rounded-full p-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-                    onClick={() => handleRemoveImage(index)}
-                    aria-label={`Remove image ${index + 1}`}
-                  >
-                    <X className="h-4 w-4" />
-                  </IconButton>
-                </div>
-              ))}
-            </div>
-          )}
-          {/* Display selected file names (optional, can be removed if previews are enough) */}
-          {/* {files.length > 0 && (
-            <div className="mt-2 text-muted-foreground text-sm">
-              選択中のファイル: {files.map((file) => file.name).join(", ")}
-            </div>
-          )} */}
-        </div>
+        {/* File Upload Component */}
+        <FileUpload files={files} onFilesChange={setFiles} />
 
         <DialogFooter>
           {/* Disable button while submitting */}
