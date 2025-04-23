@@ -28,13 +28,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     return () => {
       for (const url of newPreviews) {
         URL.revokeObjectURL(url);
-     }
-   };
-   // eslint-disable-next-line react-hooks/exhaustive-deps
- }, [files, imagePreviews]); // Rerun when the files prop changes
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files, imagePreviews]); // Rerun when the files prop changes
 
- const handleFileChange = useCallback(
-   (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       const selectedFiles = event.target.files;
       if (selectedFiles) {
         const fileArray = Array.from(selectedFiles);
