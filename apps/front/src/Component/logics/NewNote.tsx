@@ -96,6 +96,7 @@ export const NewNote = () => {
         console.log("Compressing and uploading files:", files);
 
         const compressionOptions = {
+          // biome-ignore lint/style/useNamingConvention:
           maxSizeMB: 1, // Adjust max size as needed
           maxWidthOrHeight: 1920, // Adjust max dimensions as needed
           useWebWorker: true,
