@@ -266,9 +266,7 @@ describe("TimelineController (e2e)", () => {
 
   it("should return an empty array if the user has no timelines", async () => {
     // Delete existing timelines for this test
-    await prisma.timeline.deleteMany({
-      where: { id: { in: createdTimelineIds } },
-    });
+    await prisma.timeline.deleteMany({});
     createdTimelineIds = []; // Reset the array
 
     const response = await request(app.getHttpServer())
