@@ -260,8 +260,7 @@ describe("TimelineController (e2e)", () => {
         expect.arrayContaining(expectedTimelines),
       );
       // Ensure the lengths match exactly
-      expect(actualTimelines.length).toEqual(6);
-    });
+      expect(actualTimelines.length).toEqual(expectedTimelines.length);
   });
 
   it("should return an empty array if the user has no timelines", async () => {
