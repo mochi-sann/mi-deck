@@ -1,5 +1,6 @@
 import { $api } from "@/lib/api/fetchClient";
 import { zodResolver } from "@hookform/resolvers/zod";
+import imageCompression from "browser-image-compression"; // Import the library
 import { APIClient } from "misskey-js/api.js";
 import { DriveFilesCreateResponse } from "misskey-js/entities.js";
 import { useState } from "react";
@@ -92,12 +93,54 @@ export const NewNote = () => {
     try {
       // Upload files if any are selected
       if (files.length > 0) {
-        console.log("Uploading files:", files);
-        // Use Promise.all to upload files concurrently
+        console.log("Compressing and uploading files:", files);
+
+        const compressionOptions = {
+          maxSizeMB: 1, // Adjust max size as needed
+          maxWidthOrHeight: 1920, // Adjust max dimensions as needed
+          useWebWorker: true,
+          fileType: "image/webp", // Specify WebP output
+        };
+
+        // Use Promise.all to compress and upload files concurrently
         const uploadPromises = files.map(async (file) => {
+          let fileToUpload = file;
+          let fileName = file.name;
+
+          // Check if the file is an image and compress it
+          if (file.type.startsWith("image/")) {
+            try {
+              console.log(`Compressing ${file.name}...`);
+              const compressedBlob = await imageCompression(
+                file,
+                compressionOptions,
+              );
+              // Create a new File object with the compressed data and .webp extension
+              fileName = `${file.name.substring(
+                0,
+                file.name.lastIndexOf("."),
+              )}.webp`;
+              fileToUpload = new File([compressedBlob], fileName, {
+                type: "image/webp",
+              });
+              console.log(
+                `Compressed ${file.name} to ${fileName} (${fileToUpload.size} bytes)`,
+              );
+            } catch (compressionError) {
+              console.error(
+                `Could not compress file ${file.name}:`,
+                compressionError,
+              );
+              // Optionally, upload the original file if compression fails,
+              // or skip/handle the error differently.
+              // Here, we'll proceed to upload the original file.
+            }
+          }
+
           const payload = new FormData();
           payload.append("i", serverToken);
-          payload.append("file", file);
+          // Use the (potentially compressed) file and its new name
+          payload.append("file", fileToUpload, fileName);
           return fetch(`${origin}/api/drive/files/create`, {
             method: "POST",
             body: payload,
