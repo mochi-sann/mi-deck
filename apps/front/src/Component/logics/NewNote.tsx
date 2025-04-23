@@ -2,7 +2,6 @@ import { $api } from "@/lib/api/fetchClient";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { APIClient } from "misskey-js/api.js";
 import { DriveFilesCreateResponse } from "misskey-js/entities.js";
-import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -20,14 +19,10 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Textarea } from "../ui/textarea";
-import { FileUpload } from "../parts/FileUpload"; // Import the new component
+import { FileUpload } from "../parts/FileUpload";
 
 // Define the form schema using Zod
 const formSchema = z.object({
