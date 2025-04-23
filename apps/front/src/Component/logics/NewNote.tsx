@@ -45,6 +45,94 @@ const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>;
 
+// Helper function for file compression and upload
+async function uploadAndCompressFiles(
+  files: File[],
+  origin: string,
+  serverToken: string,
+): Promise<string[]> {
+  if (files.length === 0) {
+    return []; // No files to upload
+  }
+
+  console.log("Compressing and uploading files:", files);
+
+  const compressionOptions = {
+    // biome-ignore lint/style/useNamingConvention:
+    maxSizeMB: 1, // Adjust max size as needed
+    maxWidthOrHeight: 1920, // Adjust max dimensions as needed
+    useWebWorker: true,
+    fileType: "image/webp", // Specify WebP output
+  };
+
+  // Use Promise.all to compress and upload files concurrently
+  const uploadPromises = files.map(async (file) => {
+    let fileToUpload = file;
+    let fileName = file.name;
+
+    // Check if the file is an image and compress it
+    if (file.type.startsWith("image/")) {
+      try {
+        console.log(`Compressing ${file.name}...`);
+        const compressedBlob = await imageCompression(file, compressionOptions);
+        // Create a new File object with the compressed data and .webp extension
+        fileName = `${file.name.substring(
+          0,
+          file.name.lastIndexOf("."),
+        )}.webp`;
+        fileToUpload = new File([compressedBlob], fileName, {
+          type: "image/webp",
+        });
+        console.log(
+          `Compressed ${file.name} to ${fileName} (${fileToUpload.size} bytes)`,
+        );
+      } catch (compressionError) {
+        console.error(
+          `Could not compress file ${file.name}:`,
+          compressionError,
+        );
+        // Optionally, upload the original file if compression fails,
+        // or skip/handle the error differently.
+        // Here, we'll proceed to upload the original file.
+      }
+    }
+
+    const payload = new FormData();
+    payload.append("i", serverToken);
+    // Use the (potentially compressed) file and its new name
+    payload.append("file", fileToUpload, fileName);
+    // TODO: Consider using misskey-js client.request for drive upload if possible/preferred
+    // This requires checking if misskey-js handles FormData uploads directly or needs adjustments.
+    // For now, using fetch directly as before.
+    const response = await fetch(`${origin}/api/drive/files/create`, {
+      method: "POST",
+      body: payload,
+      credentials: "omit", // Ensure cookies aren't sent if not needed
+      cache: "no-cache",
+    });
+    if (!response.ok) {
+      // Handle HTTP errors (e.g., 4xx, 5xx)
+      const errorText = await response.text();
+      throw new Error(
+        `File upload failed for ${fileName}: ${response.status} ${response.statusText} - ${errorText}`,
+      );
+    }
+    const result: DriveFilesCreateResponse = await response.json();
+    return result; // Return the full response object initially
+  });
+
+  try {
+    const uploadResults = await Promise.all(uploadPromises);
+    const uploadedFileIds = uploadResults.map((result) => result.id);
+    console.log("Uploaded File IDs:", uploadedFileIds);
+    return uploadedFileIds;
+  } catch (error) {
+    console.error("Error during file upload process:", error);
+    // Re-throw the error to be caught by the onSubmit handler
+    throw error;
+  }
+}
+
 export const NewNote = () => {
   const [files, setFiles] = useState<File[]>([]); // State for selected files
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -88,72 +176,13 @@ export const NewNote = () => {
       credential: serverToken,
     });
 
-    let uploadedFileIds: string[] = [];
-
     try {
-      // Upload files if any are selected
-      if (files.length > 0) {
-        console.log("Compressing and uploading files:", files);
-
-        const compressionOptions = {
-          // biome-ignore lint/style/useNamingConvention:
-          maxSizeMB: 1, // Adjust max size as needed
-          maxWidthOrHeight: 1920, // Adjust max dimensions as needed
-          useWebWorker: true,
-          fileType: "image/webp", // Specify WebP output
-        };
-
-        // Use Promise.all to compress and upload files concurrently
-        const uploadPromises = files.map(async (file) => {
-          let fileToUpload = file;
-          let fileName = file.name;
-
-          // Check if the file is an image and compress it
-          if (file.type.startsWith("image/")) {
-            try {
-              console.log(`Compressing ${file.name}...`);
-              const compressedBlob = await imageCompression(
-                file,
-                compressionOptions,
-              );
-              // Create a new File object with the compressed data and .webp extension
-              fileName = `${file.name.substring(
-                0,
-                file.name.lastIndexOf("."),
-              )}.webp`;
-              fileToUpload = new File([compressedBlob], fileName, {
-                type: "image/webp",
-              });
-              console.log(
-                `Compressed ${file.name} to ${fileName} (${fileToUpload.size} bytes)`,
-              );
-            } catch (compressionError) {
-              console.error(
-                `Could not compress file ${file.name}:`,
-                compressionError,
-              );
-              // Optionally, upload the original file if compression fails,
-              // or skip/handle the error differently.
-              // Here, we'll proceed to upload the original file.
-            }
-          }
-
-          const payload = new FormData();
-          payload.append("i", serverToken);
-          // Use the (potentially compressed) file and its new name
-          payload.append("file", fileToUpload, fileName);
-          return fetch(`${origin}/api/drive/files/create`, {
-            method: "POST",
-            body: payload,
-            credentials: "omit",
-            cache: "no-cache",
-          }).then((res) => res.json());
-        });
-        const uploadResults: DriveFilesCreateResponse[] =
-          await Promise.all(uploadPromises);
-        uploadedFileIds = uploadResults.map((result) => result.id);
-        console.log("Uploaded File IDs:", uploadedFileIds);
-      }
+      // Upload files using the helper function
+      const uploadedFileIds = await uploadAndCompressFiles(
+        files,
+        origin,
+        serverToken,
+      );
 
       // Create the note with text and uploaded file IDs
       console.log("Creating note...");
