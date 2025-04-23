@@ -15,7 +15,7 @@ export async function uploadAndCompressFiles(
   const compressionOptions = {
     // biome-ignore lint/style/useNamingConvention:
     maxSizeMB: 1, // Adjust max size as needed
-    maxWidthOrHeight: 1920, // Adjust max dimensions as needed
+    maxWidthOrHeight: 2048, // Adjust max dimensions as needed
     useWebWorker: true,
     fileType: "image/webp", // Specify WebP output
   };

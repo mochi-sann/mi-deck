@@ -16,6 +16,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   // Generate previews when files change externally or internally
+  // biome-ignore lint/correctness/useExhaustiveDependencies: imagepreviesを入れると画像のpreviewがうまくできないため無視
   useEffect(() => {
     const newPreviews = files.map((file) => URL.createObjectURL(file));
     // Clean up old previews before setting new ones
@@ -31,7 +32,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [files, imagePreviews]); // Rerun when the files prop changes
+  }, [files]); // Rerun when the files prop changes
 
   const handleFileChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
