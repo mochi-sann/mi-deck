@@ -7,7 +7,7 @@
 
 # Final accessible URL seen by a user.
 # You can set url from an environment variable instead.
-url: http://localhost:3000/
+url: http://localhost:3002/
 
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
 # URL SETTINGS AFTER THAT!
@@ -223,7 +223,7 @@ proxyBypassHosts:
 #mediaProxy: https://example.com/proxy
 
 # Proxy remote files (default: true)
-proxyRemoteFiles: true
+proxyRemoteFiles: false
 
 # Sign to ActivityPub GET request (default: true)
 signToActivityPubGet: true
@@ -236,7 +236,7 @@ signToActivityPubGet: true
 #]
 
 # Upload or download file size limits (bytes)
-#maxFileSize: 262144000
+maxFileSize: 2620144000
 
 # Log settings
 # logging:

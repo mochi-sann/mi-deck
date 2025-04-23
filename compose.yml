@@ -69,7 +69,7 @@ services:
     # env_file:
     #   - .config/docker.env
     volumes:
-      - ./files:/misskey/files
+      - ./misskey-files:/misskey/files
       - ./.config:/misskey/.config:ro
 
   redis:
@@ -151,4 +151,5 @@ networks:
 volumes:
   misskey-db: 
   postgres-db:
+  misskey-file:
     # https-portal-data: # Recommended, to avoid re-signing when upgrading HTTPS-PORTAL

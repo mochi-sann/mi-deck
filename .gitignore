@@ -135,3 +135,4 @@ server/test.db
 !.aider.conf.yml
 !.aiderignore
 files
+misskey-files
