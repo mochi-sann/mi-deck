@@ -16,11 +16,11 @@
     "test": "dotenvx run -- pnpm -r run test"
   },
   "engines": {
-    "pnpm": "9.15",
+    "pnpm": "10",
     "node": ">=22",
     "npm": "please_use_pnpm_instead"
   },
-  "packageManager": "pnpm@9.15.0",
+  "packageManager": "pnpm@10.9.0",
   "keywords": [],
   "author": "",
   "license": "",
@@ -29,8 +29,8 @@
     "@dotenvx/dotenvx": "^1.39.0",
     "@types/node": "^22.13",
     "dotenv": "^16.4.7",
-    "lefthook": "^1.11.6",
     "execa": "^9.3.0",
+    "lefthook": "^1.11.6",
     "typescript": "^5.8.2"
   },
   "volta": {
