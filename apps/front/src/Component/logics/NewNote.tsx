@@ -41,9 +41,23 @@ const formSchema = z.object({
     .string()
     .min(1, { message: "ノートの内容を入力してください。" }),
   isLocalOnly: z.boolean(), // Optional field for local-only notes
+  visibility: z
+    .string({
+      // biome-ignore lint/style/useNamingConvention:
+      required_error: "公開範囲を選択してください",
+    })
+    .default("public"), // Visibility options
+
   // files: z.instanceof(FileList).optional(), // File handling needs careful consideration
 });
 
+const visibilityOptions = [
+  { value: "public", label: "公開" },
+  { value: "home", label: "ホーム" },
+  { value: "followers", label: "フォロワー" },
+  // { value: "specified", label: "指定ユーザー" }, // specified はUIが複雑になるため一旦除外
+  { value: "private", label: "ダイレクト" }, // private はUIが複雑になるため一旦除外
+] as const; // as const で value が string literal type になる
 type FormSchema = z.infer<typeof formSchema>;
 
 export const NewNote = () => {
@@ -69,6 +83,7 @@ export const NewNote = () => {
       serverSessionId: undefined, // Initialize as undefined
       noteContent: "",
       isLocalOnly: false, // Default to false
+      visibility: "public", // Default visibility
     },
   });
 
@@ -161,6 +176,35 @@ export const NewNote = () => {
                     <SelectItem key={session.id} value={session.id}>
                       {/* TODO: Display a more user-friendly name if available, e.g., from serverInfo */}
                       {session.origin}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="visibility"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>公開範囲</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value} // Use defaultValue for initial render with Select
+                value={field.value} // Controlled value
+                disabled={isLoadingServers || !serverSessions}
+              >
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder={"公開範囲を選択"} />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {visibilityOptions?.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
