@@ -43,15 +43,7 @@ const formSchema = z.object({
     .string()
     .min(1, { message: "ノートの内容を入力してください。" }),
   isLocalOnly: z.boolean(), // Optional field for local-only notes
-  visibility: z
-    .string({
-      // biome-ignore lint/style/useNamingConvention:
-      required_error: "公開範囲を選択してください",
-    })
-    .nonempty({ message: "公開範囲を選択してください" }) // Add nonempty validation
-    .default("public"), // Visibility options
-
-  // files: z.instanceof(FileList).optional(), // File handling needs careful consideration
+  visibility: z.enum(["public", "home", "followers", "specified"]),
 });
 
 const visibilityOptions = [
@@ -120,7 +112,7 @@ export const NewNote = () => {
       console.log("Creating note...");
       await client.request("notes/create", {
         text: values.noteContent,
-        visibility: "public", // Adjust visibility as needed
+        visibility: values.visibility, // Adjust visibility as needed
         localOnly: values.isLocalOnly,
         fileIds: uploadedFileIds.length > 0 ? uploadedFileIds : undefined, // Attach file IDs
       });
