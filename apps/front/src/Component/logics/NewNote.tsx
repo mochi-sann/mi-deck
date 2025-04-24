@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { APIClient } from "misskey-js/api.js";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form"; // Import Resolver type
 import { z } from "zod";
 import { FileUpload } from "../parts/FileUpload";
 import { Button } from "../ui/button";
@@ -39,11 +39,11 @@ const formSchema = z.object({
       // biome-ignore lint/style/useNamingConvention:
       required_error: "投稿先サーバーを選択してください。",
     })
-    .nonempty({ message: "パスワードを入力してください" }),
+    .nonempty({ message: "投稿先サーバーを選択してください。" }), // Corrected message
   noteContent: z
     .string()
     .min(1, { message: "ノートの内容を入力してください。" })
-    .nonempty({ message: "パスワードを入力してください" }),
+    .nonempty({ message: "ノートの内容を入力してください。" }), // Corrected message
   visibility: z.string().default("public"),
   isLocalOnly: z.boolean().default(false), // ローカルのみの投稿かどうかのフラグ
   // files: z.instanceof(FileList).optional(), // File handling needs careful consideration
