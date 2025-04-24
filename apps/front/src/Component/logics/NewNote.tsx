@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FileUpload } from "../parts/FileUpload";
 import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
   DialogDescription,
   DialogFooter,
@@ -39,6 +40,7 @@ const formSchema = z.object({
   noteContent: z
     .string()
     .min(1, { message: "ノートの内容を入力してください。" }),
+  isLocalOnly: z.boolean(), // Optional field for local-only notes
   // files: z.instanceof(FileList).optional(), // File handling needs careful consideration
 });
 
@@ -66,6 +68,7 @@ export const NewNote = () => {
     defaultValues: {
       serverSessionId: undefined, // Initialize as undefined
       noteContent: "",
+      isLocalOnly: false, // Default to false
     },
   });
 
@@ -100,7 +103,7 @@ export const NewNote = () => {
       await client.request("notes/create", {
         text: values.noteContent,
         visibility: "public", // Adjust visibility as needed
-        localOnly: false,
+        localOnly: values.isLocalOnly,
         fileIds: uploadedFileIds.length > 0 ? uploadedFileIds : undefined, // Attach file IDs
       });
 
@@ -162,6 +165,24 @@ export const NewNote = () => {
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="isLocalOnly"
+          render={({ field }) => (
+            <FormItem className="flex items-center space-x-2">
+              <FormLabel>ローカルのみ</FormLabel>
+              <FormControl>
+                <Checkbox
+                  checked={field.value} // Controlled value
+                  onCheckedChange={(checked) => field.onChange(checked)} // Update the form state
+                  id="isLocalOnly" // Unique ID for the checkbox
+                  // {...field}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
