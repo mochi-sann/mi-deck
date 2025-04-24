@@ -29,7 +29,6 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
-// import { Checkbox } from "../ui/checkbox"; // Shadcn/uiのCheckboxを使う場合はコメント解除
 
 // Define the form schema using Zod
 const formSchema = z.object({
@@ -40,27 +39,10 @@ const formSchema = z.object({
   noteContent: z
     .string()
     .min(1, { message: "ノートの内容を入力してください。" }),
-  visibility: z.enum(["public", "home", "followers", "specified", "private"], {
-    // biome-ignore lint/style/useNamingConvention:
-    required_error: "公開範囲を選択してください。",
-  }),
-  localOnly: z.boolean().default(false), // ローカルのみの投稿かどうかのフラグ
   // files: z.instanceof(FileList).optional(), // File handling needs careful consideration
 });
 
 type FormSchema = z.infer<typeof formSchema>;
-
-// Misskeyの公開範囲オプション
-const visibilityOptions = [
-  { value: "public", label: "公開" },
-  { value: "home", label: "ホーム" },
-  { value: "followers", label: "フォロワー" },
-  // { value: "specified", label: "指定ユーザー" }, // specified はUIが複雑になるため一旦除外
-  { value: "private", label: "ダイレクト" }, // private はUIが複雑になるため一旦除外
-] as const; // as const で value が string literal type になる
-
-// Misskeyの公開範囲の型 (zod schemaから取得)
-type VisibilityType = FormSchema["visibility"];
 
 export const NewNote = () => {
   const [files, setFiles] = useState<File[]>([]); // State for selected files
@@ -84,8 +66,6 @@ export const NewNote = () => {
     defaultValues: {
       serverSessionId: undefined, // Initialize as undefined
       noteContent: "",
-      visibility: "public", // Default visibility
-      localOnly: false,
     },
   });
 
@@ -115,12 +95,12 @@ export const NewNote = () => {
         serverToken,
       );
 
-      // Create the note with text, visibility, and uploaded file IDs
+      // Create the note with text and uploaded file IDs
       console.log("Creating note...");
       await client.request("notes/create", {
         text: values.noteContent,
-        visibility: values.visibility, // Use selected visibility
-        localOnly: values.localOnly, // Use selected localOnly flag
+        visibility: "public", // Adjust visibility as needed
+        localOnly: false,
         fileIds: uploadedFileIds.length > 0 ? uploadedFileIds : undefined, // Attach file IDs
       });
 
@@ -183,65 +163,6 @@ export const NewNote = () => {
                 </SelectContent>
               </Select>
               <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Visibility Selection Field */}
-        <FormField
-          control={form.control}
-          name="visibility"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>公開範囲</FormLabel>
-              <Select
-                onValueChange={(value) =>
-                  field.onChange(value as VisibilityType)
-                } // Cast value to VisibilityType
-                defaultValue={field.value}
-                value={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="公開範囲を選択..." />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {visibilityOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Local Only Checkbox */}
-        <FormField
-          control={form.control}
-          name="localOnly"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                {/* Shadcn/uiのCheckboxを使う場合 */}
-                {/* <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                /> */}
-                {/* 標準のinput[type=checkbox]を使う場合 */}
-                <input
-                  type="checkbox"
-                  checked={field.value}
-                  onChange={field.onChange}
-                  className="mt-1" // Tailwindで見た目を調整
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>ローカルのみ</FormLabel>
-              </div>
             </FormItem>
           )}
         />
