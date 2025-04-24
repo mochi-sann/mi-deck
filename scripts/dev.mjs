@@ -50,16 +50,6 @@ const createPrefixedLogger = (prefix, stream, prefixColor) => {
 };
 
 try {
-  console.log(
-    `${colors.bright}Starting front-end and back-end dev servers...${colors.reset}`,
-  );
-
-  // フロントエンドプロセスを起動
-  frontProcess = execa("pnpm", ["run", "front", "--", "dev"], {
-    cwd: _dirname + "/../",
-    stdio: ["inherit", "pipe", "pipe"],
-  });
-
   // データベースマイグレーションを実行
   console.log(
     `${colors.magenta}${colors.bright}[DB]${colors.reset} Running database migrations...`,
@@ -80,6 +70,16 @@ try {
     cleanup(); // マイグレーション失敗時は他のプロセスも終了
     process.exit(1);
   }
+
+  console.log(
+    `${colors.bright}Starting front-end and back-end dev servers...${colors.reset}`,
+  );
+
+  // フロントエンドプロセスを起動
+  frontProcess = execa("pnpm", ["run", "front", "--", "dev"], {
+    cwd: _dirname + "/../",
+    stdio: ["inherit", "pipe", "pipe"],
+  });
 
   // バックエンドプロセスを起動
   console.log(
