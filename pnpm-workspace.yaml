@@ -3,3 +3,5 @@ packages:
 
 onlyBuiltDependencies:
   - '@nestjs/core'
+  - '@prisma/client'
+  - prisma
