@@ -1,11 +1,12 @@
 import { $api } from "@/lib/api/fetchClient";
 import { uploadAndCompressFiles } from "@/lib/uploadAndCompresFiles";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { APIClient } from "misskey-js/api.js";
-import { useState } from "react";
-import { useForm } from "react-hook-form"; // Import Resolver type
+import { APIClient, UserDetailed } from "misskey-js/api.js"; // Import UserDetailed
+import { useCallback, useEffect, useState } from "react"; // Import useEffect, useCallback
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FileUpload } from "../parts/FileUpload";
+import { Badge } from "../ui/badge"; // Import Badge
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import {
@@ -22,6 +23,8 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import { Input } from "../ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"; // Import Popover
 import {
   Select,
   SelectContent,
@@ -29,8 +32,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Input } from "../ui/input"; // Add Input import
 import { Textarea } from "../ui/textarea";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../ui/command"; // Import Command components
+import { cn } from "@/lib/utils"; // Import cn utility
+import { Check, ChevronsUpDown, X } from "lucide-react"; // Import icons
 
 // Define the form schema using Zod
 const formSchema = z.object({
@@ -43,21 +55,21 @@ const formSchema = z.object({
   noteContent: z
     .string()
     .min(1, { message: "ノートの内容を入力してください。" }),
-  isLocalOnly: z.boolean(), // Optional field for local-only notes
-  visibility: z.enum(["public", "home", "followers", "private"]), // Add 'private'
-  visibleUserIds: z.string().optional(), // Add optional field for user IDs (comma-separated string for now)
+  isLocalOnly: z.boolean(),
+  visibility: z.enum(["public", "home", "followers", "private"]),
+  visibleUserIds: z.array(z.string()).optional(), // Change to array of strings
 })
 .refine(
   (data) => {
+    // If visibility is private, visibleUserIds array must not be empty
     if (data.visibility === "private") {
-      // If visibility is private, visibleUserIds must be a non-empty string
-      return data.visibleUserIds && data.visibleUserIds.trim().length > 0;
+      return data.visibleUserIds && data.visibleUserIds.length > 0;
     }
-    return true; // Otherwise, no validation needed for visibleUserIds
+    return true; // Otherwise, no validation needed
   },
   {
-    // Custom error message if validation fails when visibility is private
-    message: "ダイレクトメッセージを送る相手のユーザーIDをカンマ区切りで入力してください。",
+    // Custom error message if validation fails
+    message: "ダイレクトメッセージを送る相手を1人以上選択してください。",
     path: ["visibleUserIds"], // Associate the error with the visibleUserIds field
   },
 );
@@ -73,11 +85,14 @@ const visibilityOptions = [
 type FormSchema = z.infer<typeof formSchema>;
 
 export const NewNote = () => {
-  const [files, setFiles] = useState<File[]>([]); // State for selected files
+  const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // const [selectedServerSessionId, setSelectedServerSessionId] = useState<
-  //   string | undefined
-  // >(undefined); // Managed by react-hook-form now
+  const [userSearchQuery, setUserSearchQuery] = useState("");
+  const [userSearchResults, setUserSearchResults] = useState<UserDetailed[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<UserDetailed[]>([]); // Store selected user objects
+  const [isSearchingUsers, setIsSearchingUsers] = useState(false);
+  const [isUserPopoverOpen, setIsUserPopoverOpen] = useState(false);
+
 
   const { data: serverSessions, isLoading: isLoadingServers } = $api.useQuery(
     "get",
@@ -94,14 +109,23 @@ export const NewNote = () => {
     defaultValues: {
       serverSessionId: "", // Initialize as empty string instead of undefined
       noteContent: "",
-      isLocalOnly: false, // Default to false
-      visibility: "public", // Default visibility
-      visibleUserIds: "", // Initialize visibleUserIds
+      isLocalOnly: false,
+      visibility: "public",
+      visibleUserIds: [], // Initialize as empty array
     },
   });
 
-  // Watch the visibility field to conditionally render the user ID input
+  // Watch form fields
   const visibility = form.watch("visibility");
+  const selectedServerSessionId = form.watch("serverSessionId");
+
+  // Effect to clear user selection when server changes
+  useEffect(() => {
+    setSelectedUsers([]);
+    setUserSearchResults([]);
+    setUserSearchQuery("");
+    form.setValue("visibleUserIds", []); // Reset form value as well
+  }, [selectedServerSessionId, form]);
 
   // Handle note submission including file uploads
   async function onSubmit(values: FormSchema) {
@@ -143,14 +167,10 @@ export const NewNote = () => {
         fileIds: uploadedFileIds.length > 0 ? uploadedFileIds : undefined,
       };
 
-      // If visibility is private, parse and add visibleUserIds
+      // If visibility is private, add visibleUserIds (already an array)
       if (values.visibility === "private" && values.visibleUserIds) {
-        notePayload.visibleUserIds = values.visibleUserIds
-          .split(",") // Split by comma
-          .map((id) => id.trim()) // Trim whitespace
-          .filter((id) => id.length > 0); // Remove empty strings
+         notePayload.visibleUserIds = values.visibleUserIds;
       }
-
 
       // Create the note with text and uploaded file IDs
       console.log("Creating note with payload:", notePayload);
@@ -159,15 +179,70 @@ export const NewNote = () => {
       console.log("Note created successfully!");
       // TODO: Add success feedback (e.g., close dialog, show toast message)
       form.reset(); // Reset form fields
-      setFiles([]); // Clear selected files
-      // setImagePreviews([]); // This state is no longer here
+      setFiles([]);
+      setSelectedUsers([]); // Clear selected users UI state
+      setUserSearchQuery(""); // Clear search query
+      setUserSearchResults([]); // Clear search results
     } catch (err) {
       console.error("Error submitting note or uploading files:", err);
-      // TODO: Add user-friendly error feedback (e.g., show toast message)
+      // TODO: Add user-friendly error feedback
     } finally {
-      setIsSubmitting(false); // End submission process
+      setIsSubmitting(false);
     }
   }
+
+  // Debounced user search function
+  const searchUsers = useCallback(async (query: string) => {
+    if (!query || !selectedServerSessionId) {
+      setUserSearchResults([]);
+      return;
+    }
+
+    const server = serverSessions?.find(s => s.id === selectedServerSessionId);
+    if (!server) return;
+
+    setIsSearchingUsers(true);
+    const client = new APIClient({ origin: server.origin, credential: server.serverToken });
+    try {
+      // Using users/search - might need adjustment based on Misskey version/instance capabilities
+      const results = await client.request("users/search", { query: query, limit: 10 });
+      setUserSearchResults(results);
+    } catch (error) {
+      console.error("Error searching users:", error);
+      setUserSearchResults([]); // Clear results on error
+    } finally {
+      setIsSearchingUsers(false);
+    }
+  }, [selectedServerSessionId, serverSessions]);
+
+  // Effect for debouncing search - basic implementation
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      searchUsers(userSearchQuery);
+    }, 500); // 500ms debounce
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [userSearchQuery, searchUsers]);
+
+  // Handle user selection
+  const handleUserSelect = (user: UserDetailed) => {
+    if (!selectedUsers.some(u => u.id === user.id)) {
+      const newSelectedUsers = [...selectedUsers, user];
+      setSelectedUsers(newSelectedUsers);
+      form.setValue("visibleUserIds", newSelectedUsers.map(u => u.id), { shouldValidate: true });
+    }
+    setUserSearchQuery(""); // Clear search input after selection
+    setIsUserPopoverOpen(false); // Close popover
+  };
+
+  // Handle user removal
+  const handleUserRemove = (userId: string) => {
+    const newSelectedUsers = selectedUsers.filter(u => u.id !== userId);
+    setSelectedUsers(newSelectedUsers);
+    form.setValue("visibleUserIds", newSelectedUsers.map(u => u.id), { shouldValidate: true });
+  };
 
   return (
     // Use the Form component from ui/form
@@ -247,26 +322,94 @@ export const NewNote = () => {
             </FormItem>
           )}
         />
-        {/* Conditionally render User ID input when visibility is 'private' */}
+        {/* Conditionally render User Selection when visibility is 'private' */}
         {visibility === "private" && (
-          <FormField
+           <FormField
             control={form.control}
-            name="visibleUserIds"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>宛先ユーザーID</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="ユーザーIDをカンマ区切りで入力 (例: id1,id2)"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
+            name="visibleUserIds" // Keep this linked to the form state
+            render={({ field }) => ( // field is needed for error message association
+              <FormItem className="flex flex-col">
+                <FormLabel>宛先ユーザー</FormLabel>
+                 {/* Display selected users as badges */}
+                 <div className="flex flex-wrap gap-1 mb-2">
+                  {selectedUsers.map((user) => (
+                    <Badge key={user.id} variant="secondary">
+                      {user.username}
+                      {user.host && `@${user.host}`}
+                      <button
+                        type="button"
+                        className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                        onClick={() => handleUserRemove(user.id)}
+                        aria-label={`Remove ${user.username}`}
+                      >
+                        <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+                <Popover open={isUserPopoverOpen} onOpenChange={setIsUserPopoverOpen}>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={isUserPopoverOpen}
+                        className={cn(
+                          "w-full justify-between",
+                          !field.value?.length && "text-muted-foreground" // Use field.value to check if empty for placeholder style
+                        )}
+                        disabled={!selectedServerSessionId} // Disable if no server selected
+                      >
+                        {selectedUsers.length > 0
+                          ? `${selectedUsers.length}人選択済み`
+                          : "ユーザーを検索して追加..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                    <Command shouldFilter={false}> {/* We handle filtering via API */}
+                      <CommandInput
+                        placeholder="ユーザー名を検索..."
+                        value={userSearchQuery}
+                        onValueChange={setUserSearchQuery}
+                        disabled={isSearchingUsers}
+                      />
+                      <CommandList>
+                        <CommandEmpty>
+                          {isSearchingUsers ? "検索中..." : "ユーザーが見つかりません。"}
+                        </CommandEmpty>
+                        <CommandGroup>
+                          {userSearchResults.map((user) => (
+                            <CommandItem
+                              key={user.id}
+                              value={`${user.username}${user.host ? `@${user.host}` : ''} ${user.id}`} // Unique value for CommandItem
+                              onSelect={() => handleUserSelect(user)}
+                              disabled={selectedUsers.some(u => u.id === user.id)} // Disable if already selected
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  selectedUsers.some(u => u.id === user.id)
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {user.name} (@{user.username}
+                              {user.host && `@${user.host}`})
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormMessage /> {/* Display validation errors */}
               </FormItem>
             )}
           />
         )}
-        <FormField
+         <FormField
           control={form.control}
           name="isLocalOnly"
           render={({ field }) => (
