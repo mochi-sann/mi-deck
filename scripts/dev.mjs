@@ -1,10 +1,12 @@
 import { dirname } from "node:path";
+import { createInterface } from "node:readline";
 import { fileURLToPath } from "node:url";
 import { execa } from "execa";
+
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
-
 console.log("node env", process.env.NODE_ENV);
+
 let frontProcess;
 let serverProcess;
 
@@ -26,22 +28,38 @@ const cleanup = () => {
 process.on("SIGINT", cleanup);
 process.on("SIGTERM", cleanup);
 
-try {
-  console.log("Starting front-end dev server...");
-  const [frontProcess, serverProcess] = await Promise.all([
-    execa("pnpm", ["run", "front", "--", "dev"], {
-      cwd: _dirname + "/../",
-      stdout: process.stdout,
-      stderr: process.stderr,
-    }),
-    execa("pnpm", ["run", "server", "--", "dev"], {
-      cwd: _dirname + "/../",
-      stdout: process.stdout,
-      stderr: process.stderr,
-    }),
-  ]);
+// 出力にプレフィックスを付けるためのユーティリティ関数
+const createPrefixedLogger = (prefix, stream) => {
+  const rl = createInterface({ input: stream });
+  rl.on("line", (line) => {
+    console.log(`[${prefix}] ${line}`);
+  });
+  return rl;
+};
 
-  console.log("Starting back-end dev server...");
+try {
+  console.log("Starting front-end and back-end dev servers...");
+
+  // フロントエンドプロセスを起動
+  frontProcess = execa("pnpm", ["run", "front", "--", "dev"], {
+    cwd: _dirname + "/../",
+    stdio: ["inherit", "pipe", "pipe"],
+  });
+
+  // バックエンドプロセスを起動
+  serverProcess = execa("pnpm", ["run", "server", "--", "dev"], {
+    cwd: _dirname + "/../",
+    stdio: ["inherit", "pipe", "pipe"],
+  });
+
+  // 各プロセスの出力にプレフィックスを付ける
+  const frontStdout = createPrefixedLogger("FRONT", frontProcess.stdout);
+  const frontStderr = createPrefixedLogger("FRONT ERROR", frontProcess.stderr);
+  const serverStdout = createPrefixedLogger("SERVER", serverProcess.stdout);
+  const serverStderr = createPrefixedLogger(
+    "SERVER ERROR",
+    serverProcess.stderr,
+  );
 
   // どちらかのプロセスが終了したら、もう一方も終了させる
   Promise.race([frontProcess, serverProcess]).catch((error) => {
@@ -55,6 +73,12 @@ try {
 
   // 両方のプロセスが正常に終了するのを待つ (通常は Ctrl+C で中断されるまで実行し続ける)
   await Promise.all([frontProcess, serverProcess]);
+
+  // クリーンアップ
+  frontStdout.close();
+  frontStderr.close();
+  serverStdout.close();
+  serverStderr.close();
 } catch (error) {
   // execa の起動自体に失敗した場合など
   if (error.signal !== "SIGINT" && error.signal !== "SIGTERM") {
