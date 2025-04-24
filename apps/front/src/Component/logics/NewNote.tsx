@@ -40,12 +40,10 @@ const formSchema = z.object({
   noteContent: z
     .string()
     .min(1, { message: "ノートの内容を入力してください。" }),
-  visibility: z
-    .enum(["public", "home", "followers", "specified"], {
-      // biome-ignore lint/style/useNamingConvention:
-      required_error: "公開範囲を選択してください。",
-    })
-    .default("public"), // Default visibility
+  visibility: z.enum(["public", "home", "followers", "specified", "private"], {
+    // biome-ignore lint/style/useNamingConvention:
+    required_error: "公開範囲を選択してください。",
+  }),
   localOnly: z.boolean().default(false), // ローカルのみの投稿かどうかのフラグ
   // files: z.instanceof(FileList).optional(), // File handling needs careful consideration
 });
@@ -58,6 +56,7 @@ const visibilityOptions = [
   { value: "home", label: "ホーム" },
   { value: "followers", label: "フォロワー" },
   // { value: "specified", label: "指定ユーザー" }, // specified はUIが複雑になるため一旦除外
+  { value: "private", label: "ダイレクト" }, // private はUIが複雑になるため一旦除外
 ] as const; // as const で value が string literal type になる
 
 // Misskeyの公開範囲の型 (zod schemaから取得)
@@ -83,7 +82,7 @@ export const NewNote = () => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      serverSessionId: "", // Initialize as undefined
+      serverSessionId: undefined, // Initialize as undefined
       noteContent: "",
       visibility: "public", // Default visibility
       localOnly: false,
@@ -120,9 +119,9 @@ export const NewNote = () => {
       console.log("Creating note...");
       await client.request("notes/create", {
         text: values.noteContent,
+        visibility: values.visibility, // Use selected visibility
+        localOnly: values.localOnly, // Use selected localOnly flag
         fileIds: uploadedFileIds.length > 0 ? uploadedFileIds : undefined, // Attach file IDs
-        visibility: values.visibility,
-        localOnly: values.localOnly,
       });
 
       console.log("Note created successfully!");
