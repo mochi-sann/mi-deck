@@ -1,5 +1,10 @@
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { execa } from "execa";
+const _filename = fileURLToPath(import.meta.url);
+const _dirname = dirname(_filename);
 
+console.log("node env", process.env.NODE_ENV);
 let frontProcess;
 let serverProcess;
 
@@ -23,14 +28,20 @@ process.on("SIGTERM", cleanup);
 
 try {
   console.log("Starting front-end dev server...");
-  frontProcess = execa("pnpm", ["run", "front", "--", "dev"], {
-    stdio: "inherit",
-  });
+  const [frontProcess, serverProcess] = await Promise.all([
+    execa("pnpm", ["run", "front", "--", "dev"], {
+      cwd: _dirname + "/../",
+      stdout: process.stdout,
+      stderr: process.stderr,
+    }),
+    execa("pnpm", ["run", "server", "--", "dev"], {
+      cwd: _dirname + "/../",
+      stdout: process.stdout,
+      stderr: process.stderr,
+    }),
+  ]);
 
   console.log("Starting back-end dev server...");
-  serverProcess = execa("pnpm", ["run", "server", "--", "dev"], {
-    stdio: "inherit",
-  });
 
   // どちらかのプロセスが終了したら、もう一方も終了させる
   Promise.race([frontProcess, serverProcess]).catch((error) => {
@@ -44,7 +55,6 @@ try {
 
   // 両方のプロセスが正常に終了するのを待つ (通常は Ctrl+C で中断されるまで実行し続ける)
   await Promise.all([frontProcess, serverProcess]);
-
 } catch (error) {
   // execa の起動自体に失敗した場合など
   if (error.signal !== "SIGINT" && error.signal !== "SIGTERM") {
