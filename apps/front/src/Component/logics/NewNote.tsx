@@ -1,7 +1,6 @@
 import { $api } from "@/lib/api/fetchClient";
 import { uploadAndCompressFiles } from "@/lib/uploadAndCompresFiles";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Checkbox } from "@radix-ui/react-checkbox";
 import { APIClient } from "misskey-js/api.js";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -226,23 +225,24 @@ export const NewNote = () => {
           control={form.control}
           name="localOnly"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
               <FormControl>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="localOnly"
-                    onCheckedChange={field.onChange} // <- これが必要
-                    checked={field.value}
-                  />
-                  <FormLabel
-                    htmlFor="localOnly"
-                    className="font-medium text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    ローカルのみ
-                  </FormLabel>
-                </div>
+                {/* Shadcn/uiのCheckboxを使う場合 */}
+                {/* <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                /> */}
+                {/* 標準のinput[type=checkbox]を使う場合 */}
+                <input
+                  type="checkbox"
+                  checked={field.value}
+                  onChange={field.onChange}
+                  className="mt-1" // Tailwindで見た目を調整
+                />
               </FormControl>
-              <FormMessage />
+              <div className="space-y-1 leading-none">
+                <FormLabel>ローカルのみ</FormLabel>
+              </div>
             </FormItem>
           )}
         />
