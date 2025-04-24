@@ -3,7 +3,7 @@ import { uploadAndCompressFiles } from "@/lib/uploadAndCompresFiles";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { APIClient } from "misskey-js/api.js";
 import { useState } from "react";
-import { useForm, type Resolver } from "react-hook-form"; // Import Resolver type
+import { useForm } from "react-hook-form"; // Import Resolver type
 import { z } from "zod";
 import { FileUpload } from "../parts/FileUpload";
 import { Button } from "../ui/button";
