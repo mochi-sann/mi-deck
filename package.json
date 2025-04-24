@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "dotenvx run -- pnpm -r run dev",
+    "dev": "dotenvx run -- node scripts/dev.mjs",
     "build": "dotenvx run -- pnpm -r run build",
     "start": "dotenvx run -- pnpm -r run start",
     "front": "dotenvx run -- pnpm -F @mi-deck/front",
@@ -30,6 +30,7 @@
     "@types/node": "^22.13",
     "dotenv": "^16.4.7",
     "lefthook": "^1.11.6",
+    "execa": "^9.3.0",
     "typescript": "^5.8.2"
   },
   "volta": {
