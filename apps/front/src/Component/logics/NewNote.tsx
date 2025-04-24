@@ -83,7 +83,7 @@ export const NewNote = () => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      serverSessionId: undefined, // Initialize as undefined
+      serverSessionId: "", // Initialize as empty string instead of undefined
       noteContent: "",
       isLocalOnly: false, // Default to false
       visibility: "public", // Default visibility
