@@ -10,6 +10,18 @@ console.log("node env", process.env.NODE_ENV);
 let frontProcess;
 let serverProcess;
 
+// ANSI color codes for console output
+const colors = {
+  reset: "\x1b[0m",
+  bright: "\x1b[1m",
+  cyan: "\x1b[36m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  red: "\x1b[31m",
+  blue: "\x1b[34m",
+  magenta: "\x1b[35m",
+};
+
 // SIGINT/SIGTERM シグナルを受信したときに両方の子プロセスを終了させる関数
 const cleanup = () => {
   console.log("\nTerminating processes...");
@@ -28,17 +40,21 @@ const cleanup = () => {
 process.on("SIGINT", cleanup);
 process.on("SIGTERM", cleanup);
 
-// 出力にプレフィックスを付けるためのユーティリティ関数
-const createPrefixedLogger = (prefix, stream) => {
+// 出力にカラー付きのプレフィックスを付けるためのユーティリティ関数
+const createPrefixedLogger = (prefix, stream, prefixColor) => {
   const rl = createInterface({ input: stream });
   rl.on("line", (line) => {
-    console.log(`[${prefix}] ${line}`);
+    console.log(
+      `${prefixColor}${colors.bright}[${prefix}]${colors.reset} ${line}`,
+    );
   });
   return rl;
 };
 
 try {
-  console.log("Starting front-end and back-end dev servers...");
+  console.log(
+    `${colors.bright}Starting front-end and back-end dev servers...${colors.reset}`,
+  );
 
   // フロントエンドプロセスを起動
   frontProcess = execa("pnpm", ["run", "front", "--", "dev"], {
@@ -52,20 +68,36 @@ try {
     stdio: ["inherit", "pipe", "pipe"],
   });
 
-  // 各プロセスの出力にプレフィックスを付ける
-  const frontStdout = createPrefixedLogger("FRONT", frontProcess.stdout);
-  const frontStderr = createPrefixedLogger("FRONT ERROR", frontProcess.stderr);
-  const serverStdout = createPrefixedLogger("SERVER", serverProcess.stdout);
+  // 各プロセスの出力にカラー付きプレフィックスを付ける
+  const frontStdout = createPrefixedLogger(
+    "FRONT",
+    frontProcess.stdout,
+    colors.cyan,
+  );
+  const frontStderr = createPrefixedLogger(
+    "FRONT ERROR",
+    frontProcess.stderr,
+    colors.yellow,
+  );
+  const serverStdout = createPrefixedLogger(
+    "SERVER",
+    serverProcess.stdout,
+    colors.green,
+  );
   const serverStderr = createPrefixedLogger(
     "SERVER ERROR",
     serverProcess.stderr,
+    colors.red,
   );
 
   // どちらかのプロセスが終了したら、もう一方も終了させる
   Promise.race([frontProcess, serverProcess]).catch((error) => {
     // エラーで終了した場合 (Ctrl+C 以外)
     if (error.signal !== "SIGINT" && error.signal !== "SIGTERM") {
-      console.error("A dev server process exited unexpectedly:", error);
+      console.error(
+        `${colors.red}${colors.bright}A dev server process exited unexpectedly:${colors.reset}`,
+        error,
+      );
       cleanup(); // 他方のプロセスも終了させる
       process.exit(1); // エラーコードで終了
     }
@@ -82,7 +114,10 @@ try {
 } catch (error) {
   // execa の起動自体に失敗した場合など
   if (error.signal !== "SIGINT" && error.signal !== "SIGTERM") {
-    console.error("Error starting dev scripts:", error);
+    console.error(
+      `${colors.red}${colors.bright}Error starting dev scripts:${colors.reset}`,
+      error,
+    );
     cleanup(); // 起動していた可能性のあるプロセスを終了
     process.exit(1);
   }
