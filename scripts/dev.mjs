@@ -24,16 +24,14 @@ const colors = {
 
 // SIGINT/SIGTERM シグナルを受信したときに両方の子プロセスを終了させる関数
 const cleanup = () => {
-  console.log("\nTerminating processes...");
-  if (frontProcess) {
-    frontProcess.kill("SIGTERM", {
-      forceKillAfterTimeout: 2000, // 2秒後に強制終了
-    });
+  console.log(`\n${colors.yellow}Terminating processes...${colors.reset}`);
+  if (frontProcess && !frontProcess.killed) {
+    // kill(signal, options) の形式で呼び出す
+    frontProcess.kill("SIGTERM", { forceKillAfterTimeout: 2000 });
   }
-  if (serverProcess) {
-    serverProcess.kill("SIGTERM", {
-      forceKillAfterTimeout: 2000, // 2秒後に強制終了
-    });
+  if (serverProcess && !serverProcess.killed) {
+    // kill(signal, options) の形式で呼び出す
+    serverProcess.kill("SIGTERM", { forceKillAfterTimeout: 2000 });
   }
 };
 
@@ -62,7 +60,31 @@ try {
     stdio: ["inherit", "pipe", "pipe"],
   });
 
+  // データベースマイグレーションを実行
+  console.log(
+    `${colors.magenta}${colors.bright}[DB]${colors.reset} Running database migrations...`,
+  );
+  try {
+    await execa("pnpm", ["run", "server", "--", "db:migrate:dev"], {
+      cwd: _dirname + "/../",
+      stdio: "inherit", // マイグレーションの出力は直接表示
+    });
+    console.log(
+      `${colors.magenta}${colors.bright}[DB]${colors.reset} Database migration completed successfully.`,
+    );
+  } catch (migrationError) {
+    console.error(
+      `${colors.red}${colors.bright}[DB ERROR]${colors.reset} Database migration failed:`,
+      migrationError,
+    );
+    cleanup(); // マイグレーション失敗時は他のプロセスも終了
+    process.exit(1);
+  }
+
   // バックエンドプロセスを起動
+  console.log(
+    `${colors.green}${colors.bright}[SERVER]${colors.reset} Starting back-end dev server...`,
+  );
   serverProcess = execa("pnpm", ["run", "server", "--", "dev"], {
     cwd: _dirname + "/../",
     stdio: ["inherit", "pipe", "pipe"],
