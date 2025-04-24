@@ -3,7 +3,7 @@ import { uploadAndCompressFiles } from "@/lib/uploadAndCompresFiles";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { APIClient } from "misskey-js/api.js";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form"; // Import Resolver type
 import { z } from "zod";
 import { FileUpload } from "../parts/FileUpload";
 import { Button } from "../ui/button";
@@ -33,10 +33,12 @@ import { Textarea } from "../ui/textarea";
 
 // Define the form schema using Zod
 const formSchema = z.object({
-  serverSessionId: z.string({
-    // biome-ignore lint/style/useNamingConvention:
-    required_error: "投稿先サーバーを選択してください。",
-  }),
+  serverSessionId: z
+    .string({
+      // biome-ignore lint/style/useNamingConvention:
+      required_error: "投稿先サーバーを選択してください。",
+    })
+    .nonempty({ message: "投稿先サーバーを選択してください。" }), // Add nonempty validation
   noteContent: z
     .string()
     .min(1, { message: "ノートの内容を入力してください。" }),
@@ -46,6 +48,7 @@ const formSchema = z.object({
       // biome-ignore lint/style/useNamingConvention:
       required_error: "公開範囲を選択してください",
     })
+    .nonempty({ message: "公開範囲を選択してください" }) // Add nonempty validation
     .default("public"), // Visibility options
 
   // files: z.instanceof(FileList).optional(), // File handling needs careful consideration
