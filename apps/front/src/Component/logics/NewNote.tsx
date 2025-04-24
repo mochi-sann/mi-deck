@@ -34,18 +34,20 @@ import { Textarea } from "../ui/textarea";
 
 // Define the form schema using Zod
 const formSchema = z.object({
-  serverSessionId: z
-    .string({
-      // biome-ignore lint/style/useNamingConvention:
-      required_error: "投稿先サーバーを選択してください。",
-    })
-    .nonempty({ message: "パスワードを入力してください" }),
+  serverSessionId: z.string({
+    // biome-ignore lint/style/useNamingConvention:
+    required_error: "投稿先サーバーを選択してください。",
+  }),
   noteContent: z
     .string()
-    .min(1, { message: "ノートの内容を入力してください。" })
-    .nonempty({ message: "パスワードを入力してください" }),
-  visibility: z.string().default("public"),
-  isLocalOnly: z.boolean().default(false), // ローカルのみの投稿かどうかのフラグ
+    .min(1, { message: "ノートの内容を入力してください。" }),
+  visibility: z
+    .enum(["public", "home", "followers", "specified"], {
+      // biome-ignore lint/style/useNamingConvention:
+      required_error: "公開範囲を選択してください。",
+    })
+    .default("public"), // Default visibility
+  localOnly: z.boolean().default(false), // ローカルのみの投稿かどうかのフラグ
   // files: z.instanceof(FileList).optional(), // File handling needs careful consideration
 });
 
@@ -56,8 +58,8 @@ const visibilityOptions = [
   { value: "public", label: "公開" },
   { value: "home", label: "ホーム" },
   { value: "followers", label: "フォロワー" },
-  { value: "specified", label: "指定ユーザー" }, // specified はUIが複雑になるため一旦除外
-]; // as const で value が string literal type になる
+  // { value: "specified", label: "指定ユーザー" }, // specified はUIが複雑になるため一旦除外
+] as const; // as const で value が string literal type になる
 
 // Misskeyの公開範囲の型 (zod schemaから取得)
 type VisibilityType = FormSchema["visibility"];
@@ -85,8 +87,7 @@ export const NewNote = () => {
       serverSessionId: "", // Initialize as undefined
       noteContent: "",
       visibility: "public", // Default visibility
-      isLocalOnly: false,
-      // files: undefined,
+      localOnly: false,
     },
   });
 
@@ -122,7 +123,7 @@ export const NewNote = () => {
         text: values.noteContent,
         fileIds: uploadedFileIds.length > 0 ? uploadedFileIds : undefined, // Attach file IDs
         visibility: values.visibility,
-        isLocalOnly: values.isLocalOnly,
+        localOnly: values.localOnly,
       });
 
       console.log("Note created successfully!");
@@ -223,18 +224,18 @@ export const NewNote = () => {
         {/* Local Only Checkbox */}
         <FormField
           control={form.control}
-          name="isLocalOnly"
+          name="localOnly"
           render={({ field }) => (
             <FormItem>
               <FormControl>
                 <div className="flex items-center space-x-2">
                   <Checkbox
-                    id="isLocalOnly"
+                    id="localOnly"
                     onCheckedChange={field.onChange} // <- これが必要
                     checked={field.value}
                   />
                   <FormLabel
-                    htmlFor="isLocalOnly"
+                    htmlFor="localOnly"
                     className="font-medium text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
                     ローカルのみ
