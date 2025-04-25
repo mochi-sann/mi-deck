@@ -7,11 +7,5 @@
       "schedule": ["after 5am before 10am on every weekday"],
       "automerge": false
     }
-  ],
-  "lockFileMaintenance": {
-    "enabled": true
-  },
-  "npm": {
-    "enabledManagers": ["pnpm"]
-  }
+  ]
 }
