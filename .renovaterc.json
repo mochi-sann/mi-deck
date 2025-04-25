@@ -4,7 +4,8 @@
     {
       "matchPackagePatterns": ["*"],
       "groupName": "all dependencies",
-      "schedule": ["after 5am before 10am on every weekday"]
+      "schedule": ["after 5am before 10am on every weekday"],
+      "automerge": false
     }
   ],
   "lockFileMaintenance": {
