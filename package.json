@@ -5,15 +5,15 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "dotenvx run -- node scripts/dev.mjs",
-    "build": "dotenvx run -- pnpm -r run build",
-    "start": "dotenvx run -- pnpm -r run start",
-    "front": "dotenvx run -- pnpm -F @mi-deck/front",
-    "server": "dotenvx run -- pnpm -F @mi-deck/server",
-    "test:e2e:server": "dotenvx run -- pnpm -F @mi-deck/server run test:e2e",
+    "dev": "node scripts/dev.mjs",
+    "build": "pnpm -r run build",
+    "start": "pnpm -r run start",
+    "front": "pnpm -F @mi-deck/front",
+    "server": "pnpm -F @mi-deck/server",
+    "test:e2e:server": "pnpm -F @mi-deck/server run test:e2e",
     "format": "biome format --write .",
     "check": "biome check --write . --unsafe",
-    "test": "dotenvx run -- pnpm -r run test"
+    "test": "pnpm -r run test"
   },
   "engines": {
     "pnpm": "10",
@@ -26,7 +26,6 @@
   "license": "",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@dotenvx/dotenvx": "^1.39.0",
     "@types/node": "^22.13",
     "dotenv": "^16.4.7",
     "execa": "^9.3.0",
