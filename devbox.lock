@@ -1,7 +1,7 @@
 {
   "lockfile_version": "1",
   "packages": {
-    "direnv@latest": {
+    "direnv@2.36.0": {
       "last_modified": "2025-04-12T07:19:22Z",
       "resolved": "github:NixOS/nixpkgs/2349f9de17183971db12ae9e0123dab132023bd7#direnv",
       "source": "devbox-search",
@@ -53,7 +53,7 @@
       "last_modified": "2025-04-13T09:22:33Z",
       "resolved": "github:NixOS/nixpkgs/18dd725c29603f582cf1900e0d25f9f1063dbf11?lastModified=1744536153&narHash=sha256-awS2zRgF4uTwrOKwwiJcByDzDOdo3Q1rPZbiHQg%2FN38%3D"
     },
-    "nodejs@22": {
+    "nodejs@22.14.0": {
       "last_modified": "2025-03-23T05:31:05Z",
       "plugin_version": "0.0.2",
       "resolved": "github:NixOS/nixpkgs/dd613136ee91f67e5dba3f3f41ac99ae89c5406b#nodejs_22",
@@ -118,7 +118,7 @@
         }
       }
     },
-    "pnpm@10": {
+    "pnpm@10.8.0": {
       "last_modified": "2025-04-08T07:10:31Z",
       "resolved": "github:NixOS/nixpkgs/b2b0718004cc9a5bca610326de0a82e6ea75920b#pnpm",
       "source": "devbox-search",
