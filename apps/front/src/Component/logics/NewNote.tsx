@@ -1,9 +1,7 @@
 import { $api } from "@/lib/api/fetchClient";
 import { uploadAndCompressFiles } from "@/lib/uploadAndCompresFiles";
-import { cn } from "@/lib/utils"; // Import cn utility
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown, X } from "lucide-react"; // Import icons
-import { APIClient } from "misskey-js/api.js"; // Import UserDetailed
+import { APIClient, UserDetailed } from "misskey-js/api.js"; // Import UserDetailed
 import { useCallback, useEffect, useState } from "react"; // Import useEffect, useCallback
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -11,14 +9,6 @@ import { FileUpload } from "../parts/FileUpload";
 import { Badge } from "../ui/badge"; // Import Badge
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../ui/command"; // Import Command components
 import {
   DialogDescription,
   DialogFooter,
@@ -33,6 +23,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"; // Import Popover
 import {
   Select,
@@ -42,37 +33,47 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../ui/command"; // Import Command components
+import { cn } from "@/lib/utils"; // Import cn utility
+import { Check, ChevronsUpDown, X } from "lucide-react"; // Import icons
 
 // Define the form schema using Zod
-const formSchema = z
-  .object({
-    serverSessionId: z
-      .string({
-        // biome-ignore lint/style/useNamingConvention:
-        required_error: "投稿先サーバーを選択してください。",
-      })
-      .nonempty({ message: "投稿先サーバーを選択してください。" }), // Add nonempty validation
-    noteContent: z
-      .string()
-      .min(1, { message: "ノートの内容を入力してください。" }),
-    isLocalOnly: z.boolean(),
-    visibility: z.enum(["public", "home", "followers", "private"]),
-    visibleUserIds: z.array(z.string()).optional(), // Change to array of strings
-  })
-  .refine(
-    (data) => {
-      // If visibility is private, visibleUserIds array must not be empty
-      if (data.visibility === "private") {
-        return data.visibleUserIds && data.visibleUserIds.length > 0;
-      }
-      return true; // Otherwise, no validation needed
-    },
-    {
-      // Custom error message if validation fails
-      message: "ダイレクトメッセージを送る相手を1人以上選択してください。",
-      path: ["visibleUserIds"], // Associate the error with the visibleUserIds field
-    },
-  );
+const formSchema = z.object({
+  serverSessionId: z
+    .string({
+      // biome-ignore lint/style/useNamingConvention:
+      required_error: "投稿先サーバーを選択してください。",
+    })
+    .nonempty({ message: "投稿先サーバーを選択してください。" }), // Add nonempty validation
+  noteContent: z
+    .string()
+    .min(1, { message: "ノートの内容を入力してください。" }),
+  isLocalOnly: z.boolean(),
+  visibility: z.enum(["public", "home", "followers", "private"]),
+  visibleUserIds: z.array(z.string()).optional(), // Change to array of strings
+})
+.refine(
+  (data) => {
+    // If visibility is private, visibleUserIds array must not be empty
+    if (data.visibility === "private") {
+      return data.visibleUserIds && data.visibleUserIds.length > 0;
+    }
+    return true; // Otherwise, no validation needed
+  },
+  {
+    // Custom error message if validation fails
+    message: "ダイレクトメッセージを送る相手を1人以上選択してください。",
+    path: ["visibleUserIds"], // Associate the error with the visibleUserIds field
+  },
+);
+
 
 const visibilityOptions = [
   { value: "public", label: "公開" },
@@ -87,12 +88,11 @@ export const NewNote = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userSearchQuery, setUserSearchQuery] = useState("");
-  const [userSearchResults, setUserSearchResults] = useState<UserDetailed[]>(
-    [],
-  );
+  const [userSearchResults, setUserSearchResults] = useState<UserDetailed[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<UserDetailed[]>([]); // Store selected user objects
   const [isSearchingUsers, setIsSearchingUsers] = useState(false);
   const [isUserPopoverOpen, setIsUserPopoverOpen] = useState(false);
+
 
   const { data: serverSessions, isLoading: isLoadingServers } = $api.useQuery(
     "get",
@@ -169,7 +169,7 @@ export const NewNote = () => {
 
       // If visibility is private, add visibleUserIds (already an array)
       if (values.visibility === "private" && values.visibleUserIds) {
-        notePayload.visibleUserIds = values.visibleUserIds;
+         notePayload.visibleUserIds = values.visibleUserIds;
       }
 
       // Create the note with text and uploaded file IDs
@@ -192,39 +192,28 @@ export const NewNote = () => {
   }
 
   // Debounced user search function
-  const searchUsers = useCallback(
-    async (query: string) => {
-      if (!query || !selectedServerSessionId) {
-        setUserSearchResults([]);
-        return;
-      }
+  const searchUsers = useCallback(async (query: string) => {
+    if (!query || !selectedServerSessionId) {
+      setUserSearchResults([]);
+      return;
+    }
 
-      const server = serverSessions?.find(
-        (s) => s.id === selectedServerSessionId,
-      );
-      if (!server) return;
+    const server = serverSessions?.find(s => s.id === selectedServerSessionId);
+    if (!server) return;
 
-      setIsSearchingUsers(true);
-      const client = new APIClient({
-        origin: server.origin,
-        credential: server.serverToken,
-      });
-      try {
-        // Using users/search - might need adjustment based on Misskey version/instance capabilities
-        const results = await client.request("users/search", {
-          query: query,
-          limit: 10,
-        });
-        setUserSearchResults(results);
-      } catch (error) {
-        console.error("Error searching users:", error);
-        setUserSearchResults([]); // Clear results on error
-      } finally {
-        setIsSearchingUsers(false);
-      }
-    },
-    [selectedServerSessionId, serverSessions],
-  );
+    setIsSearchingUsers(true);
+    const client = new APIClient({ origin: server.origin, credential: server.serverToken });
+    try {
+      // Using users/search - might need adjustment based on Misskey version/instance capabilities
+      const results = await client.request("users/search", { query: query, limit: 10 });
+      setUserSearchResults(results);
+    } catch (error) {
+      console.error("Error searching users:", error);
+      setUserSearchResults([]); // Clear results on error
+    } finally {
+      setIsSearchingUsers(false);
+    }
+  }, [selectedServerSessionId, serverSessions]);
 
   // Effect for debouncing search - basic implementation
   useEffect(() => {
@@ -239,14 +228,10 @@ export const NewNote = () => {
 
   // Handle user selection
   const handleUserSelect = (user: UserDetailed) => {
-    if (!selectedUsers.some((u) => u.id === user.id)) {
+    if (!selectedUsers.some(u => u.id === user.id)) {
       const newSelectedUsers = [...selectedUsers, user];
       setSelectedUsers(newSelectedUsers);
-      form.setValue(
-        "visibleUserIds",
-        newSelectedUsers.map((u) => u.id),
-        { shouldValidate: true },
-      );
+      form.setValue("visibleUserIds", newSelectedUsers.map(u => u.id), { shouldValidate: true });
     }
     setUserSearchQuery(""); // Clear search input after selection
     setIsUserPopoverOpen(false); // Close popover
@@ -254,13 +239,9 @@ export const NewNote = () => {
 
   // Handle user removal
   const handleUserRemove = (userId: string) => {
-    const newSelectedUsers = selectedUsers.filter((u) => u.id !== userId);
+    const newSelectedUsers = selectedUsers.filter(u => u.id !== userId);
     setSelectedUsers(newSelectedUsers);
-    form.setValue(
-      "visibleUserIds",
-      newSelectedUsers.map((u) => u.id),
-      { shouldValidate: true },
-    );
+    form.setValue("visibleUserIds", newSelectedUsers.map(u => u.id), { shouldValidate: true });
   };
 
   return (
@@ -343,16 +324,14 @@ export const NewNote = () => {
         />
         {/* Conditionally render User Selection when visibility is 'private' */}
         {visibility === "private" && (
-          <FormField
+           <FormField
             control={form.control}
             name="visibleUserIds" // Keep this linked to the form state
-            render={(
-              { field }, // field is needed for error message association
-            ) => (
+            render={({ field }) => ( // field is needed for error message association
               <FormItem className="flex flex-col">
                 <FormLabel>宛先ユーザー</FormLabel>
-                {/* Display selected users as badges */}
-                <div className="mb-2 flex flex-wrap gap-1">
+                 {/* Display selected users as badges */}
+                 <div className="flex flex-wrap gap-1 mb-2">
                   {selectedUsers.map((user) => (
                     <Badge key={user.id} variant="secondary">
                       {user.username}
@@ -368,10 +347,7 @@ export const NewNote = () => {
                     </Badge>
                   ))}
                 </div>
-                <Popover
-                  open={isUserPopoverOpen}
-                  onOpenChange={setIsUserPopoverOpen}
-                >
+                <Popover open={isUserPopoverOpen} onOpenChange={setIsUserPopoverOpen}>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
@@ -380,7 +356,7 @@ export const NewNote = () => {
                         aria-expanded={isUserPopoverOpen}
                         className={cn(
                           "w-full justify-between",
-                          !field.value?.length && "text-muted-foreground", // Use field.value to check if empty for placeholder style
+                          !field.value?.length && "text-muted-foreground" // Use field.value to check if empty for placeholder style
                         )}
                         disabled={!selectedServerSessionId} // Disable if no server selected
                       >
@@ -392,9 +368,7 @@ export const NewNote = () => {
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                    <Command shouldFilter={false}>
-                      {" "}
-                      {/* We handle filtering via API */}
+                    <Command shouldFilter={false}> {/* We handle filtering via API */}
                       <CommandInput
                         placeholder="ユーザー名を検索..."
                         value={userSearchQuery}
@@ -403,26 +377,22 @@ export const NewNote = () => {
                       />
                       <CommandList>
                         <CommandEmpty>
-                          {isSearchingUsers
-                            ? "検索中..."
-                            : "ユーザーが見つかりません。"}
+                          {isSearchingUsers ? "検索中..." : "ユーザーが見つかりません。"}
                         </CommandEmpty>
                         <CommandGroup>
                           {userSearchResults.map((user) => (
                             <CommandItem
                               key={user.id}
-                              value={`${user.username}${user.host ? `@${user.host}` : ""} ${user.id}`} // Unique value for CommandItem
+                              value={`${user.username}${user.host ? `@${user.host}` : ''} ${user.id}`} // Unique value for CommandItem
                               onSelect={() => handleUserSelect(user)}
-                              disabled={selectedUsers.some(
-                                (u) => u.id === user.id,
-                              )} // Disable if already selected
+                              disabled={selectedUsers.some(u => u.id === user.id)} // Disable if already selected
                             >
                               <Check
                                 className={cn(
                                   "mr-2 h-4 w-4",
-                                  selectedUsers.some((u) => u.id === user.id)
+                                  selectedUsers.some(u => u.id === user.id)
                                     ? "opacity-100"
-                                    : "opacity-0",
+                                    : "opacity-0"
                                 )}
                               />
                               {user.name} (@{user.username}
@@ -439,7 +409,7 @@ export const NewNote = () => {
             )}
           />
         )}
-        <FormField
+         <FormField
           control={form.control}
           name="isLocalOnly"
           render={({ field }) => (
