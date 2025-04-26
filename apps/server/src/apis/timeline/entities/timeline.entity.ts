@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"; // Import ApiPropertyOptional
-import { Timeline, TimelineType } from "@prisma/client"; // These will be valid after prisma generate
+import { Timeline, TimelineType } from "~/generated/prisma"; // These will be valid after prisma generate
 
 export class TimelineEntity implements Timeline {
   @ApiProperty({ format: "uuid" })

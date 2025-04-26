@@ -19,7 +19,9 @@
       "apps/front/src/routeTree.gen.ts",
       "apps/front/styled-system/**",
       "apps/front/src/lib/api/type.ts",
-      "misskey-db"
+      "misskey-db",
+      "apps/server/src/generated/prisma/**",
+      ".devbox/**"
     ]
   },
   "formatter": {

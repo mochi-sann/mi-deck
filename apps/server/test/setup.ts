@@ -1,6 +1,6 @@
 import { execSync } from "node:child_process";
-import { Prisma, PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { Prisma, PrismaClient } from "~/generated/prisma";
 
 /**
  * VITEST_POOL_ID毎にDatabaseを作成し、データのリセット処理を行う。

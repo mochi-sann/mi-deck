@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { User } from "@prisma/client";
 import * as bcrypt from "bcrypt";
+import { User } from "~/generated/prisma";
 import { PrismaService } from "../../lib/prisma.service";
 import { SignUpDto } from "./dto/sign-up.dto"; // Assuming SignUpDto defines the structure needed
 

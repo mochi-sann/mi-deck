@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Prisma, ServerSession, Timeline } from "@prisma/client";
+import { Prisma, ServerSession, Timeline } from "~/generated/prisma";
 import { PrismaService } from "../../lib/prisma.service"; // Adjust path if necessary
 
 // Define the type for Timeline including selected ServerSession fields

@@ -5,11 +5,11 @@ import {
   ValidationPipe,
 } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
-import { TimelineType } from "@prisma/client";
 import request from "supertest";
 import { setupDatabase } from "test/setup";
 import { Mock, afterAll, beforeAll, describe, expect, it, vi } from "vitest"; // Use vi from vitest for mocking
 import { AppModule } from "~/app.module";
+import { TimelineType } from "~/generated/prisma";
 import { PrismaService } from "~/lib/prisma.service";
 import { AuthGuard } from "../auth/auth.gurd";
 import { MeEntity } from "../auth/entities/me.entity";
