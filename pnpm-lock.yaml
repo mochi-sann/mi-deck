@@ -223,8 +223,8 @@ importers:
         specifier: ^1.4.1
         version: 1.5.0
       '@prisma/client':
-        specifier: 6.5.0
-        version: 6.5.0(prisma@6.6.0(typescript@5.8.3))(typescript@5.8.3)
+        specifier: 6.6.0
+        version: 6.6.0(prisma@6.6.0(typescript@5.8.3))(typescript@5.8.3)
       '@scalar/nestjs-api-reference':
         specifier: ^0.3.174
         version: 0.3.190
@@ -300,7 +300,7 @@ importers:
         version: 0.12.0
       prisma-markdown:
         specifier: ^1.0.9
-        version: 1.0.9(@prisma/client@6.5.0(prisma@6.6.0(typescript@5.8.3))(typescript@5.8.3))(prisma@6.6.0(typescript@5.8.3))
+        version: 1.0.9(@prisma/client@6.6.0(prisma@6.6.0(typescript@5.8.3))(typescript@5.8.3))(prisma@6.6.0(typescript@5.8.3))
       source-map-support:
         specifier: ^0.5.21
         version: 0.5.21
@@ -1444,8 +1444,8 @@ packages:
   '@polka/url@1.0.0-next.28':
     resolution: {integrity: sha512-8LduaNlMZGwdZ6qWrKlfa+2M4gahzFkprZiAt2TF8uS0qQgBizKXpXURqvTJ4WtmupWxaLqjRb2UCTe72mu+Aw==}
 
-  '@prisma/client@6.5.0':
-    resolution: {integrity: sha512-M6w1Ql/BeiGoZmhMdAZUXHu5sz5HubyVcKukbLs3l0ELcQb8hTUJxtGEChhv4SVJ0QJlwtLnwOLgIRQhpsm9dw==}
+  '@prisma/client@6.6.0':
+    resolution: {integrity: sha512-vfp73YT/BHsWWOAuthKQ/1lBgESSqYqAWZEYyTdGXyFAHpmewwWL2Iz6ErIzkj4aHbuc6/cGSsE6ZY+pBO04Cg==}
     engines: {node: '>=18.18'}
     peerDependencies:
       prisma: '*'
@@ -6888,7 +6888,7 @@ snapshots:
 
   '@polka/url@1.0.0-next.28': {}
 
-  '@prisma/client@6.5.0(prisma@6.6.0(typescript@5.8.3))(typescript@5.8.3)':
+  '@prisma/client@6.6.0(prisma@6.6.0(typescript@5.8.3))(typescript@5.8.3)':
     optionalDependencies:
       prisma: 6.6.0(typescript@5.8.3)
       typescript: 5.8.3
@@ -10602,9 +10602,9 @@ snapshots:
       - encoding
       - supports-color
 
-  prisma-markdown@1.0.9(@prisma/client@6.5.0(prisma@6.6.0(typescript@5.8.3))(typescript@5.8.3))(prisma@6.6.0(typescript@5.8.3)):
+  prisma-markdown@1.0.9(@prisma/client@6.6.0(prisma@6.6.0(typescript@5.8.3))(typescript@5.8.3))(prisma@6.6.0(typescript@5.8.3)):
     dependencies:
-      '@prisma/client': 6.5.0(prisma@6.6.0(typescript@5.8.3))(typescript@5.8.3)
+      '@prisma/client': 6.6.0(prisma@6.6.0(typescript@5.8.3))(typescript@5.8.3)
       '@prisma/generator-helper': 5.22.0
       prisma: 6.6.0(typescript@5.8.3)
 
