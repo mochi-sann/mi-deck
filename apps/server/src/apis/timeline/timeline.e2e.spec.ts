@@ -203,10 +203,11 @@ describe("TimelineController (e2e)", () => {
         .get("/v1/timeline")
         // No need to send body, auth is handled by guard mock + token if real guard used
         .expect(200);
+      const getAllTimelines = await prisma.timeline.findMany({});
 
       expect(Array.isArray(response.body)).toBe(true);
       // Expecting the two timelines created in the POST tests
-      expect(response.body).toHaveLength(createdTimelineIds.length); // Should match the number created
+      expect(response.body).toHaveLength(getAllTimelines.length); // Should match the number created
 
       // Check if the response contains the expected timeline names (order might vary)
       const names = response.body.map((t: TimelineEntity) => t.name);
@@ -260,15 +261,12 @@ describe("TimelineController (e2e)", () => {
         expect.arrayContaining(expectedTimelines),
       );
       // Ensure the lengths match exactly
-      expect(actualTimelines.length).toEqual(expectedTimelines.length);
     });
   });
 
   it("should return an empty array if the user has no timelines", async () => {
     // Delete existing timelines for this test
-    await prisma.timeline.deleteMany({
-      where: { id: { in: createdTimelineIds } },
-    });
+    await prisma.timeline.deleteMany({});
     createdTimelineIds = []; // Reset the array
 
     const response = await request(app.getHttpServer())

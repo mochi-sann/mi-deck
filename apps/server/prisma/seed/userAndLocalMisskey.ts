@@ -24,7 +24,7 @@ export const userAndLocalMisskey = async () => {
     data: {
       id: "f8895928-12d9-47e6-85a3-8de88aaaa7a8",
       origin: "http://localhost:3002",
-      userId: user.id,
+      userId: "f8895928-12d9-47e6-85a3-8de88aaaa7a8",
       serverType: ServerType.Misskey,
       serverToken: "PK00RQIpfmS1diD38HCzB1Pmz055BvFG",
     },
@@ -51,6 +51,26 @@ export const userAndLocalMisskey = async () => {
       "👀 [userAndLocalMisskey.ts:48]: NewServerInfo",
     ].reverse(),
   );
+  const LocalTimelineHome = await prisma.timeline.create({
+    data: {
+      name: "localhost home",
+      type: "HOME",
+      serverSessionId: "f8895928-12d9-47e6-85a3-8de88aaaa7a8",
+    },
+  });
+  const LocalTimelineLocal = await prisma.timeline.create({
+    data: {
+      name: "localhost local",
+      type: "LOCAL",
+      serverSessionId: "f8895928-12d9-47e6-85a3-8de88aaaa7a8",
+    },
+  });
+  console.log(
+    ...[
+      { LocalTimelineHome, LocalTimelineLocal },
+      "👀 [userAndLocalMisskey.ts:68]: {LocalTimelineHome}",
+    ].reverse(),
+  );
   if (process.env.MISSKEY_SERVER_TOKEN) {
     const MisskeyServerToken = await prisma.serverSession.create({
       data: {
@@ -61,10 +81,35 @@ export const userAndLocalMisskey = async () => {
         serverToken: process.env.MISSKEY_SERVER_TOKEN,
       },
     });
+
     console.log(
       ...[
         MisskeyServerToken,
         "👀 [MochiMissksy.ts:62]: MisskeyServerToken",
+      ].reverse(),
+    );
+    const timelineHome = await prisma.timeline.create({
+      data: {
+        name: "Misskey Home",
+        type: "HOME",
+        serverSessionId: "3ae62e9f-4f08-44ef-94d5-24c4d9d5a240",
+      },
+    });
+    console.log(
+      ...[timelineHome, "👀 [userAndLocalMisskey.ts:79]: timelines"].reverse(),
+    );
+
+    const timelineLocal = await prisma.timeline.create({
+      data: {
+        name: "Misskey Local",
+        type: "LOCAL",
+        serverSessionId: "3ae62e9f-4f08-44ef-94d5-24c4d9d5a240",
+      },
+    });
+    console.log(
+      ...[
+        timelineLocal,
+        "👀 [userAndLocalMisskey.ts:79]: timelineLocal",
       ].reverse(),
     );
   }

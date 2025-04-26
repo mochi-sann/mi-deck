@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "pnpm -r run dev",
+    "dev": "node scripts/dev.mjs",
     "build": "pnpm -r run build",
     "start": "pnpm -r run start",
     "front": "pnpm -F @mi-deck/front",
@@ -16,17 +16,19 @@
     "test": "pnpm -r run test"
   },
   "engines": {
-    "pnpm": "9.15",
-    "node": "22.14.0",
+    "pnpm": "10",
+    "node": ">=22",
     "npm": "please_use_pnpm_instead"
   },
-  "packageManager": "pnpm@9.15.0",
+  "packageManager": "pnpm@10.9.0",
   "keywords": [],
   "author": "",
   "license": "",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/node": "^22.13",
+    "dotenv": "^16.4.7",
+    "execa": "^9.3.0",
     "lefthook": "^1.11.6",
     "typescript": "^5.8.2"
   },
