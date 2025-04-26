@@ -86,7 +86,7 @@ services:
 
   misskey-db:
     # restart: always
-    image: postgres:15-alpine
+    image: postgres:17-alpine
     networks:
       - internal_network
     env_file:
