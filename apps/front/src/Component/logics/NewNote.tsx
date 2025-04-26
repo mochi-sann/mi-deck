@@ -29,7 +29,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Input } from "../ui/input"; // Add Input import
 import { Textarea } from "../ui/textarea";
 
 // Define the form schema using Zod
@@ -44,31 +43,15 @@ const formSchema = z.object({
     .string()
     .min(1, { message: "ノートの内容を入力してください。" }),
   isLocalOnly: z.boolean(), // Optional field for local-only notes
-  visibility: z.enum(["public", "home", "followers", "private"]), // Add 'private'
-  visibleUserIds: z.string().optional(), // Add optional field for user IDs (comma-separated string for now)
-})
-.refine(
-  (data) => {
-    if (data.visibility === "private") {
-      // If visibility is private, visibleUserIds must be a non-empty string
-      return data.visibleUserIds && data.visibleUserIds.trim().length > 0;
-    }
-    return true; // Otherwise, no validation needed for visibleUserIds
-  },
-  {
-    // Custom error message if validation fails when visibility is private
-    message: "ダイレクトメッセージを送る相手のユーザーIDをカンマ区切りで入力してください。",
-    path: ["visibleUserIds"], // Associate the error with the visibleUserIds field
-  },
-);
-
+  visibility: z.enum(["public", "home", "followers", "specified"]),
+});
 
 const visibilityOptions = [
   { value: "public", label: "公開" },
   { value: "home", label: "ホーム" },
   { value: "followers", label: "フォロワー" },
   // { value: "specified", label: "指定ユーザー" }, // specified はUIが複雑になるため一旦除外
-  { value: "private", label: "ダイレクト" }, // Add 'private' option
+  { value: "private", label: "ダイレクト" }, // private はUIが複雑になるため一旦除外
 ] as const; // as const で value が string literal type になる
 type FormSchema = z.infer<typeof formSchema>;
 
@@ -96,12 +79,8 @@ export const NewNote = () => {
       noteContent: "",
       isLocalOnly: false, // Default to false
       visibility: "public", // Default visibility
-      visibleUserIds: "", // Initialize visibleUserIds
     },
   });
-
-  // Watch the visibility field to conditionally render the user ID input
-  const visibility = form.watch("visibility");
 
   // Handle note submission including file uploads
   async function onSubmit(values: FormSchema) {
@@ -129,32 +108,14 @@ export const NewNote = () => {
         serverToken,
       );
 
-      // Prepare note creation payload
-      const notePayload: {
-        text: string;
-        visibility: FormSchema["visibility"];
-        localOnly: boolean;
-        fileIds?: string[];
-        visibleUserIds?: string[]; // Add visibleUserIds to payload type
-      } = {
-        text: values.noteContent,
-        visibility: values.visibility,
-        localOnly: values.isLocalOnly,
-        fileIds: uploadedFileIds.length > 0 ? uploadedFileIds : undefined,
-      };
-
-      // If visibility is private, parse and add visibleUserIds
-      if (values.visibility === "private" && values.visibleUserIds) {
-        notePayload.visibleUserIds = values.visibleUserIds
-          .split(",") // Split by comma
-          .map((id) => id.trim()) // Trim whitespace
-          .filter((id) => id.length > 0); // Remove empty strings
-      }
-
-
       // Create the note with text and uploaded file IDs
-      console.log("Creating note with payload:", notePayload);
-      await client.request("notes/create", notePayload);
+      console.log("Creating note...");
+      await client.request("notes/create", {
+        text: values.noteContent,
+        visibility: values.visibility, // Adjust visibility as needed
+        localOnly: values.isLocalOnly,
+        fileIds: uploadedFileIds.length > 0 ? uploadedFileIds : undefined, // Attach file IDs
+      });
 
       console.log("Note created successfully!");
       // TODO: Add success feedback (e.g., close dialog, show toast message)
@@ -247,25 +208,6 @@ export const NewNote = () => {
             </FormItem>
           )}
         />
-        {/* Conditionally render User ID input when visibility is 'private' */}
-        {visibility === "private" && (
-          <FormField
-            control={form.control}
-            name="visibleUserIds"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>宛先ユーザーID</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="ユーザーIDをカンマ区切りで入力 (例: id1,id2)"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
         <FormField
           control={form.control}
           name="isLocalOnly"
