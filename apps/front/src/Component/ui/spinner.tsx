@@ -9,6 +9,7 @@ const spinnerVariants = cva("animate-spin text-primary", {
     size: {
       default: "size-8",
       sm: "size-4",
+      sl: "size-6",
       lg: "size-12",
       xl: "size-16",
     },

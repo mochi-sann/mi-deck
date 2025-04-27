@@ -73,7 +73,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-        {isLoading ? <Spinner size={"sm" as any} /> : children}
+        {
+          <Spinner
+            color="var(--primary-foreground)"
+            size={"sm"}
+            strokeWidth={3}
+            className={cn("absolute", isLoading ? "opacity-100 " : "opacity-0")}
+          />
+        }
+        <span className={cn(isLoading && "opacity-0")}>{children}</span>
       </Comp>
     );
   },
