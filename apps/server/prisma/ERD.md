@@ -34,7 +34,7 @@ erDiagram
 }
 "server_info" {
   String id PK
-  String server_session_id FK
+  String server_session_id FK,UK
   String name
   String icon_url
   String favicon_url
@@ -49,7 +49,7 @@ erDiagram
   String avater_url
   DateTime created_at
   DateTime updated_at
-  String server_s_ession_id FK
+  String server_s_ession_id FK,UK
   String userId FK "nullable"
 }
 "panel" {
