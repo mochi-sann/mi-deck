@@ -65,6 +65,7 @@
     "@storybook/react": "^8.6.12",
     "@storybook/react-vite": "^8.6.12",
     "@storybook/test": "^8.6.12",
+    "@storybook/test-runner": "^0.22.0",
     "@tanstack/react-query-devtools": "^5.71.3",
     "@tanstack/router-cli": "^1.114.32",
     "@tanstack/router-devtools": "^1.114.32",
