@@ -255,7 +255,7 @@ importers:
     devDependencies:
       '@nestjs/cli':
         specifier: ^10.4.9
-        version: 10.4.9(@swc/cli@0.5.2(@swc/core@1.11.22)(chokidar@3.6.0))(@swc/core@1.11.22)(esbuild@0.25.3)
+        version: 10.4.9(@swc/cli@0.7.3(@swc/core@1.11.22)(chokidar@3.6.0))(@swc/core@1.11.22)(esbuild@0.25.3)
       '@nestjs/schematics':
         specifier: ^10.0.0
         version: 10.2.3(chokidar@3.6.0)(typescript@5.8.3)
@@ -263,8 +263,8 @@ importers:
         specifier: ^10.0.0
         version: 10.4.17(@nestjs/common@10.4.17(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@10.4.17)(@nestjs/platform-express@10.4.17)
       '@swc/cli':
-        specifier: ^0.5.2
-        version: 0.5.2(@swc/core@1.11.22)(chokidar@3.6.0)
+        specifier: ^0.7.0
+        version: 0.7.3(@swc/core@1.11.22)(chokidar@3.6.0)
       '@swc/core':
         specifier: ^1.10.1
         version: 1.11.22
@@ -2072,13 +2072,13 @@ packages:
   '@standard-schema/utils@0.3.0':
     resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
 
-  '@swc/cli@0.5.2':
-    resolution: {integrity: sha512-ul2qIqjM5bfe9zWLqFDmHZCf9HXXSZZAlZLe4czn+lH4PewO+OWZnQcYCscnJKlbx6MuWjzXVR7gkspjNEJwJA==}
+  '@swc/cli@0.7.3':
+    resolution: {integrity: sha512-rnVXNnlURjdOuPaBIwZ3TmBA44BF/eP0j154LanlgPEYfau74ige7cpKlKkZr1IBqMOG99lAnYNxQipDWA3hdg==}
     engines: {node: '>= 16.14.0'}
     hasBin: true
     peerDependencies:
       '@swc/core': ^1.2.66
-      chokidar: ^3.5.1
+      chokidar: ^4.0.1
     peerDependenciesMeta:
       chokidar:
         optional: true
@@ -3569,10 +3569,6 @@ packages:
 
   fast-fifo@1.3.2:
     resolution: {integrity: sha512-/d9sfos4yxzpwkDkuN7k2SqFKtYNmCTzgfEpz82x34IM9/zc8KGxQoXg1liNC/izpRM/MBdt44Nmx41ZWqk+FQ==}
-
-  fast-glob@3.3.2:
-    resolution: {integrity: sha512-oX2ruAFQwf/Orj8m737Y5adxDQO0LAB7/S5MnxCdTNDd4p6BsyIVsv9JQsATbTSq8KHRpLwIHbVlUNatxd+1Ow==}
-    engines: {node: '>=8.6.0'}
 
   fast-glob@3.3.3:
     resolution: {integrity: sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==}
@@ -6595,7 +6591,7 @@ snapshots:
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
-      semver: 7.6.3
+      semver: 7.7.1
       tar: 6.2.1
     transitivePeerDependencies:
       - encoding
@@ -6671,7 +6667,7 @@ snapshots:
       '@napi-rs/nice-win32-x64-msvc': 1.0.1
     optional: true
 
-  '@nestjs/cli@10.4.9(@swc/cli@0.5.2(@swc/core@1.11.22)(chokidar@3.6.0))(@swc/core@1.11.22)(esbuild@0.25.3)':
+  '@nestjs/cli@10.4.9(@swc/cli@0.7.3(@swc/core@1.11.22)(chokidar@3.6.0))(@swc/core@1.11.22)(esbuild@0.25.3)':
     dependencies:
       '@angular-devkit/core': 17.3.11(chokidar@3.6.0)
       '@angular-devkit/schematics': 17.3.11(chokidar@3.6.0)
@@ -6693,7 +6689,7 @@ snapshots:
       webpack: 5.97.1(@swc/core@1.11.22)(esbuild@0.25.3)
       webpack-node-externals: 3.0.0
     optionalDependencies:
-      '@swc/cli': 0.5.2(@swc/core@1.11.22)(chokidar@3.6.0)
+      '@swc/cli': 0.7.3(@swc/core@1.11.22)(chokidar@3.6.0)
       '@swc/core': 1.11.22
     transitivePeerDependencies:
       - esbuild
@@ -7578,16 +7574,16 @@ snapshots:
 
   '@standard-schema/utils@0.3.0': {}
 
-  '@swc/cli@0.5.2(@swc/core@1.11.22)(chokidar@3.6.0)':
+  '@swc/cli@0.7.3(@swc/core@1.11.22)(chokidar@3.6.0)':
     dependencies:
       '@swc/core': 1.11.22
       '@swc/counter': 0.1.3
       '@xhmikosr/bin-wrapper': 13.0.5
       commander: 8.3.0
-      fast-glob: 3.3.2
+      fast-glob: 3.3.3
       minimatch: 9.0.5
       piscina: 4.8.0
-      semver: 7.6.3
+      semver: 7.7.1
       slash: 3.0.0
       source-map: 0.7.4
     optionalDependencies:
@@ -8604,7 +8600,7 @@ snapshots:
   bin-version-check@5.1.0:
     dependencies:
       bin-version: 6.0.0
-      semver: 7.6.3
+      semver: 7.7.1
       semver-truncate: 3.0.0
 
   bin-version@6.0.0:
@@ -9371,14 +9367,6 @@ snapshots:
 
   fast-fifo@1.3.2: {}
 
-  fast-glob@3.3.2:
-    dependencies:
-      '@nodelib/fs.stat': 2.0.5
-      '@nodelib/fs.walk': 1.2.8
-      glob-parent: 5.1.2
-      merge2: 1.4.1
-      micromatch: 4.0.8
-
   fast-glob@3.3.3:
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -9499,7 +9487,7 @@ snapshots:
       minimatch: 3.1.2
       node-abort-controller: 3.1.1
       schema-utils: 3.3.0
-      semver: 7.6.3
+      semver: 7.7.1
       tapable: 2.2.1
       typescript: 5.7.2
       webpack: 5.97.1(@swc/core@1.11.22)(esbuild@0.25.3)
@@ -10866,7 +10854,7 @@ snapshots:
 
   semver-truncate@3.0.0:
     dependencies:
-      semver: 7.6.3
+      semver: 7.7.1
 
   semver@5.7.2: {}
 
