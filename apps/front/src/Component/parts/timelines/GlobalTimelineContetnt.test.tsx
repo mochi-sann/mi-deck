@@ -1,0 +1,18 @@
+import { render } from "@testing-library/react";
+import { describe, it } from "vitest";
+import { GlobalTimelineContent } from "./GlobalTimelineContetnt"; // Corrected import name
+
+describe("GlobalTimelineContent", () => {
+  // Corrected describe block name
+  it("should render the component", () => {
+    // Provide the required 'origin', 'token', and 'type' props
+    render(
+      <GlobalTimelineContent
+        origin="test-origin"
+        token="test-token"
+        type="test-type"
+      />,
+    );
+    // Add assertions here based on the content of GlobalTimelineContent
+  });
+});
