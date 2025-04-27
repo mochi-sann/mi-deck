@@ -20,7 +20,8 @@
       "apps/front/styled-system/**",
       "apps/front/src/lib/api/type.ts",
       "misskey-db",
-      "/nix"
+      "/nix",
+      "apps/front/storybook-static/"
     ]
   },
   "formatter": {
