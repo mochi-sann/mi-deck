@@ -136,3 +136,4 @@ server/test.db
 !.aiderignore
 files
 misskey-files
+apps/front/storybook-static

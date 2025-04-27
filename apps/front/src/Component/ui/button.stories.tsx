@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, fn, userEvent, within } from "@storybook/test";
 import { PlusIcon } from "lucide-react"; // Example icon
+import React from "react";
 import { Button } from "./button";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
@@ -105,6 +106,17 @@ export const Icon: Story = {
   args: {
     size: "icon",
     children: <PlusIcon />, // Render an icon instead of text
+  },
+};
+export const IconAndText: Story = {
+  args: {
+    size: "icon",
+    children: (
+      <React.Fragment>
+        <PlusIcon /> テキストテキスト
+        <PlusIcon />
+      </React.Fragment>
+    ), // Render an icon instead of text
   },
 };
 
