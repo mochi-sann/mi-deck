@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import React from "react";
 import { expect, fn, userEvent, within } from "@storybook/test";
+import React from "react";
 import { Checkbox } from "./checkbox";
 import { Label } from "./label"; // Import Label for context
 
@@ -133,7 +133,6 @@ export const WithInteractionTest: Story = {
     const checkbox = canvas.getByRole("checkbox");
     // The label text is now defined within the render function
     const label = canvas.getByText("Accept terms!!!!!!!!!!!!!!!!!");
-    const label = canvas.getByText("Accept terms");
 
     // Initial state assertion
     expect(checkbox).not.toBeChecked();
