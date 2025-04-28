@@ -1,5 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, fireEvent, fn, userEvent, within } from "@storybook/test";
+import {
+  expect,
+  fireEvent,
+  fn,
+  userEvent,
+  waitForElementToBeRemoved,
+  within,
+} from "@storybook/test";
 import {
   Calculator,
   CalendarIcon,
@@ -163,7 +170,7 @@ export const Dialog: StoryObj<typeof CommandDialog> = {
     await expect(args.onOpenChange).toHaveBeenCalledWith(false);
     // Use queryByRole again as the dialog should disappear
     // Add a small delay or wait for disappearance if needed due to animations
-    // await waitForElementToBeRemoved(() => canvas.queryByRole('dialog'));
+    await waitForElementToBeRemoved(() => canvas.queryByRole("dialog"));
     expect(canvas.queryByRole("dialog")).toBeNull();
   },
 };
