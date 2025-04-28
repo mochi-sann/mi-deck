@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import React from "react";
 import { expect, fn, userEvent, within } from "@storybook/test";
 import { Checkbox } from "./checkbox";
 import { Label } from "./label"; // Import Label for context
@@ -92,36 +93,63 @@ export const Invalid: Story = {
   },
 };
 
-// Story with interaction test
+// Story with interaction test using useState
 export const WithInteractionTest: Story = {
   args: {
-    id: "storybook-checkbox", // Ensure ID is set for the label click
+    id: "storybook-checkbox-interactive", // Ensure ID is set for the label click
+    // We still pass the mocked fn to args to allow Storybook's action logger to pick it up
+    onCheckedChange: fn(),
+  },
+  // Use the render function to introduce useState
+  render: (args) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [isChecked, setIsChecked] = React.useState(false);
+
+    const handleCheckedChange = (checked: boolean | "indeterminate") => {
+      // Ensure we only handle boolean changes for this state example
+      if (typeof checked === "boolean") {
+        setIsChecked(checked);
+        // Call the mocked function passed in args as well
+        args.onCheckedChange?.(checked);
+      }
+    };
+
+    return (
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          {...args} // Pass other args like id, disabled, etc.
+          checked={isChecked}
+          onCheckedChange={handleCheckedChange}
+          id={args.id} // Ensure id is passed correctly
+        />
+        <Label htmlFor={args.id}>Accept terms</Label>
+      </div>
+    );
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    // Get by role is robust, but clicking the label is often more realistic
-    // const checkbox = canvas.getByRole('checkbox');
+    const checkbox = canvas.getByRole("checkbox");
     const label = canvas.getByText("Accept terms");
 
-    // Simulate user clicking the label to toggle the checkbox
+    // Initial state assertion
+    expect(checkbox).not.toBeChecked();
+
+    // Simulate user clicking the label to toggle the checkbox ON
     await userEvent.click(label);
 
+    // Assert that the checkbox is now checked
+    expect(checkbox).toBeChecked();
     // Assert that the onCheckedChange mock function was called with true
+    await expect(args.onCheckedChange).toHaveBeenCalledTimes(1);
     await expect(args.onCheckedChange).toHaveBeenCalledWith(true);
 
-    // Check visual state (presence of checkmark or data-state attribute)
-    // Getting the checkbox again after interaction might be needed
-    const checkboxAfterClick = canvas.getByRole("checkbox");
+    // Simulate user clicking the label again to toggle the checkbox OFF
     await userEvent.click(label);
-    await expect(checkboxAfterClick).toBeChecked(); // Works for boolean checked state
-    // Or check data-state for more complex scenarios:
-    // await expect(checkboxAfterClick).toHaveAttribute('data-state', 'checked');
 
-    // Click again to uncheck
-    // await userEvent.click(label);
-    await expect(args.onCheckedChange).toHaveBeenCalledWith(true);
-    const checkboxAfterSecondClick = canvas.getByRole("checkbox");
-    await expect(checkboxAfterSecondClick).not.toBeChecked();
-    // await expect(checkboxAfterSecondClick).toHaveAttribute('data-state', 'unchecked');
+    // Assert that the checkbox is now unchecked
+    expect(checkbox).not.toBeChecked();
+    // Assert that the onCheckedChange mock function was called again with false
+    await expect(args.onCheckedChange).toHaveBeenCalledTimes(2);
+    await expect(args.onCheckedChange).toHaveBeenCalledWith(false);
   },
 };
