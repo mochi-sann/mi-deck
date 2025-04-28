@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, fn, userEvent, within } from "@storybook/test";
+import { expect, userEvent, within } from "@storybook/test";
 import * as React from "react";
 import { Button } from "./button"; // For trigger and footer actions
 import {
@@ -106,6 +106,13 @@ export const Default: Story = {
     // Start closed by default based on meta args
   },
 };
+export const Opend: Story = {
+  render: (args) => renderDialog(args, defaultTrigger, defaultDialogContent),
+  args: {
+    open: true,
+    // Start closed by default based on meta args
+  },
+};
 export const Controlled: Story = {
   render: (args) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -132,11 +139,28 @@ export const Controlled: Story = {
 
 // Story with interaction test
 export const WithInteractionTest: Story = {
-  render: (args) => renderDialog(args, defaultTrigger, defaultDialogContent),
+  render: (args) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [isOpen, setIsOpen] = React.useState(args.open);
+
+    React.useEffect(() => {
+      setIsOpen(args.open); // Sync with control changes
+    }, [args.open]);
+
+    const handleOpenChange = (open: boolean) => {
+      setIsOpen(open);
+      args.onOpenChange?.(open); // Call the spy
+    };
+    return renderDialog(
+      { ...args, open: isOpen, onOpenChange: handleOpenChange },
+      defaultTrigger,
+      defaultDialogContent,
+    );
+  },
   args: {
     // Ensure controlled state for testing
     open: false,
-    onOpenChange: fn(),
+    // onOpenChange: fn(),
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement.parentElement || canvasElement); // Search in parent for dialog portal
