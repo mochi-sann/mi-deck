@@ -144,7 +144,7 @@ export const WithInteractionTest: Story = {
     // Content is initially hidden (or check based on defaultOpen)
     // Use queryByText which returns null if not found initially
     let contentItem = canvas.queryByText(/@radix-ui\/colors/i);
-    await expect(contentItem).not.toBeVisible(); // Or .toBeNull() if completely removed from DOM
+    await expect(contentItem).toBeNull(); // Or .toBeNull() if completely removed from DOM
 
     // Click the trigger to open
     await userEvent.click(triggerButton);
@@ -153,14 +153,32 @@ export const WithInteractionTest: Story = {
     // Use findByText which waits for the element to appear
     contentItem = await canvas.findByText(/@radix-ui\/colors/i);
     await expect(contentItem).toBeVisible();
+    let newContetnItem = canvas.queryByRole("button");
+    expect(newContetnItem).toHaveAttribute("data-state", "open");
+    // const bodyitem = canvas.getByRole("#radix-:rb:");
+    // console.log(
+    //   ...[bodyitem, "👀 [collapsible.stories.tsx:164]: bodyitem"].reverse(),
+    // );
 
     // Click the trigger again to close
     await userEvent.click(triggerButton);
+    // await waitForElementToBeRemoved(() =>
+    //   canvas.getByText(/@radix-ui\/colors/i),
+    // );
 
+    // await waitFor(() => {
+    //   // 例: 'animation-finished' クラスが付与されるのを待つ
+    //   expect(bodyitem).toHaveClass("animation-finished");
+    //   // 例: 'is-animating' クラスが削除されるのを待つ
+    //   // expect(elementToAnimate).not.toHaveClass('is-animating');
+    // });
     // Content should be hidden again
     // Wait for animation/state update - using findBy queries might implicitly wait
     // Or explicitly check for disappearance if needed
     // Re-querying might be necessary depending on how Radix handles visibility/DOM presence
-    await expect(canvas.queryByText(/@radix-ui\/colors/i)).not.toBeVisible();
+    // contentItem = await canvas.findByText(/@radix-ui\/colors/i);
+    // await expect(contentItem).toBeNull();
+    newContetnItem = canvas.queryByRole("button");
+    expect(newContetnItem).toHaveAttribute("data-state", "closed");
   },
 };
