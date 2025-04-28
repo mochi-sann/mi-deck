@@ -122,10 +122,18 @@ export const WithInteractionTest: Story = {
           onCheckedChange={handleCheckedChange}
           id={args.id} // Ensure id is passed correctly
         />
-        <Label htmlFor={args.id}>Accept terms</Label>
+        <Label htmlFor={args.id}>Accept terms!!!!!!!!!!!!!!!!!</Label>
       </div>
     );
   },
+  decorators: [
+    (Story) => (
+      <div className="flex items-center space-x-2">
+        <Story />
+      </div>
+    ),
+
+  ],
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     const checkbox = canvas.getByRole("checkbox");
