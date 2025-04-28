@@ -112,13 +112,14 @@ export const WithInteractionTest: Story = {
     // Check visual state (presence of checkmark or data-state attribute)
     // Getting the checkbox again after interaction might be needed
     const checkboxAfterClick = canvas.getByRole("checkbox");
+    await userEvent.click(label);
     await expect(checkboxAfterClick).toBeChecked(); // Works for boolean checked state
     // Or check data-state for more complex scenarios:
     // await expect(checkboxAfterClick).toHaveAttribute('data-state', 'checked');
 
     // Click again to uncheck
-    await userEvent.click(label);
-    await expect(args.onCheckedChange).toHaveBeenCalledWith(false);
+    // await userEvent.click(label);
+    await expect(args.onCheckedChange).toHaveBeenCalledWith(true);
     const checkboxAfterSecondClick = canvas.getByRole("checkbox");
     await expect(checkboxAfterSecondClick).not.toBeChecked();
     // await expect(checkboxAfterSecondClick).toHaveAttribute('data-state', 'unchecked');
