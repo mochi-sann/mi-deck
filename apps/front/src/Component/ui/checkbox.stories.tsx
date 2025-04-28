@@ -126,17 +126,13 @@ export const WithInteractionTest: Story = {
       </div>
     );
   },
-  decorators: [
-    (Story) => (
-      <div className="flex items-center space-x-2">
-        <Story />
-      </div>
-    ),
-
-  ],
+  // Disable global decorators for this specific story
+  decorators: [],
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     const checkbox = canvas.getByRole("checkbox");
+    // The label text is now defined within the render function
+    const label = canvas.getByText("Accept terms!!!!!!!!!!!!!!!!!");
     const label = canvas.getByText("Accept terms");
 
     // Initial state assertion
