@@ -121,9 +121,12 @@ export const IconAndText: Story = {
 };
 
 export const FullWidth: Story = {
-  args: {
-    buttonWidth: "full",
-  },
+  render: (args) => (
+    <div style={{ width: "200px" }}>
+      <Button {...args} buttonWidth={"full"} />
+    </div>
+  ),
+  args: {},
 };
 
 export const Loading: Story = {
