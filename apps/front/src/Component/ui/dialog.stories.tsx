@@ -39,7 +39,7 @@ const meta = {
   args: {
     // Default to controlled for easier testing via args/play function
     open: false,
-    onOpenChange: fn(),
+    // onOpenChange: fn(),
     // modal: true, // Default Radix behavior
   },
 } satisfies Meta<typeof Dialog>;
@@ -102,6 +102,29 @@ const defaultDialogContent = (
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Default: Story = {
   render: (args) => renderDialog(args, defaultTrigger, defaultDialogContent),
+  args: {
+    // Start closed by default based on meta args
+  },
+};
+export const Controlled: Story = {
+  render: (args) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [isOpen, setIsOpen] = React.useState(args.open);
+
+    React.useEffect(() => {
+      setIsOpen(args.open); // Sync with control changes
+    }, [args.open]);
+
+    const handleOpenChange = (open: boolean) => {
+      setIsOpen(open);
+      args.onOpenChange?.(open); // Call the spy
+    };
+    return renderDialog(
+      { ...args, open: isOpen, onOpenChange: handleOpenChange },
+      defaultTrigger,
+      defaultDialogContent,
+    );
+  },
   args: {
     // Start closed by default based on meta args
   },
