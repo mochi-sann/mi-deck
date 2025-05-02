@@ -3,8 +3,8 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { ServerSession } from "@prisma/client";
 import { APIClient } from "misskey-js/api.js";
+import { ServerSession } from "~/generated/prisma";
 // PrismaService is removed as it's now used in the repository
 import { CreateTimelineDto } from "./dto/create-timeline.dto";
 import { TimelineEntity } from "./entities/timeline.entity";

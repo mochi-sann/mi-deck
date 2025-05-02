@@ -20,6 +20,8 @@
       "apps/front/styled-system/**",
       "apps/front/src/lib/api/type.ts",
       "misskey-db",
+      "apps/server/src/generated/prisma/**",
+      ".devbox/**",
       "/nix",
       "apps/front/storybook-static/"
     ]

@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { TimelineType } from "@prisma/client"; // This will be valid after prisma generate
 import {
   IsEnum,
   IsNotEmpty,
@@ -8,6 +7,7 @@ import {
   IsUUID,
   ValidateIf,
 } from "class-validator";
+import { TimelineType } from "~/generated/prisma"; // This will be valid after prisma generate
 
 export class CreateTimelineDto {
   @IsUUID()

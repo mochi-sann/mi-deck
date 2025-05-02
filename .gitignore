@@ -137,3 +137,4 @@ server/test.db
 files
 misskey-files
 apps/front/storybook-static
+apps/server/src/generated/prisma

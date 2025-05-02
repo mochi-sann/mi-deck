@@ -3,9 +3,9 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
-import { ServerType } from "@prisma/client";
 import { APIClient } from "misskey-js/api.js";
 import { User } from "misskey-js/entities.js";
+import { ServerType } from "~/generated/prisma";
 // PrismaService is removed as it's now used in the repository
 import { CreateServerSessionDto } from "./dto/creste.dto";
 import { CreateServerSessionResponseEntity } from "./entities/create-server.entity";
