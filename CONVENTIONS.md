@@ -1,26 +1,29 @@
 
-This project uses pnpm as the package manager in a monorepo setup.
-Always use pnpm commands (e.g., `pnpm install`, `pnpm test`). Do not use npm or yarn.
+# 開発規約
 
-The root `package.json` defines shortcut scripts to target specific workspaces:
+このプロジェクトでは、モノレポ構成で pnpm をパッケージマネージャーとして使用します。
+常に pnpm コマンド（例: `pnpm install`, `pnpm test`）を使用してください。npm や yarn は使用しないでください。
 
-When running commands specific to the **server-side** application (`@mi-deck/server` located in `apps/server`):
-Use the root script `pnpm run server -- <command>`.
-Example: To run tests for the server, use `pnpm run server -- test`.
-Example: To build the server, use `pnpm run server -- build`.
-Example: To run e2e tests for the server, use `pnpm run test:e2e:server`.
+ルートの `package.json` には、特定のワークスペースを対象とするショートカットスクリプトが定義されています。
 
-When running commands specific to the **front-end** application (`@mi-deck/front` located in `apps/front`):
-Use the root script `pnpm run front -- <command>`.
-Example: To start the dev server for the front-end, use `pnpm run front -- dev`.
-Example: To lint the front-end, use `pnpm run front -- lint`.
+**サーバーサイド**アプリケーション（`@mi-deck/server`、`apps/server` に配置）に固有のコマンドを実行する場合:
+ルートスクリプト `pnpm run server -- <command>` を使用します。
+例: サーバーのテストを実行するには、`pnpm run server -- test` を使用します。
+例: サーバーをビルドするには、`pnpm run server -- build` を使用します。
+例: サーバーの e2e テストを実行するには、`pnpm run test:e2e:server` を使用します。
 
-Note the use of `--` after `pnpm run server` or `pnpm run front` to pass the subsequent arguments correctly to the underlying pnpm command within the script.
+**フロントエンド**アプリケーション（`@mi-deck/front`、`apps/front` に配置）に固有のコマンドを実行する場合:
+ルートスクリプト `pnpm run front -- <command>` を使用します。
+例: フロントエンドの開発サーバーを起動するには、`pnpm run front -- dev` を使用します。
+例: フロントエンドの lint を実行するには、`pnpm run front -- lint` を使用します。
+
+`pnpm run server` または `pnpm run front` の後に `--` を使用して、後続の引数をスクリプト内の基盤となる pnpm コマンドに正しく渡すことに注意してください。
 
 
-if you see login page type in login email is `example2@example.com` password is `password`
+ログインページが表示された場合、ログインメールアドレスは `example2@example.com`、パスワードは `password` です。
 
-Use the Misskey-js library to get information about the Misskey timeline itself, etc.
-Connect to Misskey-js directly from the front end
+Misskey のタイムライン情報などを取得するには、Misskey-js ライブラリを使用してください。
+フロントエンドから直接 Misskey-js に接続します。
 
+# gitのメッセージの規約
 gitのコミットは日本語でしてください
