@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { ServerSession, Timeline } from "@prisma/client";
+import { ServerSession, Timeline } from "~/generated/prisma";
 import { TimelineEntity } from "./timeline.entity"; // Import the base TimelineEntity
 
 // Define the structure for the serverSession part

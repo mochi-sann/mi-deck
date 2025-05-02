@@ -1,5 +1,5 @@
-import { PrismaClient, ServerType } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { PrismaClient, ServerType } from "~/generated/prisma";
 
 const prisma = new PrismaClient();
 export const userAndLocalMisskey = async () => {
