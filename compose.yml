@@ -48,7 +48,7 @@ services:
   #     - app-network
   misskey-web:
     # build: .
-    image : misskey/misskey:2025.4.0
+    image : misskey/misskey:2025.4.1
     # restart: always
     links:
       - misskey-db
@@ -149,7 +149,7 @@ networks:
     driver: bridge
 
 volumes:
-  misskey-db: 
+  misskey-db:
   postgres-db:
   misskey-file:
     # https-portal-data: # Recommended, to avoid re-signing when upgrading HTTPS-PORTAL
