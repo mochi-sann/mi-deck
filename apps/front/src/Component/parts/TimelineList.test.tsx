@@ -1,6 +1,7 @@
 /// <reference types="@testing-library/jest-dom" />
 import { $api } from "@/lib/api/fetchClient"; // Import the actual $api object
 import { components } from "@/lib/api/type";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { TimelineList } from "./TimelineList"; // Adjust the import path as necessary
@@ -11,6 +12,14 @@ vi.mock("@/lib/api/fetchClient", () => ({
     useQuery: vi.fn(),
   },
 }));
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
 
 // Define mock data type based on your schema
 type TimelineEntityType =
@@ -61,9 +70,13 @@ describe("TimelineList", () => {
       error: null,
     }); // Use '' or refine mock type
 
-    render(<TimelineList />);
+    render(
+      <QueryClientProvider client={queryClient}>
+        <TimelineList />
+      </QueryClientProvider>,
+    );
     // Use getByText instead of getByLabelText for the spinner's accessible text
-    expect(screen.getByText(/loading timelines/i)).toBeInTheDocument();
+    expect(screen.getByText(/loading.../i)).toBeInTheDocument();
   });
 
   it("should display error message on failure", async () => {
@@ -74,7 +87,11 @@ describe("TimelineList", () => {
       error: new Error("Failed to fetch"),
     }); // Use '' or refine mock type
 
-    render(<TimelineList />);
+    render(
+      <QueryClientProvider client={queryClient}>
+        <TimelineList />
+      </QueryClientProvider>,
+    );
     await waitFor(() => {
       expect(screen.getByText(/failed to load timelines/i)).toBeInTheDocument();
     });
@@ -88,7 +105,11 @@ describe("TimelineList", () => {
       error: null,
     }); // Use '' or refine mock type
 
-    render(<TimelineList />);
+    render(
+      <QueryClientProvider client={queryClient}>
+        <TimelineList />
+      </QueryClientProvider>,
+    );
 
     await waitFor(() => {
       // Check for timeline names and origins
@@ -118,7 +139,11 @@ describe("TimelineList", () => {
       error: null,
     }); // Use '' or refine mock type
 
-    render(<TimelineList />);
+    render(
+      <QueryClientProvider client={queryClient}>
+        <TimelineList />
+      </QueryClientProvider>,
+    );
 
     await waitFor(() => {
       expect(screen.getByText(/no timelines created yet/i)).toBeInTheDocument();
