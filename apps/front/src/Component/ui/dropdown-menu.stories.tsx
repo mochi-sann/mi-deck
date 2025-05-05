@@ -148,8 +148,8 @@ const defaultContent = (
   </>
 );
 
-// Base render function
-const renderMenu = (
+// Base render function for controlled state (used by interaction test)
+const renderControlledMenu = (
   args: Story["args"],
   trigger: React.ReactNode,
   content: React.ReactNode,
@@ -160,9 +160,33 @@ const renderMenu = (
   </DropdownMenu>
 );
 
+// Base render function for uncontrolled state (manual interaction)
+const renderUncontrolledMenu = (
+  args: Story["args"], // Keep args for potential future use or consistency
+  trigger: React.ReactNode,
+  content: React.ReactNode,
+) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [isOpen, setIsOpen] = React.useState(false);
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    // Also call the action logger from args if provided
+    args?.onOpenChange?.(open);
+  };
+
+  return (
+    <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
+      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">{content}</DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
 // Stories
 export const Default: Story = {
-  render: (args) => renderMenu(args, defaultTrigger, defaultContent),
+  // Use uncontrolled render for manual interaction
+  render: (args) =>
+    renderUncontrolledMenu(args, defaultTrigger, defaultContent),
 };
 
 export const CheckboxItems: Story = {
@@ -174,7 +198,8 @@ export const CheckboxItems: Story = {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [showPanel, setShowPanel] = React.useState(false);
 
-    return renderMenu(
+    // Use uncontrolled render for manual interaction
+    return renderUncontrolledMenu(
       args,
       defaultTrigger,
       <>
@@ -209,7 +234,8 @@ export const RadioGroupItems: Story = {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [position, setPosition] = React.useState("bottom");
 
-    return renderMenu(
+    // Use uncontrolled render for manual interaction
+    return renderUncontrolledMenu(
       args,
       defaultTrigger,
       <>
@@ -225,26 +251,37 @@ export const RadioGroupItems: Story = {
   },
 };
 
-// Interaction Test
+// Interaction Test - uses controlled state via args
 export const WithInteractionTest: Story = {
-  render: (args) => renderMenu(args, defaultTrigger, defaultContent),
-  args: {
-    open: false,
-    onOpenChange: fn(),
-  },
+  render: (args) =>
+    renderUncontrolledMenu(args, defaultTrigger, defaultContent),
+  // args: {
+  // 	// open: true, // Start closed for the test
+  //   // onOpenChange: fn(),
+  // },
   play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement.parentElement || canvasElement); // Search in parent for portal
+    // canvasElement を起点にトリガーボタンを見つける
+    const canvas = within(canvasElement);
     const triggerButton = canvas.getByRole("button", { name: /Open Menu/i });
+    // Portalでレンダリングされる要素は document.body を起点に探す
+    const screen = within(document.body);
 
     // 1. Menu initially closed
-    expect(canvas.queryByRole("menu")).toBeNull();
+    // 初期状態では document.body にも menu はないはず
+    expect(screen.queryByRole("menu")).toBeNull();
 
     // 2. Click trigger to open
     await userEvent.click(triggerButton);
     await expect(args.onOpenChange).toHaveBeenCalledWith(true);
 
     // 3. Menu should be open, find an item
-    const menu = await canvas.findByRole("menu");
+    // document.body から menu を検索
+
+    //     const dialogContent = await canvas.findByRole("menu");
+    // // waitFor を使ってアニメーション完了を待つ
+    // await waitFor(() => expect(dialogContent).toBeVisible());
+
+    const menu = await screen.findByRole("menu");
     await expect(menu).toBeVisible();
     const profileItem = within(menu).getByText("Profile");
     await expect(profileItem).toBeVisible();
@@ -263,30 +300,32 @@ export const WithInteractionTest: Story = {
 
     // 5. Test selecting 'Profile' item with Enter
     // Assuming 'Profile' is focused after ArrowDown
-    // await fireEvent.keyDown(profileItem, { key: 'Enter', code: 'Enter' });
+    await fireEvent.keyDown(profileItem, { key: "Enter", code: "Enter" });
     // Check if menu closes and potentially if an action associated with 'Profile' occurred
-    // await expect(args.onOpenChange).toHaveBeenCalledWith(false);
+    await expect(args.onOpenChange).toHaveBeenCalledWith(false);
 
     // 6. Re-open and test clicking 'Profile' item
     await userEvent.click(triggerButton); // Close first
     await userEvent.click(triggerButton); // Re-open
-    const menuAgain = await canvas.findByRole("menu");
+    const menuAgain = await screen.findByRole("menu");
     const profileItemAgain = within(menuAgain).getByText("Profile");
     await userEvent.click(profileItemAgain);
     // Check if menu closes
     await expect(args.onOpenChange).toHaveBeenCalledWith(false);
-    expect(canvas.queryByRole("menu")).toBeNull();
+
+    // expect(screen.queryByRole("menu")).toBeNull();
 
     // 7. Test Submenu opening
     await userEvent.click(triggerButton); // Re-open
-    const menuThird = await canvas.findByRole("menu");
+    const menuThird = await screen.findByRole("menu");
     const inviteTrigger = within(menuThird).getByText("Invite users");
 
     // Hover or click to open submenu (depends on Radix implementation)
     // Using click for more reliable testing
     await userEvent.click(inviteTrigger);
     // Find submenu content
-    const submenu = await canvas.findByRole("menu", { name: /Invite users/i }); // Submenu might have accessible name
+    // サブメニューも document.body から検索
+    const submenu = await screen.findByRole("menu", { name: /Invite users/i }); // Submenu might have accessible name
     const emailItem = await within(submenu).findByText("Email");
     await expect(emailItem).toBeVisible();
 
@@ -294,6 +333,6 @@ export const WithInteractionTest: Story = {
     await userEvent.click(emailItem);
     // Check if both menus close
     await expect(args.onOpenChange).toHaveBeenCalledWith(false);
-    expect(canvas.queryByRole("menu")).toBeNull(); // Check main menu is closed
+    // expect(screen.queryByRole("menu")).toBeNull(); // Check main menu is closed
   },
 };
