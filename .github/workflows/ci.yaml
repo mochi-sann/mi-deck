@@ -1,9 +1,40 @@
-name: Build Check
-
+name: CI
 on:
   pull_request:
 
 jobs:
+  storybook-test:
+    strategy:
+      matrix:
+        node-version: [22]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+      - name: Build Storybook
+        run: pnpm run front build-storybook --quiet
+
+      - name: Run Storybook tests
+        run: pnpm run front test-storybook:ci
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: storybook-test-results
+          path: |
+            .storybook/test-results
   build:
     runs-on: ubuntu-24.04
     strategy:
