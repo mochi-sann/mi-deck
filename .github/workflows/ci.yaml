@@ -28,13 +28,6 @@ jobs:
       - name: Run Storybook tests
         run: pnpm run front test-storybook:ci
 
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: storybook-test-results
-          path: |
-            .storybook/test-results
   build:
     runs-on: ubuntu-24.04
     strategy:
