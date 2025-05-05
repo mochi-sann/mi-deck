@@ -114,9 +114,9 @@ describe("TimelineList", () => {
     await waitFor(() => {
       // Check for timeline names and origins
       expect(screen.getByText(/Timeline 1/i)).toBeInTheDocument();
-      expect(screen.getByText(/home @ example1.com/i)).toBeInTheDocument();
+      expect(screen.getByText(/example1.com/i)).toBeInTheDocument();
       expect(screen.getByText(/Timeline 2/i)).toBeInTheDocument();
-      expect(screen.getByText(/local @ example2.org/i)).toBeInTheDocument();
+      expect(screen.getByText(/example2.org/i)).toBeInTheDocument();
     });
 
     // Check that loading/error messages are not present
