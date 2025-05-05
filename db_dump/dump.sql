@@ -1903,7 +1903,8 @@ CREATE TABLE public.antenna (
     "lastUsedAt" timestamp with time zone NOT NULL,
     "isActive" boolean DEFAULT true NOT NULL,
     "localOnly" boolean DEFAULT false NOT NULL,
-    "excludeBots" boolean DEFAULT false NOT NULL
+    "excludeBots" boolean DEFAULT false NOT NULL,
+    "excludeNotesInSensitiveChannel" boolean DEFAULT false NOT NULL
 );
 
 
@@ -2183,6 +2184,81 @@ ALTER TABLE public.channel_note_pining OWNER TO "example-misskey-user";
 
 COMMENT ON COLUMN public.channel_note_pining."createdAt" IS 'The created date of the ChannelNotePining.';
 
+
+--
+-- Name: chat_approval; Type: TABLE; Schema: public; Owner: example-misskey-user
+--
+
+CREATE TABLE public.chat_approval (
+    id character varying(32) NOT NULL,
+    "userId" character varying(32) NOT NULL,
+    "otherId" character varying(32) NOT NULL
+);
+
+
+ALTER TABLE public.chat_approval OWNER TO "example-misskey-user";
+
+--
+-- Name: chat_message; Type: TABLE; Schema: public; Owner: example-misskey-user
+--
+
+CREATE TABLE public.chat_message (
+    id character varying(32) NOT NULL,
+    "fromUserId" character varying(32) NOT NULL,
+    "toUserId" character varying(32),
+    "toRoomId" character varying(32),
+    text character varying(4096),
+    uri character varying(512),
+    reads character varying(32)[] DEFAULT '{}'::character varying[] NOT NULL,
+    "fileId" character varying(32),
+    reactions character varying(1024)[] DEFAULT '{}'::character varying[] NOT NULL
+);
+
+
+ALTER TABLE public.chat_message OWNER TO "example-misskey-user";
+
+--
+-- Name: chat_room; Type: TABLE; Schema: public; Owner: example-misskey-user
+--
+
+CREATE TABLE public.chat_room (
+    id character varying(32) NOT NULL,
+    name character varying(256) NOT NULL,
+    "ownerId" character varying(32) NOT NULL,
+    description character varying(2048) DEFAULT ''::character varying NOT NULL,
+    "isArchived" boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.chat_room OWNER TO "example-misskey-user";
+
+--
+-- Name: chat_room_invitation; Type: TABLE; Schema: public; Owner: example-misskey-user
+--
+
+CREATE TABLE public.chat_room_invitation (
+    id character varying(32) NOT NULL,
+    "userId" character varying(32) NOT NULL,
+    "roomId" character varying(32) NOT NULL,
+    ignored boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.chat_room_invitation OWNER TO "example-misskey-user";
+
+--
+-- Name: chat_room_membership; Type: TABLE; Schema: public; Owner: example-misskey-user
+--
+
+CREATE TABLE public.chat_room_membership (
+    id character varying(32) NOT NULL,
+    "userId" character varying(32) NOT NULL,
+    "roomId" character varying(32) NOT NULL,
+    "isMuted" boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.chat_room_membership OWNER TO "example-misskey-user";
 
 --
 -- Name: clip; Type: TABLE; Schema: public; Owner: example-misskey-user
@@ -3688,7 +3764,8 @@ CREATE TABLE public.role (
     "iconUrl" character varying(512),
     "asBadge" boolean DEFAULT false NOT NULL,
     "displayOrder" integer DEFAULT 0 NOT NULL,
-    "isExplorable" boolean DEFAULT false NOT NULL
+    "isExplorable" boolean DEFAULT false NOT NULL,
+    "preserveAssignmentOnMoveAccount" boolean DEFAULT false NOT NULL
 );
 
 
@@ -3856,7 +3933,8 @@ CREATE TABLE public."user" (
     score integer DEFAULT 0 NOT NULL,
     "requireSigninToViewContents" boolean DEFAULT false NOT NULL,
     "makeNotesFollowersOnlyBefore" integer,
-    "makeNotesHiddenBefore" integer
+    "makeNotesHiddenBefore" integer,
+    "chatScope" character varying(128) DEFAULT 'mutual'::character varying NOT NULL
 );
 
 
@@ -4827,6 +4905,27 @@ COPY public.__chart__active_users (id, date, "unique_temp___registeredWithinWeek
 8	1743418800	{a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001}	1	{}	0	{}	0	{}	0	0	{a5z29df4lul70001,a5z29df4lul70001}	1	{}	0
 1	1743328800	{}	1	{}	1	{}	1	{}	0	{}	0	{}	0	0	{}	1	{}	0
 2	1743332400	{}	1	{}	1	{}	1	{}	0	{}	0	{}	0	0	{}	1	{}	0
+21	1745499600	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+10	1745409600	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+9	1745406000	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	1	{}	1	{}	1
+15	1745463600	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+16	1745467200	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+12	1745416800	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+13	1745420400	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+17	1745470800	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+18	1745474400	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+19	1745488800	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+20	1745492400	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+11	1745413200	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+14	1745424000	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+28	1746266400	{}	0	{}	0	{}	1	{}	1	{}	1	{}	0	0	{}	1	{}	0
+22	1745503200	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	1	{}	1	{}	1
+23	1745539200	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+24	1745629200	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	1	{}	1	{}	1
+25	1745665200	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+26	1745676000	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+29	1746280800	{}	0	{}	0	{}	1	{}	1	{}	1	{}	0	0	{}	1	{}	0
+27	1746244800	{}	0	{}	0	{}	1	{}	1	{}	1	{}	0	0	{}	1	{}	0
 \.
 
 
@@ -4843,6 +4942,7 @@ COPY public.__chart__ap_request (id, date, "___deliverFailed", "___deliverSuccee
 --
 
 COPY public.__chart__drive (id, date, "___local_incCount", "___local_incSize", "___local_decCount", "___local_decSize", "___remote_incCount", "___remote_incSize", "___remote_decCount", "___remote_decSize") FROM stdin;
+1	1745406000	7	167	0	0	0	0	0	0
 \.
 
 
@@ -4886,6 +4986,183 @@ COPY public.__chart__federation (id, date, "unique_temp___deliveredInstances", "
 33	1743505200	{}	0	{}	0	{}	0	0	0	0	0	0
 34	1743508800	{}	0	{}	0	{}	0	0	0	0	0	0
 35	1743512400	{}	0	{}	0	{}	0	0	0	0	0	0
+51	1745456400	{}	0	{}	0	{}	0	0	0	0	0	0
+52	1745460000	{}	0	{}	0	{}	0	0	0	0	0	0
+53	1745463600	{}	0	{}	0	{}	0	0	0	0	0	0
+54	1745467200	{}	0	{}	0	{}	0	0	0	0	0	0
+55	1745474400	{}	0	{}	0	{}	0	0	0	0	0	0
+56	1745478000	{}	0	{}	0	{}	0	0	0	0	0	0
+57	1745481600	{}	0	{}	0	{}	0	0	0	0	0	0
+58	1745485200	{}	0	{}	0	{}	0	0	0	0	0	0
+59	1745488800	{}	0	{}	0	{}	0	0	0	0	0	0
+60	1745492400	{}	0	{}	0	{}	0	0	0	0	0	0
+61	1745496000	{}	0	{}	0	{}	0	0	0	0	0	0
+62	1745499600	{}	0	{}	0	{}	0	0	0	0	0	0
+63	1745503200	{}	0	{}	0	{}	0	0	0	0	0	0
+64	1745506800	{}	0	{}	0	{}	0	0	0	0	0	0
+50	1745452800	{}	0	{}	0	{}	0	0	0	0	0	0
+36	1745402400	{}	0	{}	0	{}	0	0	0	0	0	0
+37	1745406000	{}	0	{}	0	{}	0	0	0	0	0	0
+38	1745409600	{}	0	{}	0	{}	0	0	0	0	0	0
+39	1745413200	{}	0	{}	0	{}	0	0	0	0	0	0
+40	1745416800	{}	0	{}	0	{}	0	0	0	0	0	0
+41	1745420400	{}	0	{}	0	{}	0	0	0	0	0	0
+42	1745424000	{}	0	{}	0	{}	0	0	0	0	0	0
+43	1745427600	{}	0	{}	0	{}	0	0	0	0	0	0
+44	1745431200	{}	0	{}	0	{}	0	0	0	0	0	0
+45	1745434800	{}	0	{}	0	{}	0	0	0	0	0	0
+46	1745438400	{}	0	{}	0	{}	0	0	0	0	0	0
+47	1745442000	{}	0	{}	0	{}	0	0	0	0	0	0
+48	1745445600	{}	0	{}	0	{}	0	0	0	0	0	0
+49	1745449200	{}	0	{}	0	{}	0	0	0	0	0	0
+113	1745722800	{}	0	{}	0	{}	0	0	0	0	0	0
+114	1745726400	{}	0	{}	0	{}	0	0	0	0	0	0
+115	1745730000	{}	0	{}	0	{}	0	0	0	0	0	0
+116	1745733600	{}	0	{}	0	{}	0	0	0	0	0	0
+117	1745737200	{}	0	{}	0	{}	0	0	0	0	0	0
+118	1745740800	{}	0	{}	0	{}	0	0	0	0	0	0
+65	1745510400	{}	0	{}	0	{}	0	0	0	0	0	0
+66	1745514000	{}	0	{}	0	{}	0	0	0	0	0	0
+67	1745517600	{}	0	{}	0	{}	0	0	0	0	0	0
+68	1745521200	{}	0	{}	0	{}	0	0	0	0	0	0
+69	1745524800	{}	0	{}	0	{}	0	0	0	0	0	0
+70	1745528400	{}	0	{}	0	{}	0	0	0	0	0	0
+71	1745532000	{}	0	{}	0	{}	0	0	0	0	0	0
+72	1745535600	{}	0	{}	0	{}	0	0	0	0	0	0
+73	1745539200	{}	0	{}	0	{}	0	0	0	0	0	0
+110	1745712000	{}	0	{}	0	{}	0	0	0	0	0	0
+111	1745715600	{}	0	{}	0	{}	0	0	0	0	0	0
+112	1745719200	{}	0	{}	0	{}	0	0	0	0	0	0
+119	1745744400	{}	0	{}	0	{}	0	0	0	0	0	0
+120	1745748000	{}	0	{}	0	{}	0	0	0	0	0	0
+121	1745751600	{}	0	{}	0	{}	0	0	0	0	0	0
+122	1745755200	{}	0	{}	0	{}	0	0	0	0	0	0
+123	1745758800	{}	0	{}	0	{}	0	0	0	0	0	0
+124	1745762400	{}	0	{}	0	{}	0	0	0	0	0	0
+125	1745766000	{}	0	{}	0	{}	0	0	0	0	0	0
+126	1745769600	{}	0	{}	0	{}	0	0	0	0	0	0
+127	1745773200	{}	0	{}	0	{}	0	0	0	0	0	0
+128	1745776800	{}	0	{}	0	{}	0	0	0	0	0	0
+129	1745780400	{}	0	{}	0	{}	0	0	0	0	0	0
+130	1745784000	{}	0	{}	0	{}	0	0	0	0	0	0
+131	1745787600	{}	0	{}	0	{}	0	0	0	0	0	0
+132	1745791200	{}	0	{}	0	{}	0	0	0	0	0	0
+133	1745794800	{}	0	{}	0	{}	0	0	0	0	0	0
+86	1745625600	{}	0	{}	0	{}	0	0	0	0	0	0
+87	1745629200	{}	0	{}	0	{}	0	0	0	0	0	0
+88	1745632800	{}	0	{}	0	{}	0	0	0	0	0	0
+89	1745636400	{}	0	{}	0	{}	0	0	0	0	0	0
+90	1745640000	{}	0	{}	0	{}	0	0	0	0	0	0
+91	1745643600	{}	0	{}	0	{}	0	0	0	0	0	0
+92	1745647200	{}	0	{}	0	{}	0	0	0	0	0	0
+93	1745650800	{}	0	{}	0	{}	0	0	0	0	0	0
+94	1745654400	{}	0	{}	0	{}	0	0	0	0	0	0
+95	1745658000	{}	0	{}	0	{}	0	0	0	0	0	0
+96	1745661600	{}	0	{}	0	{}	0	0	0	0	0	0
+97	1745665200	{}	0	{}	0	{}	0	0	0	0	0	0
+98	1745668800	{}	0	{}	0	{}	0	0	0	0	0	0
+99	1745672400	{}	0	{}	0	{}	0	0	0	0	0	0
+100	1745676000	{}	0	{}	0	{}	0	0	0	0	0	0
+101	1745679600	{}	0	{}	0	{}	0	0	0	0	0	0
+102	1745683200	{}	0	{}	0	{}	0	0	0	0	0	0
+103	1745686800	{}	0	{}	0	{}	0	0	0	0	0	0
+104	1745690400	{}	0	{}	0	{}	0	0	0	0	0	0
+105	1745694000	{}	0	{}	0	{}	0	0	0	0	0	0
+106	1745697600	{}	0	{}	0	{}	0	0	0	0	0	0
+107	1745701200	{}	0	{}	0	{}	0	0	0	0	0	0
+108	1745704800	{}	0	{}	0	{}	0	0	0	0	0	0
+109	1745708400	{}	0	{}	0	{}	0	0	0	0	0	0
+74	1745542800	{}	0	{}	0	{}	0	0	0	0	0	0
+75	1745546400	{}	0	{}	0	{}	0	0	0	0	0	0
+76	1745550000	{}	0	{}	0	{}	0	0	0	0	0	0
+77	1745553600	{}	0	{}	0	{}	0	0	0	0	0	0
+78	1745557200	{}	0	{}	0	{}	0	0	0	0	0	0
+79	1745560800	{}	0	{}	0	{}	0	0	0	0	0	0
+80	1745564400	{}	0	{}	0	{}	0	0	0	0	0	0
+81	1745568000	{}	0	{}	0	{}	0	0	0	0	0	0
+82	1745571600	{}	0	{}	0	{}	0	0	0	0	0	0
+83	1745575200	{}	0	{}	0	{}	0	0	0	0	0	0
+84	1745578800	{}	0	{}	0	{}	0	0	0	0	0	0
+85	1745582400	{}	0	{}	0	{}	0	0	0	0	0	0
+134	1745798400	{}	0	{}	0	{}	0	0	0	0	0	0
+135	1745802000	{}	0	{}	0	{}	0	0	0	0	0	0
+136	1745805600	{}	0	{}	0	{}	0	0	0	0	0	0
+137	1745809200	{}	0	{}	0	{}	0	0	0	0	0	0
+138	1745812800	{}	0	{}	0	{}	0	0	0	0	0	0
+139	1745816400	{}	0	{}	0	{}	0	0	0	0	0	0
+140	1745820000	{}	0	{}	0	{}	0	0	0	0	0	0
+141	1745823600	{}	0	{}	0	{}	0	0	0	0	0	0
+142	1745827200	{}	0	{}	0	{}	0	0	0	0	0	0
+143	1745830800	{}	0	{}	0	{}	0	0	0	0	0	0
+144	1745834400	{}	0	{}	0	{}	0	0	0	0	0	0
+145	1745838000	{}	0	{}	0	{}	0	0	0	0	0	0
+146	1745841600	{}	0	{}	0	{}	0	0	0	0	0	0
+147	1745845200	{}	0	{}	0	{}	0	0	0	0	0	0
+148	1745848800	{}	0	{}	0	{}	0	0	0	0	0	0
+149	1745852400	{}	0	{}	0	{}	0	0	0	0	0	0
+150	1745856000	{}	0	{}	0	{}	0	0	0	0	0	0
+162	1746230400	{}	0	{}	0	{}	0	0	0	0	0	0
+163	1746234000	{}	0	{}	0	{}	0	0	0	0	0	0
+164	1746237600	{}	0	{}	0	{}	0	0	0	0	0	0
+165	1746241200	{}	0	{}	0	{}	0	0	0	0	0	0
+166	1746244800	{}	0	{}	0	{}	0	0	0	0	0	0
+167	1746248400	{}	0	{}	0	{}	0	0	0	0	0	0
+168	1746252000	{}	0	{}	0	{}	0	0	0	0	0	0
+169	1746255600	{}	0	{}	0	{}	0	0	0	0	0	0
+170	1746259200	{}	0	{}	0	{}	0	0	0	0	0	0
+171	1746262800	{}	0	{}	0	{}	0	0	0	0	0	0
+172	1746266400	{}	0	{}	0	{}	0	0	0	0	0	0
+186	1746316800	{}	0	{}	0	{}	0	0	0	0	0	0
+187	1746320400	{}	0	{}	0	{}	0	0	0	0	0	0
+188	1746324000	{}	0	{}	0	{}	0	0	0	0	0	0
+189	1746327600	{}	0	{}	0	{}	0	0	0	0	0	0
+190	1746345600	{}	0	{}	0	{}	0	0	0	0	0	0
+191	1746349200	{}	0	{}	0	{}	0	0	0	0	0	0
+192	1746352800	{}	0	{}	0	{}	0	0	0	0	0	0
+193	1746356400	{}	0	{}	0	{}	0	0	0	0	0	0
+194	1746360000	{}	0	{}	0	{}	0	0	0	0	0	0
+195	1746363600	{}	0	{}	0	{}	0	0	0	0	0	0
+196	1746367200	{}	0	{}	0	{}	0	0	0	0	0	0
+197	1746370800	{}	0	{}	0	{}	0	0	0	0	0	0
+198	1746374400	{}	0	{}	0	{}	0	0	0	0	0	0
+199	1746378000	{}	0	{}	0	{}	0	0	0	0	0	0
+200	1746381600	{}	0	{}	0	{}	0	0	0	0	0	0
+201	1746385200	{}	0	{}	0	{}	0	0	0	0	0	0
+202	1746388800	{}	0	{}	0	{}	0	0	0	0	0	0
+203	1746392400	{}	0	{}	0	{}	0	0	0	0	0	0
+204	1746396000	{}	0	{}	0	{}	0	0	0	0	0	0
+205	1746399600	{}	0	{}	0	{}	0	0	0	0	0	0
+173	1746270000	{}	0	{}	0	{}	0	0	0	0	0	0
+174	1746273600	{}	0	{}	0	{}	0	0	0	0	0	0
+175	1746277200	{}	0	{}	0	{}	0	0	0	0	0	0
+176	1746280800	{}	0	{}	0	{}	0	0	0	0	0	0
+177	1746284400	{}	0	{}	0	{}	0	0	0	0	0	0
+178	1746288000	{}	0	{}	0	{}	0	0	0	0	0	0
+179	1746291600	{}	0	{}	0	{}	0	0	0	0	0	0
+151	1746190800	{}	0	{}	0	{}	0	0	0	0	0	0
+180	1746295200	{}	0	{}	0	{}	0	0	0	0	0	0
+181	1746298800	{}	0	{}	0	{}	0	0	0	0	0	0
+182	1746302400	{}	0	{}	0	{}	0	0	0	0	0	0
+183	1746306000	{}	0	{}	0	{}	0	0	0	0	0	0
+184	1746309600	{}	0	{}	0	{}	0	0	0	0	0	0
+185	1746313200	{}	0	{}	0	{}	0	0	0	0	0	0
+152	1746194400	{}	0	{}	0	{}	0	0	0	0	0	0
+153	1746198000	{}	0	{}	0	{}	0	0	0	0	0	0
+154	1746201600	{}	0	{}	0	{}	0	0	0	0	0	0
+155	1746205200	{}	0	{}	0	{}	0	0	0	0	0	0
+156	1746208800	{}	0	{}	0	{}	0	0	0	0	0	0
+157	1746212400	{}	0	{}	0	{}	0	0	0	0	0	0
+158	1746216000	{}	0	{}	0	{}	0	0	0	0	0	0
+159	1746219600	{}	0	{}	0	{}	0	0	0	0	0	0
+160	1746223200	{}	0	{}	0	{}	0	0	0	0	0	0
+161	1746226800	{}	0	{}	0	{}	0	0	0	0	0	0
+206	1746403200	{}	0	{}	0	{}	0	0	0	0	0	0
+207	1746406800	{}	0	{}	0	{}	0	0	0	0	0	0
+208	1746410400	{}	0	{}	0	{}	0	0	0	0	0	0
+209	1746414000	{}	0	{}	0	{}	0	0	0	0	0	0
+210	1746417600	{}	0	{}	0	{}	0	0	0	0	0	0
+211	1746421200	{}	0	{}	0	{}	0	0	0	0	0	0
+212	1746424800	{}	0	{}	0	{}	0	0	0	0	0	0
 \.
 
 
@@ -4919,6 +5196,16 @@ COPY public.__chart__network (id, date, "___incomingRequests", "___outgoingReque
 
 COPY public.__chart__notes (id, date, ___local_total, ___local_inc, ___local_dec, ___local_diffs_normal, ___local_diffs_reply, ___local_diffs_renote, ___remote_total, ___remote_inc, ___remote_dec, ___remote_diffs_normal, ___remote_diffs_reply, ___remote_diffs_renote, "___local_diffs_withFile", "___remote_diffs_withFile") FROM stdin;
 1	1743465600	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+2	1745406000	3	2	0	2	0	0	0	0	0	0	0	0	2	0
+3	1745452800	4	0	0	0	0	0	0	0	0	0	0	0	0	0
+4	1745503200	6	2	0	2	0	0	0	0	0	0	0	0	0	0
+5	1745539200	6	0	0	0	0	0	0	0	0	0	0	0	0	0
+6	1745629200	7	1	0	1	0	0	0	0	0	0	0	0	0	0
+7	1745712000	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+8	1745798400	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+9	1746230400	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+10	1746316800	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+11	1746403200	7	0	0	0	0	0	0	0	0	0	0	0	0	0
 \.
 
 
@@ -4927,6 +5214,7 @@ COPY public.__chart__notes (id, date, ___local_total, ___local_inc, ___local_dec
 --
 
 COPY public.__chart__per_user_drive (id, date, "group", "___totalCount", "___totalSize", "___incCount", "___incSize", "___decCount", "___decSize") FROM stdin;
+1	1745406000	a5z29df4lul70001	7	167	7	167	0	0
 \.
 
 
@@ -4943,6 +5231,9 @@ COPY public.__chart__per_user_following (id, date, "group", ___local_followings_
 --
 
 COPY public.__chart__per_user_notes (id, date, "group", ___total, ___inc, ___dec, ___diffs_normal, ___diffs_reply, ___diffs_renote, "___diffs_withFile") FROM stdin;
+1	1745406000	a5z29df4lul70001	2	2	0	2	0	0	2
+2	1745503200	a5z29df4lul70001	4	2	0	2	0	0	0
+3	1745629200	a5z29df4lul70001	5	1	0	1	0	0	0
 \.
 
 
@@ -4994,6 +5285,13 @@ COPY public.__chart__test_unique (id, date, "group", ___foo) FROM stdin;
 COPY public.__chart__users (id, date, ___local_total, ___local_inc, ___local_dec, ___remote_total, ___remote_inc, ___remote_dec) FROM stdin;
 1	1743328800	1	1	0	0	0	0
 2	1743465600	2	0	0	0	0	0
+3	1745452800	2	0	0	0	0	0
+4	1745539200	2	0	0	0	0	0
+5	1745712000	2	0	0	0	0	0
+6	1745798400	2	0	0	0	0	0
+7	1746230400	2	0	0	0	0	0
+8	1746316800	2	0	0	0	0	0
+9	1746403200	2	0	0	0	0	0
 \.
 
 
@@ -5004,6 +5302,11 @@ COPY public.__chart__users (id, date, ___local_total, ___local_inc, ___local_dec
 COPY public.__chart_day__active_users (id, date, "unique_temp___registeredWithinWeek", "___registeredWithinWeek", "unique_temp___registeredWithinMonth", "___registeredWithinMonth", "unique_temp___registeredWithinYear", "___registeredWithinYear", "unique_temp___registeredOutsideWeek", "___registeredOutsideWeek", "unique_temp___registeredOutsideMonth", "___registeredOutsideMonth", "unique_temp___registeredOutsideYear", "___registeredOutsideYear", "___readWrite", unique_temp___read, ___read, unique_temp___write, ___write) FROM stdin;
 2	1743379200	{a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001}	1	{}	0	{}	0	{}	0	0	{a5z29df4lul70001,a5z29df4lul70001}	1	{}	0
 1	1743292800	{}	1	{}	1	{}	1	{}	0	{}	0	{}	0	0	{}	1	{}	0
+3	1745366400	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	1	{}	1	{}	1
+7	1746230400	{}	0	{}	0	{}	1	{}	1	{}	1	{}	0	0	{}	1	{}	0
+4	1745452800	{}	0	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{}	0	{}	0	1	{a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001,a5z29df4lul70001}	1	{a5z29df4lul70001}	1
+5	1745539200	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	0	{}	1	{}	0
+6	1745625600	{}	0	{}	1	{}	1	{}	1	{}	0	{}	0	1	{}	1	{}	1
 \.
 
 
@@ -5020,6 +5323,7 @@ COPY public.__chart_day__ap_request (id, date, "___deliverFailed", "___deliverSu
 --
 
 COPY public.__chart_day__drive (id, date, "___local_incCount", "___local_incSize", "___local_decCount", "___local_decSize", "___remote_incCount", "___remote_incSize", "___remote_decCount", "___remote_decSize") FROM stdin;
+1	1745366400	7	167	0	0	0	0	0	0
 \.
 
 
@@ -5031,6 +5335,16 @@ COPY public.__chart_day__federation (id, date, "unique_temp___deliveredInstances
 2	1743379200	{}	0	{}	0	{}	0	0	0	0	0	0
 1	1743292800	{}	0	{}	0	{}	0	0	0	0	0	0
 3	1743465600	{}	0	{}	0	{}	0	0	0	0	0	0
+6	1745539200	{}	0	{}	0	{}	0	0	0	0	0	0
+10	1746144000	{}	0	{}	0	{}	0	0	0	0	0	0
+8	1745712000	{}	0	{}	0	{}	0	0	0	0	0	0
+7	1745625600	{}	0	{}	0	{}	0	0	0	0	0	0
+5	1745452800	{}	0	{}	0	{}	0	0	0	0	0	0
+4	1745366400	{}	0	{}	0	{}	0	0	0	0	0	0
+12	1746316800	{}	0	{}	0	{}	0	0	0	0	0	0
+11	1746230400	{}	0	{}	0	{}	0	0	0	0	0	0
+9	1745798400	{}	0	{}	0	{}	0	0	0	0	0	0
+13	1746403200	{}	0	{}	0	{}	0	0	0	0	0	0
 \.
 
 
@@ -5064,6 +5378,15 @@ COPY public.__chart_day__network (id, date, "___incomingRequests", "___outgoingR
 
 COPY public.__chart_day__notes (id, date, ___local_total, ___local_inc, ___local_dec, ___local_diffs_normal, ___local_diffs_reply, ___local_diffs_renote, ___remote_total, ___remote_inc, ___remote_dec, ___remote_diffs_normal, ___remote_diffs_reply, ___remote_diffs_renote, "___local_diffs_withFile", "___remote_diffs_withFile") FROM stdin;
 1	1743465600	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+2	1745366400	3	2	0	2	0	0	0	0	0	0	0	0	2	0
+3	1745452800	6	2	0	2	0	0	0	0	0	0	0	0	0	0
+4	1745539200	6	0	0	0	0	0	0	0	0	0	0	0	0	0
+5	1745625600	7	1	0	1	0	0	0	0	0	0	0	0	0	0
+6	1745712000	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+7	1745798400	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+8	1746230400	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+9	1746316800	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+10	1746403200	7	0	0	0	0	0	0	0	0	0	0	0	0	0
 \.
 
 
@@ -5072,6 +5395,7 @@ COPY public.__chart_day__notes (id, date, ___local_total, ___local_inc, ___local
 --
 
 COPY public.__chart_day__per_user_drive (id, date, "group", "___totalCount", "___totalSize", "___incCount", "___incSize", "___decCount", "___decSize") FROM stdin;
+1	1745366400	a5z29df4lul70001	7	167	7	167	0	0
 \.
 
 
@@ -5088,6 +5412,9 @@ COPY public.__chart_day__per_user_following (id, date, "group", ___local_followi
 --
 
 COPY public.__chart_day__per_user_notes (id, date, "group", ___total, ___inc, ___dec, ___diffs_normal, ___diffs_reply, ___diffs_renote, "___diffs_withFile") FROM stdin;
+1	1745366400	a5z29df4lul70001	2	2	0	2	0	0	2
+2	1745452800	a5z29df4lul70001	4	2	0	2	0	0	0
+3	1745625600	a5z29df4lul70001	5	1	0	1	0	0	0
 \.
 
 
@@ -5115,6 +5442,13 @@ COPY public.__chart_day__per_user_reaction (id, date, "group", ___local_count, _
 COPY public.__chart_day__users (id, date, ___local_total, ___local_inc, ___local_dec, ___remote_total, ___remote_inc, ___remote_dec) FROM stdin;
 1	1743292800	1	1	0	0	0	0
 2	1743465600	2	0	0	0	0	0
+3	1745452800	2	0	0	0	0	0
+4	1745539200	2	0	0	0	0	0
+5	1745712000	2	0	0	0	0	0
+6	1745798400	2	0	0	0	0	0
+7	1746230400	2	0	0	0	0	0
+8	1746316800	2	0	0	0	0	0
+9	1746403200	2	0	0	0	0	0
 \.
 
 
@@ -5140,7 +5474,7 @@ COPY public.abuse_user_report (id, "targetUserId", "reporterId", "assigneeId", r
 
 COPY public.access_token (id, token, hash, "userId", "appId", "lastUsedAt", session, name, description, "iconUrl", permission, fetched) FROM stdin;
 a5z4yywalul70006	nKsSRdlVEbypRhM2BM8ftQLFqp2r8UjQ	nKsSRdlVEbypRhM2BM8ftQLFqp2r8UjQ	a5z29df4lul70001	\N	2025-03-30 11:43:38.794+00	e5cc2d14-2bb2-4893-b388-181377c66c64	mi-desk-app-test	\N	\N	{read:account,write:account,read:blocks,write:blocks,read:drive,write:drive,read:favorites,write:favorites,read:following,write:following,read:messaging,write:messaging,read:mutes,write:mutes,write:notes,read:notifications,write:notifications,read:reactions,write:reactions,write:votes,read:pages,write:pages,write:page-likes,read:page-likes,read:user-groups,write:user-groups,read:channels,write:channels,read:gallery,write:gallery,read:gallery-likes,write:gallery-likes,read:flash,write:flash,read:flash-likes,write:flash-likes,read:admin:abuse-user-reports,write:admin:delete-account,write:admin:delete-all-files-of-a-user,read:admin:index-stats,read:admin:table-stats,read:admin:user-ips,read:admin:meta,write:admin:reset-password,write:admin:resolve-abuse-user-report,write:admin:send-email,read:admin:server-info,read:admin:show-moderation-log,read:admin:show-user,write:admin:suspend-user,write:admin:unset-user-avatar,write:admin:unset-user-banner,write:admin:unsuspend-user,write:admin:meta,write:admin:user-note,write:admin:roles,read:admin:roles,write:admin:relays,read:admin:relays,write:admin:invite-codes,read:admin:invite-codes,write:admin:announcements,read:admin:announcements,write:admin:avatar-decorations,read:admin:avatar-decorations,write:admin:federation,write:admin:account,read:admin:account,write:admin:emoji,read:admin:emoji,write:admin:queue,read:admin:queue,write:admin:promo,write:admin:drive,read:admin:drive,write:admin:ad,read:admin:ad,write:invite-codes,read:invite-codes,write:clip-favorite,read:clip-favorite,read:federation,write:report-abuse}	f
-a5z9alxqlul70007	PK00RQIpfmS1diD38HCzB1Pmz055BvFG	PK00RQIpfmS1diD38HCzB1Pmz055BvFG	a5z29df4lul70001	\N	2025-03-31 11:10:53.634+00	ea03d249-7aee-4aed-9792-71b462fb7a61	mi-desk-app-test	\N	\N	{read:account,write:account,read:blocks,write:blocks,read:drive,write:drive,read:favorites,write:favorites,read:following,write:following,read:messaging,write:messaging,read:mutes,write:mutes,write:notes,read:notifications,write:notifications,read:reactions,write:reactions,write:votes,read:pages,write:pages,write:page-likes,read:page-likes,read:user-groups,write:user-groups,read:channels,write:channels,read:gallery,write:gallery,read:gallery-likes,write:gallery-likes,read:flash,write:flash,read:flash-likes,write:flash-likes,read:admin:abuse-user-reports,write:admin:delete-account,write:admin:delete-all-files-of-a-user,read:admin:index-stats,read:admin:table-stats,read:admin:user-ips,read:admin:meta,write:admin:reset-password,write:admin:resolve-abuse-user-report,write:admin:send-email,read:admin:server-info,read:admin:show-moderation-log,read:admin:show-user,write:admin:suspend-user,write:admin:unset-user-avatar,write:admin:unset-user-banner,write:admin:unsuspend-user,write:admin:meta,write:admin:user-note,write:admin:roles,read:admin:roles,write:admin:relays,read:admin:relays,write:admin:invite-codes,read:admin:invite-codes,write:admin:announcements,read:admin:announcements,write:admin:avatar-decorations,read:admin:avatar-decorations,write:admin:federation,write:admin:account,read:admin:account,write:admin:emoji,read:admin:emoji,write:admin:queue,read:admin:queue,write:admin:promo,write:admin:drive,read:admin:drive,write:admin:ad,read:admin:ad,write:invite-codes,read:invite-codes,write:clip-favorite,read:clip-favorite,read:federation,write:report-abuse}	t
+a5z9alxqlul70007	PK00RQIpfmS1diD38HCzB1Pmz055BvFG	PK00RQIpfmS1diD38HCzB1Pmz055BvFG	a5z29df4lul70001	\N	2025-04-26 11:06:25.25+00	ea03d249-7aee-4aed-9792-71b462fb7a61	mi-desk-app-test	\N	\N	{read:account,write:account,read:blocks,write:blocks,read:drive,write:drive,read:favorites,write:favorites,read:following,write:following,read:messaging,write:messaging,read:mutes,write:mutes,write:notes,read:notifications,write:notifications,read:reactions,write:reactions,write:votes,read:pages,write:pages,write:page-likes,read:page-likes,read:user-groups,write:user-groups,read:channels,write:channels,read:gallery,write:gallery,read:gallery-likes,write:gallery-likes,read:flash,write:flash,read:flash-likes,write:flash-likes,read:admin:abuse-user-reports,write:admin:delete-account,write:admin:delete-all-files-of-a-user,read:admin:index-stats,read:admin:table-stats,read:admin:user-ips,read:admin:meta,write:admin:reset-password,write:admin:resolve-abuse-user-report,write:admin:send-email,read:admin:server-info,read:admin:show-moderation-log,read:admin:show-user,write:admin:suspend-user,write:admin:unset-user-avatar,write:admin:unset-user-banner,write:admin:unsuspend-user,write:admin:meta,write:admin:user-note,write:admin:roles,read:admin:roles,write:admin:relays,read:admin:relays,write:admin:invite-codes,read:admin:invite-codes,write:admin:announcements,read:admin:announcements,write:admin:avatar-decorations,read:admin:avatar-decorations,write:admin:federation,write:admin:account,read:admin:account,write:admin:emoji,read:admin:emoji,write:admin:queue,read:admin:queue,write:admin:promo,write:admin:drive,read:admin:drive,write:admin:ad,read:admin:ad,write:invite-codes,read:invite-codes,write:clip-favorite,read:clip-favorite,read:federation,write:report-abuse}	t
 \.
 
 
@@ -5172,7 +5506,7 @@ COPY public.announcement_read (id, "userId", "announcementId") FROM stdin;
 -- Data for Name: antenna; Type: TABLE DATA; Schema: public; Owner: example-misskey-user
 --
 
-COPY public.antenna (id, "userId", name, src, "userListId", keywords, "withFile", expression, "caseSensitive", "withReplies", users, "excludeKeywords", "lastUsedAt", "isActive", "localOnly", "excludeBots") FROM stdin;
+COPY public.antenna (id, "userId", name, src, "userListId", keywords, "withFile", expression, "caseSensitive", "withReplies", users, "excludeKeywords", "lastUsedAt", "isActive", "localOnly", "excludeBots", "excludeNotesInSensitiveChannel") FROM stdin;
 \.
 
 
@@ -5249,6 +5583,46 @@ COPY public.channel_note_pining (id, "createdAt", "channelId", "noteId") FROM st
 
 
 --
+-- Data for Name: chat_approval; Type: TABLE DATA; Schema: public; Owner: example-misskey-user
+--
+
+COPY public.chat_approval (id, "userId", "otherId") FROM stdin;
+\.
+
+
+--
+-- Data for Name: chat_message; Type: TABLE DATA; Schema: public; Owner: example-misskey-user
+--
+
+COPY public.chat_message (id, "fromUserId", "toUserId", "toRoomId", text, uri, reads, "fileId", reactions) FROM stdin;
+\.
+
+
+--
+-- Data for Name: chat_room; Type: TABLE DATA; Schema: public; Owner: example-misskey-user
+--
+
+COPY public.chat_room (id, name, "ownerId", description, "isArchived") FROM stdin;
+\.
+
+
+--
+-- Data for Name: chat_room_invitation; Type: TABLE DATA; Schema: public; Owner: example-misskey-user
+--
+
+COPY public.chat_room_invitation (id, "userId", "roomId", ignored) FROM stdin;
+\.
+
+
+--
+-- Data for Name: chat_room_membership; Type: TABLE DATA; Schema: public; Owner: example-misskey-user
+--
+
+COPY public.chat_room_membership (id, "userId", "roomId", "isMuted") FROM stdin;
+\.
+
+
+--
 -- Data for Name: clip; Type: TABLE DATA; Schema: public; Owner: example-misskey-user
 --
 
@@ -5277,6 +5651,14 @@ COPY public.clip_note (id, "noteId", "clipId") FROM stdin;
 --
 
 COPY public.drive_file (id, "userId", "userHost", md5, name, type, size, comment, properties, "storedInternal", url, "thumbnailUrl", "webpublicUrl", "accessKey", "thumbnailAccessKey", "webpublicAccessKey", uri, src, "folderId", "isSensitive", "isLink", blurhash, "webpublicType", "requestHeaders", "requestIp", "maybeSensitive", "maybePorn") FROM stdin;
+a6xdmezf4xwb0005	a5z29df4lul70001	\N	c3e059caa9078ac9a3a64d55b9cab79e	スクリーンショット 2025-04-22 222715.png.webp	image/webp	25148	\N	{"width": 585, "height": 325}	t	http://localhost:3002/files/852333e3-83ba-471b-af5d-ddf6d688523b	http://localhost:3002/files/thumbnail-80c33154-3ce7-40c5-9209-1d7ca50c4933	\N	852333e3-83ba-471b-af5d-ddf6d688523b	thumbnail-80c33154-3ce7-40c5-9209-1d7ca50c4933	webpublic-b3767978-cbf1-406c-a2f5-d5ece99692c8	\N	\N	\N	f	f	e57_4k$lSvsES0~Dx@MykVRjISnPo|V[t7M{oeayR*ofV]tQV[WUjb	\N	\N	\N	f	f
+a6xdq8y59ex40003	a5z29df4lul70001	\N	0360901b5458065b93d809d498a6bac4	スクリーンショット 2025-04-22 222800.webp	image/webp	6508	\N	{"width": 171, "height": 104}	t	http://localhost:3002/files/8760bed7-279a-41c8-bdd6-b4bbd6f0cfde	http://localhost:3002/files/thumbnail-d49cd06b-5cd1-4b79-85d0-fc295b9465c0	\N	8760bed7-279a-41c8-bdd6-b4bbd6f0cfde	thumbnail-d49cd06b-5cd1-4b79-85d0-fc295b9465c0	webpublic-07c61bd5-956d-45e2-b04c-17d21e611b42	\N	\N	\N	f	f	e95$kxtjD7Vby-nmofbtkBagQDnly-o{QqtQkCaLazkBofofbFj[af	\N	\N	\N	f	f
+a6xdq8z19ex40005	a5z29df4lul70001	\N	2e81191c67fcca43c05ad18dd391c123	スクリーンショット 2025-04-21 201156.webp	image/webp	714	\N	{"width": 95, "height": 44}	t	http://localhost:3002/files/870d7b33-0f34-4aaa-b729-1716da5e027a	http://localhost:3002/files/thumbnail-1d81e3f8-088f-40be-ae6d-1b16bc9d7ac8	\N	870d7b33-0f34-4aaa-b729-1716da5e027a	thumbnail-1d81e3f8-088f-40be-ae6d-1b16bc9d7ac8	webpublic-499118b2-05d2-410b-aab8-165decb8898c	\N	\N	\N	f	f	eZQvwSIUWBxu%MWBRjRjoft7~qxuayj[Rj?bt7t7WBRjRjofofWBj[	\N	\N	\N	f	f
+a6xdq8yp9ex40004	a5z29df4lul70001	\N	f0f7babb256193fa69562a31f368e316	スクリーンショット 2025-04-21 200622.webp	image/webp	12650	\N	{"width": 786, "height": 663}	t	http://localhost:3002/files/22e4dcb1-1933-4559-a5c0-7cd5b7d978d8	http://localhost:3002/files/thumbnail-cd093272-8f32-4def-a6e9-e8b98940df06	\N	22e4dcb1-1933-4559-a5c0-7cd5b7d978d8	thumbnail-cd093272-8f32-4def-a6e9-e8b98940df06	webpublic-592a9aed-b85a-4d79-9224-2ac0400f9c1a	\N	\N	\N	f	f	eNRMb%a#M{xuWA~qWBM{j[Rj00WBt7fQt7-;ayRkj[WBIUofj[WBay	\N	\N	\N	f	f
+a6xdq9009ex40006	a5z29df4lul70001	\N	1105f1123c90763f56d2efbf0e24bedc	スクリーンショット 2025-04-21 171756.webp	image/webp	25072	\N	{"width": 814, "height": 901}	t	http://localhost:3002/files/997d9d5b-9bd6-4e48-b658-88c6f5f155db	http://localhost:3002/files/thumbnail-03f33bce-9380-467c-93ea-8001622aa0cf	\N	997d9d5b-9bd6-4e48-b658-88c6f5f155db	thumbnail-03f33bce-9380-467c-93ea-8001622aa0cf	webpublic-21a5464d-f69e-4d0d-beb0-fa42c717b173	\N	\N	\N	f	f	eLJRgdt700xtD$-;ayM{j[j@00fQ~qWB%MD%j[%Mayof-;oLM{ayWB	\N	\N	\N	f	f
+a6xdq9029ex40007	a5z29df4lul70001	\N	9c9adeccebd7cc61d343c4ad633df582	スクリーンショット 2025-04-21 172805.webp	image/webp	22720	\N	{"width": 874, "height": 710}	t	http://localhost:3002/files/76a9f9ce-0c7c-4293-bc0a-dd473247bc79	http://localhost:3002/files/thumbnail-c14dde61-c4ba-421a-bef1-daea76d5ce87	\N	76a9f9ce-0c7c-4293-bc0a-dd473247bc79	thumbnail-c14dde61-c4ba-421a-bef1-daea76d5ce87	webpublic-0e663c45-bed0-4577-b3b1-bd5ab02d6468	\N	\N	\N	f	f	e04ef~~qMdD$D$m+%2SvNZS%%#b]a1n5RiM{oLt7ofoeIA%Lt7M{n%	\N	\N	\N	f	f
+a6xdq91o9ex40009	a5z29df4lul70001	\N	e13d1ce2d467670c0b898ea136addf8e	スクリーンショット 2025-04-21 191427.webp	image/webp	22246	\N	{"width": 999, "height": 905}	t	http://localhost:3002/files/54aea535-ef6b-4309-9b8e-9a95165cabc2	http://localhost:3002/files/thumbnail-b09893dd-4281-40d3-9493-a09611c22672	\N	54aea535-ef6b-4309-9b8e-9a95165cabc2	thumbnail-b09893dd-4281-40d3-9493-a09611c22672	webpublic-dbd01cb3-b189-4f1f-9748-ab594d441529	\N	\N	\N	f	f	eNIhstof00xtWB%MayRjj[j[00j[~qWBofIUj[xuayWB%Mj[M{fQj[	\N	\N	\N	f	f
+a6xdq91o9ex40008	a5z29df4lul70001	\N	b9826ed17fa2bafe6791a992df29cb77	スクリーンショット 2025-04-21 233256.webp	image/webp	76676	\N	{"width": 1752, "height": 1282}	t	http://localhost:3002/files/d07819e4-c1e1-413b-ac24-6c1c7c0a71e2	http://localhost:3002/files/thumbnail-31a34ab0-9276-4fb3-9945-c0cf0eada153	\N	d07819e4-c1e1-413b-ac24-6c1c7c0a71e2	thumbnail-31a34ab0-9276-4fb3-9945-c0cf0eada153	webpublic-47fc7629-597d-4f5a-b2a4-65feeef388a3	\N	\N	\N	f	f	e03lBp_N.8%hx]t7j[ogofoftQoztQtQtQt7ozt7j[j[tQtQtRoyt6	\N	\N	\N	f	f
 \.
 
 
@@ -5692,6 +6074,16 @@ COPY public.migrations (id, "timestamp", name) FROM stdin;
 308	1740993126937	SystemAccounts41740993126937
 309	1741279404074	SystemAccounts1741279404074
 310	1741424411879	UserFeaturedFixup1741424411879
+311	1736230492103	AddAntennaHideNotesInSensitiveChannel1736230492103
+312	1742203321812	Chat1742203321812
+313	1742608337548	Chat21742608337548
+314	1742617546147	Chat31742617546147
+315	1742707840715	Chat41742707840715
+316	1742721896936	Chat51742721896936
+317	1742795111958	Chat61742795111958
+318	1743558299182	RoleCopyOnMoveAccount1743558299182
+319	1744075766000	ExcludeNotesInSensitiveChannel1744075766000
+320	1745378064470	CompositeNoteIndex1745378064470
 \.
 
 
@@ -5719,6 +6111,12 @@ COPY public.muting (id, "muteeId", "muterId", "expiresAt") FROM stdin;
 
 COPY public.note (id, "replyId", "renoteId", text, name, cw, "userId", "localOnly", "renoteCount", "repliesCount", reactions, visibility, uri, "fileIds", "attachedFileTypes", "visibleUserIds", mentions, "mentionedRemoteUsers", emojis, tags, "hasPoll", "userHost", "replyUserId", "replyUserHost", "renoteUserId", "renoteUserHost", url, "channelId", "threadId", "reactionAcceptance", "clippedCount", "reactionAndUserPairCache") FROM stdin;
 a5zyd4d632fb0003	\N	\N	てすと	\N	\N	a5z29df4lul70001	f	0	0	{}	public	\N	{}	{}	{}	{}	[]	{}	{}	f	\N	\N	\N	\N	\N	\N	\N	\N	nonSensitiveOnly	0	{}
+a6xdmjit4xwb0006	\N	\N	\N	\N	\N	a5z29df4lul70001	f	0	0	{}	public	\N	{a6xdmezf4xwb0005}	{image/webp}	{}	{}	[]	{}	{}	f	\N	\N	\N	\N	\N	\N	\N	\N	nonSensitiveOnly	0	{}
+a6xdq9339ex4000a	\N	\N	テストテスト	\N	\N	a5z29df4lul70001	f	0	0	{}	public	\N	{a6xdq8y59ex40003,a6xdmezf4xwb0005,a6xdq91o9ex40008,a6xdq8z19ex40005,a6xdq8yp9ex40004,a6xdq91o9ex40009,a6xdq9029ex40007,a6xdq9009ex40006}	{image/webp,image/webp,image/webp,image/webp,image/webp,image/webp,image/webp,image/webp}	{}	{}	[]	{}	{}	f	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	{}
+a6xeen7h9ex4000f	\N	\N	てすとてすと	\N	\N	a5z29df4lul70001	f	0	0	{}	public	\N	{a6xdq91o9ex40009}	{image/webp}	{}	{}	[]	{}	{}	f	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	{}
+a6yzfr3ja5nu000v	\N	\N	てすとてすと	\N	\N	a5z29df4lul70001	t	0	0	{}	public	\N	{}	{}	{}	{}	[]	{}	{}	f	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	{}
+a6z02l5pa5nu0013	\N	\N	ホーム公開	\N	\N	a5z29df4lul70001	f	0	0	{}	home	\N	{}	{}	{}	{}	[]	{}	{}	f	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	{}
+a712bewdomc60003	\N	\N	テストテスト	\N	\N	a5z29df4lul70001	f	0	0	{}	followers	\N	{}	{}	{}	{}	[]	{}	{}	f	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	{}
 \.
 
 
@@ -5857,7 +6255,14 @@ COPY public.renote_muting (id, "muteeId", "muterId") FROM stdin;
 --
 
 COPY public.retention_aggregation (id, "createdAt", "userIds", data, "updatedAt", "usersCount", "dateKey") FROM stdin;
-a61aps3g3zx50002	2025-04-01 00:00:00.12+00	{a5zycyyd32fb0001}	{}	2025-04-01 00:00:00.12+00	1	2025-4-1
+a61aps3g3zx50002	2025-04-01 00:00:00.12+00	{a5zycyyd32fb0001}	{"2025-4-24": 0, "2025-4-25": 0, "2025-4-27": 0, "2025-4-28": 0}	2025-04-28 00:00:00.132+00	1	2025-4-1
+a7dvoqr49gbk0002	2025-05-05 00:00:00.103+00	{}	{}	2025-05-05 00:00:00.103+00	0	2025-5-5
+a7cg8w4h0kvz0005	2025-05-04 00:00:00.146+00	{}	{"2025-5-5": 0}	2025-05-05 00:00:00.103+00	0	2025-5-4
+a7b0t1ez0kvz0002	2025-05-03 00:00:00.101+00	{}	{"2025-5-4": 0, "2025-5-5": 0}	2025-05-05 00:00:00.103+00	0	2025-5-3
+a6y5udfljpoz0002	2025-04-24 00:00:00.124+00	{}	{"2025-5-3": 0, "2025-5-4": 0, "2025-5-5": 0, "2025-4-25": 0, "2025-4-27": 0, "2025-4-28": 0}	2025-05-05 00:00:00.103+00	0	2025-4-24
+a73vls3sv8370005	2025-04-28 00:00:00.132+00	{}	{"2025-5-3": 0, "2025-5-4": 0, "2025-5-5": 0}	2025-05-05 00:00:00.103+00	0	2025-4-28
+a6zla84mofsw0002	2025-04-25 00:00:00.161+00	{}	{"2025-5-3": 0, "2025-5-4": 0, "2025-5-5": 0, "2025-4-27": 0, "2025-4-28": 0}	2025-05-05 00:00:00.103+00	0	2025-4-25
+a72g5xggv8370002	2025-04-27 00:00:00.155+00	{}	{"2025-5-3": 0, "2025-5-4": 0, "2025-5-5": 0, "2025-4-28": 0}	2025-05-05 00:00:00.103+00	0	2025-4-27
 \.
 
 
@@ -5881,7 +6286,7 @@ COPY public.reversi_matching (id, "parentId", "childId") FROM stdin;
 -- Data for Name: role; Type: TABLE DATA; Schema: public; Owner: example-misskey-user
 --
 
-COPY public.role (id, "updatedAt", name, description, "isPublic", "isModerator", "isAdministrator", policies, color, "canEditMembersByModerator", "lastUsedAt", target, "condFormula", "iconUrl", "asBadge", "displayOrder", "isExplorable") FROM stdin;
+COPY public.role (id, "updatedAt", name, description, "isPublic", "isModerator", "isAdministrator", policies, color, "canEditMembersByModerator", "lastUsedAt", target, "condFormula", "iconUrl", "asBadge", "displayOrder", "isExplorable", "preserveAssignmentOnMoveAccount") FROM stdin;
 \.
 
 
@@ -5898,6 +6303,7 @@ COPY public.role_assignment (id, "userId", "roleId", "expiresAt") FROM stdin;
 --
 
 COPY public.signin (id, "userId", ip, headers, success) FROM stdin;
+a6xdm7t54xwb0001	a5z29df4lul70001	172.19.0.1	{"dnt": "1", "host": "localhost:3002", "accept": "*/*", "origin": "http://localhost:3002", "pragma": "no-cache", "referer": "http://localhost:3002/", "priority": "u=0", "connection": "keep-alive", "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0", "content-type": "application/json", "cache-control": "no-cache", "content-length": "170", "sec-fetch-dest": "empty", "sec-fetch-mode": "cors", "sec-fetch-site": "same-origin", "accept-encoding": "gzip, deflate, br, zstd", "accept-language": "ja,en-US;q=0.7,en;q=0.3"}	t
 \.
 
 
@@ -5940,9 +6346,9 @@ system.proxy	2025-03-31 01:26:20.926+00
 -- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: example-misskey-user
 --
 
-COPY public."user" (id, "updatedAt", "lastFetchedAt", username, "usernameLower", name, "followersCount", "followingCount", "notesCount", "avatarId", "bannerId", tags, "isSuspended", "isLocked", "isBot", "isCat", emojis, host, inbox, "sharedInbox", featured, uri, token, "isExplorable", "followersUri", "lastActiveDate", "hideOnlineStatus", "isDeleted", "avatarUrl", "bannerUrl", "avatarBlurhash", "bannerBlurhash", "movedToUri", "alsoKnownAs", "movedAt", "isHibernated", "avatarDecorations", score, "requireSigninToViewContents", "makeNotesFollowersOnlyBefore", "makeNotesHiddenBefore") FROM stdin;
-a5z29df4lul70001	2025-03-31 01:26:27.94+00	\N	hoge	hoge	ホゲユーザー	0	0	1	\N	\N	{}	f	f	f	f	{}	\N	\N	\N	\N	\N	TD6ozXdrIB4cc6Pi	t	\N	2025-04-01 00:45:09.461+00	f	f	\N	\N	\N	\N	\N	\N	\N	f	[]	0	f	\N	\N
-a5zycyyd32fb0001	\N	\N	system.proxy	system.proxy	\N	0	0	0	\N	\N	{}	f	t	t	f	{}	\N	\N	\N	\N	\N	Qg5md5K2G0HKo9CW	f	\N	\N	f	f	\N	\N	\N	\N	\N	\N	\N	f	[]	0	f	\N	\N
+COPY public."user" (id, "updatedAt", "lastFetchedAt", username, "usernameLower", name, "followersCount", "followingCount", "notesCount", "avatarId", "bannerId", tags, "isSuspended", "isLocked", "isBot", "isCat", emojis, host, inbox, "sharedInbox", featured, uri, token, "isExplorable", "followersUri", "lastActiveDate", "hideOnlineStatus", "isDeleted", "avatarUrl", "bannerUrl", "avatarBlurhash", "bannerBlurhash", "movedToUri", "alsoKnownAs", "movedAt", "isHibernated", "avatarDecorations", score, "requireSigninToViewContents", "makeNotesFollowersOnlyBefore", "makeNotesHiddenBefore", "chatScope") FROM stdin;
+a5zycyyd32fb0001	\N	\N	system.proxy	system.proxy	\N	0	0	0	\N	\N	{}	f	t	t	f	{}	\N	\N	\N	\N	\N	Qg5md5K2G0HKo9CW	f	\N	\N	f	f	\N	\N	\N	\N	\N	\N	\N	f	[]	0	f	\N	\N	mutual
+a5z29df4lul70001	2025-04-26 00:44:35.263+00	\N	hoge	hoge	ホゲユーザー	0	0	7	\N	\N	{}	f	f	f	f	{}	\N	\N	\N	\N	\N	TD6ozXdrIB4cc6Pi	t	\N	2025-05-03 14:37:33.65+00	f	f	\N	\N	\N	\N	\N	\N	\N	f	[]	0	f	\N	\N	mutual
 \.
 
 
@@ -6050,7 +6456,7 @@ COPY public.user_pending (id, code, username, email, password) FROM stdin;
 
 COPY public.user_profile ("userId", location, birthday, description, fields, url, email, "emailVerifyCode", "emailVerified", "twoFactorTempSecret", "twoFactorSecret", "twoFactorEnabled", password, "clientData", "autoAcceptFollowed", "alwaysMarkNsfw", "carefulBot", "userHost", "securityKeysAvailable", "usePasswordLessLogin", "pinnedPageId", room, "injectFeaturedNote", "enableWordMute", "mutedWords", "noCrawle", "receiveAnnouncementEmail", "emailNotificationTypes", lang, "mutedInstances", "publicReactions", "autoSensitive", "moderationNote", achievements, "loggedInDates", "preventAiLearning", "twoFactorBackupSecret", "verifiedLinks", "notificationRecieveConfig", "hardMutedWords", "followingVisibility", "followersVisibility", "followedMessage") FROM stdin;
 a5zycyyd32fb0001	\N	\N	\N	[]	\N	\N	\N	f	\N	\N	f	$2a$08$wuO3Ekvd4QSmlYvOgcfi5ewCwWF778.ZlJElm52hiHnHji0LbtL8G	{}	f	f	f	\N	f	f	\N	{}	t	f	[]	f	t	["follow", "receiveFollowRequest"]	\N	[]	t	f		[]	{}	t	\N	{}	{}	[]	public	public	\N
-a5z29df4lul70001	\N	\N	\N	[]	\N	\N	\N	f	\N	\N	f	$2a$08$TyZYZsajvlKoP3Sf8AfBLeYTN5knapLCSVxHToXCcAACDgtoEwyk2	{}	t	f	f	\N	f	f	\N	{}	t	f	[]	f	t	["follow", "receiveFollowRequest"]	\N	[]	t	f		[{"name": "client30min", "unlockedAt": 1743332267511}, {"name": "client60min", "unlockedAt": 1743334065619}, {"name": "notes1", "unlockedAt": 1743384387962}, {"name": "profileFilled", "unlockedAt": 1743402645490}]	{2025/3/30,2025/3/31}	t	\N	{}	{}	[]	public	public	\N
+a5z29df4lul70001	\N	\N	\N	[]	\N	\N	\N	f	\N	\N	f	$2a$08$TyZYZsajvlKoP3Sf8AfBLeYTN5knapLCSVxHToXCcAACDgtoEwyk2	{}	t	f	f	\N	f	f	\N	{}	t	f	[]	f	t	["follow", "receiveFollowRequest"]	\N	[]	t	f		[{"name": "client30min", "unlockedAt": 1743332267511}, {"name": "client60min", "unlockedAt": 1743334065619}, {"name": "notes1", "unlockedAt": 1743384387962}, {"name": "profileFilled", "unlockedAt": 1743402645490}, {"name": "login3", "unlockedAt": 1745405391747}]	{2025/3/30,2025/3/31,2025/4/23,2025/4/24,2025/4/26,2025/5/3}	t	\N	{}	{}	[]	public	public	\N
 \.
 
 
@@ -6082,7 +6488,7 @@ COPY public.webhook (id, "userId", name, "on", url, secret, active, "latestSentA
 -- Name: __chart__active_users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart__active_users_id_seq', 8, true);
+SELECT pg_catalog.setval('public.__chart__active_users_id_seq', 29, true);
 
 
 --
@@ -6096,14 +6502,14 @@ SELECT pg_catalog.setval('public.__chart__ap_request_id_seq', 1, false);
 -- Name: __chart__drive_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart__drive_id_seq', 1, false);
+SELECT pg_catalog.setval('public.__chart__drive_id_seq', 1, true);
 
 
 --
 -- Name: __chart__federation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart__federation_id_seq', 35, true);
+SELECT pg_catalog.setval('public.__chart__federation_id_seq', 212, true);
 
 
 --
@@ -6131,14 +6537,14 @@ SELECT pg_catalog.setval('public.__chart__network_id_seq', 1, false);
 -- Name: __chart__notes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart__notes_id_seq', 1, true);
+SELECT pg_catalog.setval('public.__chart__notes_id_seq', 11, true);
 
 
 --
 -- Name: __chart__per_user_drive_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart__per_user_drive_id_seq', 1, false);
+SELECT pg_catalog.setval('public.__chart__per_user_drive_id_seq', 1, true);
 
 
 --
@@ -6152,7 +6558,7 @@ SELECT pg_catalog.setval('public.__chart__per_user_following_id_seq', 1, false);
 -- Name: __chart__per_user_notes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart__per_user_notes_id_seq', 1, false);
+SELECT pg_catalog.setval('public.__chart__per_user_notes_id_seq', 3, true);
 
 
 --
@@ -6194,14 +6600,14 @@ SELECT pg_catalog.setval('public.__chart__test_unique_id_seq', 1, false);
 -- Name: __chart__users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart__users_id_seq', 2, true);
+SELECT pg_catalog.setval('public.__chart__users_id_seq', 9, true);
 
 
 --
 -- Name: __chart_day__active_users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart_day__active_users_id_seq', 2, true);
+SELECT pg_catalog.setval('public.__chart_day__active_users_id_seq', 7, true);
 
 
 --
@@ -6215,14 +6621,14 @@ SELECT pg_catalog.setval('public.__chart_day__ap_request_id_seq', 1, false);
 -- Name: __chart_day__drive_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart_day__drive_id_seq', 1, false);
+SELECT pg_catalog.setval('public.__chart_day__drive_id_seq', 1, true);
 
 
 --
 -- Name: __chart_day__federation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart_day__federation_id_seq', 3, true);
+SELECT pg_catalog.setval('public.__chart_day__federation_id_seq', 13, true);
 
 
 --
@@ -6250,14 +6656,14 @@ SELECT pg_catalog.setval('public.__chart_day__network_id_seq', 1, false);
 -- Name: __chart_day__notes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart_day__notes_id_seq', 1, true);
+SELECT pg_catalog.setval('public.__chart_day__notes_id_seq', 10, true);
 
 
 --
 -- Name: __chart_day__per_user_drive_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart_day__per_user_drive_id_seq', 1, false);
+SELECT pg_catalog.setval('public.__chart_day__per_user_drive_id_seq', 1, true);
 
 
 --
@@ -6271,7 +6677,7 @@ SELECT pg_catalog.setval('public.__chart_day__per_user_following_id_seq', 1, fal
 -- Name: __chart_day__per_user_notes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart_day__per_user_notes_id_seq', 1, false);
+SELECT pg_catalog.setval('public.__chart_day__per_user_notes_id_seq', 3, true);
 
 
 --
@@ -6292,14 +6698,14 @@ SELECT pg_catalog.setval('public.__chart_day__per_user_reaction_id_seq', 1, fals
 -- Name: __chart_day__users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.__chart_day__users_id_seq', 2, true);
+SELECT pg_catalog.setval('public.__chart_day__users_id_seq', 9, true);
 
 
 --
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: example-misskey-user
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 310, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 320, true);
 
 
 --
@@ -6438,6 +6844,14 @@ ALTER TABLE ONLY public.retention_aggregation
 
 
 --
+-- Name: chat_room_membership PK_2bd59c741e571b283c048beb69a; Type: CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_room_membership
+    ADD CONSTRAINT "PK_2bd59c741e571b283c048beb69a" PRIMARY KEY (id);
+
+
+--
 -- Name: user_ip PK_2c44ddfbf7c0464d028dcef325e; Type: CONSTRAINT; Schema: public; Owner: example-misskey-user
 --
 
@@ -6491,6 +6905,14 @@ ALTER TABLE ONLY public.user_group
 
 ALTER TABLE ONLY public.__chart__per_user_pv
     ADD CONSTRAINT "PK_3c938a24f0203b5bd13fab51059" PRIMARY KEY (id);
+
+
+--
+-- Name: chat_message PK_3cc0d85193aade457d3077dd06b; Type: CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_message
+    ADD CONSTRAINT "PK_3cc0d85193aade457d3077dd06b" PRIMARY KEY (id);
 
 
 --
@@ -6742,6 +7164,14 @@ ALTER TABLE ONLY public.reversi_matching
 
 
 --
+-- Name: chat_room PK_8aa3a52cf74c96469f0ef9fbe3e; Type: CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_room
+    ADD CONSTRAINT "PK_8aa3a52cf74c96469f0ef9fbe3e" PRIMARY KEY (id);
+
+
+--
 -- Name: __chart_day__per_user_reaction PK_8af24e2d51ff781a354fe595eda; Type: CONSTRAINT; Schema: public; Owner: example-misskey-user
 --
 
@@ -6803,6 +7233,14 @@ ALTER TABLE ONLY public.note
 
 ALTER TABLE ONLY public.__chart__per_user_reaction
     ADD CONSTRAINT "PK_984f54dae441e65b633e8d27a7f" PRIMARY KEY (id);
+
+
+--
+-- Name: chat_room_invitation PK_9d489521a312dd28225672de2dc; Type: CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_room_invitation
+    ADD CONSTRAINT "PK_9d489521a312dd28225672de2dc" PRIMARY KEY (id);
 
 
 --
@@ -7158,6 +7596,14 @@ ALTER TABLE ONLY public.__chart__drive
 
 
 --
+-- Name: chat_approval PK_fbbb95d60acf5c85388345b5f5d; Type: CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_approval
+    ADD CONSTRAINT "PK_fbbb95d60acf5c85388345b5f5d" PRIMARY KEY (id);
+
+
+--
 -- Name: password_reset_request PK_fcf4b02eae1403a2edaf87fd074; Type: CONSTRAINT; Schema: public; Owner: example-misskey-user
 --
 
@@ -7482,6 +7928,13 @@ CREATE INDEX "IDX_03e7028ab8388a3f5e3ce2a861" ON public.note_watching USING btre
 
 
 --
+-- Name: IDX_044f2a7962b8ee5bbfaa02e8a3; Type: INDEX; Schema: public; Owner: example-misskey-user
+--
+
+CREATE UNIQUE INDEX "IDX_044f2a7962b8ee5bbfaa02e8a3" ON public.chat_room_invitation USING btree ("userId", "roomId");
+
+
+--
 -- Name: IDX_04cc96756f89d0b7f9473e8cdf; Type: INDEX; Schema: public; Owner: example-misskey-user
 --
 
@@ -7657,6 +8110,13 @@ CREATE INDEX "IDX_12c01c0d1a79f77d9f6c15fadd" ON public.follow_request USING btr
 
 
 --
+-- Name: IDX_12c4768a2f706fc267f2078903; Type: INDEX; Schema: public; Owner: example-misskey-user
+--
+
+CREATE UNIQUE INDEX "IDX_12c4768a2f706fc267f2078903" ON public.chat_approval USING btree ("userId", "otherId");
+
+
+--
 -- Name: IDX_13565815f618a1ff53886c5b28; Type: INDEX; Schema: public; Owner: example-misskey-user
 --
 
@@ -7696,6 +8156,13 @@ CREATE UNIQUE INDEX "IDX_171e64971c780ebd23fae140bb" ON public.user_publickey US
 --
 
 CREATE INDEX "IDX_17cb3553c700a4985dff5a30ff" ON public.note USING btree ("replyId");
+
+
+--
+-- Name: IDX_185b6b5afa707b5d36d1ce3144; Type: INDEX; Schema: public; Owner: example-misskey-user
+--
+
+CREATE UNIQUE INDEX "IDX_185b6b5afa707b5d36d1ce3144" ON public.chat_room_membership USING btree ("userId", "roomId");
 
 
 --
@@ -7773,6 +8240,13 @@ CREATE UNIQUE INDEX "IDX_25a97c02003338124b2b75fdbc" ON public.__chart__hashtag 
 --
 
 CREATE INDEX "IDX_25b1dd384bec391b07b74b861c" ON public.note_unread USING btree ("isMentioned");
+
+
+--
+-- Name: IDX_25e097b51d7622c249452c6f75; Type: INDEX; Schema: public; Owner: example-misskey-user
+--
+
+CREATE INDEX "IDX_25e097b51d7622c249452c6f75" ON public.chat_message USING btree ("toUserId");
 
 
 --
@@ -8140,6 +8614,13 @@ CREATE INDEX "IDX_52ccc804d7c69037d558bac4c9" ON public.note USING btree ("renot
 
 
 --
+-- Name: IDX_530257863e1381a7f2f1d3282f; Type: INDEX; Schema: public; Owner: example-misskey-user
+--
+
+CREATE INDEX "IDX_530257863e1381a7f2f1d3282f" ON public.chat_approval USING btree ("userId");
+
+
+--
 -- Name: IDX_5377c307783fce2b6d352e1203; Type: INDEX; Schema: public; Owner: example-misskey-user
 --
 
@@ -8182,13 +8663,6 @@ CREATE INDEX "IDX_5a056076f76b2efe08216ba655" ON public.webhook USING btree (act
 
 
 --
--- Name: IDX_5b87d9d19127bd5d92026017a7; Type: INDEX; Schema: public; Owner: example-misskey-user
---
-
-CREATE INDEX "IDX_5b87d9d19127bd5d92026017a7" ON public.note USING btree ("userId");
-
-
---
 -- Name: IDX_5cc8c468090e129857e9fecce5; Type: INDEX; Schema: public; Owner: example-misskey-user
 --
 
@@ -8200,6 +8674,13 @@ CREATE INDEX "IDX_5cc8c468090e129857e9fecce5" ON public.user_group_invitation US
 --
 
 CREATE UNIQUE INDEX "IDX_5deb01ae162d1d70b80d064c27" ON public."user" USING btree ("usernameLower", host);
+
+
+--
+-- Name: IDX_5f265075b215fc390a57523b12; Type: INDEX; Schema: public; Owner: example-misskey-user
+--
+
+CREATE INDEX "IDX_5f265075b215fc390a57523b12" ON public.chat_room_invitation USING btree ("roomId");
 
 
 --
@@ -8322,6 +8803,13 @@ CREATE INDEX "IDX_7125a826ab192eb27e11d358a5" ON public.note USING btree ("userH
 
 
 --
+-- Name: IDX_724b311e6f883751f261ebe378; Type: INDEX; Schema: public; Owner: example-misskey-user
+--
+
+CREATE INDEX "IDX_724b311e6f883751f261ebe378" ON public.note USING btree ("userId", id DESC);
+
+
+--
 -- Name: IDX_75276757070d21fdfaf4c05290; Type: INDEX; Schema: public; Owner: example-misskey-user
 --
 
@@ -8333,6 +8821,13 @@ CREATE INDEX "IDX_75276757070d21fdfaf4c05290" ON public.bubble_game_record USING
 --
 
 CREATE UNIQUE INDEX "IDX_78787741f9010886796f2320a4" ON public.user_group_invite USING btree ("userId", "userGroupId");
+
+
+--
+-- Name: IDX_79a26e7a4d9afa5e4fc05f134e; Type: INDEX; Schema: public; Owner: example-misskey-user
+--
+
+CREATE INDEX "IDX_79a26e7a4d9afa5e4fc05f134e" ON public.chat_message USING btree ("fromUserId");
 
 
 --
@@ -8424,6 +8919,13 @@ CREATE INDEX "IDX_83f0862e9bae44af52ced7099e" ON public.promo_note USING btree (
 --
 
 CREATE UNIQUE INDEX "IDX_845254b3eaf708ae8a6cac3026" ON public.__chart__users USING btree (date);
+
+
+--
+-- Name: IDX_8552bb38e7ed038c5bdd398a38; Type: INDEX; Schema: public; Owner: example-misskey-user
+--
+
+CREATE INDEX "IDX_8552bb38e7ed038c5bdd398a38" ON public.chat_room_invitation USING btree ("userId");
 
 
 --
@@ -8770,6 +9272,13 @@ CREATE UNIQUE INDEX "IDX_b1754a39d0b281e07ed7c078ec" ON public.clip_favorite USI
 
 
 --
+-- Name: IDX_b1d46037f23d170da5c05fdf75; Type: INDEX; Schema: public; Owner: example-misskey-user
+--
+
+CREATE INDEX "IDX_b1d46037f23d170da5c05fdf75" ON public.chat_approval USING btree ("otherId");
+
+
+--
 -- Name: IDX_b37dafc86e9af007e3295c2781; Type: INDEX; Schema: public; Owner: example-misskey-user
 --
 
@@ -8865,6 +9374,13 @@ CREATE INDEX "IDX_c1240fcc9675946ea5d6c2860e" ON public.poll USING btree ("chann
 --
 
 CREATE INDEX "IDX_c1fd1c3dfb0627aa36c253fd14" ON public.muting USING btree ("expiresAt");
+
+
+--
+-- Name: IDX_c25143ebab714e930aeca1c0e8; Type: INDEX; Schema: public; Owner: example-misskey-user
+--
+
+CREATE INDEX "IDX_c25143ebab714e930aeca1c0e8" ON public.chat_room_membership USING btree ("roomId");
 
 
 --
@@ -9022,6 +9538,13 @@ CREATE UNIQUE INDEX "IDX_d908433a4953cc13216cd9c274" ON public.note_unread USING
 
 
 --
+-- Name: IDX_d99c5279460fb77ef58c596ce5; Type: INDEX; Schema: public; Owner: example-misskey-user
+--
+
+CREATE INDEX "IDX_d99c5279460fb77ef58c596ce5" ON public.chat_room_membership USING btree ("userId");
+
+
+--
 -- Name: IDX_d9ecaed8c6dc43f3592c229282; Type: INDEX; Schema: public; Owner: example-misskey-user
 --
 
@@ -9159,6 +9682,20 @@ CREATE INDEX "IDX_ebe99317bbbe9968a0c6f579ad" ON public.clip_note USING btree ("
 --
 
 CREATE INDEX "IDX_ec96b4fed9dae517e0dbbe0675" ON public.muting USING btree ("muteeId");
+
+
+--
+-- Name: IDX_f006b8a76efd1abf9f221c175c; Type: INDEX; Schema: public; Owner: example-misskey-user
+--
+
+CREATE INDEX "IDX_f006b8a76efd1abf9f221c175c" ON public.chat_message USING btree ("toRoomId");
+
+
+--
+-- Name: IDX_f0d8ad64243fa2ca2800da0dfd; Type: INDEX; Schema: public; Owner: example-misskey-user
+--
+
+CREATE INDEX "IDX_f0d8ad64243fa2ca2800da0dfd" ON public.chat_room USING btree ("ownerId");
 
 
 --
@@ -9467,6 +10004,14 @@ ALTER TABLE ONLY public.clip_favorite
 
 
 --
+-- Name: chat_message FK_25e097b51d7622c249452c6f757; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_message
+    ADD CONSTRAINT "FK_25e097b51d7622c249452c6f757" FOREIGN KEY ("toUserId") REFERENCES public."user"(id) ON DELETE CASCADE;
+
+
+--
 -- Name: note_thread_muting FK_29c11c7deb06615076f8c95b80a; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
 --
 
@@ -9587,6 +10132,14 @@ ALTER TABLE ONLY public.note
 
 
 --
+-- Name: chat_approval FK_530257863e1381a7f2f1d3282fe; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_approval
+    ADD CONSTRAINT "FK_530257863e1381a7f2f1d3282fe" FOREIGN KEY ("userId") REFERENCES public."user"(id) ON DELETE CASCADE;
+
+
+--
 -- Name: messaging_message FK_535def119223ac05ad3fa9ef64b; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
 --
 
@@ -9632,6 +10185,14 @@ ALTER TABLE ONLY public.note
 
 ALTER TABLE ONLY public.user_group_invitation
     ADD CONSTRAINT "FK_5cc8c468090e129857e9fecce5a" FOREIGN KEY ("userGroupId") REFERENCES public.user_group(id) ON DELETE CASCADE;
+
+
+--
+-- Name: chat_room_invitation FK_5f265075b215fc390a57523b12a; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_room_invitation
+    ADD CONSTRAINT "FK_5f265075b215fc390a57523b12a" FOREIGN KEY ("roomId") REFERENCES public.chat_room(id) ON DELETE CASCADE;
 
 
 --
@@ -9755,6 +10316,14 @@ ALTER TABLE ONLY public.bubble_game_record
 
 
 --
+-- Name: chat_message FK_79a26e7a4d9afa5e4fc05f134ed; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_message
+    ADD CONSTRAINT "FK_79a26e7a4d9afa5e4fc05f134ed" FOREIGN KEY ("fromUserId") REFERENCES public."user"(id) ON DELETE CASCADE;
+
+
+--
 -- Name: renote_muting FK_7aa72a5fe76019bfe8e5e0e8b7d; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
 --
 
@@ -9800,6 +10369,14 @@ ALTER TABLE ONLY public.announcement_read
 
 ALTER TABLE ONLY public.channel_favorite
     ADD CONSTRAINT "FK_8302bd27226605ece14842fb25a" FOREIGN KEY ("userId") REFERENCES public."user"(id) ON DELETE CASCADE;
+
+
+--
+-- Name: chat_room_invitation FK_8552bb38e7ed038c5bdd398a384; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_room_invitation
+    ADD CONSTRAINT "FK_8552bb38e7ed038c5bdd398a384" FOREIGN KEY ("userId") REFERENCES public."user"(id) ON DELETE CASCADE;
 
 
 --
@@ -9995,6 +10572,14 @@ ALTER TABLE ONLY public.gallery_like
 
 
 --
+-- Name: chat_approval FK_b1d46037f23d170da5c05fdf755; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_approval
+    ADD CONSTRAINT "FK_b1d46037f23d170da5c05fdf755" FOREIGN KEY ("otherId") REFERENCES public."user"(id) ON DELETE CASCADE;
+
+
+--
 -- Name: registration_ticket FK_b6f93f2f30bdbb9a5ebdc7c7189; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
 --
 
@@ -10051,6 +10636,14 @@ ALTER TABLE ONLY public.auth_session
 
 
 --
+-- Name: chat_room_membership FK_c25143ebab714e930aeca1c0e8d; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_room_membership
+    ADD CONSTRAINT "FK_c25143ebab714e930aeca1c0e8d" FOREIGN KEY ("roomId") REFERENCES public.chat_room(id) ON DELETE CASCADE;
+
+
+--
 -- Name: meta FK_c80e4079d632f95eac06a9d28cc; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
 --
 
@@ -10088,6 +10681,14 @@ ALTER TABLE ONLY public.page_like
 
 ALTER TABLE ONLY public.channel_favorite
     ADD CONSTRAINT "FK_d3ca0db011b75ac2a940a2337d2" FOREIGN KEY ("channelId") REFERENCES public.channel(id) ON DELETE CASCADE;
+
+
+--
+-- Name: chat_room_membership FK_d99c5279460fb77ef58c596ce51; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_room_membership
+    ADD CONSTRAINT "FK_d99c5279460fb77ef58c596ce51" FOREIGN KEY ("userId") REFERENCES public."user"(id) ON DELETE CASCADE;
 
 
 --
@@ -10163,6 +10764,22 @@ ALTER TABLE ONLY public.muting
 
 
 --
+-- Name: chat_message FK_f006b8a76efd1abf9f221c175ce; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_message
+    ADD CONSTRAINT "FK_f006b8a76efd1abf9f221c175ce" FOREIGN KEY ("toRoomId") REFERENCES public.chat_room(id) ON DELETE CASCADE;
+
+
+--
+-- Name: chat_room FK_f0d8ad64243fa2ca2800da0dfd6; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_room
+    ADD CONSTRAINT "FK_f0d8ad64243fa2ca2800da0dfd6" FOREIGN KEY ("ownerId") REFERENCES public."user"(id) ON DELETE CASCADE;
+
+
+--
 -- Name: role_assignment FK_f0de67fd09cd3cd0aabca79994d; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
 --
 
@@ -10232,6 +10849,14 @@ ALTER TABLE ONLY public.registry_item
 
 ALTER TABLE ONLY public.clip_favorite
     ADD CONSTRAINT "FK_fce61c7986cee54393e79f1d849" FOREIGN KEY ("clipId") REFERENCES public.clip(id) ON DELETE CASCADE;
+
+
+--
+-- Name: chat_message FK_fd0f9a4879430239715ad4f8e2a; Type: FK CONSTRAINT; Schema: public; Owner: example-misskey-user
+--
+
+ALTER TABLE ONLY public.chat_message
+    ADD CONSTRAINT "FK_fd0f9a4879430239715ad4f8e2a" FOREIGN KEY ("fileId") REFERENCES public.drive_file(id) ON DELETE SET NULL;
 
 
 --
