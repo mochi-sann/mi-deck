@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Install Playwright
-        run: pnpm run front exec playwright  install-deps
+        run: pnpm run front exec playwright  install
       - name: Build Storybook
         run: pnpm run front build-storybook --quiet
 
