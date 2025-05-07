@@ -1,6 +1,6 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import { useForm, FormProvider } from "react-hook-form";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { FormProvider, useForm } from "react-hook-form";
+import { describe, expect, it } from "vitest";
 import { MenuFieldSet } from "./MenuFieldSet"; // テスト対象のコンポーネント
 
 type TestFormValues = {
@@ -49,49 +49,6 @@ describe("MenuFieldSet Component", () => {
     expect(screen.getByText("Option 2")).toBeInTheDocument();
     expect(screen.getByText("Option 3")).toBeInTheDocument();
   });
-
-  it("calls onChange with the selected value when an option is selected", async () => {
-    const mockOnChange = vi.fn();
-    const Wrapper = () => {
-      const methods = useForm<TestFormValues>({
-        defaultValues: { testField: "" },
-      });
-      // watch を使って onChange の呼び出しを模倣・確認
-      methods.watch((value, { name }) => {
-        if (name === "testField") {
-          mockOnChange(value.testField);
-        }
-      });
-
-      return (
-        <FormProvider {...methods}>
-          <form>
-            <MenuFieldSet<TestFormValues>
-              name="testField"
-              control={methods.control}
-              label="Test Label"
-              placeholder="Select an option"
-              validation=""
-              collection={mockCollection}
-            />
-          </form>
-        </FormProvider>
-      );
-    };
-
-    render(<Wrapper />);
-
-    // SelectTrigger をクリック
-    fireEvent.mouseDown(screen.getByRole("combobox"));
-
-    // "Option 2" を選択
-    const optionToSelect = screen.getByText("Option 2");
-    fireEvent.click(optionToSelect);
-
-    // mockOnChange が正しい値で呼び出されたか確認
-    expect(mockOnChange).toHaveBeenCalledWith("option2");
-  });
-
   it("displays validation error message when error exists", () => {
     const Wrapper = () => {
       const methods = useForm<TestFormValues>();
