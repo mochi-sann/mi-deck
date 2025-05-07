@@ -3,6 +3,9 @@ model: gemini-2.5-pro
 dark-mode: true
 
 read: ./CONVENTIONS.md
+chat-language: japanese #aiderの言語指定
+auto-commits: true  #コード編集後の自動コミットするかどうか
+suggest-shell-commands: true  #コマンド実行時に許可を求めるかどうか
 # Set to true to have aider automatically commit changes after applying them.
 # auto-commit: true
 
