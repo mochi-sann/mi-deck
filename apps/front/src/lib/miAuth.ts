@@ -16,9 +16,15 @@ export const GenMiAuthUrl = (origin: string) => {
   }&permission=${param.permission.join(",")}&callback=${encodeCallbackUrl}`;
   return { url: MiauthUrl, uuid: newUuid };
 };
+
 export const MiAuthReq = async (origin: string) => {
   const { url, uuid } = GenMiAuthUrl(origin);
-  window.open(url, "_blank");
+  try {
+    window.open(url, "_blank");
+  } catch (error) {
+    console.error("Failed to open auth window:", error);
+    // エラーが発生してもUUIDは返す
+  }
   return uuid;
 };
 
