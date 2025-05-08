@@ -38,4 +38,7 @@ export default defineConfig({
       },
     },
   },
+  optimizeDeps: {
+    exclude: ["@mdx-js/react"], // StorybookのVite最適化エラー対策
+  },
 });

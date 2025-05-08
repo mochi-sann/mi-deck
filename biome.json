@@ -21,7 +21,10 @@
       "apps/front/src/lib/api/type.ts",
       "misskey-db",
       "apps/server/src/generated/prisma/**",
-      ".devbox/**"
+      ".devbox/**",
+      "/nix",
+      "apps/front/storybook-static/",
+      "apps/front/coverage"
     ]
   },
   "formatter": {

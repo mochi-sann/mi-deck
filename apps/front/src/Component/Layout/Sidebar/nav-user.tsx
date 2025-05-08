@@ -1,5 +1,3 @@
-import { LogOut, Settings, UserRound } from "lucide-react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/Component/ui/avatar";
 import {
   DropdownMenu,
@@ -13,15 +11,17 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/Component/ui/sidebar";
-import { useLogout, useUser } from "@/lib/configureAuth";
+import type { UserType } from "@/lib/configureAuth";
+import { useLogout } from "@/lib/configureAuth";
+import { LogOut, Settings, UserRound } from "lucide-react";
 
-export function NavUser() {
+type NavUserProps = {
+  user: UserType;
+};
+
+export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar();
-  const { status, data: user } = useUser();
   const { mutateAsync: LgoutMuteteAsync } = useLogout();
-  if (status === "pending" || user === undefined || user === null) {
-    return null;
-  }
 
   return (
     <SidebarMenu>
@@ -33,8 +33,7 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground "
             >
               <Avatar className="h-8 w-8 rounded-lg ">
-                <AvatarImage src={user?.avatarUrl} alt={user?.name} />
-
+                <AvatarImage src={user.avatarUrl} alt={user.name} />
                 <AvatarFallback className="rounded-lg">
                   <UserRound />
                 </AvatarFallback>

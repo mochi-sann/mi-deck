@@ -1,5 +1,4 @@
-name: Build Check
-
+name: CI
 on:
   pull_request:
 

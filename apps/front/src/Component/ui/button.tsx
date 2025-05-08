@@ -26,17 +26,17 @@ const buttonVariants = cva(
         default: "h-10 px-4 py-2 has-[>svg]:px-3",
         sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        icon: "size-9",
+        icon: "h-10 px-4 py-2 has-[>svg]:px-3",
       },
       buttonWidth: {
-        default: "w-auto",
+        default: "",
         full: "w-full",
       },
     },
     defaultVariants: {
       variant: "default",
       size: "default",
-      buttonWidth: "full",
+      buttonWidth: "default",
     },
   },
 );
@@ -57,6 +57,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       asChild = false,
       isLoading = false,
       children,
+      buttonWidth,
       ...props
     },
     ref,
@@ -65,15 +66,22 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Comp
         className={cn(
-          buttonVariants({ variant, size, className }),
+          buttonVariants({ variant, size, className, buttonWidth }),
           isLoading && "cursor-wait opacity-75", // Add loading styles conditionally
         )}
         ref={ref}
         disabled={isLoading || props.disabled}
         {...props}
       >
-        {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-        {isLoading ? <Spinner size={"sm" as any} /> : children}
+        {
+          <Spinner
+            color="var(--primary-foreground)"
+            size={"sm"}
+            strokeWidth={3}
+            className={cn("absolute", isLoading ? "opacity-100 " : "opacity-0")}
+          />
+        }
+        <span className={cn(isLoading && "opacity-0")}>{children}</span>
       </Comp>
     );
   },

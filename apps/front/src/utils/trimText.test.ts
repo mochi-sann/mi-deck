@@ -12,7 +12,8 @@ describe("trimFirstAndLastChar", () => {
     expect(trimFirstAndLastChar("")).toBe("");
   });
 
-  it("should handle strings with spaces", () => {
-    expect(trimFirstAndLastChar(" test ")).toBe("test");
+  it("should handle strings with leading/trailing spaces correctly if they are part of the characters to be kept", () => {
+    expect(trimFirstAndLastChar(" test ")).toBe("test"); // " test " -> "test"
+    expect(trimFirstAndLastChar("  a  ")).toBe(" a "); // "  a  " -> " a "
   });
 });

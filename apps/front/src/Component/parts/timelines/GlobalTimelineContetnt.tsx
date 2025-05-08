@@ -28,12 +28,13 @@ export function GlobalTimelineContent({
   } = useSuspenseQuery({
     queryKey: queryKey,
     queryFn: async () => {
-      return await client
-        .request("notes/global-timeline", {})
-        .then((res) => res)
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await client.request("notes/global-timeline", {});
+        return res;
+      } catch (err) {
+        console.error(err);
+        throw err; // Re-throw the error to be caught by React Query
+      }
     },
   });
 
@@ -44,7 +45,8 @@ export function GlobalTimelineContent({
   if (isError) {
     return (
       <Text className="text-red-500">
-        Error loading notes: {error && "Unknown error"}
+        Error loading notes:{" "}
+        {error instanceof Error ? error.message : "Unknown error"}
       </Text>
     );
   }
