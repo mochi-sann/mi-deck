@@ -31,7 +31,7 @@ describe("fetchClient", () => {
     const middleware = {
       async onRequest({
         request,
-        options,
+        options: _,
         // biome-ignore lint/suspicious/noExplicitAny:
       }: { request: Request; options: any }) {
         request.headers.set(
@@ -61,7 +61,7 @@ describe("fetchClient", () => {
     const middleware = {
       async onRequest({
         request,
-        options,
+        options: _,
         // biome-ignore lint/suspicious/noExplicitAny:
       }: { request: Request; options: any }) {
         request.headers.set(
