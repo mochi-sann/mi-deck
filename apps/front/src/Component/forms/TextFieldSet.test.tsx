@@ -7,7 +7,7 @@ import { TextFieldSet } from "./TextFieldSet";
 
 // テスト用のラッパーコンポーネント
 const TestWrapper = () => {
-  const { control, trigger } = useForm({
+  const { control } = useForm({
     defaultValues: {
       testField: "",
     },

@@ -149,16 +149,6 @@ const defaultContent = (
 );
 
 // Base render function for controlled state (used by interaction test)
-const renderControlledMenu = (
-  args: Story["args"],
-  trigger: React.ReactNode,
-  content: React.ReactNode,
-) => (
-  <DropdownMenu open={args?.open} onOpenChange={args?.onOpenChange}>
-    <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
-    <DropdownMenuContent className="w-56">{content}</DropdownMenuContent>
-  </DropdownMenu>
-);
 
 // Base render function for uncontrolled state (manual interaction)
 const renderUncontrolledMenu = (
