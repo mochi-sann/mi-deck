@@ -1,4 +1,5 @@
 import { useUser } from "@/lib/configureAuth";
+import type { UserType } from "@/lib/configureAuth";
 import { Pen } from "lucide-react";
 import { NewNote } from "../logics/NewNote";
 import { Avatar, AvatarFallback } from "../ui/avatar";
@@ -14,20 +15,12 @@ import {
 } from "../ui/sidebar";
 import { NavUser } from "./Sidebar/nav-user";
 
-export const AppSidebar = () => {
-  const { status, data: userData } = useUser();
+type AppSidebarPresenterProps = {
+  user: UserType;
+};
 
-  if (status === "pending" || userData === null) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
-  }
-
+export const AppSidebarPresenter = ({ user }: AppSidebarPresenterProps) => {
   return (
-    // SidebarProvider should wrap Sidebar if not already done in a parent component
-    // Assuming SidebarProvider is wrapping this component elsewhere based on sidebar.tsx structure
     <Sidebar collapsible="icon" side="left">
       <SidebarContent>
         <p className="font-medium text-muted-foreground text-sm">
@@ -55,10 +48,24 @@ export const AppSidebar = () => {
             <NewNote />
           </DialogContent>
         </Dialog>
-        <NavUser />
+        <NavUser user={user} />
         <SidebarTrigger className="mt-auto" />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );
+};
+
+export const AppSidebar = () => {
+  const { status, data: userData } = useUser();
+
+  if (status === "pending" || !userData) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  return <AppSidebarPresenter user={userData} />;
 };
