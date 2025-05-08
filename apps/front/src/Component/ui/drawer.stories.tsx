@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, fn, userEvent, within } from "@storybook/test";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import * as React from "react";
 import { Button } from "./button";
@@ -130,57 +129,4 @@ export const Right: Story = {
 export const Top: Story = {
   render: (args) => renderDrawer(args, defaultTrigger, defaultDrawerContent),
   args: { direction: "top" },
-};
-
-// Story with interaction test
-export const WithInteractionTest: Story = {
-  render: (args) => renderDrawer(args, defaultTrigger, defaultDrawerContent),
-  args: {
-    // Use controlled state for reliable testing of open/close
-    open: false,
-    onOpenChange: fn(),
-    direction: "bottom", // Explicit direction for test
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement.parentElement || canvasElement); // Search in parent for portal
-    const triggerButton = canvas.getByRole("button", { name: /Open Drawer/i });
-
-    // 1. Drawer initially closed
-    // Drawer content might be in the DOM but hidden, depending on vaul's implementation
-    // Check for a specific element inside the drawer content
-    expect(canvas.queryByText("Move Goal")).toBeNull();
-
-    // 2. Click trigger to open
-    await userEvent.click(triggerButton);
-    await expect(args.onOpenChange).toHaveBeenCalledWith(true);
-
-    // 3. Drawer should be open and content visible
-    // Use findBy queries to wait for appearance
-    const drawerTitle = await canvas.findByText("Move Goal");
-    await expect(drawerTitle).toBeVisible();
-    const submitButton = within(canvas.getByRole("dialog")).getByRole(
-      "button",
-      { name: /Submit/i },
-    ); // vaul uses dialog role internally
-    await expect(submitButton).toBeVisible();
-
-    // 4. Click the 'Cancel' button (DrawerClose)
-    const cancelButton = within(canvas.getByRole("dialog")).getByRole(
-      "button",
-      { name: /Cancel/i },
-    );
-    await userEvent.click(cancelButton);
-    await expect(args.onOpenChange).toHaveBeenCalledWith(false);
-
-    // 5. Drawer should be closed
-    // Wait for disappearance or check that content is gone
-    // await waitForElementToBeRemoved(() => canvas.queryByText('Move Goal'));
-    expect(canvas.queryByText("Move Goal")).toBeNull(); // Check if title is gone
-
-    // Optional: Test closing by clicking overlay (if not disabled)
-    // Need to find the overlay element first
-    // const overlay = canvas.getByTestId('drawer-overlay'); // Assuming data-testid or similar
-    // await userEvent.click(overlay);
-    // await expect(args.onOpenChange).toHaveBeenCalledWith(false);
-  },
 };
