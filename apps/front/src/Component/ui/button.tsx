@@ -73,7 +73,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isLoading || props.disabled}
         {...props}
       >
-        {/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
         {
           <Spinner
             color="var(--primary-foreground)"

@@ -23,7 +23,8 @@
       "apps/server/src/generated/prisma/**",
       ".devbox/**",
       "/nix",
-      "apps/front/storybook-static/"
+      "apps/front/storybook-static/",
+      "apps/front/coverage"
     ]
   },
   "formatter": {
