@@ -10,9 +10,9 @@ import {
   SheetTrigger,
 } from "./sheet";
 
-const meta: Meta<typeof Sheet> = {
+const meta: Meta<typeof SheetContent> = {
   title: "UI/Sheet",
-  component: Sheet,
+  component: SheetContent,
   tags: ["autodocs"],
   argTypes: {
     side: {
@@ -23,7 +23,7 @@ const meta: Meta<typeof Sheet> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof Sheet>;
+type Story = StoryObj<typeof SheetContent>;
 
 export const Default: Story = {
   render: () => (
