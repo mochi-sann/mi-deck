@@ -1,9 +1,9 @@
 import { execSync } from "node:child_process";
-import { Pool } from "pg";
+import * as dotenv from "dotenv";
+import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
-import * as dotenv from 'dotenv';
-import { sql } from 'drizzle-orm';
+import { Pool } from "pg";
 
 /**
  * VITEST_POOL_ID毎にDatabaseを作成し、データのリセット処理を行う。
@@ -14,11 +14,14 @@ export async function setupDatabase() {
   // .env.test からベースのDATABASE_URLを読み込むことを推奨
   // 例: DATABASE_URL_BASE="postgresql://user:password@host:port"
   // このURLに newDbName を結合する
-  dotenv.config({ path: '.env.test' }); // テスト用の .env ファイルを読み込む
+  dotenv.config({ path: ".env.test" }); // テスト用の .env ファイルを読み込む
 
-  const originalDbUrl = process.env.DATABASE_URL_ORIGINAL || process.env.DATABASE_URL; // 元のDB URLを保持
+  const originalDbUrl =
+    process.env.DATABASE_URL_ORIGINAL || process.env.DATABASE_URL; // 元のDB URLを保持
   if (!originalDbUrl) {
-    console.error("DATABASE_URL_ORIGINAL or DATABASE_URL must be set in .env.test");
+    console.error(
+      "DATABASE_URL_ORIGINAL or DATABASE_URL must be set in .env.test",
+    );
     process.exit(1);
   }
 
@@ -32,7 +35,9 @@ export async function setupDatabase() {
 
   try {
     // 既存のDBを削除 (冪等性を高めるため)
-    await tempDb.execute(sql.raw(`DROP DATABASE IF EXISTS "${newDbName}" WITH (FORCE);`));
+    await tempDb.execute(
+      sql.raw(`DROP DATABASE IF EXISTS "${newDbName}" WITH (FORCE);`),
+    );
     console.log(`Database ${newDbName} dropped if existed.`);
     await tempDb.execute(sql.raw(`CREATE DATABASE "${newDbName}";`));
     console.log(`Database ${newDbName} created.`);
@@ -53,7 +58,7 @@ export async function setupDatabase() {
   const dbForMigration = drizzle(testPool);
   try {
     console.log("Applying migrations to test database...");
-    await migrate(dbForMigration, { migrationsFolder: './drizzle/migrations' }); // drizzle.config.ts の out と合わせる
+    await migrate(dbForMigration, { migrationsFolder: "./drizzle/migrations" }); // drizzle.config.ts の out と合わせる
     console.log("Migrations applied successfully to test database.");
   } catch (error) {
     console.error("Error applying migrations to test database:", error);
@@ -64,9 +69,11 @@ export async function setupDatabase() {
 
   // Seed the database for testing
   console.log("Seeding test database...");
-  execSync("pnpm run db:seed:test", { // package.jsonのスクリプト経由で実行
+  execSync("pnpm run db:seed:test", {
+    // package.jsonのスクリプト経由で実行
     env: {
       ...process.env,
+      // biome-ignore lint/style/useNamingConvention:
       DATABASE_URL: testDbUrl, // 明示的に渡す
     },
     stdio: "inherit",

@@ -18,12 +18,13 @@ export default defineConfig({
     environment: "node",
     testTimeout: timeout,
     hookTimeout: timeout,
-    globalSetup: ['./test/setup.ts'], // globalSetupでDBセットアップを実行
+    globalSetup: ["./test/setup.ts"], // globalSetupでDBセットアップを実行
     alias: {
       "~": new URL("./src", import.meta.url).pathname,
       "@test": new URL("./test", import.meta.url).pathname,
     },
-    poolOptions: { // スレッド/プロセスプールの設定
+    poolOptions: {
+      // スレッド/プロセスプールの設定
       threads: {
         singleThread: true, // E2EテストではDBの競合を避けるためシングルスレッドを推奨
         // minThreads: 1, // singleThread: true と同じ効果

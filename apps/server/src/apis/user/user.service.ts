@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { eq } from "drizzle-orm";
+import jwt from "jsonwebtoken";
 import { users } from "~/db/schema";
-import { JWT_SECRET, SOLT_ROUNDS } from "../../lib/env";
 import { DrizzleService } from "../../lib/drizzle.service";
+import { JWT_SECRET, SOLT_ROUNDS } from "../../lib/env";
 import { SignUpUserDto } from "./dto/sign-up-user.dto";
 
 @Injectable()
@@ -70,7 +70,8 @@ export class UserService {
     // query API を使うとより Prisma に近い形で書ける
     const user = await this.drizzle.db.query.users.findFirst({
       where: eq(users.id, userId),
-      columns: { // Prismaのselectに相当
+      columns: {
+        // Prismaのselectに相当
         email: true,
         id: true,
         name: true,

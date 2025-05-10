@@ -1,7 +1,7 @@
 
 services:
   postgres:
-    container_name: new-db 
+    container_name: new-db
     image: postgres:latest
     ports:
       - "5432:5432"
