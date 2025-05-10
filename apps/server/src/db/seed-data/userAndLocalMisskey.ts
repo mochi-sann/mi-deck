@@ -2,7 +2,6 @@ import { Logger } from "@nestjs/common";
 import bcrypt from "bcrypt";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import * as schema from "../schema"; // Drizzleスキーマ
-import { serverInfos, serverSessions, timelines, users } from "../schema";
 
 const logger = new Logger("UserAndLocalMisskeySeed");
 
@@ -13,9 +12,8 @@ export const userAndLocalMisskey = async (
 
   logger.log("Upserting user example2@example.com...");
   const user = await db
-    .insert(users)
+    .insert(schema.users)
     .values({
-      id: "f8895928-12d9-47e6-85a3-8de88aaaa7a8",
       email: "example2@example.com",
       password: hashedPassword,
       name: "hoge",
@@ -40,9 +38,8 @@ export const userAndLocalMisskey = async (
 
   logger.log("Creating server session for localhost...");
   const newServerSession = await db
-    .insert(serverSessions)
+    .insert(schema.serverSessions)
     .values({
-      id: "f8895928-12d9-47e6-85a3-8de88aaaa7a8",
       origin: "http://localhost:3002",
       userId: user.id,
       serverType: "Misskey",
@@ -69,7 +66,7 @@ export const userAndLocalMisskey = async (
 
   logger.log("Creating server info for localhost session...");
   const newServerInfo = await db
-    .insert(serverInfos)
+    .insert(schema.serverInfos)
     .values({
       name: "hoge",
       faviconUrl: "",
@@ -104,7 +101,7 @@ export const userAndLocalMisskey = async (
 
   logger.log("Creating timelines for localhost session...");
   const localTimelineHome = await db
-    .insert(timelines)
+    .insert(schema.timelines)
     .values({
       name: "localhost home",
       type: "HOME",
@@ -124,7 +121,7 @@ export const userAndLocalMisskey = async (
     });
 
   const localTimelineLocal = await db
-    .insert(timelines)
+    .insert(schema.timelines)
     .values({
       name: "localhost local",
       type: "LOCAL",
@@ -150,7 +147,7 @@ export const userAndLocalMisskey = async (
   if (process.env.MISSKEY_SERVER_TOKEN && process.env.MISSKEY_SERVER_ORIGIN) {
     logger.log("Creating server session for Mochi Misskey...");
     const misskeyServerSession = await db
-      .insert(serverSessions)
+      .insert(schema.serverSessions)
       .values({
         id: "3ae62e9f-4f08-44ef-94d5-24c4d9d5a240",
         origin: process.env.MISSKEY_SERVER_ORIGIN,
@@ -179,7 +176,7 @@ export const userAndLocalMisskey = async (
 
     logger.log("Creating timelines for Mochi Misskey session...");
     const misskeyTimelineHome = await db
-      .insert(timelines)
+      .insert(schema.timelines)
       .values({
         name: "Misskey Home",
         type: "HOME",
@@ -199,7 +196,7 @@ export const userAndLocalMisskey = async (
       });
 
     const misskeyTimelineLocal = await db
-      .insert(timelines)
+      .insert(schema.timelines)
       .values({
         name: "Misskey Local",
         type: "LOCAL",
