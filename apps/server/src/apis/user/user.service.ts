@@ -1,15 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { eq } from "drizzle-orm";
+import { users } from "~/db/schema";
 import { JWT_SECRET, SOLT_ROUNDS } from "../../lib/env";
-import { PrismaService } from "../../lib/prisma.service";
+import { DrizzleService } from "../../lib/drizzle.service";
 import { SignUpUserDto } from "./dto/sign-up-user.dto";
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private drizzle: DrizzleService) {} // PrismaService を DrizzleService に変更
   private readonly jwtSecret = JWT_SECRET; // 必ず環境変数で管理すること
   private readonly saltRounds = SOLT_ROUNDS;
+
   generateToken(payload: object): string {
     return jwt.sign(payload, this.jwtSecret, { expiresIn: "1h" });
   }
@@ -20,19 +23,25 @@ export class UserService {
     const hashedPassword = await bcrypt.hash(password, this.saltRounds);
 
     // ユーザーを作成
-    const user = await this.prisma.user.create({
-      data: {
+    const result = await this.drizzle.db
+      .insert(users)
+      .values({
         email,
         password: hashedPassword,
-      },
-    });
-    return user;
+        // name: は SignUpUserDto に存在しないためコメントアウトまたは削除
+        // id は自動生成される想定
+      })
+      .returning();
+    return result[0];
   }
+
   async findUserByEmail(email: string) {
-    return await this.prisma.user.findUnique({
-      where: { email },
+    // return await this.drizzle.db.select().from(users).where(eq(users.email, email)).limit(1).then(res => res[0]);
+    return await this.drizzle.db.query.users.findFirst({
+      where: eq(users.email, email),
     });
   }
+
   async login(email: string, password: string) {
     const user = await this.findUserByEmail(email);
     if (!user) {
@@ -57,11 +66,11 @@ export class UserService {
     return { token };
   }
   async getUserInfo(userId: string) {
-    const User = await this.prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-      select: {
+    // Drizzleでは select() で明示的にカラムを指定するか、リレーションを使わない場合は全カラムが返る
+    // query API を使うとより Prisma に近い形で書ける
+    const user = await this.drizzle.db.query.users.findFirst({
+      where: eq(users.id, userId),
+      columns: { // Prismaのselectに相当
         email: true,
         id: true,
         name: true,
@@ -69,6 +78,6 @@ export class UserService {
         updatedAt: true,
       },
     });
-    return User;
+    return user;
   }
 }
