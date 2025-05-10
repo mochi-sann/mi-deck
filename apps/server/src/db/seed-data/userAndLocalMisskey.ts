@@ -2,6 +2,7 @@ import { Logger } from "@nestjs/common";
 import bcrypt from "bcrypt";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import * as schema from "../schema"; // Drizzleスキーマ
+// import { sql } from "drizzle-orm"; // 必要に応じて使用
 
 const logger = new Logger("UserAndLocalMisskeySeed");
 
@@ -19,12 +20,13 @@ export const userAndLocalMisskey = async (
       name: "hoge",
       userRole: "ADMIN",
     })
-    .onConflict((target) => target.id)
-    .doUpdate({
+    .onConflictDoUpdate({
+      target: schema.users.email, // email をコンフリクトターゲットに
       set: {
-        email: "example2@example.com",
         name: "hoge",
         userRole: "ADMIN",
+        password: hashedPassword, // パスワードも更新する場合
+        updatedAt: new Date(),
       },
     })
     .returning()
@@ -37,27 +39,36 @@ export const userAndLocalMisskey = async (
   logger.log(`User upserted: ${user.email} (ID: ${user.id})`);
 
   logger.log("Creating server session for localhost...");
-  const newServerSession = await db
+  let newServerSession = await db
     .insert(schema.serverSessions)
     .values({
+      // id: "f8895928-12d9-47e6-85a3-8de88aaaa7a8", // IDを固定する場合、valuesに含め、targetをidにする
       origin: "http://localhost:3002",
       userId: user.id,
       serverType: "Misskey",
       serverToken: "PK00RQIpfmS1diD38HCzB1Pmz055BvFG",
     })
-    .onConflict((target) => target.id)
-    .doNothing()
+    .onConflictOnConstraint("server_session_origin_user_id_key") // (origin, userId) の複合ユニーク制約名
+    .doUpdate({
+      set: {
+        serverType: "Misskey",
+        serverToken: "PK00RQIpfmS1diD38HCzB1Pmz055BvFG",
+        updatedAt: new Date(),
+      },
+    })
     .returning()
-    .then(async (res) => {
-      if (res.length > 0) return res[0];
-      return db.query.serverSessions.findFirst({
-        where: (ss, { eq }) =>
-          eq(ss.id, "f8895928-12d9-47e6-85a3-8de88aaaa7a8"),
-      });
-    });
+    .then((res) => res[0]);
 
   if (!newServerSession) {
-    logger.error("Failed to create or get server session.");
+    // onConflictDoUpdate で更新された場合も結果が返るはずだが、念のためフォールバック
+    newServerSession = await db.query.serverSessions.findFirst({
+      where: (ss, { eq, and }) =>
+        and(eq(ss.origin, "http://localhost:3002"), eq(ss.userId, user.id)),
+    });
+  }
+
+  if (!newServerSession) {
+    logger.error("Failed to create or get server session for localhost.");
     return;
   }
   logger.log(
@@ -74,25 +85,22 @@ export const userAndLocalMisskey = async (
       themeColor: "",
       serverSessionId: newServerSession.id,
     })
-    .onConflict((target) => target.serverSessionId)
-    .doUpdate({
+    .onConflictDoUpdate({
+      target: schema.serverInfos.serverSessionId, // serverSessionId は unique
       set: {
         name: "hoge",
         faviconUrl: "",
         iconUrl: "",
         themeColor: "",
+        updatedAt: new Date(),
       },
     })
     .returning()
-    .then(async (res) => {
-      if (res.length > 0) return res[0];
-      return db.query.serverInfos.findFirst({
-        where: (si, { eq }) => eq(si.serverSessionId, newServerSession.id!),
-      });
-    });
+    .then((res) => res[0]);
 
   if (!newServerInfo) {
-    logger.error("Failed to create or update server info.");
+    logger.error("Failed to create or update server info for localhost.");
+    // newServerSession.id が存在しないケースは考えにくいが、エラーハンドリングは維持
     return;
   }
   logger.log(
@@ -107,10 +115,11 @@ export const userAndLocalMisskey = async (
       type: "HOME",
       serverSessionId: newServerSession.id,
     })
-    .onConflictDoNothing()
+    .onConflictDoNothing() // 主キー(id)に対するコンフリクト処理
     .returning()
     .then(async (res) => {
       if (res.length > 0) return res[0];
+      // 挿入されなかった場合、既存のものを検索
       return db.query.timelines.findFirst({
         where: (t, { eq, and }) =>
           and(
@@ -127,10 +136,11 @@ export const userAndLocalMisskey = async (
       type: "LOCAL",
       serverSessionId: newServerSession.id,
     })
-    .onConflictDoNothing()
+    .onConflictDoNothing() // 主キー(id)に対するコンフリクト処理
     .returning()
     .then(async (res) => {
       if (res.length > 0) return res[0];
+      // 挿入されなかった場合、既存のものを検索
       return db.query.timelines.findFirst({
         where: (t, { eq, and }) =>
           and(
@@ -149,22 +159,24 @@ export const userAndLocalMisskey = async (
     const misskeyServerSession = await db
       .insert(schema.serverSessions)
       .values({
-        id: "3ae62e9f-4f08-44ef-94d5-24c4d9d5a240",
+        id: "3ae62e9f-4f08-44ef-94d5-24c4d9d5a240", // 固定ID
         origin: process.env.MISSKEY_SERVER_ORIGIN,
         userId: user.id,
         serverType: "Misskey",
         serverToken: process.env.MISSKEY_SERVER_TOKEN,
       })
-      .onConflict((target) => target.id)
-      .doNothing()
+      .onConflictDoUpdate({
+        target: schema.serverSessions.id, // id をコンフリクトターゲットに
+        set: {
+          origin: process.env.MISSKEY_SERVER_ORIGIN,
+          userId: user.id, // userIdも更新対象に含めるか検討 (通常は固定IDなら不要かも)
+          serverType: "Misskey",
+          serverToken: process.env.MISSKEY_SERVER_TOKEN,
+          updatedAt: new Date(),
+        },
+      })
       .returning()
-      .then(async (res) => {
-        if (res.length > 0) return res[0];
-        return db.query.serverSessions.findFirst({
-          where: (ss, { eq }) =>
-            eq(ss.id, "3ae62e9f-4f08-44ef-94d5-24c4d9d5a240"),
-        });
-      });
+      .then((res) => res[0]);
 
     if (!misskeyServerSession) {
       logger.error("Failed to create or get Mochi Misskey server session.");
@@ -173,6 +185,9 @@ export const userAndLocalMisskey = async (
     logger.log(
       `Mochi Misskey server session created/retrieved: ${misskeyServerSession.origin} (ID: ${misskeyServerSession.id})`,
     );
+
+    // Mochi Misskey の ServerInfo も同様に UPSERT すると良いでしょう
+    // (今回は元のコードに ServerInfo の登録がなかったので省略)
 
     logger.log("Creating timelines for Mochi Misskey session...");
     const misskeyTimelineHome = await db
