@@ -21,6 +21,7 @@
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
     "test:e2e:watch": "vitest --config ./vitest.config.e2e.ts",
     "db:generate": "drizzle-kit generate",
+    "db:pull": "drizzle-kit pull",
     "db:migrate": "tsx src/db/migrate.ts",
     "db:seed": "tsx src/db/seed.ts --environment development",
     "db:seed:test": "tsx src/db/seed.ts --environment test",
