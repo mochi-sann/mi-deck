@@ -1,19 +1,17 @@
-import { createId } from "@paralleldrive/cuid2";
-import { relations } from "drizzle-orm";
 import {
   index,
+  integer,
   pgEnum,
   pgTable,
   text,
+  time,
   timestamp,
   uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
 
-// Enums
-export const userRoleEnum = pgEnum("user_role", ["ADMIN", "USER"]);
-export const serverTypeEnum = pgEnum("server_type", ["Misskey", "OtherServer"]);
-export const timelineTypeEnum = pgEnum("timeline_type", [
+export const serverType = pgEnum("ServerType", ["Misskey", "OtherServer"]);
+export const timelineType = pgEnum("TimelineType", [
   "HOME",
   "LOCAL",
   "GLOBAL",
@@ -21,286 +19,230 @@ export const timelineTypeEnum = pgEnum("timeline_type", [
   "USER",
   "CHANNEL",
 ]);
+export const userRole = pgEnum("UserRole", ["ADMIN", "USER"]);
 
-// Tables
-export const users = pgTable(
+export const user = pgTable(
   "user",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .$defaultFn(() => createId()),
-    email: varchar("email", { length: 255 }).unique().notNull(),
-    name: varchar("name", { length: 255 }),
+    id: text("id").primaryKey().notNull(),
+    email: text("email").notNull(),
+    name: text("name"),
+    createdAt: timestamp("created_at", { precision: 3, mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", {
+      precision: 3,
+      mode: "string",
+    }).notNull(),
     password: text("password").notNull(),
-    createdAt: timestamp("created_at", { mode: "date", withTimezone: true })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp("updated_at", { mode: "date", withTimezone: true })
-      .defaultNow()
-      .$onUpdate(() => new Date())
-      .notNull(),
-    userRole: userRoleEnum("user_role").default("USER").notNull(),
+    userRole: userRole("user_role").default("USER").notNull(),
   },
   (table) => {
     return {
-      emailIndex: uniqueIndex("user_email_key").on(table.email),
+      emailKey: uniqueIndex("user_email_key").using("btree", table.email),
     };
   },
 );
-
-export const userSettings = pgTable(
+export const userSetting = pgTable(
   "user_setting",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .$defaultFn(() => createId()),
-    userId: varchar("user_id", { length: 255 })
+    id: text("id").primaryKey().notNull(),
+    userId: text("user_id")
       .notNull()
-      .references(() => users.id, {
-        onDelete: "restrict",
-        onUpdate: "cascade",
-      }),
-    key: varchar("key", { length: 255 }).notNull(),
+      .references(() => user.id, { onDelete: "restrict", onUpdate: "cascade" }),
+    key: text("key").notNull(),
     value: text("value").notNull(),
-    createdAt: timestamp("created_at", { mode: "date", withTimezone: true })
+    createdAt: timestamp("created_at", { precision: 3, mode: "string" })
       .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { mode: "date", withTimezone: true })
-      .defaultNow()
-      .$onUpdate(() => new Date())
-      .notNull(),
+    updatedAt: timestamp("updated_at", {
+      precision: 3,
+      mode: "string",
+    }).notNull(),
   },
   (table) => {
     return {
-      userIdIndex: index("user_setting_user_id_idx").on(table.userId),
+      userIdIdx: index("user_setting_user_id_idx").using("btree", table.userId),
     };
   },
 );
 
-export const serverSessions = pgTable(
+export const serverSession = pgTable(
   "server_session",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .$defaultFn(() => createId()),
-    userId: varchar("user_id", { length: 255 })
+    id: text("id").primaryKey().notNull(),
+    userId: text("user_id")
       .notNull()
-      .references(() => users.id, {
-        onDelete: "restrict",
-        onUpdate: "cascade",
-      }),
-    origin: varchar("origin", { length: 255 }).notNull(),
+      .references(() => user.id, { onDelete: "restrict", onUpdate: "cascade" }),
+    serverType: serverType("server_type").notNull(),
+    createdAt: timestamp("created_at", { precision: 3, mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", {
+      precision: 3,
+      mode: "string",
+    }).notNull(),
+    origin: text("origin").notNull(),
     serverToken: text("server_token").notNull(),
-    serverType: serverTypeEnum("server_type").notNull(),
-    createdAt: timestamp("created_at", { mode: "date", withTimezone: true })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp("updated_at", { mode: "date", withTimezone: true })
-      .defaultNow()
-      .$onUpdate(() => new Date())
-      .notNull(),
   },
   (table) => {
     return {
-      userIdIndex: index("server_session_user_id_idx").on(table.userId),
-      originUserIdUnique: uniqueIndex("server_session_origin_user_id_key").on(
+      originUserIdKey: uniqueIndex("server_session_origin_user_id_key").using(
+        "btree",
         table.origin,
+        table.userId,
+      ),
+      userIdIdx: index("server_session_user_id_idx").using(
+        "btree",
         table.userId,
       ),
     };
   },
 );
 
-export const serverInfos = pgTable(
+export const prismaMigrations = pgTable("_prisma_migrations", {
+  id: varchar("id", { length: 36 }).primaryKey().notNull(),
+  checksum: varchar("checksum", { length: 64 }).notNull(),
+  finishedAt: timestamp("finished_at", { withTimezone: true, mode: "string" }),
+  migrationName: varchar("migration_name", { length: 255 }).notNull(),
+  logs: text("logs"),
+  rolledBackAt: timestamp("rolled_back_at", {
+    withTimezone: true,
+    mode: "string",
+  }),
+  startedAt: timestamp("started_at", { withTimezone: true, mode: "string" })
+    .defaultNow()
+    .notNull(),
+  appliedStepsCount: integer("applied_steps_count").default(0).notNull(),
+});
+
+export const serverInfo = pgTable(
   "server_info",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .$defaultFn(() => createId()),
-    serverSessionId: varchar("server_session_id", { length: 255 })
-      .unique()
+    id: text("id").primaryKey().notNull(),
+    serverSessionId: text("server_session_id")
       .notNull()
-      .references(() => serverSessions.id, {
-        onDelete: "cascade",
+      .references(() => serverSession.id, {
+        onDelete: "restrict",
         onUpdate: "cascade",
       }),
-    name: varchar("name", { length: 255 }).notNull(),
-    iconUrl: text("icon_url").notNull(),
+    createdAt: timestamp("created_at", { precision: 3, mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", {
+      precision: 3,
+      mode: "string",
+    }).notNull(),
     faviconUrl: text("favicon_url").notNull(),
-    themeColor: varchar("theme_color", { length: 255 }).notNull(),
-    createdAt: timestamp("created_at", { mode: "date", withTimezone: true })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp("updated_at", { mode: "date", withTimezone: true })
-      .defaultNow()
-      .$onUpdate(() => new Date())
-      .notNull(),
+    iconUrl: text("icon_url").notNull(),
+    name: text("name").notNull(),
+    themeColor: text("theme_color").notNull(),
   },
   (table) => {
     return {
-      serverSessionIdIndex: index("server_info_server_session_id_idx").on(
+      serverSessionIdIdx: index("server_info_server_session_id_idx").using(
+        "btree",
+        table.serverSessionId,
+      ),
+      serverSessionIdKey: uniqueIndex(
+        "server_info_server_session_id_key",
+      ).using("btree", table.serverSessionId),
+    };
+  },
+);
+
+export const panel = pgTable(
+  "panel",
+  {
+    id: text("id").primaryKey().notNull(),
+    serverSessionId: text("server_session_id")
+      .notNull()
+      .references(() => serverSession.id, {
+        onDelete: "restrict",
+        onUpdate: "cascade",
+      }),
+    type: text("type").notNull(),
+  },
+  (table) => {
+    return {
+      serverSessionIdIdx: index("panel_server_session_id_idx").using(
+        "btree",
         table.serverSessionId,
       ),
     };
   },
 );
 
-export const userInfos = pgTable(
+export const userInfo = pgTable(
   "user_info",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .$defaultFn(() => createId()),
-    name: varchar("name", { length: 255 }).notNull(),
-    username: varchar("username", { length: 255 }).notNull(),
-    avatarUrl: text("avater_url").notNull(),
-    createdAt: timestamp("created_at", { mode: "date", withTimezone: true })
+    id: text("id").primaryKey().notNull(),
+    name: text("name").notNull(),
+    createdAt: timestamp("created_at", { precision: 3, mode: "string" })
       .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { mode: "date", withTimezone: true })
-      .defaultNow()
-      .$onUpdate(() => new Date())
-      .notNull(),
-    serverSessionId: varchar("server_s_ession_id", { length: 255 })
-      .unique()
+    updatedAt: timestamp("updated_at", {
+      precision: 3,
+      mode: "string",
+    }).notNull(),
+    // biome-ignore lint/style/useNamingConvention:
+    serverSEssionId: text("server_s_ession_id")
       .notNull()
-      .references(() => serverSessions.id, {
-        onDelete: "cascade",
+      .references(() => serverSession.id, {
+        onDelete: "restrict",
         onUpdate: "cascade",
       }),
-    userId: varchar("user_id", { length: 255 }).references(() => users.id, {
+    userId: text("userId").references(() => user.id, {
       onDelete: "set null",
       onUpdate: "cascade",
     }),
+    username: text("username").notNull(),
+    avaterUrl: text("avater_url").notNull(),
   },
   (table) => {
     return {
-      serverSessionIdIndex: index("user_info_server_s_ession_id_idx").on(
-        table.serverSessionId,
+      // biome-ignore lint/style/useNamingConvention:
+      serverSEssionIdIdx: index("user_info_server_s_ession_id_idx").using(
+        "btree",
+        table.serverSEssionId,
       ),
-      userIdIndex: index("user_info_user_id_idx").on(table.userId),
-    };
-  },
-);
-
-export const panels = pgTable(
-  "panel",
-  {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .$defaultFn(() => createId()),
-    serverSessionId: varchar("server_session_id", { length: 255 })
-      .notNull()
-      .references(() => serverSessions.id, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }),
-    type: varchar("type", { length: 255 }).notNull(),
-  },
-  (table) => {
-    return {
-      serverSessionIdIndex: index("panel_server_session_id_idx").on(
-        table.serverSessionId,
+      // biome-ignore lint/style/useNamingConvention:
+      serverSEssionIdKey: uniqueIndex("user_info_server_s_ession_id_key").using(
+        "btree",
+        table.serverSEssionId,
       ),
     };
   },
 );
 
-export const timelines = pgTable(
+export const timeline = pgTable(
   "timeline",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .$defaultFn(() => createId()),
-    serverSessionId: varchar("server_session_id", { length: 255 })
+    id: text("id").primaryKey().notNull(),
+    serverSessionId: text("server_session_id")
       .notNull()
-      .references(() => serverSessions.id, {
+      .references(() => serverSession.id, {
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
-    name: varchar("name", { length: 255 }).notNull(),
-    type: timelineTypeEnum("type").notNull(),
-    listId: varchar("list_id", { length: 255 }),
-    channelId: varchar("channel_id", { length: 255 }),
-    createdAt: timestamp("created_at", { mode: "date", withTimezone: true })
+    name: text("name").notNull(),
+    type: time("type").notNull(),
+    listId: text("list_id"),
+    channelId: text("channel_id"),
+    createdAt: timestamp("created_at", { precision: 3, mode: "string" })
       .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { mode: "date", withTimezone: true })
-      .defaultNow()
-      .$onUpdate(() => new Date())
-      .notNull(),
+    updatedAt: timestamp("updated_at", {
+      precision: 3,
+      mode: "string",
+    }).notNull(),
   },
   (table) => {
     return {
-      serverSessionIdIndex: index("timeline_server_session_id_idx").on(
+      serverSessionIdIdx: index("timeline_server_session_id_idx").using(
+        "btree",
         table.serverSessionId,
       ),
     };
   },
 );
-
-// Relations
-export const usersRelations = relations(users, ({ many, one }) => ({
-  serverSessions: many(serverSessions),
-  userSettings: many(userSettings),
-  userInfos: many(userInfos),
-}));
-
-export const userSettingsRelations = relations(userSettings, ({ one }) => ({
-  user: one(users, {
-    fields: [userSettings.userId],
-    references: [users.id],
-  }),
-}));
-
-export const serverSessionsRelations = relations(
-  serverSessions,
-  ({ one, many }) => ({
-    user: one(users, {
-      fields: [serverSessions.userId],
-      references: [users.id],
-    }),
-    panels: many(panels),
-    serverInfo: one(serverInfos, {
-      fields: [serverSessions.id],
-      references: [serverInfos.serverSessionId],
-    }),
-    serverUserInfo: one(userInfos, {
-      fields: [serverSessions.id],
-      references: [userInfos.serverSessionId],
-    }),
-    timelines: many(timelines),
-  }),
-);
-
-export const serverInfosRelations = relations(serverInfos, ({ one }) => ({
-  serverSession: one(serverSessions, {
-    fields: [serverInfos.serverSessionId],
-    references: [serverSessions.id],
-  }),
-}));
-
-export const userInfosRelations = relations(userInfos, ({ one }) => ({
-  serverSession: one(serverSessions, {
-    fields: [userInfos.serverSessionId],
-    references: [serverSessions.id],
-  }),
-  user: one(users, {
-    fields: [userInfos.userId],
-    references: [users.id],
-  }),
-}));
-
-export const panelsRelations = relations(panels, ({ one }) => ({
-  serverSession: one(serverSessions, {
-    fields: [panels.serverSessionId],
-    references: [serverSessions.id],
-  }),
-}));
-
-export const timelinesRelations = relations(timelines, ({ one }) => ({
-  serverSession: one(serverSessions, {
-    fields: [timelines.serverSessionId],
-    references: [serverSessions.id],
-  }),
-}));
