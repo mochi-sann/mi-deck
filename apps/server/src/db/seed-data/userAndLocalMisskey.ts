@@ -12,8 +12,18 @@ export const userAndLocalMisskey = async (
   const hashedPassword = await bcrypt.hash("password", 10);
 
   logger.log("Upserting user example2@example.com...");
+  const newUser = await db
+    .insert(schema.user)
+    .values({
+      email: "example2@example.com",
+      password: hashedPassword,
+      id: "f8895928-12d9-47e6-85a3-8de88aaaa7a8",
+      updatedAt: new Date(),
+    })
+    .returning()
+    .then((res) => res[0]);
   const user = await db
-    .insert(schema.users)
+    .insert(schema.user)
     .values({
       email: "example2@example.com",
       password: hashedPassword,
