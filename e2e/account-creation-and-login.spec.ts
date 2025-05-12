@@ -10,6 +10,7 @@ test.describe("アカウント作成とログイン", () => {
   }) => {
     // アカウント作成ページに移動 (実際のパスに置き換えてください)
     await page.goto("/"); // CONVENTIONS.md には /login としか書かれていないため、サインアップページの具体的なパスを想定
+    await page.getByRole("button", { name: /新規登録/i }).click();
 
     // アカウント作成フォームの入力
     console.log(
