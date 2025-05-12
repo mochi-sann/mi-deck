@@ -2,10 +2,9 @@ import { LoadingSpinner } from "@/Component/ui/loading-spinner";
 import Text from "@/Component/ui/text";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { useUser } from "../../lib/configureAuth";
-import { LogoutButton } from "./-componets/LogoutButton";
-import { LoginForm } from "./-form/LoginForm";
+import { SignUpForm } from "./-form/SignUpForm";
 
-export const Route = createLazyFileRoute("/login")({
+export const Route = createLazyFileRoute("/signup")({
   component: RouteComponent,
 });
 
@@ -14,7 +13,7 @@ function RouteComponent() {
   return (
     <div>
       <div className="p-2">
-        <h3>Welcome login page!</h3>
+        <h3>Welcome register page!</h3>
         {status === "pending" ? (
           <LoadingSpinner />
         ) : status === "error" ? (
@@ -26,17 +25,13 @@ function RouteComponent() {
           </div>
         )}
         <div>
-          <Text variant={"h1"}>ログアウトする</Text>
-          <LogoutButton />
-        </div>
-        <div>
-          <Text variant={"h1"}>ログインする</Text>
+          <Text variant={"h1"}>新規登録する</Text>
           <div className={"flex flex-row gap-4 p-4"}>
-            <LoginForm />
+            <SignUpForm />
           </div>
         </div>
       </div>
-      Hello "/login"!
+      Hello "/register"!
     </div>
   );
 }

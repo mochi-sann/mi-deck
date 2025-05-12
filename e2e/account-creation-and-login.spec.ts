@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("アカウント作成とログイン", () => {
   const uniqueEmail = `testuser-${Date.now()}@example.com`;
@@ -9,9 +9,15 @@ test.describe("アカウント作成とログイン", () => {
     page,
   }) => {
     // アカウント作成ページに移動 (実際のパスに置き換えてください)
-    await page.goto("/login/sign-up"); // CONVENTIONS.md には /login としか書かれていないため、サインアップページの具体的なパスを想定
+    await page.goto("/"); // CONVENTIONS.md には /login としか書かれていないため、サインアップページの具体的なパスを想定
 
     // アカウント作成フォームの入力
+    console.log(
+      ...[
+        uniqueEmail,
+        "👀 [account-creation-and-login.spec.ts:15]: uniqueEmail",
+      ].reverse(),
+    );
     // メールアドレス入力フィールドのセレクタ (実際のセレクタに置き換えてください)
     await page.locator('input[name="email"]').fill(uniqueEmail);
     // パスワード入力フィールドのセレクタ (実際のセレクタに置き換えてください)
