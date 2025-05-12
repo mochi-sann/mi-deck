@@ -138,3 +138,9 @@ files
 misskey-files
 apps/front/storybook-static
 apps/server/src/generated/prisma
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
