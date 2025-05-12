@@ -24,7 +24,8 @@
       ".devbox/**",
       "/nix",
       "apps/front/storybook-static/",
-      "apps/front/coverage"
+      "apps/front/coverage",
+      "playwright-report/"
     ]
   },
   "formatter": {

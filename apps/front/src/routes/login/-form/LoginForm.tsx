@@ -28,7 +28,7 @@ export const LoginForm: React.FC = () => {
     console.log(
       ...[search.redirect, "👀 [LoginForm.tsx:41]: search.redirect"].reverse(),
     );
-    navigate({ to: search.redirect });
+    navigate({ to: search.redirect || "/" });
     console.log(data, SignUpResponse);
 
     window.location.reload();

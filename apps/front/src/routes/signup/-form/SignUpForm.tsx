@@ -29,7 +29,7 @@ export const SignUpForm: React.FC = () => {
     })
       .then((res) => {
         console.log(res);
-        navigate({ to: search.redirect });
+        navigate({ to: search.redirect || "/login" });
         return res;
       })
       .catch((err) => {
