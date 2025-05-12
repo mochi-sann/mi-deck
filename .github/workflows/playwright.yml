@@ -6,6 +6,26 @@ on:
     branches: [ main, master ]
 jobs:
   test:
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub PostgreSQL image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DBNAME: mydb
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/mydb?schema=public"
+          TZ: 'Asia/Tokyo'
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -17,6 +37,21 @@ jobs:
       run: npm install -g pnpm && pnpm install
     - name: Install Playwright Browsers
       run: pnpm exec playwright install --with-deps
+    - name: Run database migration
+      run: pnpm run server db:migrate:reset
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydb?schema=public
+        NODE_ENV: test
+    - name: Run database seed
+      run: pnpm run server db:seed
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydb?schema=public
+        NODE_ENV: test
+    - name: Start server
+      run: pnpm run server start
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydb?schema=public
+        NODE_ENV: test
     - name: Run Playwright tests
       run: pnpm exec playwright test
     - uses: actions/upload-artifact@v4
