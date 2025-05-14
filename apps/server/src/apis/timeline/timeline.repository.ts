@@ -1,4 +1,7 @@
 import { Injectable } from "@nestjs/common";
+import { Kysely } from "kysely";
+import { DB } from "kysely/types";
+import { InjectKysely } from "nestjs-kysely";
 import { Prisma, ServerSession, Timeline } from "~/generated/prisma";
 import { PrismaService } from "../../lib/prisma.service"; // Adjust path if necessary
 
@@ -12,7 +15,10 @@ export type TimelineWithServerSessionDetails = Timeline & {
 
 @Injectable()
 export class TimelineRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @InjectKysely() private readonly db: Kysely<DB>,
+  ) {}
 
   /**
    * Finds a ServerSession by its ID.
@@ -40,11 +46,33 @@ export class TimelineRepository {
 
   /**
    * Creates a new Timeline record.
+   *
+   name: string;
+   id: string;
+   createdAt: Date;
+   updatedAt: Date;
+   type: TimelineType;
+   serverSessionId: string;
+   listId: string | null;
+   channelId: string | null;
    */
   async createTimeline(
     data: Prisma.TimelineUncheckedCreateInput,
   ): Promise<Timeline> {
-    return this.prisma.timeline.create({ data });
+    return await this.db
+      .insertInto("timeline")
+      .values(data)
+      .returning([
+        "id",
+        "name",
+        "created_at",
+        "updated_at",
+        "type",
+        "server_session_id",
+        "list_id",
+        "channel_id",
+      ])
+      .executeTakeFirstOrThrow();
   }
 
   /**
