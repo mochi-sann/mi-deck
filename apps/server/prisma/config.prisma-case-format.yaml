@@ -1,3 +1,2 @@
-default: 'table=pascal; mapTable=snake; field=pascal; mapField=snake; enum=pascal; mapEnum=pascal'
+default: "table=pascal; mapTable=pascal; field=pascal; mapField=camel; enum=pascal; mapEnum=pascal"
 uses_next_auth: false
-

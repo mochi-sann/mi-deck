@@ -2,52 +2,52 @@
 //// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 //// ------------------------------------------------------
 
-Table user {
+Table User {
   id String [pk]
   email String [unique, not null]
   name String
   password String [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  serverSession server_session [not null]
-  userSettings user_setting [not null]
+  serverSession ServerSession [not null]
+  userSettings UserSetting [not null]
   userRole UserRole [not null, default: 'USER']
-  userInfo user_info [not null]
+  userInfo UserInfo [not null]
 }
 
-Table user_setting {
+Table UserSetting {
   id String [pk]
   userId String [not null]
-  user user [not null]
+  user User [not null]
   key String [not null]
   value String [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 }
 
-Table server_session {
+Table ServerSession {
   id String [pk]
   userId String [not null]
-  user user [not null]
+  user User [not null]
   origin String [not null]
   serverToken String [not null]
   serverType ServerType [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  panels panel [not null]
-  serverInfo server_info
-  serverUserInfo user_info
-  Timeline timeline [not null]
+  panels Panel [not null]
+  serverInfo ServerInfo
+  serverUserInfo UserInfo
+  timeline Timeline [not null]
 
   indexes {
     (origin, userId) [unique]
   }
 }
 
-Table server_info {
+Table ServerInfo {
   id String [pk]
   serverSessionId String [unique, not null]
-  serverSession server_session [not null]
+  serverSession ServerSession [not null]
   name String [not null]
   iconUrl String [not null]
   faviconUrl String [not null]
@@ -56,30 +56,30 @@ Table server_info {
   updatedAt DateTime [not null]
 }
 
-Table user_info {
+Table UserInfo {
   id String [pk]
   name String [not null]
   username String [not null]
   avatarUrl String [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  serverSession server_session [not null]
+  serverSession ServerSession [not null]
   serverSEssionId String [unique, not null]
-  User user
+  user User
   userId String
 }
 
-Table panel {
+Table Panel {
   id String [pk]
   serverSessionId String [not null]
-  serverSession server_session [not null]
+  serverSession ServerSession [not null]
   type String [not null]
 }
 
-Table timeline {
+Table Timeline {
   id String [pk]
   serverSessionId String [not null]
-  serverSession server_session [not null]
+  serverSession ServerSession [not null]
   name String [not null]
   type TimelineType [not null]
   listId String
@@ -107,16 +107,16 @@ Enum TimelineType {
   CHANNEL
 }
 
-Ref: user_setting.userId > user.id
+Ref: UserSetting.userId > User.id
 
-Ref: server_session.userId > user.id
+Ref: ServerSession.userId > User.id
 
-Ref: server_info.serverSessionId - server_session.id
+Ref: ServerInfo.serverSessionId - ServerSession.id
 
-Ref: user_info.serverSEssionId - server_session.id
+Ref: UserInfo.serverSEssionId - ServerSession.id
 
-Ref: user_info.userId > user.id
+Ref: UserInfo.userId > User.id
 
-Ref: panel.serverSessionId > server_session.id
+Ref: Panel.serverSessionId > ServerSession.id
 
-Ref: timeline.serverSessionId > server_session.id [delete: Cascade]
+Ref: Timeline.serverSessionId > ServerSession.id [delete: Cascade]

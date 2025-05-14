@@ -6,147 +6,147 @@
 ## default
 ```mermaid
 erDiagram
-"user" {
+"User" {
   String id PK
   String email UK
   String name "nullable"
   String password
-  DateTime created_at
-  DateTime updated_at
-  UserRole user_role
+  DateTime createdAt
+  DateTime updatedAt
+  UserRole userRole
 }
-"user_setting" {
+"UserSetting" {
   String id PK
-  String user_id FK
+  String userId FK
   String key
   String value
-  DateTime created_at
-  DateTime updated_at
+  DateTime createdAt
+  DateTime updatedAt
 }
-"server_session" {
+"ServerSession" {
   String id PK
-  String user_id FK
+  String userId FK
   String origin
-  String server_token
-  ServerType server_type
-  DateTime created_at
-  DateTime updated_at
+  String serverToken
+  ServerType serverType
+  DateTime createdAt
+  DateTime updatedAt
 }
-"server_info" {
+"ServerInfo" {
   String id PK
-  String server_session_id FK,UK
+  String serverSessionId FK,UK
   String name
-  String icon_url
-  String favicon_url
-  String theme_color
-  DateTime created_at
-  DateTime updated_at
+  String iconUrl
+  String faviconUrl
+  String themeColor
+  DateTime createdAt
+  DateTime updatedAt
 }
-"user_info" {
+"UserInfo" {
   String id PK
   String name
   String username
-  String avater_url
-  DateTime created_at
-  DateTime updated_at
-  String server_s_ession_id FK,UK
+  String avatarUrl
+  DateTime createdAt
+  DateTime updatedAt
+  String serverSEssionId FK,UK
   String userId FK "nullable"
 }
-"panel" {
+"Panel" {
   String id PK
-  String server_session_id FK
+  String serverSessionId FK
   String type
 }
-"timeline" {
+"Timeline" {
   String id PK
-  String server_session_id FK
+  String serverSessionId FK
   String name
   TimelineType type
-  String list_id "nullable"
-  String channel_id "nullable"
-  DateTime created_at
-  DateTime updated_at
+  String listId "nullable"
+  String channelId "nullable"
+  DateTime createdAt
+  DateTime updatedAt
 }
-"user_setting" }o--|| "user" : user
-"server_session" }o--|| "user" : user
-"server_info" |o--|| "server_session" : serverSession
-"user_info" |o--|| "server_session" : serverSession
-"user_info" }o--o| "user" : User
-"panel" }o--|| "server_session" : serverSession
-"timeline" }o--|| "server_session" : serverSession
+"UserSetting" }o--|| "User" : user
+"ServerSession" }o--|| "User" : user
+"ServerInfo" |o--|| "ServerSession" : serverSession
+"UserInfo" |o--|| "ServerSession" : serverSession
+"UserInfo" }o--o| "User" : user
+"Panel" }o--|| "ServerSession" : serverSession
+"Timeline" }o--|| "ServerSession" : serverSession
 ```
 
-### `user`
+### `User`
 
 **Properties**
   - `id`: 
   - `email`: 
   - `name`: 
   - `password`: 
-  - `created_at`: 
-  - `updated_at`: 
-  - `user_role`: 
+  - `createdAt`: 
+  - `updatedAt`: 
+  - `userRole`: 
 
-### `user_setting`
+### `UserSetting`
 
 **Properties**
   - `id`: 
-  - `user_id`: 
+  - `userId`: 
   - `key`: 
   - `value`: 
-  - `created_at`: 
-  - `updated_at`: 
+  - `createdAt`: 
+  - `updatedAt`: 
 
-### `server_session`
+### `ServerSession`
 
 **Properties**
   - `id`: 
-  - `user_id`: 
+  - `userId`: 
   - `origin`: 
-  - `server_token`: 
-  - `server_type`: 
-  - `created_at`: 
-  - `updated_at`: 
+  - `serverToken`: 
+  - `serverType`: 
+  - `createdAt`: 
+  - `updatedAt`: 
 
-### `server_info`
+### `ServerInfo`
 
 **Properties**
   - `id`: 
-  - `server_session_id`: 
+  - `serverSessionId`: 
   - `name`: 
-  - `icon_url`: 
-  - `favicon_url`: 
-  - `theme_color`: 
-  - `created_at`: 
-  - `updated_at`: 
+  - `iconUrl`: 
+  - `faviconUrl`: 
+  - `themeColor`: 
+  - `createdAt`: 
+  - `updatedAt`: 
 
-### `user_info`
+### `UserInfo`
 
 **Properties**
   - `id`: 
   - `name`: 
   - `username`: 
-  - `avater_url`: 
-  - `created_at`: 
-  - `updated_at`: 
-  - `server_s_ession_id`: 
+  - `avatarUrl`: 
+  - `createdAt`: 
+  - `updatedAt`: 
+  - `serverSEssionId`: 
   - `userId`: 
 
-### `panel`
+### `Panel`
 
 **Properties**
   - `id`: 
-  - `server_session_id`: 
+  - `serverSessionId`: 
   - `type`: 
 
-### `timeline`
+### `Timeline`
 
 **Properties**
   - `id`: 
-  - `server_session_id`: 
+  - `serverSessionId`: 
   - `name`: 
   - `type`: 
-  - `list_id`: 
-  - `channel_id`: 
-  - `created_at`: 
-  - `updated_at`: 
+  - `listId`: 
+  - `channelId`: 
+  - `createdAt`: 
+  - `updatedAt`: 

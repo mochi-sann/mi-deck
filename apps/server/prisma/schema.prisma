@@ -31,11 +31,11 @@ enum UserRole {
 }
 
 generator kysely {
-  provider = "prisma-kysely"
+  provider     = "prisma-kysely"
   // Optionally provide a destination directory for the generated file
   // and a filename of your choice
-  output = "../kysely"
-  fileName = "types.ts"
+  output       = "../kysely"
+  fileName     = "types.ts"
   // Optionally generate runtime enums to a separate file
   enumFileName = "enums.ts"
 }
@@ -45,27 +45,24 @@ model User {
   email         String          @unique
   name          String?
   password      String
-  createdAt     DateTime        @default(now()) @map("created_at")
-  updatedAt     DateTime        @updatedAt @map("updated_at")
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
   serverSession ServerSession[]
   userSettings  UserSetting[]
-  userRole      UserRole        @default(USER) @map("user_role")
+  userRole      UserRole        @default(USER)
   userInfo      UserInfo[]
-
-  @@map("user")
 }
 
 model UserSetting {
   id        String   @id @default(uuid())
-  userId    String   @map("user_id")
+  userId    String
   user      User     @relation(fields: [userId], references: [id])
   key       String
   value     String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
-  @@map("user_setting")
 }
 
 enum ServerType {
@@ -75,64 +72,60 @@ enum ServerType {
 
 model ServerSession {
   id             String      @id @default(uuid())
-  userId         String      @map("user_id")
+  userId         String
   user           User        @relation(fields: [userId], references: [id])
   origin         String // 修正されたフィールド名
-  serverToken    String      @map("server_token")
-  serverType     ServerType  @map("server_type")
-  createdAt      DateTime    @default(now()) @map("created_at")
-  updatedAt      DateTime    @updatedAt @map("updated_at")
+  serverToken    String
+  serverType     ServerType
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
   panels         Panel[]
   serverInfo     ServerInfo?
   serverUserInfo UserInfo?
-  Timeline       Timeline[]
+  timeline       Timeline[]
 
   @@unique([origin, userId])
   @@index([userId])
-  @@map("server_session")
 }
 
 model ServerInfo {
   id              String        @id @default(uuid())
-  serverSessionId String        @unique @map("server_session_id")
+  serverSessionId String        @unique
   serverSession   ServerSession @relation(fields: [serverSessionId], references: [id])
   name            String
   // softwareName    String?        @map("software_name")
   // softwareVersion String?        @map("software_version")
-  iconUrl         String        @map("icon_url")
-  faviconUrl      String        @map("favicon_url")
-  themeColor      String        @map("theme_color")
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
+  iconUrl         String
+  faviconUrl      String
+  themeColor      String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
   @@index([serverSessionId])
-  @@map("server_info")
 }
 
 model UserInfo {
   id              String        @id @default(uuid())
   name            String
   username        String
-  avatarUrl       String        @map("avater_url")
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
+  avatarUrl       String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
   serverSession   ServerSession @relation(fields: [serverSEssionId], references: [id])
-  serverSEssionId String        @unique @map("server_s_ession_id")
-  User            User?         @relation(fields: [userId], references: [id])
+  serverSEssionId String        @unique
+  user            User?         @relation(fields: [userId], references: [id])
   userId          String?
 
   @@index([serverSEssionId])
-  @@map("user_info")
 }
 
 model Panel {
   id              String        @id @default(uuid())
-  serverSessionId String        @map("server_session_id")
+  serverSessionId String
   serverSession   ServerSession @relation(fields: [serverSessionId], references: [id])
   type            String
 
   @@index([serverSessionId])
-  @@map("panel")
 }
 
 enum TimelineType {
@@ -146,15 +139,14 @@ enum TimelineType {
 
 model Timeline {
   id              String        @id @default(uuid())
-  serverSessionId String        @map("server_session_id")
+  serverSessionId String
   serverSession   ServerSession @relation(fields: [serverSessionId], references: [id], onDelete: Cascade) // onDeleteを追加してセッション削除時にタイムラインも削除
   name            String
   type            TimelineType
-  listId          String?       @map("list_id") // LISTタイプの場合に使用
-  channelId       String?       @map("channel_id") // CHANNELタイプの場合に使用
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
+  listId          String? // LISTタイプの場合に使用
+  channelId       String? // CHANNELタイプの場合に使用
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
   @@index([serverSessionId])
-  @@map("timeline")
 }
