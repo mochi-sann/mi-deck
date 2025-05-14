@@ -30,6 +30,16 @@ enum UserRole {
   USER
 }
 
+generator kysely {
+  provider = "prisma-kysely"
+  // Optionally provide a destination directory for the generated file
+  // and a filename of your choice
+  output = "../kysely"
+  fileName = "types.ts"
+  // Optionally generate runtime enums to a separate file
+  enumFileName = "enums.ts"
+}
+
 model User {
   id            String          @id @default(uuid())
   email         String          @unique
