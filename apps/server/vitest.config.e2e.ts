@@ -25,7 +25,6 @@ export default defineConfig({
     },
   },
   plugins: [
-    // @ts-expect-error - swc types mismatch
     swc.vite(), // Add swc plugin for NestJS compilation
   ],
 });
