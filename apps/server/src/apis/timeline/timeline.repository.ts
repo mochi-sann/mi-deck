@@ -60,18 +60,9 @@ export class TimelineRepository {
     data: Prisma.TimelineUncheckedCreateInput,
   ): Promise<Timeline> {
     return await this.db
-      .insertInto("timeline")
+      .insertInto("Timeline")
       .values(data)
-      .returning([
-        "id",
-        "name",
-        "created_at",
-        "updated_at",
-        "type",
-        "server_session_id",
-        "list_id",
-        "channel_id",
-      ])
+      .returningAll()
       .executeTakeFirstOrThrow();
   }
 
