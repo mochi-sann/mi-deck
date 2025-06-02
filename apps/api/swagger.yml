@@ -1,0 +1,496 @@
+
+openapi: 3.0.0
+paths:
+  /v1:
+    get:
+      operationId: AppController_getHello
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - App
+  /v1/auth/login:
+    post:
+      operationId: AuthController_login
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginEntity'
+        '401':
+          description: ''
+      tags: &ref_0
+        - auth
+  /v1/auth/signUp:
+    post:
+      operationId: AuthController_signUp
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginEntity'
+        '401':
+          description: ''
+        '409':
+          description: メールアドレスがコンフリクト
+      tags: *ref_0
+  /v1/auth/me:
+    get:
+      operationId: AuthController_getProfile
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeEntity'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      tags: *ref_0
+  /v1/auth/logout:
+    post:
+      operationId: AuthController_logout
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags: *ref_0
+  /v1/server-sessions:
+    post:
+      operationId: ServersessionsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateServerSessionDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateServerSessionResponseEntity'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      tags: &ref_1
+        - server-sessions
+    get:
+      operationId: ServersessionsController_getList
+      parameters: []
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreateServerSessionResponseEntity'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      tags: *ref_1
+  /v1/server-sessions/update-server-info:
+    post:
+      operationId: ServersessionsController_updateServerInfo
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateServerInfoDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerInfoEntity'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      tags: *ref_1
+  /v1/timeline:
+    post:
+      operationId: TimelineController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTimelineDto'
+      responses:
+        '201':
+          description: Timeline configuration created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimelineEntity'
+        '400':
+          description: Bad Request (validation failed).
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden (user does not own the server session).
+      security:
+        - bearer: []
+      summary: Create a new timeline configuration
+      tags: &ref_2
+        - timeline
+    get:
+      operationId: TimelineController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: Returns an array of timeline configurations.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimelineWithServerSessionEntity'
+        '401':
+          description: Unauthorized.
+      security:
+        - bearer: []
+      summary: Get all timeline configurations for the user
+      tags: *ref_2
+  /v1/timeline/{serverSessionId}:
+    get:
+      description: >-
+        Fetches notes for a timeline associated with the given server session
+        ID. Needs clarification if it should fetch based on Timeline ID instead.
+      operationId: TimelineController_findOne
+      parameters:
+        - name: serverSessionId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Returns an array of notes.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden (session not found or access denied).
+      security:
+        - bearer: []
+      summary: Get timeline notes for a specific server session
+      tags: *ref_2
+info:
+  title: mi-deck api
+  description: mi-deck api description
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    LoginDto:
+      type: object
+      properties:
+        email:
+          type: string
+          example: example@example.com
+        password:
+          type: string
+          example: password
+      required:
+        - email
+        - password
+    LoginEntity:
+      type: object
+      properties:
+        accessToken:
+          type: string
+      required:
+        - accessToken
+    SignUpDto:
+      type: object
+      properties:
+        email:
+          type: string
+          example: example@example.com
+        password:
+          type: string
+          example: password
+        username:
+          type: string
+          example: username
+      required:
+        - email
+        - password
+        - username
+    MeEntity:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+      required:
+        - id
+        - email
+        - name
+    CreateServerSessionDto:
+      type: object
+      properties:
+        origin:
+          type: string
+          example: https://example.com
+        sessionToken:
+          type: string
+        serverType:
+          type: string
+      required:
+        - origin
+        - sessionToken
+        - serverType
+    CreateServerSessionResponseEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        origin:
+          type: string
+        serverToken:
+          type: string
+        serverType:
+          type: string
+          enum:
+            - Misskey
+            - OtherServer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - origin
+        - serverToken
+        - serverType
+        - createdAt
+        - updatedAt
+    UpdateServerInfoDto:
+      type: object
+      properties:
+        origin:
+          type: string
+          example: https://example.com
+      required:
+        - origin
+    ServerInfoEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        name:
+          type: string
+        serverSessionId:
+          type: string
+          format: uuid
+        iconUrl:
+          type: string
+        faviconUrl:
+          type: string
+        themeColor:
+          type: string
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - name
+        - serverSessionId
+        - iconUrl
+        - faviconUrl
+        - themeColor
+    CreateTimelineDto:
+      type: object
+      properties:
+        serverSessionId:
+          type: string
+          description: The ID of the server session this timeline belongs to
+          example: a1b2c3d4-e5f6-7890-1234-567890abcdef
+        name:
+          type: string
+          description: User-defined name for the timeline
+          example: My Home Timeline
+        type:
+          type: string
+          description: Type of the timeline
+          enum:
+            - HOME
+            - LOCAL
+            - GLOBAL
+            - LIST
+            - USER
+            - CHANNEL
+          example: HOME
+        listId:
+          type: string
+          description: Required if type is LIST. The ID of the Misskey list.
+          example: abcdef1234567890
+        channelId:
+          type: string
+          description: Required if type is CHANNEL. The ID of the Misskey channel.
+          example: ghijkl9876543210
+      required:
+        - serverSessionId
+        - name
+        - type
+    TimelineEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        serverSessionId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum: &ref_3
+            - HOME
+            - LOCAL
+            - GLOBAL
+            - LIST
+            - USER
+            - CHANNEL
+        listId:
+          type: object
+        channelId:
+          type: object
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - serverSessionId
+        - name
+        - type
+        - createdAt
+        - updatedAt
+    ServerSessionInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the server session
+        origin:
+          type: string
+          example: https://misskey.io
+          description: Origin URL of the server
+        serverType:
+          type: string
+          enum:
+            - Misskey
+            - OtherServer
+          description: Type of the server
+        serverToken:
+          type: string
+          description: Token for the server session
+      required:
+        - id
+        - origin
+        - serverType
+        - serverToken
+    TimelineWithServerSessionEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        serverSessionId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum: *ref_3
+        listId:
+          type: object
+        channelId:
+          type: object
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        serverSession:
+          description: Associated server session details
+          allOf:
+            - $ref: '#/components/schemas/ServerSessionInfo'
+      required:
+        - id
+        - serverSessionId
+        - name
+        - type
+        - createdAt
+        - updatedAt
+        - serverSession
