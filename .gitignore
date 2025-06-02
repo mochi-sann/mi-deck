@@ -144,3 +144,5 @@ apps/server/src/generated/prisma
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+apps/hono/src/generated/prisma/libquery_engine-debian-openssl-3.0.x.so.node
+apps/hono/src/generated/prisma

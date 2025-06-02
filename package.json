@@ -9,6 +9,7 @@
     "build": "pnpm -r run build",
     "start": "pnpm -r run start",
     "front": "pnpm -F @mi-deck/front",
+    "hono": "pnpm -F @mi-deck/hono",
     "server": "pnpm -F @mi-deck/server",
     "test:e2e:server": "pnpm -F @mi-deck/server run test:e2e",
     "format": "biome format --write .",
