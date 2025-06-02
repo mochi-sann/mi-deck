@@ -5,15 +5,17 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/dev.mjs",
-    "build": "pnpm -r run build",
-    "start": "pnpm -r run start",
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
     "front": "pnpm -F @mi-deck/front",
     "server": "pnpm -F @mi-deck/server",
     "test:e2e:server": "pnpm -F @mi-deck/server run test:e2e",
-    "format": "biome format --write .",
-    "check": "biome check --write . --unsafe",
-    "test": "pnpm -r run test"
+    "format": "turbo run format",
+    "check": "turbo run check",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean"
   },
   "engines": {
     "pnpm": "10",
@@ -31,6 +33,7 @@
     "dotenv": "^16.4.7",
     "execa": "^9.3.0",
     "lefthook": "^1.11.6",
+    "turbo": "^1.12.4",
     "typescript": "^5.8.2"
   },
   "volta": {
