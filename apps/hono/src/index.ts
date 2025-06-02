@@ -1,16 +1,13 @@
 import { serve } from "@hono/node-server";
-import { z } from "@hono/zod-openapi";
-import { Scalar } from "@scalar/hono-api-reference";
+import { swaggerUI } from "@hono/swagger-ui";
+import { OpenAPIHono } from "@hono/zod-openapi";
 import { Hono } from "hono";
-import { openAPISpecs } from "hono-openapi";
-import { resolver } from "hono-openapi/zod";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import { ENV } from "./lib/env";
 import authRoutes from "./routes/auth";
 
-// const app = new OpenAPIHono();
-const app = new Hono();
+const app = new OpenAPIHono();
 
 // Logger middleware
 app.use(logger());
@@ -37,60 +34,13 @@ app.get("/", (c) => {
   return c.json({ message: "Hello Hono from Mi-Deck API!" });
 });
 
+app.get("/ui", swaggerUI({ url: "/doc" }));
 // API v1 Routes
 const v1 = new Hono();
 v1.route("/auth", authRoutes);
 
 app.route("/api/v1", v1);
-const OPENAPI_JSON_PATH = "/openapi/json";
 
-app.get(
-  OPENAPI_JSON_PATH,
-  openAPISpecs(app, {
-    documentation: {
-      info: {
-        title: "Hono",
-        version: "1.0.0",
-        description: "API for greeting an creating users",
-      },
-      servers: [
-        {
-          url: "http://localhost:3000",
-          description: "Local server",
-        },
-      ],
-    },
-    defaultOptions: {
-      // biome-ignore lint/style/useNamingConvention:
-      GET: {
-        responses: {
-          400: {
-            description: "Zod Error",
-            content: {
-              "application/json": {
-                schema: resolver(
-                  z.object({
-                    status: z.literal(400),
-                    message: z.string(),
-                  }),
-                ),
-              },
-            },
-          },
-        },
-      },
-    },
-  }),
-);
-app.get(
-  "/openapi",
-  Scalar({
-    theme: "saturn",
-    spec: {
-      url: OPENAPI_JSON_PATH,
-    },
-  }),
-);
 // サーバー起動 (テスト環境では起動しない)
 if (process.env.NODE_ENV !== "test") {
   console.log(`Hono server is running on http://localhost:${ENV.PORT}`);

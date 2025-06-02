@@ -1,21 +1,24 @@
-import { zValidator } from "@hono/zod-validator";
-import { Hono } from "hono";
-import { describeRoute } from "hono-openapi";
-import { resolver } from "hono-openapi/zod";
-import { z } from "zod";
+import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { AuthService } from "../services/auth.service";
 import type {
   JwtPayload,
-  LoginResponse,
-  MeResponseType,
+  LoginResponse as LoginResponseType,
+  MeResponseType as MeType,
 } from "../types/auth.types";
 import { loginSchema, signUpSchema } from "../validators/auth.validator";
 
-const authRoutes = new Hono();
+const authRoutes = new OpenAPIHono();
 const authService = new AuthService();
 
 // OpenAPI Components - Security Scheme
+authRoutes.openAPIRegistry.registerComponent("securitySchemes", "BearerAuth", {
+  type: "http",
+  scheme: "bearer",
+  bearerFormat: "JWT",
+  description: "JWT Bearer token for authentication.",
+});
+
 // --- Schemas for OpenAPI responses ---
 
 const LoginResponseSchema = z
@@ -79,129 +82,201 @@ const ErrorSchema = z
 
 // --- Route Definitions ---
 
-// POST /api/v1/auth/signup
-authRoutes.post(
-  "/signup",
-  describeRoute({
-    description: "Registers a new user and returns an access token.",
-    responses: {
-      201: {
-        description: "User created",
-        content: { "text/json": { schema: resolver(signUpSchema) } },
-      },
-      401: {
-        content: {
-          "application/json": {
-            schema: resolver(
-              ErrorSchema.openapi({
-                example: {
-                  message: "Unauthorized. Token is missing or invalid.",
-                },
-              }),
-            ),
-          },
+// POST /signup
+const signUpRoute = createRoute({
+  method: "post",
+  path: "/signup",
+  summary: "User Sign Up",
+  description:
+    "Registers a new user and returns an access token upon successful registration.",
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: signUpSchema,
         },
-        description: "Unauthorized.",
       },
+      required: true,
+      description: "User registration details.",
     },
-  }),
-  zValidator("json", signUpSchema),
-  async (c) => {
-    const input = c.req.valid("json");
-    // NestJSのAuthControllerのsignUpはLoginEntity (accessTokenを持つ) を返しているので合わせる
-    const response: LoginResponse = await authService.signUp(input);
-    return c.json(response, 201); // 201 Created
   },
-);
-
-// POST /api/v1/auth/login
-authRoutes.post(
-  "/login",
-  describeRoute({
-    description: "Contains the access token for the authenticated user.",
-    responses: {
-      200: {
-        description: "Contains the access token for the authenticated user.",
-
-        content: {
-          "text/json": {
-            schema: resolver(LoginResponseSchema),
-          },
+  responses: {
+    201: {
+      content: {
+        "application/json": {
+          schema: LoginResponseSchema,
         },
       },
-      401: {
-        content: {
-          "application/json": {
-            schema: resolver(
-              ErrorSchema.openapi({
-                example: {
-                  message: "Unauthorized. Token is missing or invalid.",
-                },
-              }),
-            ),
-          },
-        },
-        description: "Unauthorized.",
-      },
+      description: "User created successfully. Returns an access token.",
     },
-  }),
-  zValidator("json", loginSchema),
-  async (c) => {
-    const input = c.req.valid("json");
-    const response: LoginResponse = await authService.login(input);
-    return c.json(response); // 200 OK (default)
-  },
-);
-
-// GET /api/v1/auth/me
-authRoutes.get(
-  "/me",
-  describeRoute({
-    description: "Details of the authenticated user.",
-    responses: {
-      200: {
-        description: "Details of the authenticated user.",
-
-        content: {
-          "text/json": {
-            schema: resolver(MeResponseSchema),
-          },
+    400: {
+      content: {
+        "application/json": {
+          schema: ErrorSchema.openapi({
+            example: {
+              message: "Validation failed",
+              errors: { email: ["Invalid email format"] },
+            },
+          }),
         },
       },
+      description: "Bad Request (e.g., validation error).",
     },
-  }),
-  authMiddleware,
-  async (c) => {
-    const userPayload = c.get("user") as JwtPayload;
-    // userPayload.sub (userId) は authMiddleware で検証済みのはず
-    const userDetails: MeResponseType = await authService.me(userPayload.sub);
-    return c.json(userDetails);
-  },
-);
-
-// POST /api/v1/auth/logout
-authRoutes.post(
-  "/logout",
-  describeRoute({
-    description: "Details of the authenticated user.",
-    responses: {
-      200: {
-        description: "Details of the authenticated user.",
-
-        content: {
-          "text/json": {
-            schema: resolver(LogoutSuccessResponseSchema),
-          },
+    409: {
+      content: {
+        "application/json": {
+          schema: ErrorSchema.openapi({
+            example: { message: "User with this email already exists" },
+          }),
         },
       },
+      description: "Conflict (e.g., user already exists).",
     },
-  }),
-  authMiddleware, // ログアウトも認証が必要な操作とする (NestJSのAuthGuardはかかっていないが、user特定のため)
-  async (c) => {
-    const userPayload = c.get("user") as JwtPayload;
-    const response = await authService.logout(userPayload.sub); // ユーザーIDを渡す
-    return c.json(response);
   },
-);
+  tags: ["Auth"],
+});
+
+authRoutes.openapi(signUpRoute, async (c) => {
+  const input = c.req.valid("json");
+  const response: LoginResponseType = await authService.signUp(input);
+  return c.json(response, 201);
+});
+
+// POST /login
+const loginRoute = createRoute({
+  method: "post",
+  path: "/login",
+  summary: "User Login",
+  description: "Logs in an existing user and returns an access token.",
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: loginSchema,
+        },
+      },
+      required: true,
+      description: "User login credentials.",
+    },
+  },
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: LoginResponseSchema,
+        },
+      },
+      description: "Login successful. Returns an access token.",
+    },
+    400: {
+      content: {
+        "application/json": {
+          schema: ErrorSchema.openapi({
+            example: { message: "Invalid input provided" },
+          }),
+        },
+      },
+      description: "Bad Request (e.g., validation error).",
+    },
+    401: {
+      content: {
+        "application/json": {
+          schema: ErrorSchema.openapi({
+            example: { message: "Invalid email or password" },
+          }),
+        },
+      },
+      description: "Unauthorized (e.g., invalid credentials).",
+    },
+  },
+  tags: ["Auth"],
+});
+
+authRoutes.openapi(loginRoute, async (c) => {
+  const input = c.req.valid("json");
+  const response: LoginResponseType = await authService.login(input);
+  return c.json(response);
+});
+
+// GET /me
+const meRoute = createRoute({
+  method: "get",
+  path: "/me",
+  summary: "Get Current User Details",
+  description: "Retrieves the details of the currently authenticated user.",
+  security: [{ BearerAuth: [] }],
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: MeResponseSchema,
+        },
+      },
+      description: "Successfully retrieved user details.",
+    },
+    401: {
+      content: {
+        "application/json": {
+          schema: ErrorSchema.openapi({
+            example: { message: "Unauthorized. Token is missing or invalid." },
+          }),
+        },
+      },
+      description: "Unauthorized (e.g., token missing or invalid).",
+    },
+  },
+  tags: ["Auth"],
+});
+
+authRoutes.openapi(meRoute, authMiddleware, async (c) => {
+  const userPayload = c.get("user") as JwtPayload;
+  const userDetails: MeType = await authService.me(userPayload.sub);
+  return c.json(userDetails);
+});
+
+// POST /logout
+const logoutRoute = createRoute({
+  method: "post",
+  path: "/logout",
+  summary: "User Logout",
+  description:
+    "Logs out the currently authenticated user. The actual mechanism of token invalidation depends on the server-side implementation (e.g., blacklisting JWTs).",
+  security: [{ BearerAuth: [] }],
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: LogoutSuccessResponseSchema,
+        },
+      },
+      description: "Successfully logged out.",
+    },
+    // Alternative: 204 No Content if no message body is returned.
+    // 204: {
+    //   description: "Successfully logged out (No Content).",
+    // },
+    401: {
+      content: {
+        "application/json": {
+          schema: ErrorSchema.openapi({
+            example: { message: "Unauthorized. Token is missing or invalid." },
+          }),
+        },
+      },
+      description: "Unauthorized.",
+    },
+  },
+  tags: ["Auth"],
+});
+
+authRoutes.openapi(logoutRoute, authMiddleware, async (c) => {
+  const userPayload = c.get("user") as JwtPayload;
+  // Assuming authService.logout performs necessary actions (e.g., token blacklisting if applicable)
+  // and might return a status or a simple message.
+  // The original code `const response = await authService.logout(...)` implies it might return something.
+  // We'll standardize the response here to match LogoutSuccessResponseSchema.
+  await authService.logout(userPayload.sub);
+  return c.json({ message: "Successfully logged out" });
+});
 
 export default authRoutes;
