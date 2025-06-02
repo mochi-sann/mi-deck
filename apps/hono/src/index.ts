@@ -34,9 +34,13 @@ v1.route('/auth', authRoutes);
 app.route('/api/v1', v1);
 
 
-console.log(`Hono server is running on http://localhost:${ENV.PORT}`);
+// サーバー起動 (テスト環境では起動しない)
+if (process.env.NODE_ENV !== 'test') {
+  console.log(`Hono server is running on http://localhost:${ENV.PORT}`);
+  serve({
+    fetch: app.fetch,
+    port: ENV.PORT,
+  });
+}
 
-serve({
-  fetch: app.fetch,
-  port: ENV.PORT,
-});
+export default app; // テスト用にappをエクスポート
