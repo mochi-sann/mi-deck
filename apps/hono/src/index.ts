@@ -1,7 +1,8 @@
 import { serve } from "@hono/node-server";
+import { swaggerUI } from "@hono/swagger-ui";
 import { Hono } from "hono";
-import { logger } from "hono/logger";
 import { HTTPException } from "hono/http-exception";
+import { logger } from "hono/logger";
 import { ENV } from "./lib/env";
 import authRoutes from "./routes/auth";
 
@@ -31,6 +32,9 @@ app.onError((err, c) => {
 app.get("/", (c) => {
   return c.json({ message: "Hello Hono from Mi-Deck API!" });
 });
+
+// Swagger UI
+app.get("/swagger", swaggerUI({ url: "/api/v1/auth/doc" }));
 
 // API v1 Routes
 const v1 = new Hono();
