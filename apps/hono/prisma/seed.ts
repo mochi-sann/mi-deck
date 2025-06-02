@@ -13,7 +13,6 @@ async function main() {
   } = parseArgs({ options });
   console.log("Hono Seeding for environment:", environment);
 
-
   switch (environment) {
     case "production": //　本番環境
       console.log("production (Hono)");
@@ -36,7 +35,9 @@ async function main() {
       await userAndLocalMisskey(prisma); // prisma インスタンスを渡す
       break;
     default:
-      console.warn(`Unknown environment for Hono: ${environment}. No seeding performed.`);
+      console.warn(
+        `Unknown environment for Hono: ${environment}. No seeding performed.`,
+      );
       break;
   }
 }

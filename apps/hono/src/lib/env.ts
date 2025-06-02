@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import dotenv from 'dotenv';
+import { z } from "zod";
+import dotenv from "dotenv";
 
 // .envファイルを読み込む (NODE_ENVに応じて.env.developmentなども読み込めるように拡張可能)
 dotenv.config();

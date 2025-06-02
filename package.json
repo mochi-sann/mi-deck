@@ -33,6 +33,9 @@
     "lefthook": "^1.11.6",
     "typescript": "^5.8.2"
   },
+  "dependencies": {
+    "misskey-js": "2025.4.1"
+  },
   "volta": {
     "node": "22.15.0"
   }

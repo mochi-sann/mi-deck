@@ -1,4 +1,7 @@
-import { User as PrismaUser, UserRole as PrismaUserRole } from '~/generated/prisma'; // UserRoleもインポート
+import {
+  User as PrismaUser,
+  UserRole as PrismaUserRole,
+} from "~/generated/prisma"; // UserRoleもインポート
 
 export type JwtPayload = {
   sub: string; // userId
@@ -12,7 +15,7 @@ export type LoginResponse = {
 };
 
 // PrismaUserからパスワードを除外した型
-export type SafeUser = Omit<PrismaUser, 'password'>;
+export type SafeUser = Omit<PrismaUser, "password">;
 
 // MeEntity に相当する型 (id, email, name を持つ)
 export type MeResponseType = {
@@ -22,9 +25,8 @@ export type MeResponseType = {
   userRole: PrismaUserRole; // userRoleも返すようにする
 };
 
-
 // HonoのContext型を拡張して、認証ミドルウェアでセットするuser情報を持たせる
-declare module 'hono' {
+declare module "hono" {
   interface ContextVariableMap {
     user?: JwtPayload; // 認証ミドルウェアでセットするユーザー情報
   }

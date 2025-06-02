@@ -38,7 +38,9 @@ export const userAndLocalMisskey = async (prisma: PrismaClient) => {
       serverSessionId: NewServerSession.id,
     },
   });
-  console.log(...[user, "👀 [userAndLocalMisskey.ts: Hono Seed]: user"].reverse());
+  console.log(
+    ...[user, "👀 [userAndLocalMisskey.ts: Hono Seed]: user"].reverse(),
+  );
   console.log(
     ...[
       NewServerSession,
@@ -96,7 +98,10 @@ export const userAndLocalMisskey = async (prisma: PrismaClient) => {
       },
     });
     console.log(
-      ...[timelineHome, "👀 [userAndLocalMisskey.ts: Hono Seed]: timelines"].reverse(),
+      ...[
+        timelineHome,
+        "👀 [userAndLocalMisskey.ts: Hono Seed]: timelines",
+      ].reverse(),
     );
 
     const timelineLocal = await prisma.timeline.create({

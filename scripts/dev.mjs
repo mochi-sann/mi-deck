@@ -33,7 +33,8 @@ const cleanup = () => {
   if (serverProcess && !serverProcess.killed) {
     serverProcess.kill("SIGTERM", { forceKillAfterTimeout: 2000 });
   }
-  if (honoProcess && !honoProcess.killed) { // Honoプロセスも終了
+  if (honoProcess && !honoProcess.killed) {
+    // Honoプロセスも終了
     honoProcess.kill("SIGTERM", { forceKillAfterTimeout: 2000 });
   }
 };
@@ -88,11 +89,15 @@ try {
       `${colors.purple}${colors.bright}[DB (Hono)]${colors.reset} Database migration for Hono server completed successfully.`,
     );
     // Honoプロジェクトのpnpmスクリプトでseedも実行
-    await execa("pnpm", ["run", "hono", "--", "db:seed", "--environment=development"], {
-      cwd: _dirname + "/../",
-      stdio: "inherit",
-    });
-     console.log(
+    await execa(
+      "pnpm",
+      ["run", "hono", "--", "db:seed", "--environment=development"],
+      {
+        cwd: _dirname + "/../",
+        stdio: "inherit",
+      },
+    );
+    console.log(
       `${colors.purple}${colors.bright}[DB (Hono)]${colors.reset} Database seeding for Hono server completed successfully.`,
     );
   } catch (migrationError) {
@@ -103,7 +108,6 @@ try {
     cleanup();
     process.exit(1);
   }
-
 
   console.log(
     `${colors.bright}Starting front-end, NestJS back-end, and Hono back-end dev servers...${colors.reset}`,
@@ -128,11 +132,11 @@ try {
   console.log(
     `${colors.blue}${colors.bright}[SERVER (Hono)]${colors.reset} Starting Hono back-end dev server...`,
   );
-  honoProcess = execa("pnpm", ["run", "hono", "--", "dev"], { // Hono用のdevスクリプト
+  honoProcess = execa("pnpm", ["run", "hono", "--", "dev"], {
+    // Hono用のdevスクリプト
     cwd: _dirname + "/../",
     stdio: ["inherit", "pipe", "pipe"],
   });
-
 
   // 各プロセスの出力にカラー付きプレフィックスを付ける
   const frontStdout = createPrefixedLogger(
@@ -155,12 +159,14 @@ try {
     serverProcess.stderr,
     colors.red,
   );
-  const honoStdout = createPrefixedLogger( // Hono用ロガー
+  const honoStdout = createPrefixedLogger(
+    // Hono用ロガー
     "SERVER (Hono)",
     honoProcess.stdout,
     colors.blue,
   );
-  const honoStderr = createPrefixedLogger( // Honoエラー用ロガー
+  const honoStderr = createPrefixedLogger(
+    // Honoエラー用ロガー
     "SERVER ERROR (Hono)",
     honoProcess.stderr,
     colors.magenta, // 別の色を使用

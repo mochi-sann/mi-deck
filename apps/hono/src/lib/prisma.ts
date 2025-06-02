@@ -1,4 +1,4 @@
-import { PrismaClient } from '~/generated/prisma';
+import { PrismaClient } from "~/generated/prisma";
 
 let prisma: PrismaClient;
 
@@ -9,7 +9,7 @@ declare global {
 
 // Prismaのベストプラクティスに従い、開発モードでのホットリロード時に
 // PrismaClientのインスタンスが増えすぎないようにグローバル変数を使用
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === "production") {
   prisma = new PrismaClient();
 } else {
   if (!global.__prisma) {

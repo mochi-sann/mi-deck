@@ -1,10 +1,15 @@
-import bcrypt from 'bcrypt';
-import prisma from '../lib/prisma';
-import { signToken } from '../lib/jwt';
-import type { SignUpInput, LoginInput } from '../validators/auth.validator';
-import type { LoginResponse, SafeUser, JwtPayload, MeResponseType } from '../types/auth.types';
-import { HTTPException } from 'hono/http-exception';
-import { UserRole } from '~/generated/prisma';
+import bcrypt from "bcrypt";
+import prisma from "../lib/prisma";
+import { signToken } from "../lib/jwt";
+import type { SignUpInput, LoginInput } from "../validators/auth.validator";
+import type {
+  LoginResponse,
+  SafeUser,
+  JwtPayload,
+  MeResponseType,
+} from "../types/auth.types";
+import { HTTPException } from "hono/http-exception";
+import { UserRole } from "~/generated/prisma";
 
 export class AuthService {
   constructor() {}
@@ -15,7 +20,9 @@ export class AuthService {
     });
 
     if (existingUser) {
-      throw new HTTPException(409, { message: 'このメールアドレスは既に使用されています。' });
+      throw new HTTPException(409, {
+        message: "このメールアドレスは既に使用されています。",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(input.password, 10);
@@ -41,7 +48,9 @@ export class AuthService {
   async login(input: LoginInput): Promise<LoginResponse> {
     const user = await this.validateUser(input.email, input.password);
     if (!user) {
-      throw new HTTPException(401, { message: 'メールアドレスまたはパスワードが無効です。' });
+      throw new HTTPException(401, {
+        message: "メールアドレスまたはパスワードが無効です。",
+      });
     }
 
     const payload: JwtPayload = {
@@ -70,25 +79,26 @@ export class AuthService {
   async me(userId: string): Promise<MeResponseType> {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { // MeResponseType に合わせて選択するフィールドを指定
+      select: {
+        // MeResponseType に合わせて選択するフィールドを指定
         id: true,
         email: true,
         name: true,
         userRole: true,
         // createdAt: true, // 必要であれば追加
         // updatedAt: true, // 必要であれば追加
-      }
+      },
     });
 
     if (!user) {
-      throw new HTTPException(404, { message: 'ユーザーが見つかりません。' });
+      throw new HTTPException(404, { message: "ユーザーが見つかりません。" });
     }
     // MeEntityのコンストラクタに合わせる (nameがnullの場合も考慮)
     return {
-        id: user.id,
-        email: user.email,
-        name: user.name ?? null, // name が null の場合は null を設定
-        userRole: user.userRole,
+      id: user.id,
+      email: user.email,
+      name: user.name ?? null, // name が null の場合は null を設定
+      userRole: user.userRole,
     };
   }
 
