@@ -1,7 +1,6 @@
-import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { describeRoute } from "hono-openapi";
-import { resolver } from "hono-openapi/zod";
+import { resolver, validator as zValidator } from "hono-openapi/zod";
 import { z } from "zod";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { AuthService } from "../services/auth.service";
@@ -89,6 +88,21 @@ authRoutes.post(
         description: "User created",
         content: { "text/json": { schema: resolver(signUpSchema) } },
       },
+      400: {
+        content: {
+          "application/json": {
+            schema: resolver(
+              ErrorSchema.openapi({
+                example: {
+                  message: "unmached input",
+                },
+              }),
+            ),
+          },
+        },
+        description: "Unauthorized.",
+      },
+
       401: {
         content: {
           "application/json": {

@@ -8,6 +8,7 @@ import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import { ENV } from "./lib/env";
 import authRoutes from "./routes/auth";
+import "zod-openapi/extend";
 
 // const app = new OpenAPIHono();
 const app = new Hono();
@@ -55,7 +56,7 @@ app.get(
       },
       servers: [
         {
-          url: "http://localhost:3000",
+          url: "http://localhost:3001",
           description: "Local server",
         },
       ],
