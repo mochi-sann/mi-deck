@@ -1,7 +1,8 @@
 import Text from "@/Component/ui/text";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Stream } from "misskey-js";
 import { APIClient } from "misskey-js/api.js";
 import { Note } from "misskey-js/entities.js";
+import { useEffect, useState } from "react";
 import { TimelineNotes } from "./TimelineNotes";
 
 // Component to fetch and display posts for a single timeline
@@ -14,43 +15,55 @@ export function HomeTimelineContent({
   token: string;
   type: string;
 }) {
-  // Define the query key
-  const queryKey = ["timelineNotes", origin, type, serverToken]; // Include token in key if it can change
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [error, setError] = useState<Error | null>(null);
 
-  const client = new APIClient({
-    origin,
-    credential: serverToken,
-  });
-  const {
-    data: notes,
-    error,
-    isError,
-  } = useSuspenseQuery({
-    queryKey: queryKey,
-    queryFn: async () => {
-      return await client
-        .request("notes/timeline", {})
-        .then((res) => res)
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-  });
+  useEffect(() => {
+    const client = new APIClient({
+      origin,
+      credential: serverToken,
+    });
 
-  // if (isLoading) {
-  //   return <Spinner size="sm" label="Loading notes..." />;
-  // }
-  //
-  if (isError) {
+    // Initial fetch
+    client
+      .request("notes/timeline", {})
+      .then((res) => {
+        setNotes(res);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError(err);
+      });
+
+    // Setup WebSocket connection
+    const stream = new Stream(origin, { token: serverToken });
+    const channel = stream.useChannel("homeTimeline");
+
+    // Handle new notes
+    channel.on("note", (note: Note) => {
+      setNotes((prevNotes) => [note, ...prevNotes]);
+    });
+
+    // Handle disconnection
+    stream.on("_disconnected_", () => {
+      console.error("Stream disconnected");
+      setError(new Error("Connection lost"));
+    });
+
+    // Cleanup on unmount
+    return () => {
+      channel.dispose();
+      stream.close();
+    };
+  }, [origin, serverToken]);
+
+  if (error) {
     return (
       <Text color="red.500">
-        Error loading notes: {error && "Unknown error"}
+        Error loading notes: {error.message || "Unknown error"}
       </Text>
     );
   }
 
-  // Assuming the API returns an array of Note objects or similar structure
-  const typedNotes = notes as Note[] | undefined;
-
-  return <TimelineNotes notes={typedNotes} />;
+  return <TimelineNotes notes={notes} />;
 }
