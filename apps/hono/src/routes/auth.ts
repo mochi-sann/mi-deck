@@ -1,12 +1,12 @@
 import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
-import { authMiddleware } from "../middlewares/auth.middleware";
+import { signUpSchema, loginSchema } from "../validators/auth.validator";
 import { AuthService } from "../services/auth.service";
+import { authMiddleware } from "../middlewares/auth.middleware";
 import type {
-  JwtPayload,
   LoginResponse as LoginResponseType,
   MeResponseType as MeType,
+  JwtPayload,
 } from "../types/auth.types";
-import { loginSchema, signUpSchema } from "../validators/auth.validator";
 
 const authRoutes = new OpenAPIHono();
 const authService = new AuthService();
@@ -64,17 +64,12 @@ const LogoutSuccessResponseSchema = z
 
 const ErrorSchema = z
   .object({
-    message: z
-      .string()
-      .openapi({ description: "A human-readable error message." }),
-    code: z
-      .number()
+    message: z.string().openapi({ description: "A human-readable error message." }),
+    code: z.number().optional().openapi({ description: "An optional error code." }),
+    errors: z
+      .any()
       .optional()
-      .openapi({ description: "An optional error code." }),
-    errors: z.any().optional().openapi({
-      description:
-        "Optional detailed error information, e.g., validation errors.",
-    }),
+      .openapi({ description: "Optional detailed error information, e.g., validation errors." }),
   })
   .openapi({
     description: "Schema for error responses.",
@@ -87,8 +82,7 @@ const signUpRoute = createRoute({
   method: "post",
   path: "/signup",
   summary: "User Sign Up",
-  description:
-    "Registers a new user and returns an access token upon successful registration.",
+  description: "Registers a new user and returns an access token upon successful registration.",
   request: {
     body: {
       content: {
@@ -113,10 +107,7 @@ const signUpRoute = createRoute({
       content: {
         "application/json": {
           schema: ErrorSchema.openapi({
-            example: {
-              message: "Validation failed",
-              errors: { email: ["Invalid email format"] },
-            },
+            example: { message: "Validation failed", errors: { email: ["Invalid email format"] } },
           }),
         },
       },
@@ -239,8 +230,7 @@ const logoutRoute = createRoute({
   method: "post",
   path: "/logout",
   summary: "User Logout",
-  description:
-    "Logs out the currently authenticated user. The actual mechanism of token invalidation depends on the server-side implementation (e.g., blacklisting JWTs).",
+  description: "Logs out the currently authenticated user. The actual mechanism of token invalidation depends on the server-side implementation (e.g., blacklisting JWTs).",
   security: [{ BearerAuth: [] }],
   responses: {
     200: {

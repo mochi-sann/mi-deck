@@ -1,13 +1,11 @@
 import { serve } from "@hono/node-server";
-import { swaggerUI } from "@hono/swagger-ui";
-import { OpenAPIHono } from "@hono/zod-openapi";
 import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
+import { HTTPException } from "hono/http-exception";
 import { ENV } from "./lib/env";
 import authRoutes from "./routes/auth";
 
-const app = new OpenAPIHono();
+const app = new Hono();
 
 // Logger middleware
 app.use(logger());
@@ -34,7 +32,6 @@ app.get("/", (c) => {
   return c.json({ message: "Hello Hono from Mi-Deck API!" });
 });
 
-app.get("/ui", swaggerUI({ url: "/doc" }));
 // API v1 Routes
 const v1 = new Hono();
 v1.route("/auth", authRoutes);
