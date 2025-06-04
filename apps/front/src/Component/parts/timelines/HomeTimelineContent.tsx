@@ -1,3 +1,4 @@
+import { Spinner } from "@/Component/ui/spinner";
 import Text from "@/Component/ui/text";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Stream } from "misskey-js";
@@ -98,8 +99,12 @@ export function HomeTimelineContent({
   const rowVirtualizer = useVirtualizer({
     count: notes.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 100, // 各ノートの推定高さ
-    overscan: 5, // スクロール時に先読みするアイテム数
+    estimateSize: () => 100, // 初期推定値
+    overscan: 5,
+    measureElement: (element) => {
+      // 要素の実際の高さを取得
+      return element.getBoundingClientRect().height;
+    },
   });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies:
@@ -143,6 +148,8 @@ export function HomeTimelineContent({
         {rowVirtualizer.getVirtualItems().map((virtualRow) => (
           <div
             key={virtualRow.index}
+            data-index={virtualRow.index}
+            ref={rowVirtualizer.measureElement}
             style={{
               position: "absolute",
               top: 0,
@@ -157,7 +164,9 @@ export function HomeTimelineContent({
       </div>
       {isLoading && (
         <div style={{ textAlign: "center", padding: "1rem" }}>
-          <Text>Loading...</Text>
+          <Text>
+            <Spinner />
+          </Text>
         </div>
       )}
     </div>
