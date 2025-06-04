@@ -1,5 +1,4 @@
 import Text from "@/Component/ui/text";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { Stream } from "misskey-js";
 import { APIClient } from "misskey-js/api.js";
 import { Note } from "misskey-js/entities.js";
@@ -12,41 +11,6 @@ type TimelineType = "home" | "local" | "global";
 function useTimeline(origin: string, token: string, type: TimelineType) {
   const [notes, setNotes] = useState<Note[]>([]);
   const [error, setError] = useState<Error | null>(null);
-  const [untilId, setUntilId] = useState<string | null>(null);
-
-  const loadMore = async () => {
-    if (!untilId) return;
-
-    const client = new APIClient({
-      origin,
-      credential: token,
-    });
-
-    const endpoint =
-      type === "home" ? "notes/timeline" : `notes/${type}-timeline`;
-    try {
-      // biome-ignore lint/suspicious/noExplicitAny:
-      const res = await (client as any).request(endpoint, {
-        untilId,
-        limit: 20,
-      });
-
-      if (Array.isArray(res)) {
-        const newNotes = res as Note[];
-        if (newNotes.length > 0) {
-          setNotes((prevNotes) => [...prevNotes, ...newNotes]);
-          setUntilId(newNotes[newNotes.length - 1].id);
-        }
-      } else {
-        setError(new Error("Invalid response format"));
-      }
-    } catch (err) {
-      console.error(err);
-      setError(
-        err instanceof Error ? err : new Error("Failed to load more notes"),
-      );
-    }
-  };
 
   useEffect(() => {
     const client = new APIClient({
@@ -59,14 +23,10 @@ function useTimeline(origin: string, token: string, type: TimelineType) {
       type === "home" ? "notes/timeline" : `notes/${type}-timeline`;
     // biome-ignore lint/suspicious/noExplicitAny:
     (client as any)
-      .request(endpoint, { limit: 20 })
+      .request(endpoint, {})
       .then((res: unknown) => {
         if (Array.isArray(res)) {
-          const initialNotes = res as Note[];
-          setNotes(initialNotes);
-          if (initialNotes.length > 0) {
-            setUntilId(initialNotes[initialNotes.length - 1].id);
-          }
+          setNotes(res as Note[]);
         } else {
           setError(new Error("Invalid response format"));
         }
@@ -98,7 +58,7 @@ function useTimeline(origin: string, token: string, type: TimelineType) {
     };
   }, [origin, token, type]);
 
-  return { notes, error, loadMore, hasMore: !!untilId };
+  return { notes, error };
 }
 
 // Component to fetch and display posts for a single timeline
@@ -111,34 +71,7 @@ export function HomeTimelineContent({
   token: string;
   type: TimelineType;
 }) {
-  const {
-    notes,
-    error: timelineError,
-    loadMore,
-    hasMore,
-  } = useTimeline(origin, serverToken, type);
-
-  const {
-    status,
-    data,
-    error: queryError,
-    isFetching,
-    isFetchingNextPage,
-    fetchNextPage,
-    hasNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["timeline", origin, type],
-    queryFn: async ({ pageParam = 0 }) => {
-      if (pageParam > 0) {
-        await loadMore();
-      }
-      return { nextOffset: pageParam + 1 };
-    },
-    getNextPageParam: (lastPage) => lastPage.nextOffset,
-    initialPageParam: 0,
-  });
-
-  const error = timelineError || queryError;
+  const { notes, error } = useTimeline(origin, serverToken, type);
 
   if (error) {
     return (
@@ -148,7 +81,5 @@ export function HomeTimelineContent({
     );
   }
 
-  return (
-    <TimelineNotes notes={notes} onLoadMore={loadMore} hasMore={hasMore} />
-  );
+  return <TimelineNotes notes={notes} />;
 }
