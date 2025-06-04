@@ -11,8 +11,8 @@
     "front": "pnpm -F @mi-deck/front",
     "server": "pnpm -F @mi-deck/server",
     "test:e2e:server": "pnpm -F @mi-deck/server run test:e2e",
-    "format": "turbo run format",
-    "check": "turbo run check",
+    "format": "biome format --write .",
+    "check": "biome check --write . --unsafe",
     "test": "turbo run test",
     "lint": "turbo run lint",
     "clean": "turbo run clean"
