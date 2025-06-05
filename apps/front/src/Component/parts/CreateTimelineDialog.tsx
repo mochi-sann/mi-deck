@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/Component/ui/select";
-import { Label } from "@/Component/ui/label";
 import { $api } from "@/lib/api/fetchClient";
 import { components } from "@/lib/api/type";
 import { useForm } from "react-hook-form";
@@ -37,14 +35,15 @@ type CreateTimelineDialogProps = {
   onSuccess: () => void;
 };
 
-type CreateTimelineDto =
-  components["schemas"]["CreateTimelineDto"];
 type ServerSessionEntity =
   components["schemas"]["CreateServerSessionResponseEntity"];
 
 const formSchema = v.object({
   serverSessionId: v.string([v.minLength(1, "サーバーを選択してください")]),
-  type: v.union([v.literal("home"), v.literal("local"), v.literal("global")], "タイムラインタイプを選択してください"),
+  type: v.union(
+    [v.literal("home"), v.literal("local"), v.literal("global")],
+    "タイムラインタイプを選択してください",
+  ),
   name: v.string([v.minLength(1, "タイムライン名を入力してください")]),
 });
 
@@ -76,7 +75,7 @@ export function CreateTimelineDialog({
       await createTimelineMutation.mutateAsync({
         body: {
           serverSessionId: values.serverSessionId,
-          type: values.type,
+          type: values.type.toUpperCase(),
           name: values.name,
         },
       });
@@ -102,7 +101,10 @@ export function CreateTimelineDialog({
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="grid gap-4 py-4"
+          >
             <FormField
               control={form.control}
               name="serverSessionId"
@@ -138,7 +140,10 @@ export function CreateTimelineDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>タイムラインタイプ</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="タイムラインタイプを選択" />
@@ -162,7 +167,10 @@ export function CreateTimelineDialog({
                 <FormItem>
                   <FormLabel>タイムライン名</FormLabel>
                   <FormControl>
-                    <Input placeholder="例: 私のホームタイムライン" {...field} />
+                    <Input
+                      placeholder="例: 私のホームタイムライン"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
