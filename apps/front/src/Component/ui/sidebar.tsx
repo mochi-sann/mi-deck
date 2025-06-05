@@ -22,6 +22,7 @@ import {
 } from "@/Component/ui/tooltip";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { useLocalStorage } from "usehooks-ts"; // useLocalStorageをインポート
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -69,7 +70,8 @@ function SidebarProvider({
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
-  const [_open, _setOpen] = React.useState(defaultOpen);
+  const [storedOpen, setStoredOpen] = useLocalStorage(SIDEBAR_COOKIE_NAME, defaultOpen); // localStorageから状態を読み込む
+  const [_open, _setOpen] = React.useState(openProp ?? storedOpen); // storedOpenを初期値として使用
   const open = openProp ?? _open;
   const setOpen = React.useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
@@ -81,9 +83,10 @@ function SidebarProvider({
       }
 
       // This sets the cookie to keep the sidebar state.
-      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+      // document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`; // CookieではなくlocalStorageを使用
+      setStoredOpen(openState); // localStorageに状態を保存
     },
-    [setOpenProp, open],
+    [setOpenProp, open, setStoredOpen], // setStoredOpenを依存配列に追加
   );
 
   // Helper to toggle the sidebar.
