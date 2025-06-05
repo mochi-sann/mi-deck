@@ -1,15 +1,20 @@
 import { $api } from "@/lib/api/fetchClient";
 import { components } from "@/lib/api/type";
 import { Fragment } from "react/jsx-runtime";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"; // Cardコンポーネントをインポート
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import Text from "../ui/text";
 import { SwitchTimeLineType } from "./timelines/SwitchTimeLineType";
+import { Button } from "../ui/button";
+import { PlusCircledIcon } from "@radix-ui/react-icons";
+import { CreateTimelineDialog } from "./CreateTimelineDialog";
+import { useState } from "react";
 
 type TimelineEntityType =
   components["schemas"]["TimelineWithServerSessionEntity"];
 
 export function TimelineList() {
   const { data: timelines, status } = $api.useQuery("get", "/v1/timeline", {});
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Ensure timelines data structure matches expected type
   const typedTimelines = timelines as TimelineEntityType[] | undefined;
@@ -62,6 +67,24 @@ export function TimelineList() {
               <Text>まだタイムラインが作成されていません。</Text>
             </Card>
           )}
+          <Card className="flex h-full w-80 flex-[0_0_320px] flex-col items-center justify-center gap-0 rounded-none">
+            <Button
+              variant="ghost"
+              className="flex h-full w-full flex-col items-center justify-center"
+              onClick={() => setIsDialogOpen(true)}
+            >
+              <PlusCircledIcon className="h-16 w-16 text-gray-400" />
+              <Text className="mt-2 text-gray-500">タイムラインを追加</Text>
+            </Button>
+          </Card>
+          <CreateTimelineDialog
+            isOpen={isDialogOpen}
+            onClose={() => setIsDialogOpen(false)}
+            onSuccess={() => {
+              $api.invalidateQueries("get", "/v1/timeline");
+              setIsDialogOpen(false);
+            }}
+          />
         </Fragment>
       )}
     </div>
