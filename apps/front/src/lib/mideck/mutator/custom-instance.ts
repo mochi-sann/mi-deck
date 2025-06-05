@@ -46,7 +46,6 @@ const getHeaders = (headers?: HeadersInit): HeadersInit => {
     ...headers,
     // biome-ignore lint/style/useNamingConvention:
     Authorization: token || "",
-    "Content-Type": "multipart/form-data",
   };
 };
 export type BodyType<BodyData> = BodyData & { headers?: any };
