@@ -1,8 +1,6 @@
 import { components } from "@/lib/api/type";
 import type React from "react";
-import { GlobalTimelineContent } from "./GlobalTimelineContetnt";
 import { HomeTimelineContent } from "./HomeTimelineContent";
-import { LocalTimelineContent } from "./LocalTimelineContetnt";
 
 export type SwitchTimeLineTypeProps = {
   timeline: components["schemas"]["TimelineWithServerSessionEntity"];
@@ -21,33 +19,33 @@ export const SwitchTimeLineType: React.FC<SwitchTimeLineTypeProps> = (
           token={
             props.timeline.serverSession.serverToken ?? "" // Assuming serverToken exists, add proper typing if possible
           }
-          type={props.timeline.type}
+          type={"home"}
         />
       );
 
     case "LOCAL":
       return (
-        <LocalTimelineContent
+        <HomeTimelineContent
           origin={props.timeline.serverSession.origin}
           // IMPORTANT: Ensure serverToken is actually available here!
           // If not, the backend response needs to include it.
           token={
             props.timeline.serverSession.serverToken ?? "" // Assuming serverToken exists, add proper typing if possible
           }
-          type={props.timeline.type}
+          type={"local"}
         />
       );
 
     case "GLOBAL":
       return (
-        <GlobalTimelineContent
+        <HomeTimelineContent
           origin={props.timeline.serverSession.origin}
           // IMPORTANT: Ensure serverToken is actually available here!
           // If not, the backend response needs to include it.
           token={
             props.timeline.serverSession.serverToken ?? "" // Assuming serverToken exists, add proper typing if possible
           }
-          type={props.timeline.type}
+          type={"global"}
         />
       );
     // case "LIST":

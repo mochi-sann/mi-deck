@@ -1,8 +1,11 @@
+import { Spinner } from "@/Component/ui/spinner";
 import Text from "@/Component/ui/text";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { APIClient } from "misskey-js/api.js";
-import { Note } from "misskey-js/entities.js";
-import { TimelineNotes } from "./TimelineNotes";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { useEffect, useRef } from "react";
+import { MisskeyNote } from "../MisskeyNote";
+import { useTimeline } from "./hooks/useTimeline";
+
+type TimelineType = "home" | "local" | "global";
 
 // Component to fetch and display posts for a single timeline
 export function HomeTimelineContent({
@@ -12,45 +15,88 @@ export function HomeTimelineContent({
 }: {
   origin: string;
   token: string;
-  type: string;
+  type: TimelineType;
 }) {
-  // Define the query key
-  const queryKey = ["timelineNotes", origin, type, serverToken]; // Include token in key if it can change
-
-  const client = new APIClient({
+  const { notes, error, hasMore, isLoading, fetchNotes } = useTimeline(
     origin,
-    credential: serverToken,
-  });
-  const {
-    data: notes,
-    error,
-    isError,
-  } = useSuspenseQuery({
-    queryKey: queryKey,
-    queryFn: async () => {
-      return await client
-        .request("notes/timeline", {})
-        .then((res) => res)
-        .catch((err) => {
-          console.log(err);
-        });
+    serverToken,
+    type,
+  );
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const rowVirtualizer = useVirtualizer({
+    count: notes.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 100, // 初期推定値
+    overscan: 5,
+    measureElement: (element) => {
+      // 要素の実際の高さを取得
+      return element.getBoundingClientRect().height;
     },
   });
 
-  // if (isLoading) {
-  //   return <Spinner size="sm" label="Loading notes..." />;
-  // }
-  //
-  if (isError) {
+  // biome-ignore lint/correctness/useExhaustiveDependencies:
+  useEffect(() => {
+    const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse();
+    if (!lastItem) return;
+
+    if (
+      lastItem.index >= notes.length - 1 &&
+      hasMore &&
+      !isLoading &&
+      lastItem.end >= lastItem.size
+    ) {
+      fetchNotes(notes[notes.length - 1]?.id);
+    }
+  }, [rowVirtualizer.getVirtualItems(), hasMore, isLoading, notes]);
+
+  if (error) {
     return (
       <Text color="red.500">
-        Error loading notes: {error && "Unknown error"}
+        Error loading notes: {error.message || "Unknown error"}
       </Text>
     );
   }
 
-  // Assuming the API returns an array of Note objects or similar structure
-  const typedNotes = notes as Note[] | undefined;
-
-  return <TimelineNotes notes={typedNotes} />;
+  return (
+    <div
+      ref={parentRef}
+      style={{
+        height: "100%",
+        overflow: "auto",
+      }}
+    >
+      <div
+        style={{
+          height: `${rowVirtualizer.getTotalSize()}px`,
+          width: "100%",
+          position: "relative",
+        }}
+      >
+        {rowVirtualizer.getVirtualItems().map((virtualRow) => (
+          <div
+            key={virtualRow.index}
+            data-index={virtualRow.index}
+            ref={rowVirtualizer.measureElement}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              transform: `translateY(${virtualRow.start}px)`,
+            }}
+          >
+            <MisskeyNote note={notes[virtualRow.index]} />
+          </div>
+        ))}
+      </div>
+      {isLoading && (
+        <div style={{ textAlign: "center", padding: "1rem" }}>
+          <Text>
+            <Spinner />
+          </Text>
+        </div>
+      )}
+    </div>
+  );
 }
