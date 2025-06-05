@@ -15,15 +15,21 @@ export function TimelineList() {
   const typedTimelines = timelines as TimelineEntityType[] | undefined;
 
   return (
-    <div className="flex h-screen overflow-x-auto overflow-y-hidden p-4"> {/* paddingを追加 */}
+    <div className="flex h-screen overflow-x-auto overflow-y-hidden p-4">
+      {" "}
+      {/* paddingを追加 */}
       {status === "pending" && (
-        <Card className="flex-1 flex items-center justify-center"> {/* Cardで囲む */}
+        <Card className="flex flex-1 items-center justify-center">
+          {" "}
+          {/* Cardで囲む */}
           <Text>読み込み中...</Text>
         </Card>
       )}
       {status === "error" && (
-        <Card className="flex-1 flex items-center justify-center"> {/* Cardで囲む */}
-          <Text colorType={"destructive"}>タイムラインの読み込みに失敗しました。</Text>
+        <Card className="flex flex-1 items-center justify-center">
+          {" "}
+          {/* Cardで囲む */}
+          <Text>タイムラインの読み込みに失敗しました。</Text>
         </Card>
       )}
       {status === "success" && (
@@ -31,22 +37,30 @@ export function TimelineList() {
           {typedTimelines && typedTimelines.length > 0 ? (
             typedTimelines.map((timeline) => (
               <Card
-                className="flex h-full w-80 flex-[0_0_320px] flex-col mr-4 last:mr-0" // margin-rightを追加
+                className="mr-4 flex h-full w-80 flex-[0_0_320px] flex-col last:mr-0" // margin-rightを追加
                 key={timeline.id}
               >
-                <CardHeader className="shrink-0 border-b pb-2"> {/* shadcn/uiのCardHeaderを使用 */}
-                  <CardTitle className="text-base font-bold"> {/* shadcn/uiのCardTitleを使用 */}
+                <CardHeader className="shrink-0 border-b pb-2">
+                  {" "}
+                  {/* shadcn/uiのCardHeaderを使用 */}
+                  <CardTitle className="font-bold text-base">
+                    {" "}
+                    {/* shadcn/uiのCardTitleを使用 */}
                     {timeline.name} ({timeline.type} @
                     {new URL(timeline.serverSession.origin).hostname})
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="grow overflow-y-auto p-0"> {/* shadcn/uiのCardContentを使用 */}
+                <CardContent className="grow overflow-y-auto p-0">
+                  {" "}
+                  {/* shadcn/uiのCardContentを使用 */}
                   <SwitchTimeLineType timeline={timeline} />
                 </CardContent>
               </Card>
             ))
           ) : (
-            <Card className="flex-1 flex items-center justify-center"> {/* Cardで囲む */}
+            <Card className="flex flex-1 items-center justify-center">
+              {" "}
+              {/* Cardで囲む */}
               <Text>まだタイムラインが作成されていません。</Text>
             </Card>
           )}
