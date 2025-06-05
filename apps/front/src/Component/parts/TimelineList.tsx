@@ -1,6 +1,7 @@
 import { $api } from "@/lib/api/fetchClient";
 import { components } from "@/lib/api/type";
 import { Fragment } from "react/jsx-runtime";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"; // Cardコンポーネントをインポート
 import Text from "../ui/text";
 import { SwitchTimeLineType } from "./timelines/SwitchTimeLineType";
 
@@ -14,32 +15,40 @@ export function TimelineList() {
   const typedTimelines = timelines as TimelineEntityType[] | undefined;
 
   return (
-    <div className="flex h-screen overflow-x-auto overflow-y-hidden text-white">
-      {status === "pending" && <Text>loading...</Text>}
+    <div className="flex h-screen overflow-x-auto overflow-y-hidden p-4"> {/* paddingを追加 */}
+      {status === "pending" && (
+        <Card className="flex-1 flex items-center justify-center"> {/* Cardで囲む */}
+          <Text>読み込み中...</Text>
+        </Card>
+      )}
       {status === "error" && (
-        <Text color="red.500">Failed to load timelines.</Text>
+        <Card className="flex-1 flex items-center justify-center"> {/* Cardで囲む */}
+          <Text colorType={"destructive"}>タイムラインの読み込みに失敗しました。</Text>
+        </Card>
       )}
       {status === "success" && (
         <Fragment>
           {typedTimelines && typedTimelines.length > 0 ? (
             typedTimelines.map((timeline) => (
-              <div
-                className="flex h-full w-80 flex-[0_0_320px] flex-col border-r border-r-[#38444d] border-solid text-white last:border-r-[none]"
+              <Card
+                className="flex h-full w-80 flex-[0_0_320px] flex-col mr-4 last:mr-0" // margin-rightを追加
                 key={timeline.id}
               >
-                <div className="shrink-0 border-b border-b-[#38444d] border-solid px-[15px] py-2.5">
-                  <Text className="font-bold font-sans text-base">
+                <CardHeader className="shrink-0 border-b pb-2"> {/* shadcn/uiのCardHeaderを使用 */}
+                  <CardTitle className="text-base font-bold"> {/* shadcn/uiのCardTitleを使用 */}
                     {timeline.name} ({timeline.type} @
                     {new URL(timeline.serverSession.origin).hostname})
-                  </Text>
-                </div>
-                <div className="grow overflow-y-auto px-0 py-0">
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="grow overflow-y-auto p-0"> {/* shadcn/uiのCardContentを使用 */}
                   <SwitchTimeLineType timeline={timeline} />
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))
           ) : (
-            <Text>No timelines created yet.</Text>
+            <Card className="flex-1 flex items-center justify-center"> {/* Cardで囲む */}
+              <Text>まだタイムラインが作成されていません。</Text>
+            </Card>
           )}
         </Fragment>
       )}
