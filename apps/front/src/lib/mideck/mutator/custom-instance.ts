@@ -28,7 +28,7 @@ const getUrl = (contextUrl: string): string => {
   const search = url.search;
   const baseUrl = "http://localhost:3000/api/";
 
-    const requestUrl = new URL(`${baseUrl}${pathname}${search}`);
+  const requestUrl = new URL(`${baseUrl}${pathname}${search}`);
 
   console.log(
     ...[
@@ -49,22 +49,27 @@ const getHeaders = (headers?: HeadersInit): HeadersInit => {
     "Content-Type": "multipart/form-data",
   };
 };
+export type BodyType<BodyData> = BodyData & { headers?: any };
+type CustomClientProps = {
+  url: string;
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+  params?: Record<string, any>;
+  headers?: Record<string, any>;
+  data?: BodyType<unknown>;
+  signal?: AbortSignal;
+};
 
 export const customFetch = async <T>(
-  url: {
-    url: string;
-    method?: string;
-    signal?: AbortSignal;
-  },
-  options?: RequestInit,
+  FetchData: CustomClientProps,
 ): Promise<T> => {
-  console.log(url, options, "👀 [custom-instance.ts:49]: url, options");
-  const requestUrl = getUrl(url.url);
-  const requestHeaders = getHeaders(options?.headers);
+  console.log(FetchData, "👀 [custom-instance.ts:49]: url, options");
+  const requestUrl = getUrl(FetchData.url);
+  const requestHeaders = getHeaders(FetchData?.headers);
 
   const requestInit: RequestInit = {
-    ...options,
     headers: requestHeaders,
+    method: FetchData.method || "GET",
+    ...(FetchData.data ? { body: JSON.stringify(FetchData.data) } : {}),
   };
 
   const request = new Request(requestUrl, requestInit);
