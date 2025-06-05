@@ -37,7 +37,7 @@ export function TimelineList() {
           {typedTimelines && typedTimelines.length > 0 ? (
             typedTimelines.map((timeline) => (
               <Card
-                className="flex h-full w-80 flex-[0_0_320px] flex-col" // margin-rightを削除
+                className="flex h-full w-80 flex-[0_0_320px] flex-col gap-0 rounded-none" // margin-rightを削除
                 key={timeline.id}
               >
                 <CardHeader className="shrink-0 border-b pb-2">
@@ -51,8 +51,6 @@ export function TimelineList() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="grow overflow-y-auto p-0">
-                  {" "}
-                  {/* shadcn/uiのCardContentを使用 */}
                   <SwitchTimeLineType timeline={timeline} />
                 </CardContent>
               </Card>
