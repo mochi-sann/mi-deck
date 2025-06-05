@@ -28,12 +28,13 @@ export const AppSidebarPresenter = ({ user }: AppSidebarPresenterProps) => {
     <Sidebar collapsible="icon" side="left">
       <SidebarTrigger
         className={cn(
-          "-translate-y-1/2 absolute top-4 z-50 transition-all duration-200 ease-linear",
+          "-translate-y-1/2 absolute top-[calc(var(--sidebar-width-icon)-1.5rem)] z-50 transition-all duration-200 ease-linear",
           state === "expanded"
-            ? "left-[calc(var(--sidebar-width)-1.5rem)]"
-            : "left-[calc(var(--sidebar-width-icon)-0.5rem)]",
+            ? "left-[calc(var(--sidebar-width)-2.5rem)]"
+            : " left-[calc(var(--sidebar-width-icon)-2.5rem)]",
         )}
       />
+      <div className="h-12 " />
       <SidebarContent />
       <SidebarFooter>
         <Dialog>

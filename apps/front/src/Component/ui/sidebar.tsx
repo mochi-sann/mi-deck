@@ -265,9 +265,9 @@ function SidebarTrigger({
     <Button
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
-      variant="ghost"
+      variant="outline"
       size="icon"
-      className={cn("size-7", className)}
+      className={cn("size-8", className)}
       onClick={(event) => {
         onClick?.(event);
         toggleSidebar();
@@ -375,7 +375,7 @@ function SidebarContent({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="sidebar-content"
       data-sidebar="content"
       className={cn(
-        "flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden px-2", // px-2を追加
+        "flex min-h-0 flex-1 flex-col gap-2 overflow-auto px-2 group-data-[collapsible=icon]:overflow-hidden", // px-2を追加
         className,
       )}
       {...props}
