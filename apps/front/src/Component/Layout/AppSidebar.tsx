@@ -1,5 +1,6 @@
 import { useUser } from "@/lib/configureAuth";
 import type { UserType } from "@/lib/configureAuth";
+import { cn } from "@/lib/utils"; // cnをインポート
 import { Pen } from "lucide-react";
 import { NewNote } from "../logics/NewNote";
 import { Avatar, AvatarFallback } from "../ui/avatar";
@@ -10,8 +11,8 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarMenuButton,
-  SidebarRail,
   SidebarTrigger,
+  useSidebar, // useSidebarをインポート
 } from "../ui/sidebar";
 import { NavUser } from "./Sidebar/nav-user";
 
@@ -20,13 +21,20 @@ type AppSidebarPresenterProps = {
 };
 
 export const AppSidebarPresenter = ({ user }: AppSidebarPresenterProps) => {
+  const { state } = useSidebar(); // useSidebarからstateを取得
+
   return (
     <Sidebar collapsible="icon" side="left">
-      <SidebarContent>
-        <p className="font-medium text-muted-foreground text-sm">
-          <span className="text-foreground">Playground</span>
-        </p>
-      </SidebarContent>
+      <SidebarTrigger
+        className={cn(
+          "-translate-y-1/2 absolute top-[calc(var(--sidebar-width-icon)-1.5rem)] z-50 transition-all duration-200 ease-linear",
+          state === "expanded"
+            ? "left-[calc(var(--sidebar-width)-2.5rem)]"
+            : " left-[calc(var(--sidebar-width-icon)-2.5rem)]",
+        )}
+      />
+      <div className="h-12 " />
+      <SidebarContent />
       <SidebarFooter>
         <Dialog>
           <DialogTrigger asChild>
@@ -49,9 +57,7 @@ export const AppSidebarPresenter = ({ user }: AppSidebarPresenterProps) => {
           </DialogContent>
         </Dialog>
         <NavUser user={user} />
-        <SidebarTrigger className="mt-auto" />
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
 };

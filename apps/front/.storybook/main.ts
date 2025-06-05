@@ -1,4 +1,3 @@
-import path from "node:path";
 import type { StorybookConfig } from "@storybook/react-vite";
 import { mergeConfig } from "vite";
 
@@ -25,7 +24,6 @@ const config: StorybookConfig = {
       resolve: {
         alias: {
           // プロジェクトのエイリアス設定をStorybookに反映
-          "@": path.resolve(__dirname, "../src"),
         },
       },
     });
