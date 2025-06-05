@@ -39,6 +39,9 @@ type SidebarContextProps = {
   setOpenMobile: (open: boolean) => void;
   isMobile: boolean;
   toggleSidebar: () => void;
+  isResizing: boolean; // 追加
+  sidebarWidth: number; // 追加
+  setSidebarWidth: (width: number) => void; // 追加
 };
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null);
@@ -92,6 +95,13 @@ function SidebarProvider({
     [setOpenProp, open, setStoredOpen], // setStoredOpenを依存配列に追加
   );
 
+  // Sidebar resizing state
+  const [isResizing, setIsResizing] = React.useState(false);
+  const [sidebarWidth, setSidebarWidth] = useLocalStorage(
+    "sidebar_width",
+    parseInt(SIDEBAR_WIDTH, 10) * 16, // remをpxに変換
+  );
+
   // Helper to toggle the sidebar.
   // biome-ignore lint/correctness/useExhaustiveDependencies:
   const toggleSidebar = React.useCallback(() => {
@@ -128,8 +138,22 @@ function SidebarProvider({
       openMobile,
       setOpenMobile,
       toggleSidebar,
+      isResizing, // 追加
+      sidebarWidth, // 追加
+      setSidebarWidth, // 追加
     }),
-    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
+    [
+      state,
+      open,
+      setOpen,
+      isMobile,
+      openMobile,
+      setOpenMobile,
+      toggleSidebar,
+      isResizing,
+      sidebarWidth,
+      setSidebarWidth,
+    ],
   );
 
   return (
@@ -139,7 +163,7 @@ function SidebarProvider({
           data-slot="sidebar-wrapper"
           style={
             {
-              "--sidebar-width": SIDEBAR_WIDTH,
+              "--sidebar-width": `${sidebarWidth}px`, // 動的な幅を使用
               "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
               ...style,
             } as React.CSSProperties
@@ -168,15 +192,38 @@ function Sidebar({
   side?: "left" | "right";
   variant?: "sidebar" | "floating" | "inset";
   collapsible?: "offcanvas" | "icon" | "none";
+  resizable?: boolean; // 追加
 }) {
-  const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+  const { isMobile, state, openMobile, setOpenMobile, setSidebarWidth, sidebarWidth, setIsResizing } = useSidebar(); // setIsResizingを追加
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!props.resizable) return; // resizableがfalseの場合は何もしない
+
+    setIsResizing(true);
+    const startX = e.clientX;
+    const startWidth = sidebarWidth;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const newWidth = startWidth + (e.clientX - startX);
+      setSidebarWidth(Math.max(200, Math.min(400, newWidth))); // 最小幅200px, 最大幅400px
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+  };
 
   if (collapsible === "none") {
     return (
       <div
         data-slot="sidebar"
         className={cn(
-          "flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground",
+          "flex h-full w-[var(--sidebar-width)] flex-col bg-sidebar text-sidebar-foreground", // w-(--sidebar-width) を w-[var(--sidebar-width)] に変更
           className,
         )}
         {...props}
@@ -194,7 +241,7 @@ function Sidebar({
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
-          className="w-(--sidebar-width) cursor-pointer bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+          className="w-[var(--sidebar-width)] cursor-pointer bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden" // w-(--sidebar-width) を w-[var(--sidebar-width)] に変更
           style={
             {
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
@@ -225,25 +272,25 @@ function Sidebar({
       <div
         data-slot="sidebar-gap"
         className={cn(
-          "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
+          "relative w-[var(--sidebar-width)] bg-transparent transition-[width] duration-200 ease-linear", // w-(--sidebar-width) を w-[var(--sidebar-width)] に変更
           "group-data-[collapsible=offcanvas]:w-0",
           "group-data-[side=right]:rotate-180",
           variant === "floating" || variant === "inset"
             ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
-            : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
+            : "group-data-[collapsible=icon]:w-[var(--sidebar-width-icon)]", // w-(--sidebar-width-icon) を w-[var(--sidebar-width-icon)] に変更
         )}
       />
       <div
         data-slot="sidebar-container"
         className={cn(
-          "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
+          "fixed inset-y-0 z-10 hidden h-svh w-[var(--sidebar-width)] transition-[left,right,width] duration-200 ease-linear md:flex", // w-(--sidebar-width) を w-[var(--sidebar-width)] に変更
           side === "left"
             ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
             : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
           // Adjust the padding for floating and inset variants.
           variant === "floating" || variant === "inset"
             ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
-            : "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
+            : "group-data-[collapsible=icon]:w-[var(--sidebar-width-icon)] group-data-[side=left]:border-r group-data-[side=right]:border-l", // w-(--sidebar-width-icon) を w-[var(--sidebar-width-icon)] に変更
           className,
         )}
         {...props}
@@ -255,6 +302,25 @@ function Sidebar({
         >
           {children}
         </div>
+        {props.resizable && ( // resizableがtrueの場合のみRailを表示
+          <div
+            data-slot="sidebar-rail"
+            data-sidebar="rail"
+            aria-label="Resize Sidebar"
+            tabIndex={-1}
+            onMouseDown={handleMouseDown}
+            title="Resize Sidebar"
+            className={cn(
+              "-translate-x-1/2 group-data-[side=left]:-right-4 absolute inset-y-0 z-20 hidden w-4 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border group-data-[side=right]:left-0 sm:flex",
+              "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize",
+              "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize",
+              "group-data-[collapsible=offcanvas]:translate-x-0 hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:after:left-full",
+              "[[data-side=left][data-collapsible=offcanvas]_&]:-right-2",
+              "[[data-side=right][data-collapsible=offcanvas]_&]:-left-2",
+              "cursor-ew-resize", // ドラッグ可能なカーソル
+            )}
+          />
+        )}
       </div>
     </div>
   );
@@ -632,7 +698,7 @@ function SidebarMenuSkeleton({
         />
       )}
       <Skeleton
-        className="h-4 max-w-(--skeleton-width) flex-1"
+        className="h-4 max-w-[var(--skeleton-width)] flex-1" // max-w-(--skeleton-width) を max-w-[var(--skeleton-width)] に変更
         data-sidebar="menu-skeleton-text"
         style={
           {
