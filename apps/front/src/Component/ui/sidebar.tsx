@@ -70,7 +70,10 @@ function SidebarProvider({
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
-  const [storedOpen, setStoredOpen] = useLocalStorage(SIDEBAR_COOKIE_NAME, defaultOpen); // localStorageから状態を読み込む
+  const [storedOpen, setStoredOpen] = useLocalStorage(
+    SIDEBAR_COOKIE_NAME,
+    defaultOpen,
+  ); // localStorageから状態を読み込む
   const [_open, _setOpen] = React.useState(openProp ?? storedOpen); // storedOpenを初期値として使用
   const open = openProp ?? _open;
   const setOpen = React.useCallback(
@@ -573,7 +576,7 @@ function SidebarMenuAction({
         "peer-data-[size=lg]/menu-button:top-2.5",
         "group-data-[collapsible=icon]:hidden",
         showOnHover &&
-          "group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0",
+        "group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0",
         className,
       )}
       {...props}
@@ -726,4 +729,5 @@ export {
   SidebarSeparator,
   SidebarTrigger,
   useSidebar,
+  SidebarGroupContent,
 };
