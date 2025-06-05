@@ -1,7 +1,7 @@
 import { $api } from "@/lib/api/fetchClient";
 import { uploadAndCompressFiles } from "@/lib/uploadAndCompresFiles";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { APIClient } from "misskey-js"; // 変更: misskey-js のメインからインポート
+import { APIClient } from "misskey-js/api.js";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as v from "valibot";
@@ -102,7 +102,8 @@ export const NewNote = () => {
         serverToken,
       );
 
-      await client.request("notes/create", { // この行の型エラーが解消されることを期待
+      await client.request("notes/create", {
+        // この行の型エラーが解消されることを期待
         text: values.noteContent,
         visibility: values.visibility,
         localOnly: values.isLocalOnly,
