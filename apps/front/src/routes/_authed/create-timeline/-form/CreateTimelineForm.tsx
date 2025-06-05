@@ -1,7 +1,7 @@
-import { MenuFieldSet } from "@/Component/forms/MenuFieldSet";
-import { TextFieldSet } from "@/Component/forms/TextFieldSet";
-import { Button } from "@/Component/ui/button";
-import Text from "@/Component/ui/text";
+import { MenuFieldSet } from "@/Components/forms/MenuFieldSet";
+import { TextFieldSet } from "@/Components/forms/TextFieldSet";
+import { Button } from "@/Components/ui/button";
+import Text from "@/Components/ui/text";
 import { $api } from "@/lib/api/fetchClient";
 import { components } from "@/lib/api/type";
 import { zodResolver } from "@hookform/resolvers/zod";

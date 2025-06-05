@@ -1,10 +1,15 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/Component/ui/card";
-import Text from "@/Component/ui/text";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/Components/ui/card";
+import Text from "@/Components/ui/text";
 import { useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useForm } from "react-hook-form";
-import { TextFieldSet } from "../../../Component/forms/TextFieldSet";
-import { Button } from "../../../Component/ui/button";
+import { TextFieldSet } from "../../../Components/forms/TextFieldSet";
+import { Button } from "../../../Components/ui/button";
 import { useLogin } from "../../../lib/configureAuth";
 import { Route } from "../route.lazy";
 

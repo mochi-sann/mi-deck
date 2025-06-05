@@ -1,4 +1,4 @@
-import Text from "@/Component/ui/text";
+import Text from "@/Components/ui/text";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { Component, ReactNode, Suspense } from "react";

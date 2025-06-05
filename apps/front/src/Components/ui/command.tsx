@@ -8,7 +8,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/Component/ui/dialog";
+} from "@/Components/ui/dialog";
 import { cn } from "@/lib/utils";
 
 function Command({

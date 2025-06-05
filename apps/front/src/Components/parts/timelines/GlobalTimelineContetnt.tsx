@@ -1,4 +1,4 @@
-import Text from "@/Component/ui/text";
+import Text from "@/Components/ui/text";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { APIClient } from "misskey-js/api.js";
 import { Note } from "misskey-js/entities.js";

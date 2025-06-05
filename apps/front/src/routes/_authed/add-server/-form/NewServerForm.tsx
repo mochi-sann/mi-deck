@@ -1,6 +1,6 @@
-import { MenuFieldSet } from "@/Component/forms/MenuFieldSet";
-import { TextFieldSet } from "@/Component/forms/TextFieldSet";
-import { Button } from "@/Component/ui/button";
+import { MenuFieldSet } from "@/Components/forms/MenuFieldSet";
+import { TextFieldSet } from "@/Components/forms/TextFieldSet";
+import { Button } from "@/Components/ui/button";
 import { MiAuthReq } from "@/lib/miAuth";
 import type React from "react";
 import { useForm } from "react-hook-form";

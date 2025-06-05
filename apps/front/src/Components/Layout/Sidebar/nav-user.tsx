@@ -1,16 +1,16 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/Component/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/Component/ui/dropdown-menu";
+} from "@/Components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/Component/ui/sidebar";
+} from "@/Components/ui/sidebar";
 import type { UserType } from "@/lib/configureAuth";
 import { useLogout } from "@/lib/configureAuth";
 import { LogOut, Settings, UserRound } from "lucide-react";

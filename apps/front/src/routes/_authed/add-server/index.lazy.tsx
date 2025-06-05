@@ -1,4 +1,4 @@
-import Text from "@/Component/ui/text";
+import Text from "@/Components/ui/text";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { NewServerForm } from "./-form/NewServerForm";
 

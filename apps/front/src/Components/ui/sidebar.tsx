@@ -3,23 +3,23 @@ import { VariantProps, cva } from "class-variance-authority";
 import { PanelLeftIcon } from "lucide-react";
 import * as React from "react";
 
-import { Button } from "@/Component/ui/button";
-import { Input } from "@/Component/ui/input";
-import { Separator } from "@/Component/ui/separator";
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
+import { Separator } from "@/Components/ui/separator";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@/Component/ui/sheet";
-import { Skeleton } from "@/Component/ui/skeleton";
+} from "@/Components/ui/sheet";
+import { Skeleton } from "@/Components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/Component/ui/tooltip";
+} from "@/Components/ui/tooltip";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 

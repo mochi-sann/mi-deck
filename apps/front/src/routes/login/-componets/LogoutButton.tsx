@@ -1,4 +1,4 @@
-import { Button } from "@/Component/ui/button";
+import { Button } from "@/Components/ui/button";
 import { useLogout } from "@/lib/configureAuth";
 import type React from "react";
 

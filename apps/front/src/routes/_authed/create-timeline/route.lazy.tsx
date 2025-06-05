@@ -1,6 +1,6 @@
-import Text from "@/Component/ui/text";
+import Text from "@/Components/ui/text";
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { Card, CardContent, CardHeader } from "../../../Component/ui/card";
+import { Card, CardContent, CardHeader } from "../../../Components/ui/card";
 import { CreateTimelineFormPresentation } from "./-form/CreateTimelineFormPresentation";
 
 export const Route = createLazyFileRoute("/_authed/create-timeline")({

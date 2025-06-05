@@ -4,7 +4,7 @@ import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 
-import { SidebarProvider } from "./Component/ui/sidebar";
+import { SidebarProvider } from "./Components/ui/sidebar";
 import { useUser } from "./lib/configureAuth";
 import { routeTree } from "./routeTree.gen";
 

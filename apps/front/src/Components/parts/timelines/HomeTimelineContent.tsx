@@ -1,5 +1,5 @@
-import { Spinner } from "@/Component/ui/spinner";
-import Text from "@/Component/ui/text";
+import { Spinner } from "@/Components/ui/spinner";
+import Text from "@/Components/ui/text";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useEffect, useRef } from "react";
 import { MisskeyNote } from "../MisskeyNote";

@@ -1,5 +1,5 @@
-import { Button } from "@/Component/ui/button";
-import Text from "@/Component/ui/text";
+import { Button } from "@/Components/ui/button";
+import Text from "@/Components/ui/text";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 

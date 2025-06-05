@@ -1,5 +1,5 @@
-import { LoadingSpinner } from "@/Component/ui/loading-spinner";
-import Text from "@/Component/ui/text";
+import { LoadingSpinner } from "@/Components/ui/loading-spinner";
+import Text from "@/Components/ui/text";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { useUser } from "../../lib/configureAuth";
 import { LogoutButton } from "./-componets/LogoutButton";

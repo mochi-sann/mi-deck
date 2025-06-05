@@ -3,7 +3,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/Component/ui/dropdown-menu"; // For ellipsis example
+} from "@/Components/ui/dropdown-menu"; // For ellipsis example
 import type { Meta, StoryObj } from "@storybook/react";
 import { Slash } from "lucide-react"; // Example for custom separator
 import {

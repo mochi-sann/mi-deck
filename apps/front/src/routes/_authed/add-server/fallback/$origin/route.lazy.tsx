@@ -1,5 +1,5 @@
-import { Button } from "@/Component/ui/button";
-import Text from "@/Component/ui/text";
+import { Button } from "@/Components/ui/button";
+import Text from "@/Components/ui/text";
 import { $api } from "@/lib/api/fetchClient";
 import { createLazyFileRoute } from "@tanstack/react-router";
 

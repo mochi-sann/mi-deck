@@ -1,5 +1,5 @@
-import { Spinner } from "@/Component/ui/spinner";
-import Text from "@/Component/ui/text";
+import { Spinner } from "@/Components/ui/spinner";
+import Text from "@/Components/ui/text";
 import { Note } from "misskey-js/entities.js";
 import type React from "react";
 import { MisskeyNote } from "../MisskeyNote";

@@ -1,4 +1,4 @@
-import { ServerInfoBox } from "@/Component/parts/ServerList";
+import { ServerInfoBox } from "@/Components/parts/ServerList";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { $api } from "../../lib/api/fetchClient";
 
