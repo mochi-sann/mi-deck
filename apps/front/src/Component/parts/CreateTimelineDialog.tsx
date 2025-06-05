@@ -39,12 +39,12 @@ type ServerSessionEntity =
   components["schemas"]["CreateServerSessionResponseEntity"];
 
 const formSchema = v.object({
-  serverSessionId: v.string("サーバーを選択してください", [v.minLength(1)]), // エラーメッセージを第一引数に移動
+  serverSessionId: v.pipe(v.string(), v.nonEmpty("サーバーを選択してください")), // エラーメッセージを第一引数に移動
   type: v.union(
     [v.literal("home"), v.literal("local"), v.literal("global")],
     "タイムラインタイプを選択してください",
   ),
-  name: v.string("タイムライン名を入力してください", [v.minLength(1)]), // エラーメッセージを第一引数に移動
+  name: v.pipe(v.string("タイムライン名を入力してください"), v.minLength(1)),
 });
 
 type FormValues = v.InferOutput<typeof formSchema>;
