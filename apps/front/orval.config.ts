@@ -6,10 +6,12 @@ export default {
       target: "./src/lib/mideck/endpoints",
       schemas: "src/lib/mideck/models",
       client: "react-query",
+      headers: true,
+      baseUrl: "http://localhost:3000/",
       override: {
         mutator: {
           path: "./src/lib/mideck/mutator/custom-instance.ts",
-          name: "customInstance",
+          name: "customFetch",
         },
         query: {
           useQuery: true,
@@ -20,8 +22,6 @@ export default {
           },
         },
       },
-      headers: true,
-      baseUrl: "/api",
     },
   },
 };

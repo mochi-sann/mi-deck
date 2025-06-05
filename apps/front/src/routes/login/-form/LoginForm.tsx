@@ -5,12 +5,11 @@ import {
   CardHeader,
 } from "@/Components/ui/card";
 import Text from "@/Components/ui/text";
-import { useNavigate } from "@tanstack/react-router";
+import { useAuthControllerLogin } from "@/lib/mideck/endpoints/auth/auth";
 import type React from "react";
 import { useForm } from "react-hook-form";
 import { TextFieldSet } from "../../../Components/forms/TextFieldSet";
 import { Button } from "../../../Components/ui/button";
-import { useLogin } from "../../../lib/configureAuth";
 import { Route } from "../route.lazy";
 
 type LoginFormType = {
@@ -21,22 +20,24 @@ type LoginFormType = {
 export const LoginForm: React.FC = () => {
   // ログインフォームを作成
   const { handleSubmit, control } = useForm<LoginFormType>();
-  const { mutateAsync } = useLogin();
-  const navigate = useNavigate();
+  const { mutateAsync } = useAuthControllerLogin();
+  // const navigate = useNavigate();
   const search = Route.useSearch();
   const onSubmit = async (data: LoginFormType) => {
     const SignUpResponse = await mutateAsync({
-      email: data.email,
-      password: data.password,
+      data: {
+        email: data.email,
+        password: data.password,
+      },
     });
     console.log(SignUpResponse);
     console.log(
       ...[search.redirect, "👀 [LoginForm.tsx:41]: search.redirect"].reverse(),
     );
-    navigate({ to: search.redirect || "/" });
+    // navigate({ to: search.redirect || "/" });
     console.log(data, SignUpResponse);
 
-    window.location.reload();
+    // window.location.reload();
   };
 
   return (

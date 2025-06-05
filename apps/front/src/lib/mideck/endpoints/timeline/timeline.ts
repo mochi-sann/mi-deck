@@ -36,8 +36,10 @@ import type {
   TimelineWithServerSessionEntity
 } from '../../models';
 
-import { customInstance } from '../../mutator/custom-instance';
+import { customFetch } from '../../mutator/custom-instance';
 
+
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
@@ -46,30 +48,30 @@ import { customInstance } from '../../mutator/custom-instance';
  */
 export const timelineControllerCreate = (
     createTimelineDto: CreateTimelineDto,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customFetch>,signal?: AbortSignal
 ) => {
       
       
-      return customInstance<TimelineEntity>(
-      {url: `/api/v1/timeline`, method: 'POST',
+      return customFetch<TimelineEntity>(
+      {url: `http://localhost:3000/v1/timeline`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: createTimelineDto, signal
     },
-      );
+      options);
     }
   
 
 
 export const getTimelineControllerCreateMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof timelineControllerCreate>>, TError,{data: CreateTimelineDto}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof timelineControllerCreate>>, TError,{data: CreateTimelineDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof timelineControllerCreate>>, TError,{data: CreateTimelineDto}, TContext> => {
 
 const mutationKey = ['timelineControllerCreate'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -77,7 +79,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof timelineControllerCreate>>, {data: CreateTimelineDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  timelineControllerCreate(data,)
+          return  timelineControllerCreate(data,requestOptions)
         }
 
         
@@ -93,7 +95,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Create a new timeline configuration
  */
 export const useTimelineControllerCreate = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof timelineControllerCreate>>, TError,{data: CreateTimelineDto}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof timelineControllerCreate>>, TError,{data: CreateTimelineDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof timelineControllerCreate>>,
         TError,
@@ -110,32 +112,32 @@ export const useTimelineControllerCreate = <TError = void,
  */
 export const timelineControllerFindAll = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customFetch>,signal?: AbortSignal
 ) => {
       
       
-      return customInstance<TimelineWithServerSessionEntity[]>(
-      {url: `/api/v1/timeline`, method: 'GET', signal
+      return customFetch<TimelineWithServerSessionEntity[]>(
+      {url: `http://localhost:3000/v1/timeline`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
 export const getTimelineControllerFindAllQueryKey = () => {
-    return [`/api/v1/timeline`] as const;
+    return [`http://localhost:3000/v1/timeline`] as const;
     }
 
     
-export const getTimelineControllerFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof timelineControllerFindAll>>>, TError = void>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof timelineControllerFindAll>>, TError, TData>>, }
+export const getTimelineControllerFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof timelineControllerFindAll>>>, TError = void>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof timelineControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getTimelineControllerFindAllQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof timelineControllerFindAll>>> = ({ signal }) => timelineControllerFindAll(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof timelineControllerFindAll>>> = ({ signal }) => timelineControllerFindAll(requestOptions, signal);
 
       
 
@@ -155,7 +157,7 @@ export function useTimelineControllerFindAllInfinite<TData = InfiniteData<Awaite
           TError,
           Awaited<ReturnType<typeof timelineControllerFindAll>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useTimelineControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof timelineControllerFindAll>>>, TError = void>(
@@ -165,11 +167,11 @@ export function useTimelineControllerFindAllInfinite<TData = InfiniteData<Awaite
           TError,
           Awaited<ReturnType<typeof timelineControllerFindAll>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useTimelineControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof timelineControllerFindAll>>>, TError = void>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof timelineControllerFindAll>>, TError, TData>>, }
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof timelineControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -177,7 +179,7 @@ export function useTimelineControllerFindAllInfinite<TData = InfiniteData<Awaite
  */
 
 export function useTimelineControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof timelineControllerFindAll>>>, TError = void>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof timelineControllerFindAll>>, TError, TData>>, }
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof timelineControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -192,16 +194,16 @@ export function useTimelineControllerFindAllInfinite<TData = InfiniteData<Awaite
 
 
 
-export const getTimelineControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof timelineControllerFindAll>>, TError = void>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof timelineControllerFindAll>>, TError, TData>>, }
+export const getTimelineControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof timelineControllerFindAll>>, TError = void>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof timelineControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getTimelineControllerFindAllQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof timelineControllerFindAll>>> = ({ signal }) => timelineControllerFindAll(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof timelineControllerFindAll>>> = ({ signal }) => timelineControllerFindAll(requestOptions, signal);
 
       
 
@@ -221,7 +223,7 @@ export function useTimelineControllerFindAll<TData = Awaited<ReturnType<typeof t
           TError,
           Awaited<ReturnType<typeof timelineControllerFindAll>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useTimelineControllerFindAll<TData = Awaited<ReturnType<typeof timelineControllerFindAll>>, TError = void>(
@@ -231,11 +233,11 @@ export function useTimelineControllerFindAll<TData = Awaited<ReturnType<typeof t
           TError,
           Awaited<ReturnType<typeof timelineControllerFindAll>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useTimelineControllerFindAll<TData = Awaited<ReturnType<typeof timelineControllerFindAll>>, TError = void>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof timelineControllerFindAll>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof timelineControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -243,7 +245,7 @@ export function useTimelineControllerFindAll<TData = Awaited<ReturnType<typeof t
  */
 
 export function useTimelineControllerFindAll<TData = Awaited<ReturnType<typeof timelineControllerFindAll>>, TError = void>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof timelineControllerFindAll>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof timelineControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -264,32 +266,32 @@ export function useTimelineControllerFindAll<TData = Awaited<ReturnType<typeof t
  */
 export const timelineControllerFindOne = (
     serverSessionId: string,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customFetch>,signal?: AbortSignal
 ) => {
       
       
-      return customInstance<TimelineControllerFindOne200Item[]>(
-      {url: `/api/v1/timeline/${serverSessionId}`, method: 'GET', signal
+      return customFetch<TimelineControllerFindOne200Item[]>(
+      {url: `http://localhost:3000/v1/timeline/${serverSessionId}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
 export const getTimelineControllerFindOneQueryKey = (serverSessionId: string,) => {
-    return [`/api/v1/timeline/${serverSessionId}`] as const;
+    return [`http://localhost:3000/v1/timeline/${serverSessionId}`] as const;
     }
 
     
-export const getTimelineControllerFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof timelineControllerFindOne>>>, TError = void>(serverSessionId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof timelineControllerFindOne>>, TError, TData>>, }
+export const getTimelineControllerFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof timelineControllerFindOne>>>, TError = void>(serverSessionId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof timelineControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getTimelineControllerFindOneQueryKey(serverSessionId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof timelineControllerFindOne>>> = ({ signal }) => timelineControllerFindOne(serverSessionId, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof timelineControllerFindOne>>> = ({ signal }) => timelineControllerFindOne(serverSessionId, requestOptions, signal);
 
       
 
@@ -309,7 +311,7 @@ export function useTimelineControllerFindOneInfinite<TData = InfiniteData<Awaite
           TError,
           Awaited<ReturnType<typeof timelineControllerFindOne>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useTimelineControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof timelineControllerFindOne>>>, TError = void>(
@@ -319,11 +321,11 @@ export function useTimelineControllerFindOneInfinite<TData = InfiniteData<Awaite
           TError,
           Awaited<ReturnType<typeof timelineControllerFindOne>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useTimelineControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof timelineControllerFindOne>>>, TError = void>(
- serverSessionId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof timelineControllerFindOne>>, TError, TData>>, }
+ serverSessionId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof timelineControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -331,7 +333,7 @@ export function useTimelineControllerFindOneInfinite<TData = InfiniteData<Awaite
  */
 
 export function useTimelineControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof timelineControllerFindOne>>>, TError = void>(
- serverSessionId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof timelineControllerFindOne>>, TError, TData>>, }
+ serverSessionId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof timelineControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -346,16 +348,16 @@ export function useTimelineControllerFindOneInfinite<TData = InfiniteData<Awaite
 
 
 
-export const getTimelineControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof timelineControllerFindOne>>, TError = void>(serverSessionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof timelineControllerFindOne>>, TError, TData>>, }
+export const getTimelineControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof timelineControllerFindOne>>, TError = void>(serverSessionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof timelineControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getTimelineControllerFindOneQueryKey(serverSessionId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof timelineControllerFindOne>>> = ({ signal }) => timelineControllerFindOne(serverSessionId, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof timelineControllerFindOne>>> = ({ signal }) => timelineControllerFindOne(serverSessionId, requestOptions, signal);
 
       
 
@@ -375,7 +377,7 @@ export function useTimelineControllerFindOne<TData = Awaited<ReturnType<typeof t
           TError,
           Awaited<ReturnType<typeof timelineControllerFindOne>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useTimelineControllerFindOne<TData = Awaited<ReturnType<typeof timelineControllerFindOne>>, TError = void>(
@@ -385,11 +387,11 @@ export function useTimelineControllerFindOne<TData = Awaited<ReturnType<typeof t
           TError,
           Awaited<ReturnType<typeof timelineControllerFindOne>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useTimelineControllerFindOne<TData = Awaited<ReturnType<typeof timelineControllerFindOne>>, TError = void>(
- serverSessionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof timelineControllerFindOne>>, TError, TData>>, }
+ serverSessionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof timelineControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -397,7 +399,7 @@ export function useTimelineControllerFindOne<TData = Awaited<ReturnType<typeof t
  */
 
 export function useTimelineControllerFindOne<TData = Awaited<ReturnType<typeof timelineControllerFindOne>>, TError = void>(
- serverSessionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof timelineControllerFindOne>>, TError, TData>>, }
+ serverSessionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof timelineControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

@@ -6,11 +6,11 @@ import {
   CardHeader,
 } from "@/Components/ui/card";
 import Text from "@/Components/ui/text";
+import { useAuthControllerSignUp } from "@/lib/mideck/endpoints/miDeckApi";
 import { useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useForm } from "react-hook-form";
 import { TextFieldSet } from "../../../Components/forms/TextFieldSet";
-import { useRegister } from "../../../lib/configureAuth";
 import { Route } from "../route.lazy";
 
 type SignUpFormType = {
@@ -22,15 +22,18 @@ type SignUpFormType = {
 export const SignUpForm: React.FC = () => {
   // 登録フォームを作成
   const { handleSubmit, control } = useForm<SignUpFormType>();
-  const { mutateAsync } = useRegister();
+  // const { mutateAsync } = useRegister();
+  const { mutateAsync } = useAuthControllerSignUp();
   const search = Route.useSearch();
   const navigate = useNavigate();
   const onSubmit = async (data: SignUpFormType) => {
     console.log("data", data);
     const SignUpResponse = await mutateAsync({
-      email: data.email,
-      password: data.password,
-      username: data.username,
+      data: {
+        email: data.email,
+        password: data.password,
+        username: data.username,
+      },
     })
       .then((res) => {
         console.log(res);

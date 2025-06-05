@@ -36,37 +36,39 @@ import type {
   UpdateServerInfoDto
 } from '../../models';
 
-import { customInstance } from '../../mutator/custom-instance';
+import { customFetch } from '../../mutator/custom-instance';
 
+
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
 export const serversessionsControllerCreate = (
     createServerSessionDto: CreateServerSessionDto,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customFetch>,signal?: AbortSignal
 ) => {
       
       
-      return customInstance<CreateServerSessionResponseEntity>(
-      {url: `/api/v1/server-sessions`, method: 'POST',
+      return customFetch<CreateServerSessionResponseEntity>(
+      {url: `http://localhost:3000/v1/server-sessions`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: createServerSessionDto, signal
     },
-      );
+      options);
     }
   
 
 
 export const getServersessionsControllerCreateMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof serversessionsControllerCreate>>, TError,{data: CreateServerSessionDto}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof serversessionsControllerCreate>>, TError,{data: CreateServerSessionDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof serversessionsControllerCreate>>, TError,{data: CreateServerSessionDto}, TContext> => {
 
 const mutationKey = ['serversessionsControllerCreate'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -74,7 +76,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof serversessionsControllerCreate>>, {data: CreateServerSessionDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  serversessionsControllerCreate(data,)
+          return  serversessionsControllerCreate(data,requestOptions)
         }
 
         
@@ -87,7 +89,7 @@ const {mutation: mutationOptions} = options ?
     export type ServersessionsControllerCreateMutationError = void
 
     export const useServersessionsControllerCreate = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof serversessionsControllerCreate>>, TError,{data: CreateServerSessionDto}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof serversessionsControllerCreate>>, TError,{data: CreateServerSessionDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof serversessionsControllerCreate>>,
         TError,
@@ -101,32 +103,32 @@ const {mutation: mutationOptions} = options ?
     }
     export const serversessionsControllerGetList = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customFetch>,signal?: AbortSignal
 ) => {
       
       
-      return customInstance<CreateServerSessionResponseEntity[]>(
-      {url: `/api/v1/server-sessions`, method: 'GET', signal
+      return customFetch<CreateServerSessionResponseEntity[]>(
+      {url: `http://localhost:3000/v1/server-sessions`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
 export const getServersessionsControllerGetListQueryKey = () => {
-    return [`/api/v1/server-sessions`] as const;
+    return [`http://localhost:3000/v1/server-sessions`] as const;
     }
 
     
-export const getServersessionsControllerGetListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof serversessionsControllerGetList>>>, TError = void>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError, TData>>, }
+export const getServersessionsControllerGetListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof serversessionsControllerGetList>>>, TError = void>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getServersessionsControllerGetListQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof serversessionsControllerGetList>>> = ({ signal }) => serversessionsControllerGetList(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof serversessionsControllerGetList>>> = ({ signal }) => serversessionsControllerGetList(requestOptions, signal);
 
       
 
@@ -146,7 +148,7 @@ export function useServersessionsControllerGetListInfinite<TData = InfiniteData<
           TError,
           Awaited<ReturnType<typeof serversessionsControllerGetList>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useServersessionsControllerGetListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof serversessionsControllerGetList>>>, TError = void>(
@@ -156,16 +158,16 @@ export function useServersessionsControllerGetListInfinite<TData = InfiniteData<
           TError,
           Awaited<ReturnType<typeof serversessionsControllerGetList>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useServersessionsControllerGetListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof serversessionsControllerGetList>>>, TError = void>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError, TData>>, }
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useServersessionsControllerGetListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof serversessionsControllerGetList>>>, TError = void>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError, TData>>, }
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -180,16 +182,16 @@ export function useServersessionsControllerGetListInfinite<TData = InfiniteData<
 
 
 
-export const getServersessionsControllerGetListQueryOptions = <TData = Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError = void>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError, TData>>, }
+export const getServersessionsControllerGetListQueryOptions = <TData = Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError = void>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getServersessionsControllerGetListQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof serversessionsControllerGetList>>> = ({ signal }) => serversessionsControllerGetList(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof serversessionsControllerGetList>>> = ({ signal }) => serversessionsControllerGetList(requestOptions, signal);
 
       
 
@@ -209,7 +211,7 @@ export function useServersessionsControllerGetList<TData = Awaited<ReturnType<ty
           TError,
           Awaited<ReturnType<typeof serversessionsControllerGetList>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useServersessionsControllerGetList<TData = Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError = void>(
@@ -219,16 +221,16 @@ export function useServersessionsControllerGetList<TData = Awaited<ReturnType<ty
           TError,
           Awaited<ReturnType<typeof serversessionsControllerGetList>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useServersessionsControllerGetList<TData = Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError = void>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useServersessionsControllerGetList<TData = Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError = void>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof serversessionsControllerGetList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -245,30 +247,30 @@ export function useServersessionsControllerGetList<TData = Awaited<ReturnType<ty
 
 export const serversessionsControllerUpdateServerInfo = (
     updateServerInfoDto: UpdateServerInfoDto,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customFetch>,signal?: AbortSignal
 ) => {
       
       
-      return customInstance<ServerInfoEntity>(
-      {url: `/api/v1/server-sessions/update-server-info`, method: 'POST',
+      return customFetch<ServerInfoEntity>(
+      {url: `http://localhost:3000/v1/server-sessions/update-server-info`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: updateServerInfoDto, signal
     },
-      );
+      options);
     }
   
 
 
 export const getServersessionsControllerUpdateServerInfoMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof serversessionsControllerUpdateServerInfo>>, TError,{data: UpdateServerInfoDto}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof serversessionsControllerUpdateServerInfo>>, TError,{data: UpdateServerInfoDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof serversessionsControllerUpdateServerInfo>>, TError,{data: UpdateServerInfoDto}, TContext> => {
 
 const mutationKey = ['serversessionsControllerUpdateServerInfo'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -276,7 +278,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof serversessionsControllerUpdateServerInfo>>, {data: UpdateServerInfoDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  serversessionsControllerUpdateServerInfo(data,)
+          return  serversessionsControllerUpdateServerInfo(data,requestOptions)
         }
 
         
@@ -289,7 +291,7 @@ const {mutation: mutationOptions} = options ?
     export type ServersessionsControllerUpdateServerInfoMutationError = void
 
     export const useServersessionsControllerUpdateServerInfo = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof serversessionsControllerUpdateServerInfo>>, TError,{data: UpdateServerInfoDto}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof serversessionsControllerUpdateServerInfo>>, TError,{data: UpdateServerInfoDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof serversessionsControllerUpdateServerInfo>>,
         TError,
