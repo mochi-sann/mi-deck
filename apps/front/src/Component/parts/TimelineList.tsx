@@ -5,9 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import Text from "../ui/text";
 import { SwitchTimeLineType } from "./timelines/SwitchTimeLineType";
 import { Button } from "../ui/button";
-import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { CreateTimelineDialog } from "./CreateTimelineDialog";
 import { useState } from "react";
+import { Plus } from "lucide-react";
 
 type TimelineEntityType =
   components["schemas"]["TimelineWithServerSessionEntity"];
@@ -15,6 +15,7 @@ type TimelineEntityType =
 export function TimelineList() {
   const { data: timelines, status } = $api.useQuery("get", "/v1/timeline", {});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { data, mutateAsync } = $api.useMutation("post", "/v1/timeline");
 
   // Ensure timelines data structure matches expected type
   const typedTimelines = timelines as TimelineEntityType[] | undefined;
@@ -73,7 +74,7 @@ export function TimelineList() {
               className="flex h-full w-full flex-col items-center justify-center"
               onClick={() => setIsDialogOpen(true)}
             >
-              <PlusCircledIcon className="h-16 w-16 text-gray-400" />
+              <Plus className="h-16 w-16 text-gray-400" />
               <Text className="mt-2 text-gray-500">タイムラインを追加</Text>
             </Button>
           </Card>
@@ -81,7 +82,6 @@ export function TimelineList() {
             isOpen={isDialogOpen}
             onClose={() => setIsDialogOpen(false)}
             onSuccess={() => {
-              $api.invalidateQueries("get", "/v1/timeline");
               setIsDialogOpen(false);
             }}
           />
