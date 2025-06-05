@@ -11,7 +11,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarMenuButton,
-  SidebarRail,
   SidebarTrigger,
   useSidebar, // useSidebarをインポート
 } from "../ui/sidebar";
@@ -22,11 +21,10 @@ type AppSidebarPresenterProps = {
 };
 
 export const AppSidebarPresenter = ({ user }: AppSidebarPresenterProps) => {
-  const { state } = useSidebar({
-  }); // useSidebarからstateを取得
+  const { state } = useSidebar(); // useSidebarからstateを取得
 
   return (
-    <Sidebar collapsible="icon" side="left" >
+    <Sidebar collapsible="icon" side="left">
       <SidebarTrigger
         className={cn(
           "-translate-y-1/2 absolute top-[calc(var(--sidebar-width-icon)-1.5rem)] z-50 transition-all duration-200 ease-linear",
