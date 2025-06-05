@@ -5,31 +5,25 @@ import {
   NavigationMenuList,
 } from "@/Component/ui/navigation-menu";
 import { NavigationMenuProps } from "@radix-ui/react-navigation-menu";
-import Link from "next/link";
+type NavmenuProps = {
+  links: {
+    link: string;
+    name: string;
+  }[];
+} & NavigationMenuProps;
 
-export const NavMenu = (props: NavigationMenuProps) => (
-  <NavigationMenu {...props}>
-    <NavigationMenuList className="gap-6 space-x-0 data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-start">
-      <NavigationMenuItem>
-        <NavigationMenuLink asChild>
-          <Link href="#">Home</Link>
-        </NavigationMenuLink>
-      </NavigationMenuItem>
-      <NavigationMenuItem>
-        <NavigationMenuLink asChild>
-          <Link href="#">Blog</Link>
-        </NavigationMenuLink>
-      </NavigationMenuItem>
-      <NavigationMenuItem>
-        <NavigationMenuLink asChild>
-          <Link href="#">About</Link>
-        </NavigationMenuLink>
-      </NavigationMenuItem>
-      <NavigationMenuItem>
-        <NavigationMenuLink asChild>
-          <Link href="#">Contact Us</Link>
-        </NavigationMenuLink>
-      </NavigationMenuItem>
-    </NavigationMenuList>
-  </NavigationMenu>
-);
+export const NavMenu = (props: NavmenuProps) => {
+  return (
+    <NavigationMenu {...props}>
+      <NavigationMenuList className="gap-6 space-x-0 data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-start">
+        {props.links.map((item) => (
+          <NavigationMenuItem key={item.link}>
+            <NavigationMenuLink asChild>
+              <a href={item.link}>{item.name}</a>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+        ))}
+      </NavigationMenuList>
+    </NavigationMenu>
+  );
+};

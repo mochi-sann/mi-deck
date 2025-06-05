@@ -1,18 +1,27 @@
 import { Button } from "@/Component/ui/button";
-import { Logo } from "./logo";
-import { NavMenu } from "./nav-menu";
+import { useSidebar } from "@/Component/ui/sidebar";
+import { Menu } from "lucide-react";
 import { NavigationSheet } from "./navigation-sheet";
 
 const Navbar01Page = () => {
+  const { open, setOpen, openMobile, setOpenMobile, isMobile } = useSidebar();
+  const clicked = () => {
+    console.log("clicked", !open);
+    if (isMobile) {
+      setOpenMobile(!openMobile);
+    } else {
+      setOpen(!open);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-muted">
-      <nav className="h-16 border-b bg-background">
-        <div className="mx-auto flex h-full max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Logo />
-
-          {/* Desktop Menu */}
-          <NavMenu className="hidden md:block" />
-
+    <div className="">
+      <nav className=" border-b bg-background">
+        <div className="mx-auto flex items-center justify-between px-2 py-1">
+          <Button variant={"outline"} size={"icon-sm"} onClick={clicked}>
+            <Menu />
+          </Button>
+          k{" "}
           <div className="flex items-center gap-3">
             <Button variant="outline" className="hidden sm:inline-flex">
               Sign In
