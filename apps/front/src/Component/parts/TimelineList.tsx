@@ -15,9 +15,9 @@ export function TimelineList() {
   const typedTimelines = timelines as TimelineEntityType[] | undefined;
 
   return (
-    <div className="flex h-screen overflow-x-auto overflow-y-hidden p-4">
+    <div className="flex h-screen overflow-x-auto overflow-y-hidden">
       {" "}
-      {/* paddingを追加 */}
+      {/* paddingを削除 */}
       {status === "pending" && (
         <Card className="flex flex-1 items-center justify-center">
           {" "}
@@ -37,7 +37,7 @@ export function TimelineList() {
           {typedTimelines && typedTimelines.length > 0 ? (
             typedTimelines.map((timeline) => (
               <Card
-                className="mr-4 flex h-full w-80 flex-[0_0_320px] flex-col last:mr-0" // margin-rightを追加
+                className="flex h-full w-80 flex-[0_0_320px] flex-col" // margin-rightを削除
                 key={timeline.id}
               >
                 <CardHeader className="shrink-0 border-b pb-2">
