@@ -1,7 +1,7 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import { valibotResolver } from "@hookform/resolvers/valibot"; // 変更: valibotResolver をインポート
 import type { Meta, StoryObj } from "@storybook/react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import * as v from "valibot"; // 変更: valibot をインポート
 import { Button } from "./button";
 import {
   Form,
@@ -14,16 +14,16 @@ import {
 } from "./form";
 import { Input } from "./input";
 
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
+// 変更: Valibot を使用してスキーマを定義
+const formSchema = v.object({
+  username: v.pipe(
+    v.string(),
+    v.minLength(2, "Username must be at least 2 characters."),
+  ),
+  email: v.pipe(v.string(), v.email("Please enter a valid email address.")),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = v.InferOutput<typeof formSchema>; // 変更: Valibot の型推論を使用
 
 const meta: Meta<typeof Form> = {
   title: "UI/Form",
@@ -36,7 +36,7 @@ type Story = StoryObj<typeof Form>;
 
 const FormExample = () => {
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: valibotResolver(formSchema), // 変更: valibotResolver を使用
     defaultValues: {
       username: "",
       email: "",
@@ -95,7 +95,7 @@ export const Default: Story = {
 export const WithError: Story = {
   render: () => {
     const form = useForm<FormValues>({
-      resolver: zodResolver(formSchema),
+      resolver: valibotResolver(formSchema), // 変更: valibotResolver を使用
       defaultValues: {
         username: "a", // This will trigger an error
         email: "invalid-email", // This will trigger an error

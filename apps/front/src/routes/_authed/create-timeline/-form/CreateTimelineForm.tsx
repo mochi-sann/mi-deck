@@ -4,9 +4,9 @@ import { Button } from "@/Component/ui/button";
 import Text from "@/Component/ui/text";
 import { $api } from "@/lib/api/fetchClient";
 import { components } from "@/lib/api/type";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import * as v from "valibot";
 
 // Define the type based on the API schema, making conditional fields optional initially
 type CreateTimelineFormType = Omit<
@@ -18,45 +18,28 @@ type CreateTimelineFormType = Omit<
 };
 
 // Define the schema based on CreateTimelineDto matching the API spec
-const schema = z
-  .object({
-    serverSessionId: z
-      .string()
-      .uuid("Server Session ID is required.")
-      .transform((value) => String(value)),
-    name: z.string().min(1, "Timeline name is required."),
-    // Use uppercase enum values and include CHANNEL
-    type: z.enum(["HOME", "LOCAL", "GLOBAL", "LIST", "USER", "CHANNEL"], {
-      errorMap: () => ({ message: "Timeline type is required." }),
-    }),
-    // listId and channelId are optional at the top level
-    listId: z.string().optional(),
-    channelId: z.string().optional(),
-  })
-  .refine(
-    (data) => {
-      if (data.type === "LIST") {
-        return !!data.listId && data.listId.trim().length > 0;
-      }
-      return true;
-    },
-    {
-      message: "List ID is required when type is LIST.",
-      path: ["listId"], // Specify the path for the error message
-    },
-  )
-  .refine(
-    (data) => {
-      if (data.type === "CHANNEL") {
-        return !!data.channelId && data.channelId.trim().length > 0;
-      }
-      return true;
-    },
-    {
-      message: "Channel ID is required when type is CHANNEL.",
-      path: ["channelId"], // Specify the path for the error message
-    },
-  );
+const schema = v.object({
+  serverSessionId: v.pipe(
+    v.string(),
+    v.uuid("Server Session ID is required."),
+    v.transform((value) => String(value)),
+  ),
+  name: v.pipe(v.string(), v.minLength(1, "Timeline name is required.")),
+  type: v.union(
+    [
+      v.literal("HOME"),
+      v.literal("LOCAL"),
+      v.literal("GLOBAL"),
+      v.literal("LIST"),
+      v.literal("USER"),
+      v.literal("CHANNEL"),
+    ],
+    "Timeline type is required.",
+  ),
+  listId: v.optional(v.string()),
+  channelId: v.optional(v.string()),
+});
+
 type CreateTimelineFormProps = {
   serverSessions:
     | {
@@ -82,13 +65,12 @@ export function CreateTimelineForm(props: CreateTimelineFormProps) {
     formState: { errors },
     watch,
   } = useForm<CreateTimelineFormType>({
-    resolver: zodResolver(schema),
-    // Update default values to match the new schema structure
+    resolver: valibotResolver(schema),
     defaultValues: {
       serverSessionId: "",
       name: "",
-      type: "HOME", // Default to uppercase
-      listId: "", // Initialize optional fields
+      type: "HOME",
+      listId: "",
       channelId: "",
     },
   });
