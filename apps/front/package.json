@@ -19,7 +19,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook",
-    "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"pnpm build-storybook --quiet && npx http-server storybook-static --port 6006 --silent\" \"wait-on tcp:6006 && pnpm test-storybook\""
+    "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"pnpm build-storybook --quiet && npx http-server storybook-static --port 6006 --silent\" \"wait-on tcp:6006 && pnpm test-storybook\"",
+    "orval": "orval --config orval.config.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
@@ -92,6 +93,7 @@
     "jsdom": "^25.0.0",
     "msw": "^2.7.6",
     "openapi-typescript": "^7.6.1",
+    "orval": "^7.9.0",
     "playwright": "^1.52.0",
     "storybook": "^8.6.12",
     "typescript": "~5.6.3",
