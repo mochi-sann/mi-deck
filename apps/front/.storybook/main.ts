@@ -25,7 +25,6 @@ const config: StorybookConfig = {
       resolve: {
         alias: {
           // プロジェクトのエイリアス設定をStorybookに反映
-          "@": path.resolve(__dirname, "../src"),
         },
       },
     });
