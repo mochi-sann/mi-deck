@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Note } from "misskey-js/entities.js";
 import { http, HttpResponse } from "msw";
-import { setupWorker } from "msw/browser";
 import { MisskeyNote } from "./MisskeyNote";
 
 const meta = {
@@ -179,9 +178,6 @@ const handlers = [
     return HttpResponse.json(notes[id as keyof typeof notes]);
   }),
 ];
-
-// MSWワーカーを設定
-const worker = setupWorker(...handlers);
 
 export const Basic: Story = {
   args: {
