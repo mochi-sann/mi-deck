@@ -5,9 +5,23 @@ export default {
       mode: "tags-split",
       target: "./src/lib/mideck/endpoints",
       schemas: "src/lib/mideck/models",
-      httpClient: "fetch",
       client: "react-query",
-      mock: true,
+      override: {
+        mutator: {
+          path: "./src/lib/mideck/mutator/custom-instance.ts",
+          name: "customInstance",
+        },
+        query: {
+          useQuery: true,
+          useInfinite: true,
+          useInfiniteQueryParam: "page",
+          options: {
+            staleTime: 10000,
+          },
+        },
+      },
+      headers: true,
+      baseUrl: "/api",
     },
   },
 };
