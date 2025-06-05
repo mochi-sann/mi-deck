@@ -256,8 +256,8 @@ importers:
         specifier: ^6.2.4
         version: 6.3.5(@types/node@22.15.29)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.37.0)(tsx@4.19.4)
       vite-bundle-analyzer:
-        specifier: ^0.18.1
-        version: 0.18.1
+        specifier: ^0.22.0
+        version: 0.22.0
       vite-tsconfig-paths:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.6.3)(vite@6.3.5(@types/node@22.15.29)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.37.0)(tsx@4.19.4))
@@ -363,7 +363,7 @@ importers:
         version: 8.33.1(eslint@9.16.0(jiti@2.4.2))(typescript@5.8.3)
       '@vitest/coverage-v8':
         specifier: ^3.0.0
-        version: 3.2.1(vitest@3.2.1)
+        version: 3.1.2(vitest@3.2.1)
       prisma:
         specifier: ^6.7.0
         version: 6.9.0(typescript@5.8.3)
@@ -3388,15 +3388,6 @@ packages:
       '@vitest/browser':
         optional: true
 
-  '@vitest/coverage-v8@3.2.1':
-    resolution: {integrity: sha512-6dy0uF/0BE3jpUW9bFzg0V2S4F7XVaZHL/7qma1XANvHPQGoJuc3wtx911zSoAgUnpfvcLVK1vancNJ95d+uxQ==}
-    peerDependencies:
-      '@vitest/browser': 3.2.1
-      vitest: 3.2.1
-    peerDependenciesMeta:
-      '@vitest/browser':
-        optional: true
-
   '@vitest/expect@2.0.5':
     resolution: {integrity: sha512-yHZtwuP7JZivj65Gxoi8upUN2OzHTi3zVfjwdpu2WrvCZPLwsJ2Ey5ILIPccoW23dd/zQBlJ4/dhi7DWNyXCpA==}
 
@@ -3741,9 +3732,6 @@ packages:
   ast-types@0.16.1:
     resolution: {integrity: sha512-6t10qk83GOG8p0vKmaCr8eiilZwO171AvbROMtvvNiwrTly62t+7XkA8RdIIVbpMhCASAsxgAzdRSwh6nw/5Dg==}
     engines: {node: '>=4'}
-
-  ast-v8-to-istanbul@0.3.3:
-    resolution: {integrity: sha512-MuXMrSLVVoA6sYN/6Hke18vMzrT4TZNbZIj/hvh0fnYFpO+/kFXcLIaiPwXXWaQUPg4yJD8fj+lfJ7/1EBconw==}
 
   astral-regex@2.0.0:
     resolution: {integrity: sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==}
@@ -5546,9 +5534,6 @@ packages:
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
-
-  js-tokens@9.0.1:
-    resolution: {integrity: sha512-mxa9E9ITFOt0ban3j6L5MpjwegGz6lBQmM1IJkWeBZGcMxto50+eWdjC/52xDbS2vy0k7vIMK0Fe2wfL9OQSpQ==}
 
   js-yaml@3.14.1:
     resolution: {integrity: sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==}
@@ -7638,8 +7623,8 @@ packages:
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
 
-  vite-bundle-analyzer@0.18.1:
-    resolution: {integrity: sha512-VQgrvxRuiZuOhM61p85lGpxzWR3TUbgn1LYtCBL09LUVoKy+yoxPwWTq+ihuPqT5L4tp0Jiiaa/dGYIRF8Guag==}
+  vite-bundle-analyzer@0.22.0:
+    resolution: {integrity: sha512-SDlQ1pBReXKrDXUisupEibWcYW5qtr/kTCm1iyRkNNEVdEdtWHuWrcpUc5IMymhkR2Kvuutr+zGsGipbWv+8TQ==}
     hasBin: true
 
   vite-node@3.2.1:
@@ -11070,12 +11055,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@3.2.1(vitest@3.2.1)':
+  '@vitest/coverage-v8@3.1.2(vitest@3.2.1)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
-      ast-v8-to-istanbul: 0.3.3
-      debug: 4.4.1
+      debug: 4.4.0(supports-color@10.0.0)
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
       istanbul-lib-source-maps: 5.0.6
@@ -11529,12 +11513,6 @@ snapshots:
   ast-types@0.16.1:
     dependencies:
       tslib: 2.8.1
-
-  ast-v8-to-istanbul@0.3.3:
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.25
-      estree-walker: 3.0.3
-      js-tokens: 9.0.1
 
   astral-regex@2.0.0: {}
 
@@ -13740,8 +13718,6 @@ snapshots:
 
   js-tokens@4.0.0: {}
 
-  js-tokens@9.0.1: {}
-
   js-yaml@3.14.1:
     dependencies:
       argparse: 1.0.10
@@ -15812,7 +15788,7 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  vite-bundle-analyzer@0.18.1: {}
+  vite-bundle-analyzer@0.22.0: {}
 
   vite-node@3.2.1(@types/node@22.15.29)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.37.0)(tsx@4.19.4):
     dependencies:
