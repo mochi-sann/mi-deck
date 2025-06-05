@@ -1,10 +1,10 @@
 import { $api } from "@/lib/api/fetchClient";
 import { uploadAndCompressFiles } from "@/lib/uploadAndCompresFiles";
-import { valibotResolver } from "@hookform/resolvers/valibot"; //変更: valibotResolver をインポート
-import { APIClient } from "misskey-js/api.js";
+import { valibotResolver } from "@hookform/resolvers/valibot";
+import { APIClient } from "misskey-js"; // 変更: misskey-js のメインからインポート
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import * as v from "valibot"; // 変更: valibot をインポート
+import * as v from "valibot";
 import { FileUpload } from "../parts/FileUpload";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -33,29 +33,29 @@ import { Textarea } from "../ui/textarea";
 
 // Define the form schema using Valibot
 const formSchema = v.object({
-  serverSessionId: v.string([
-    v.nonEmpty("投稿先サーバーを選択してください。"), // 変更: Valibot のバリデーション
-  ]),
-  noteContent: v.string([
-    v.minLength(1, "ノートの内容を入力してください。"), // 変更: Valibot のバリデーション
-  ]),
-  isLocalOnly: v.boolean(), // 変更: Valibot の型
-  visibility: v.enum_([
-    "public",
-    "home",
-    "followers",
-    "specified",
-  ]), // 変更: Valibot の enum
+  serverSessionId: v.pipe(
+    v.string(), // 変更: v.pipe を使用
+    v.nonEmpty("投稿先サーバーを選択してください。"),
+  ),
+  noteContent: v.pipe(
+    v.string(), // 変更: v.pipe を使用
+    v.minLength(1, "ノートの内容を入力してください。"),
+  ),
+  isLocalOnly: v.boolean(),
+  visibility: v.picklist(
+    ["public", "home", "followers", "specified"] as const, // 変更: v.picklist を使用し、エラーメッセージのスキーマに合わせる
+    "公開範囲を選択してください。", // エラーメッセージを追加
+  ),
 });
 
 const visibilityOptions = [
   { value: "public", label: "公開" },
   { value: "home", label: "ホーム" },
   { value: "followers", label: "フォロワー" },
-  // { value: "specified", label: "指定ユーザー" }, // specified はUIが複雑になるため一旦除外
-  { value: "private", label: "ダイレクト" }, // private はUIが複雑になるため一旦除外
+  { value: "specified", label: "指定ユーザー" }, // 変更: スキーマに合わせてコメントアウトを解除
+  // { value: "private", label: "ダイレクト" }, // スキーマに合わせてコメントアウト (またはスキーマに追加)
 ] as const;
-type FormSchema = v.InferOutput<typeof formSchema>; // 変更: Valibot の型推論
+type FormSchema = v.InferOutput<typeof formSchema>;
 
 export const NewNote = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -69,7 +69,7 @@ export const NewNote = () => {
   );
 
   const form = useForm<FormSchema>({
-    resolver: valibotResolver(formSchema), // 変更: valibotResolver を使用
+    resolver: valibotResolver(formSchema),
     defaultValues: {
       serverSessionId: "",
       noteContent: "",
@@ -102,7 +102,7 @@ export const NewNote = () => {
         serverToken,
       );
 
-      await client.request("notes/create", {
+      await client.request("notes/create", { // この行の型エラーが解消されることを期待
         text: values.noteContent,
         visibility: values.visibility,
         localOnly: values.isLocalOnly,
@@ -137,8 +137,8 @@ export const NewNote = () => {
               <FormLabel>投稿先サーバー</FormLabel>
               <Select
                 onValueChange={field.onChange}
-                defaultValue={field.value}
-                value={field.value}
+                defaultValue={String(field.value ?? "")} // 変更: String() でキャスト
+                value={String(field.value ?? "")} // 変更: String() でキャスト
                 disabled={isLoadingServers || !serverSessions}
               >
                 <FormControl>
@@ -172,8 +172,8 @@ export const NewNote = () => {
               <FormLabel>公開範囲</FormLabel>
               <Select
                 onValueChange={field.onChange}
-                defaultValue={field.value}
-                value={field.value}
+                defaultValue={String(field.value ?? "public")} // 変更: String() でキャスト、デフォルト値を指定
+                value={String(field.value ?? "public")} // 変更: String() でキャスト、デフォルト値を指定
                 disabled={isLoadingServers || !serverSessions}
               >
                 <FormControl>
