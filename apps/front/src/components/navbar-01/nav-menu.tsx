@@ -6,7 +6,7 @@ import {
 } from "@/Component/ui/navigation-menu";
 import { NavigationMenuProps } from "@radix-ui/react-navigation-menu";
 type NavmenuProps = {
-  links: {
+  menuLinks: {
     link: string;
     name: string;
   }[];
@@ -16,7 +16,7 @@ export const NavMenu = (props: NavmenuProps) => {
   return (
     <NavigationMenu {...props}>
       <NavigationMenuList className="gap-6 space-x-0 data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-start">
-        {props.links.map((item) => (
+        {props.menuLinks.map((item) => (
           <NavigationMenuItem key={item.link}>
             <NavigationMenuLink asChild>
               <a href={item.link}>{item.name}</a>
