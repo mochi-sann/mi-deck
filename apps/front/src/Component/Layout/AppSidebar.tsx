@@ -22,6 +22,7 @@ type AppSidebarPresenterProps = {
 export const AppSidebarPresenter = ({ user }: AppSidebarPresenterProps) => {
   return (
     <Sidebar collapsible="icon" side="left">
+      <SidebarTrigger className="mt-auto" /> {/* ここにSidebarTriggerを追加 */}
       <SidebarContent>
         <p className="font-medium text-muted-foreground text-sm">
           <span className="text-foreground">Playground</span>
@@ -49,9 +50,8 @@ export const AppSidebarPresenter = ({ user }: AppSidebarPresenterProps) => {
           </DialogContent>
         </Dialog>
         <NavUser user={user} />
-        <SidebarTrigger className="mt-auto" />
+        <SidebarRail />
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
 };
