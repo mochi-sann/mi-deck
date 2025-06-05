@@ -40,35 +40,6 @@ const schema = v.object({
   channelId: v.optional(v.string()),
 });
 
-// Custom validation for LIST type
-const listValidation = v.object({
-  type: v.literal("LIST"),
-  listId: v.string("List ID is required when type is LIST."),
-});
-
-// Custom validation for CHANNEL type
-const channelValidation = v.object({
-  type: v.literal("CHANNEL"),
-  channelId: v.string("Channel ID is required when type is CHANNEL."),
-});
-
-// Combine the schema with custom validations
-const finalSchema = v.union([
-  v.intersect([schema, listValidation]),
-  v.intersect([schema, channelValidation]),
-  v.intersect([
-    schema,
-    v.object({
-      type: v.union([
-        v.literal("HOME"),
-        v.literal("LOCAL"),
-        v.literal("GLOBAL"),
-        v.literal("USER"),
-      ]),
-    }),
-  ]),
-]);
-
 type CreateTimelineFormProps = {
   serverSessions:
     | {
