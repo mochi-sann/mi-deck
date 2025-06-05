@@ -25,7 +25,8 @@
       "/nix",
       "apps/front/storybook-static/",
       "apps/front/coverage",
-      "playwright-report/"
+      "playwright-report/",
+      "apps/front/src/lib/mideck/"
     ]
   },
   "formatter": {

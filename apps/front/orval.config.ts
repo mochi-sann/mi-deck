@@ -1,10 +1,11 @@
-module.exports = {
+export default {
   "mi-deck": {
     input: "./../server/.swagger/swagger-spec.yaml",
     output: {
-      mode: "single",
-      target: "./src/lib/mideck/api.ts",
+      mode: "tags-split",
+      target: "./src/lib/mideck/endpoints",
       schemas: "src/lib/mideck/models",
+      httpClient: "fetch",
       client: "react-query",
       mock: true,
     },
