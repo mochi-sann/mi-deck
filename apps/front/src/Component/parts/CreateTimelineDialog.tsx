@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/Component/ui/select";
-import { $api } from "@/lib/api/fetchClient";
+import { $api } => "@/lib/api/fetchClient";
 import { components } from "@/lib/api/type";
 import { useForm } from "react-hook-form";
 import { valibotResolver } from "@hookform/resolvers/valibot";
@@ -39,12 +39,12 @@ type ServerSessionEntity =
   components["schemas"]["CreateServerSessionResponseEntity"];
 
 const formSchema = v.object({
-  serverSessionId: v.string([v.minLength(1, "サーバーを選択してください")]),
+  serverSessionId: v.string("サーバーを選択してください", [v.minLength(1)]), // エラーメッセージを第一引数に移動
   type: v.union(
     [v.literal("home"), v.literal("local"), v.literal("global")],
     "タイムラインタイプを選択してください",
   ),
-  name: v.string([v.minLength(1, "タイムライン名を入力してください")]),
+  name: v.string("タイムライン名を入力してください", [v.minLength(1)]), // エラーメッセージを第一引数に移動
 });
 
 type FormValues = v.InferOutput<typeof formSchema>;
