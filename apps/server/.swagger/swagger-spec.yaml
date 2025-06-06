@@ -446,6 +446,8 @@ components:
         updatedAt:
           format: date-time
           type: string
+        order:
+          type: number
       required:
         - id
         - serverSessionId
@@ -453,6 +455,7 @@ components:
         - type
         - createdAt
         - updatedAt
+        - order
     ServerSessionInfo:
       type: object
       properties:
@@ -502,6 +505,8 @@ components:
         updatedAt:
           format: date-time
           type: string
+        order:
+          type: number
         serverSession:
           description: Associated server session details
           allOf:
@@ -513,6 +518,7 @@ components:
         - type
         - createdAt
         - updatedAt
+        - order
         - serverSession
     UpdateTimelineOrderDto:
       type: object
