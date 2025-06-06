@@ -41,7 +41,14 @@ type ServerSessionEntity =
 const formSchema = v.object({
   serverSessionId: v.pipe(v.string(), v.nonEmpty("サーバーを選択してください")), // エラーメッセージを第一引数に移動
   type: v.union(
-    [v.literal("home"), v.literal("local"), v.literal("global")],
+    [
+      v.literal("home"),
+      v.literal("local"),
+      v.literal("global"),
+      v.literal("list"),
+      v.literal("user"),
+      v.literal("channel"),
+    ],
     "タイムラインタイプを選択してください",
   ),
   name: v.pipe(v.string("タイムライン名を入力してください"), v.minLength(1)),
@@ -75,7 +82,13 @@ export function CreateTimelineDialog({
       await createTimelineMutation.mutateAsync({
         body: {
           serverSessionId: values.serverSessionId,
-          type: values.type.toUpperCase(),
+          type: values.type.toUpperCase() as
+            | "HOME"
+            | "LOCAL"
+            | "GLOBAL"
+            | "LIST"
+            | "USER"
+            | "CHANNEL",
           name: values.name,
         },
       });
