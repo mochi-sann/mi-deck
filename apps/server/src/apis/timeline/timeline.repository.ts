@@ -91,7 +91,7 @@ export class TimelineRepository {
       });
 
       if (timelines.length !== timelineIds.length) {
-        throw new Error("One or more timelines not found or access denied.");
+        throw new ForbiddenException("One or more timelines not found or access denied.");
       }
 
       const updates = timelineIds.map((id, index) =>
