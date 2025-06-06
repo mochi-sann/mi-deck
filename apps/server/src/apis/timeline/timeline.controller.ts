@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Request,
   UseGuards,
@@ -17,6 +18,7 @@ import {
 } from "@nestjs/swagger";
 import { AuthGuard } from "../auth/auth.gurd";
 import { CreateTimelineDto } from "./dto/create-timeline.dto";
+import { UpdateTimelineOrderDto } from "./dto/update-timeline-order.dto";
 import { TimelineEntity } from "./entities/timeline.entity";
 import { TimelineWithServerSessionEntity } from "./entities/timelineWithServerSession.entity";
 import { TimelineService } from "./timeline.service";
@@ -60,10 +62,29 @@ export class TimelineController {
   @ApiResponse({ status: 401, description: "Unauthorized." })
   findAll(@Request() req) {
     const userId = req.user.id;
-    // TODO: Implement findAllByUserId in TimelineService
-    // return this.timelineService.findAllByUserId(userId);
-    // Placeholder until service method is implemented:
-    return this.timelineService.findAllByUserId(userId); // Assuming this method will be added
+    return this.timelineService.findAllByUserId(userId);
+  }
+
+  @Patch("order")
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "Update the order of timelines" })
+  @ApiResponse({
+    status: 200,
+    description: "Timeline order updated successfully.",
+  })
+  @ApiResponse({ status: 400, description: "Bad Request (validation failed)." })
+  @ApiResponse({ status: 401, description: "Unauthorized." })
+  updateOrder(
+    @Body() updateTimelineOrderDto: UpdateTimelineOrderDto,
+    @Request() req,
+  ) {
+    const userId = req.user.id;
+    return this.timelineService.updateOrder(
+      updateTimelineOrderDto.timelineIds,
+      userId,
+    );
   }
 
   // Existing endpoint to get notes (currently home timeline) for a specific timeline configuration

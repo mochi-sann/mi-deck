@@ -184,6 +184,27 @@ paths:
         - bearer: []
       summary: Get all timeline configurations for the user
       tags: *ref_2
+  /v1/timeline/order:
+    patch:
+      operationId: TimelineController_updateOrder
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTimelineOrderDto'
+      responses:
+        '200':
+          description: Timeline order updated successfully.
+        '400':
+          description: Bad Request (validation failed).
+        '401':
+          description: Unauthorized.
+      security:
+        - bearer: []
+      summary: Update the order of timelines
+      tags: *ref_2
   /v1/timeline/{serverSessionId}:
     get:
       description: >-
@@ -493,3 +514,13 @@ components:
         - createdAt
         - updatedAt
         - serverSession
+    UpdateTimelineOrderDto:
+      type: object
+      properties:
+        timelineIds:
+          description: An array of timeline IDs in the desired order
+          type: array
+          items:
+            type: string
+      required:
+        - timelineIds

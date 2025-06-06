@@ -144,6 +144,7 @@ model Timeline {
   channelId       String?       @map("channel_id") // CHANNELタイプの場合に使用
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
+  order           Int           @default(0)
 
   @@index([serverSessionId])
   @@map("timeline")

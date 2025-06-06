@@ -71,6 +71,37 @@ export class TimelineRepository {
           },
         },
       },
+      orderBy: {
+        order: "asc",
+      },
+    });
+  }
+
+  async updateTimelineOrder(
+    timelineIds: string[],
+    userId: string,
+  ): Promise<void> {
+    await this.prisma.$transaction(async (prisma) => {
+      const timelines = await prisma.timeline.findMany({
+        where: {
+          id: { in: timelineIds },
+          serverSession: { userId },
+        },
+        select: { id: true },
+      });
+
+      if (timelines.length !== timelineIds.length) {
+        throw new Error("One or more timelines not found or access denied.");
+      }
+
+      const updates = timelineIds.map((id, index) =>
+        prisma.timeline.update({
+          where: { id },
+          data: { order: index },
+        }),
+      );
+
+      await Promise.all(updates);
     });
   }
 }

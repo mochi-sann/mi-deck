@@ -78,6 +78,10 @@ export class TimelineService {
     });
   }
 
+  async updateOrder(timelineIds: string[], userId: string): Promise<void> {
+    await this.timelineRepository.updateTimelineOrder(timelineIds, userId);
+  }
+
   // Existing method to fetch notes from a Misskey timeline (e.g., Home timeline)
   // This method fetches notes based on a SERVER SESSION ID.
   // It verifies ownership before proceeding.

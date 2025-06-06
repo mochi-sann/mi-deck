@@ -134,6 +134,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/timeline/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update the order of timelines */
+        patch: operations["TimelineController_updateOrder"];
+        trace?: never;
+    };
     "/v1/timeline/{serverSessionId}": {
         parameters: {
             query?: never;
@@ -296,6 +313,10 @@ export interface components {
             updatedAt: string;
             /** @description Associated server session details */
             serverSession: components["schemas"]["ServerSessionInfo"];
+        };
+        UpdateTimelineOrderDto: {
+            /** @description An array of timeline IDs in the desired order */
+            timelineIds: string[];
         };
     };
     responses: never;
@@ -578,6 +599,42 @@ export interface operations {
             };
             /** @description Forbidden (user does not own the server session). */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TimelineController_updateOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTimelineOrderDto"];
+            };
+        };
+        responses: {
+            /** @description Timeline order updated successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request (validation failed). */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -66,6 +66,7 @@ erDiagram
   String channel_id "nullable"
   DateTime created_at
   DateTime updated_at
+  Int order
 }
 "user_setting" }o--|| "user" : user
 "server_session" }o--|| "user" : user
@@ -150,3 +151,4 @@ erDiagram
   - `channel_id`: 
   - `created_at`: 
   - `updated_at`: 
+  - `order`: 
