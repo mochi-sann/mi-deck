@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { Prisma, ServerSession, Timeline } from "~/generated/prisma";
 import { PrismaService } from "../../lib/prisma.service"; // Adjust path if necessary
 
@@ -91,7 +91,9 @@ export class TimelineRepository {
       });
 
       if (timelines.length !== timelineIds.length) {
-        throw new ForbiddenException("One or more timelines not found or access denied.");
+        throw new ForbiddenException(
+          "One or more timelines not found or access denied.",
+        );
       }
 
       const updates = timelineIds.map((id, index) =>
