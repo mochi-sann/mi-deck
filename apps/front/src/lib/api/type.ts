@@ -277,6 +277,7 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            order: number;
         };
         ServerSessionInfo: {
             /**
@@ -311,6 +312,7 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            order: number;
             /** @description Associated server session details */
             serverSession: components["schemas"]["ServerSessionInfo"];
         };

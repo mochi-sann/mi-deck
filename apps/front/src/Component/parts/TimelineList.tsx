@@ -17,8 +17,10 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, Plus } from "lucide-react";
-import { Fragment, useEffect, useState } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { GripVertical, Plus, Server } from "lucide-react";
+import { APIClient } from "misskey-js/api.js";
+import { Fragment, Suspense, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import Text from "../ui/text";
@@ -36,14 +38,40 @@ function SortableTimeline({ timeline }: { timeline: TimelineEntityType }) {
     transform: CSS.Transform.toString(transform),
     transition,
   };
+  const client = new APIClient({
+    origin: timeline.serverSession.origin,
+    credential: timeline.serverSession.serverToken,
+  });
+  const queryKey = ["meta", timeline.serverSession.origin];
+  const { data: serverInfo } = useSuspenseQuery({
+    queryKey: queryKey,
+    queryFn: async () => {
+      return await client.request("meta", {
+        detail: true,
+      });
+    },
+  });
 
   return (
     <div ref={setNodeRef} style={style}>
       <Card className="flex h-full w-80 flex-[0_0_320px] flex-col gap-0 rounded-none">
         <CardHeader className="flex shrink-0 items-center justify-between border-b pb-2">
-          <CardTitle className="font-bold text-base">
-            {timeline.name} ({timeline.type} @
-            {new URL(timeline.serverSession.origin).hostname})
+          <CardTitle className="flex items-center gap-2 font-bold text-base">
+            <Suspense>
+              {serverInfo.iconUrl ? (
+                <img
+                  src={serverInfo.iconUrl}
+                  className="size-8 rounded-md border"
+                  alt={serverInfo.name ?? ""}
+                />
+              ) : (
+                <div className="flex size-8 content-center items-center justify-center rounded-md border">
+                  <Server className="size-5" />
+                </div>
+              )}
+            </Suspense>
+            {serverInfo?.name && <span>{serverInfo.name}</span>}
+            <span>({timeline.type})</span>
           </CardTitle>
           <div {...attributes} {...listeners} className="cursor-grab">
             <GripVertical />

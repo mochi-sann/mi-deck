@@ -61,13 +61,11 @@ export class TimelineRepository {
       },
       include: {
         // Include necessary fields from the related ServerSession
+
         serverSession: {
-          select: {
-            id: true,
-            origin: true,
-            serverType: true,
-            userId: true, // Include userId to ensure correct association
-            serverToken: true,
+          include: {
+            serverInfo: true,
+            serverUserInfo: true,
           },
         },
       },
