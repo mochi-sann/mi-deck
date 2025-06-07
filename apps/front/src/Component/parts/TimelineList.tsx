@@ -17,7 +17,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Plus } from "lucide-react";
+import { GripVertical, Plus } from "lucide-react";
 import { Fragment, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -38,16 +38,16 @@ function SortableTimeline({ timeline }: { timeline: TimelineEntityType }) {
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div ref={setNodeRef} style={style}>
       <Card className="flex h-full w-80 flex-[0_0_320px] flex-col gap-0 rounded-none">
-        <CardHeader
-          className="shrink-0 cursor-grab border-b pb-2"
-          {...listeners}
-        >
+        <CardHeader className="flex shrink-0 items-center justify-between border-b pb-2">
           <CardTitle className="font-bold text-base">
             {timeline.name} ({timeline.type} @
             {new URL(timeline.serverSession.origin).hostname})
           </CardTitle>
+          <div {...attributes} {...listeners} className="cursor-grab">
+            <GripVertical />
+          </div>
         </CardHeader>
         <CardContent className="grow overflow-y-auto p-0">
           <SwitchTimeLineType timeline={timeline} />
