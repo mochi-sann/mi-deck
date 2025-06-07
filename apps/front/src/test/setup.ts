@@ -125,6 +125,7 @@ const mockTimelines: TimelineEntityType[] = [
       serverType: "Misskey", // Example type
       serverToken: "token-1",
     },
+    order: 1,
   },
   {
     id: "timeline-2",
@@ -139,6 +140,7 @@ const mockTimelines: TimelineEntityType[] = [
       serverType: "Misskey", // Example type
       serverToken: "token-2",
     },
+    order: 2,
   },
 ];
 
