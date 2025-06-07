@@ -15,6 +15,10 @@ export class ServerSessionsRepository {
   async findServerSessionsByUserId(userId: string): Promise<ServerSession[]> {
     return this.prisma.serverSession.findMany({
       where: { userId },
+      include: {
+        serverInfo: true,
+        serverUserInfo: true,
+      },
     });
   }
 

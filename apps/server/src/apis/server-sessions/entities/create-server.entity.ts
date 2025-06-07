@@ -1,6 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString } from "class-validator";
-import { $Enums } from "~/generated/prisma";
+import { IsObject, IsString } from "class-validator";
+import { $Enums, ServerInfo, UserInfo } from "~/generated/prisma";
+import { ServerInfoEntity } from "./server-info.entity";
+import { ServerUserInfoEntity } from "./server-user-info.entity";
 
 export class CreateServerSessionResponseEntity {
   constructor(data: CreateServerSessionResponseEntity) {
@@ -11,6 +13,8 @@ export class CreateServerSessionResponseEntity {
     this.serverType = data.serverType;
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
+    this.serverInfo = new ServerInfoEntity(data.serverInfo);
+    this.serverUserInfo = new ServerUserInfoEntity(data.serverUserInfo);
   }
   @IsString()
   @ApiProperty({
@@ -49,4 +53,16 @@ export class CreateServerSessionResponseEntity {
     format: "date-time",
   })
   updatedAt: Date;
+
+  @IsObject()
+  @ApiProperty({
+    type: ServerInfoEntity,
+  })
+  serverInfo: ServerInfo;
+
+  @IsObject()
+  @ApiProperty({
+    type: ServerUserInfoEntity,
+  })
+  serverUserInfo: UserInfo;
 }
