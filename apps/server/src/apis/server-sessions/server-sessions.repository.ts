@@ -9,7 +9,13 @@ export class ServerSessionsRepository {
   async createServerSession(
     data: Prisma.ServerSessionCreateInput,
   ): Promise<ServerSession> {
-    return this.prisma.serverSession.create({ data });
+    return this.prisma.serverSession.create({
+      data,
+      include: {
+        serverInfo: true,
+        serverUserInfo: true,
+      },
+    });
   }
 
   async findServerSessionsByUserId(userId: string): Promise<ServerSession[]> {
@@ -25,6 +31,10 @@ export class ServerSessionsRepository {
   async findServerSessionById(id: string): Promise<ServerSession | null> {
     return this.prisma.serverSession.findUnique({
       where: { id },
+      include: {
+        serverInfo: true,
+        serverUserInfo: true,
+      },
     });
   }
 
@@ -36,6 +46,10 @@ export class ServerSessionsRepository {
       where: {
         // biome-ignore lint/style/useNamingConvention: Prisma constraint name
         origin_userId: { userId, origin },
+      },
+      include: {
+        serverInfo: true,
+        serverUserInfo: true,
       },
     });
   }

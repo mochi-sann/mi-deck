@@ -10,7 +10,7 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "../auth/auth.gurd";
-import { CreateServerSessionDto } from "./dto/creste.dto";
+import { CreateServerSessionDto } from "./dto/create-server-session.dto";
 import { UpdateServerInfoDto } from "./dto/update-server-info.dto";
 import { CreateServerSessionResponseEntity } from "./entities/create-server.entity";
 import { ServerInfoEntity } from "./entities/server-info.entity";

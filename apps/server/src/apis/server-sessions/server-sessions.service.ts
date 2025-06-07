@@ -7,7 +7,7 @@ import { APIClient } from "misskey-js/api.js";
 import { User } from "misskey-js/entities.js";
 import { ServerType } from "~/generated/prisma";
 // PrismaService is removed as it's now used in the repository
-import { CreateServerSessionDto } from "./dto/creste.dto";
+import { CreateServerSessionDto } from "./dto/create-server-session.dto";
 import { UpdateServerInfoDto } from "./dto/update-server-info.dto";
 import { CreateServerSessionResponseEntity } from "./entities/create-server.entity";
 import { ServerInfoEntity } from "./entities/server-info.entity";
@@ -128,9 +128,6 @@ export class ServerSessionsService {
         `Server session for user ${userId} and origin ${origin} not found`,
       );
     }
-    console.log(
-      ...[server, "👀 [server-sessions.service.ts:95]: server"].reverse(),
-    );
     return new CreateServerSessionResponseEntity(server);
   }
 
