@@ -220,6 +220,14 @@ export interface components {
         UpdateServerInfoDto: {
             /** @example https://example.com */
             origin: string;
+            /** @example My Server */
+            name?: string;
+            /** @example https://example.com/icon.png */
+            iconUrl?: string;
+            /** @example https://example.com/favicon.png */
+            faviconUrl?: string;
+            /** @example #ffffff */
+            themeColor?: string;
         };
         ServerInfoEntity: {
             /** Format: uuid */

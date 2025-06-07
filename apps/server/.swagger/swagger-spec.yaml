@@ -348,6 +348,18 @@ components:
         origin:
           type: string
           example: https://example.com
+        name:
+          type: string
+          example: My Server
+        iconUrl:
+          type: string
+          example: https://example.com/icon.png
+        faviconUrl:
+          type: string
+          example: https://example.com/favicon.png
+        themeColor:
+          type: string
+          example: '#ffffff'
       required:
         - origin
     ServerInfoEntity:
