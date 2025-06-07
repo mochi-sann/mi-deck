@@ -7,7 +7,7 @@ export class ServerSessionsRepository {
   constructor(private prisma: PrismaService) {}
 
   async createServerSession(
-    data: Prisma.ServerSessionUncheckedCreateInput,
+    data: Prisma.ServerSessionCreateInput,
   ): Promise<ServerSession> {
     return this.prisma.serverSession.create({ data });
   }
@@ -60,6 +60,18 @@ export class ServerSessionsRepository {
         ...data,
         serverSessionId,
       },
+    });
+  }
+
+  async updateServerInfo(
+    serverSessionId: string,
+    data: Partial<
+      Omit<Prisma.ServerInfoUncheckedCreateInput, "serverSessionId">
+    >,
+  ): Promise<ServerInfo> {
+    return this.prisma.serverInfo.update({
+      where: { serverSessionId },
+      data,
     });
   }
 }

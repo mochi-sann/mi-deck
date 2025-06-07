@@ -11,7 +11,7 @@ import {
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "../auth/auth.gurd";
 import { CreateServerSessionDto } from "./dto/creste.dto";
-import { UpdateServerInfoDto } from "./dto/udpate-server-info.dto";
+import { UpdateServerInfoDto } from "./dto/update-server-info.dto";
 import { CreateServerSessionResponseEntity } from "./entities/create-server.entity";
 import { ServerInfoEntity } from "./entities/server-info.entity";
 import { ServerSessionsService } from "./server-sessions.service";
@@ -70,16 +70,20 @@ export class ServersessionsController {
         userId,
         body.origin,
       );
-    console.log(
-      ...[
-        serverSession,
-        "👀 [server-sessions.controller.ts:75]: serverSession",
-      ].reverse(),
-    );
-    return await this.serverSessionsService.updateOrCreateServerInfo(
+    return await this.serverSessionsService.updateServerInfo(
       serverSession.id,
-      body.origin,
-      userId,
+      body,
     );
+    // console.log(
+    //   ...[
+    //     serverSession,
+    //     "👀 [server-sessions.controller.ts:75]: serverSession",
+    //   ].reverse(),
+    // );
+    // return await this.serverSessionsService.updateOrCreateServerInfo(
+    //   serverSession.id,
+    //   body.origin,
+    //   userId,
+    // );
   }
 }
