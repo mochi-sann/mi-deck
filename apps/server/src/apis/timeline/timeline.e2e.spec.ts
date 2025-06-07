@@ -6,7 +6,6 @@ import {
 } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import request from "supertest";
-import { setupDatabase } from "test/setup";
 import { Mock, afterAll, beforeAll, describe, expect, it, vi } from "vitest"; // Use vi from vitest for mocking
 import { AppModule } from "~/app.module";
 import { TimelineType } from "~/generated/prisma";
@@ -32,8 +31,6 @@ describe("TimelineController (e2e)", () => {
   };
 
   beforeAll(async () => {
-    await setupDatabase(); // Ensure the user with seededUserId exists
-
     prisma = new PrismaService(); // Instantiate PrismaService directly for setup
 
     // Create a ServerSession for the test user before setting up the app
@@ -144,7 +141,7 @@ describe("TimelineController (e2e)", () => {
 
     it("should return 403 if server session does not belong to user", async () => {
       // Although the guard is mocked, the service checks ownership.
-      // We test this by trying to create a timeline for a session ID that doesn't exist (or belongs to another user).
+      // We test this by trying to create a timeline for a session ID that doesn\'t exist (or belongs to another user).
       const nonExistentSessionId = "a1b2c3d4-e5f6-7890-1234-567890abcdef";
       const createTimelineDto: CreateTimelineDto = {
         serverSessionId: nonExistentSessionId,

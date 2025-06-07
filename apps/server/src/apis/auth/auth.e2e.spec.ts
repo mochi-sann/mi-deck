@@ -1,7 +1,6 @@
 import { type ExecutionContext, type INestApplication } from "@nestjs/common";
 import { Test, type TestingModule } from "@nestjs/testing";
 import request from "supertest";
-import { setupDatabase } from "test/setup";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { AuthGuard } from "~/apis/auth/auth.gurd";
 import { AppModule } from "~/app.module"; // Import AppModule instead of AuthModule
@@ -21,7 +20,6 @@ describe("AuthController (e2e)", () => {
   };
 
   beforeAll(async () => {
-    await setupDatabase();
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule], // Use AppModule to ensure all providers are available
     })

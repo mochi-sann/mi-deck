@@ -18,7 +18,7 @@ export default defineConfig({
     environment: "node",
     testTimeout: timeout,
     hookTimeout: timeout,
-    // setupFiles: ["./test/setup.ts"], // Corrected setup file path
+    globalSetup: ["./test/globalSetup.ts"],
     alias: {
       "~": new URL("./src", import.meta.url).pathname,
       "@test": new URL("./test", import.meta.url).pathname,
