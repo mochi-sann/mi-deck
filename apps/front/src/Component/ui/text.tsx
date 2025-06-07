@@ -12,7 +12,7 @@ export const TextVariants = cva("text-xl", {
       p: "leading-7 [&:not(:first-child)]:mt-6",
     },
     affects: {
-      default: "",
+      default: "text-base",
       lead: "text-xl text-muted-foreground",
       large: "text-lg font-semibold",
       small: "text-sm font-medium leading-none",
@@ -47,6 +47,6 @@ const Text = React.forwardRef<HTMLHeadingElement, TextProps>(
     );
   },
 );
-Text.displayName = "H1";
+Text.displayName = "p";
 
 export default Text;
