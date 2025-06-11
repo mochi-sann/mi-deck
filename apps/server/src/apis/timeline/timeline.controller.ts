@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -85,6 +86,29 @@ export class TimelineController {
       updateTimelineOrderDto.timelineIds,
       userId,
     );
+  }
+
+  @Delete(":timelineId")
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: "Delete a timeline configuration" })
+  @ApiResponse({
+    status: 204,
+    description: "Timeline configuration deleted successfully.",
+  })
+  @ApiResponse({ status: 401, description: "Unauthorized." })
+  @ApiResponse({
+    status: 403,
+    description: "Forbidden (timeline not found or access denied).",
+  })
+  @ApiResponse({ status: 404, description: "Timeline not found." })
+  async deleteTimeline(
+    @Param("timelineId") timelineId: string,
+    @Request() req,
+  ): Promise<void> {
+    const userId = req.user.id;
+    return this.timelineService.deleteTimeline(timelineId, userId);
   }
 
   // Existing endpoint to get notes (currently home timeline) for a specific timeline configuration

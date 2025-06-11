@@ -261,6 +261,261 @@ describe("TimelineController (e2e)", () => {
     });
   });
 
+  describe("DELETE /v1/timeline/:timelineId", () => {
+    let timelineToDeleteId: string;
+
+    beforeAll(async () => {
+      // Create a timeline specifically for deletion tests
+      const createTimelineDto: CreateTimelineDto = {
+        serverSessionId: serverSessionId,
+        name: "Timeline to Delete",
+        type: TimelineType.GLOBAL,
+      };
+
+      const response = await request(app.getHttpServer())
+        .post("/v1/timeline")
+        .send(createTimelineDto)
+        .expect(201);
+
+      timelineToDeleteId = response.body.id;
+      createdTimelineIds.push(timelineToDeleteId);
+    });
+
+    it("should delete a timeline successfully", async () => {
+      // Verify timeline exists before deletion
+      const timelineBefore = await prisma.timeline.findUnique({
+        where: { id: timelineToDeleteId },
+      });
+      expect(timelineBefore).toBeTruthy();
+
+      // Delete the timeline
+      await request(app.getHttpServer())
+        .delete(`/v1/timeline/${timelineToDeleteId}`)
+        .expect(204);
+
+      // Verify timeline no longer exists
+      const timelineAfter = await prisma.timeline.findUnique({
+        where: { id: timelineToDeleteId },
+      });
+      expect(timelineAfter).toBeNull();
+
+      // Remove from cleanup array since it's already deleted
+      createdTimelineIds = createdTimelineIds.filter(
+        (id) => id !== timelineToDeleteId,
+      );
+    });
+
+    it("should return 403 when trying to delete non-existent timeline", async () => {
+      const nonExistentTimelineId = "a1b2c3d4-e5f6-7890-1234-567890abcdef";
+
+      await request(app.getHttpServer())
+        .delete(`/v1/timeline/${nonExistentTimelineId}`)
+        .expect(403);
+    });
+
+    it("should return 400 for invalid timeline ID format", async () => {
+      const invalidTimelineId = "invalid-uuid-format";
+
+      await request(app.getHttpServer())
+        .delete(`/v1/timeline/${invalidTimelineId}`)
+        .expect(400); // Validation should fail for non-UUID format
+    });
+
+    it("should not allow deleting timeline belonging to another user", async () => {
+      // Create another user and server session
+      const anotherUser = await prisma.user.create({
+        data: {
+          email: "another@example.com",
+          password: "hashedpassword",
+          name: "Another User",
+        },
+      });
+
+      const anotherServerSession = await prisma.serverSession.create({
+        data: {
+          userId: anotherUser.id,
+          origin: "https://another.example.com",
+          serverType: "Misskey",
+          serverToken: "another-token",
+        },
+      });
+
+      const anotherTimeline = await prisma.timeline.create({
+        data: {
+          serverSessionId: anotherServerSession.id,
+          name: "Another User's Timeline",
+          type: TimelineType.HOME,
+        },
+      });
+
+      try {
+        // Try to delete another user's timeline (should fail)
+        await request(app.getHttpServer())
+          .delete(`/v1/timeline/${anotherTimeline.id}`)
+          .expect(403);
+
+        // Verify timeline still exists
+        const timelineStillExists = await prisma.timeline.findUnique({
+          where: { id: anotherTimeline.id },
+        });
+        expect(timelineStillExists).toBeTruthy();
+      } finally {
+        // Cleanup
+        await prisma.timeline.delete({ where: { id: anotherTimeline.id } });
+        await prisma.serverSession.delete({
+          where: { id: anotherServerSession.id },
+        });
+        await prisma.user.delete({ where: { id: anotherUser.id } });
+      }
+    });
+
+    it("should handle deletion when timeline has dependencies gracefully", async () => {
+      // Create a timeline for this specific test
+      const timelineWithDeps = await prisma.timeline.create({
+        data: {
+          serverSessionId: serverSessionId,
+          name: "Timeline with Dependencies",
+          type: TimelineType.LOCAL,
+        },
+      });
+
+      try {
+        // Delete the timeline
+        await request(app.getHttpServer())
+          .delete(`/v1/timeline/${timelineWithDeps.id}`)
+          .expect(204);
+
+        // Verify timeline is deleted
+        const deletedTimeline = await prisma.timeline.findUnique({
+          where: { id: timelineWithDeps.id },
+        });
+        expect(deletedTimeline).toBeNull();
+      } catch (error) {
+        // If deletion fails, clean up manually
+        await prisma.timeline.delete({ where: { id: timelineWithDeps.id } });
+        throw error;
+      }
+    });
+  });
+
+  describe("PATCH /v1/timeline/order", () => {
+    const orderTestTimelineIds: string[] = [];
+
+    beforeAll(async () => {
+      // Create multiple timelines for order testing
+      const timelines = [
+        { name: "First Timeline", type: TimelineType.HOME },
+        { name: "Second Timeline", type: TimelineType.LOCAL },
+        { name: "Third Timeline", type: TimelineType.GLOBAL },
+      ];
+
+      for (const timeline of timelines) {
+        const response = await request(app.getHttpServer())
+          .post("/v1/timeline")
+          .send({
+            serverSessionId: serverSessionId,
+            name: timeline.name,
+            type: timeline.type,
+          })
+          .expect(201);
+
+        orderTestTimelineIds.push(response.body.id);
+        createdTimelineIds.push(response.body.id);
+      }
+    });
+
+    afterAll(async () => {
+      // Clean up order test timelines
+      await prisma.timeline.deleteMany({
+        where: { id: { in: orderTestTimelineIds } },
+      });
+      // Remove from main cleanup array
+      createdTimelineIds = createdTimelineIds.filter(
+        (id) => !orderTestTimelineIds.includes(id),
+      );
+    });
+
+    it("should update timeline order successfully", async () => {
+      // Reverse the order
+      const newOrder = [...orderTestTimelineIds].reverse();
+
+      await request(app.getHttpServer())
+        .patch("/v1/timeline/order")
+        .send({ timelineIds: newOrder })
+        .expect(200);
+
+      // Verify the new order in database
+      const timelinesAfterReorder = await prisma.timeline.findMany({
+        where: { id: { in: orderTestTimelineIds } },
+        orderBy: { order: "asc" },
+      });
+
+      const actualOrder = timelinesAfterReorder.map((t) => t.id);
+      expect(actualOrder).toEqual(newOrder);
+    });
+
+    it("should return 403 when trying to reorder timeline not owned by user", async () => {
+      // Create another user's timeline
+      const anotherUser = await prisma.user.create({
+        data: {
+          email: "ordertest@example.com",
+          password: "hashedpassword",
+          name: "Order Test User",
+        },
+      });
+
+      const anotherServerSession = await prisma.serverSession.create({
+        data: {
+          userId: anotherUser.id,
+          origin: "https://ordertest.example.com",
+          serverType: "Misskey",
+          serverToken: "order-token",
+        },
+      });
+
+      const anotherTimeline = await prisma.timeline.create({
+        data: {
+          serverSessionId: anotherServerSession.id,
+          name: "Another User's Timeline for Order",
+          type: TimelineType.HOME,
+        },
+      });
+
+      try {
+        // Try to include another user's timeline in reorder
+        const unauthorizedOrder = [...orderTestTimelineIds, anotherTimeline.id];
+
+        await request(app.getHttpServer())
+          .patch("/v1/timeline/order")
+          .send({ timelineIds: unauthorizedOrder })
+          .expect(403);
+      } finally {
+        // Cleanup
+        await prisma.timeline.delete({ where: { id: anotherTimeline.id } });
+        await prisma.serverSession.delete({
+          where: { id: anotherServerSession.id },
+        });
+        await prisma.user.delete({ where: { id: anotherUser.id } });
+      }
+    });
+
+    it("should return 400 for invalid timeline ID in order array", async () => {
+      const invalidOrder = [...orderTestTimelineIds, "invalid-uuid"];
+
+      await request(app.getHttpServer())
+        .patch("/v1/timeline/order")
+        .send({ timelineIds: invalidOrder })
+        .expect(400);
+    });
+
+    it("should return 400 for empty timeline order array", async () => {
+      await request(app.getHttpServer())
+        .patch("/v1/timeline/order")
+        .send({ timelineIds: [] })
+        .expect(400);
+    });
+  });
+
   it("should return an empty array if the user has no timelines", async () => {
     // Delete existing timelines for this test
     await prisma.timeline.deleteMany({});
@@ -271,6 +526,120 @@ describe("TimelineController (e2e)", () => {
       .expect(200);
 
     expect(response.body).toEqual([]); // Correct assertion for empty array
+  });
+
+  describe("Error Handling and Edge Cases", () => {
+    it("should handle concurrent deletion requests gracefully", async () => {
+      // Create a timeline for concurrent deletion test
+      const timelineResponse = await request(app.getHttpServer())
+        .post("/v1/timeline")
+        .send({
+          serverSessionId: serverSessionId,
+          name: "Concurrent Delete Test Timeline",
+          type: TimelineType.HOME,
+        })
+        .expect(201);
+
+      const timelineId = timelineResponse.body.id;
+      createdTimelineIds.push(timelineId);
+
+      // Make concurrent deletion requests
+      const deletePromises = [
+        request(app.getHttpServer()).delete(`/v1/timeline/${timelineId}`),
+        request(app.getHttpServer()).delete(`/v1/timeline/${timelineId}`),
+        request(app.getHttpServer()).delete(`/v1/timeline/${timelineId}`),
+      ];
+
+      const results = await Promise.allSettled(deletePromises);
+
+      // At least one should succeed (204), others should fail (403 or 404)
+      const successCount = results.filter(
+        (result) =>
+          // biome-ignore lint/suspicious/noExplicitAny:
+          result.status === "fulfilled" && (result.value as any).status === 204,
+      ).length;
+
+      expect(successCount).toBeGreaterThanOrEqual(1);
+
+      // Verify timeline is deleted
+      const timelineAfter = await prisma.timeline.findUnique({
+        where: { id: timelineId },
+      });
+      expect(timelineAfter).toBeNull();
+
+      // Remove from cleanup array since it's deleted
+      createdTimelineIds = createdTimelineIds.filter((id) => id !== timelineId);
+    });
+
+    it("should handle malformed request bodies gracefully", async () => {
+      // Test malformed JSON for create timeline
+      await request(app.getHttpServer())
+        .post("/v1/timeline")
+        .send("{ invalid json }")
+        .expect(400);
+
+      // Test malformed JSON for order update
+      await request(app.getHttpServer())
+        .patch("/v1/timeline/order")
+        .send("{ invalid json }")
+        .expect(400);
+    });
+
+    it("should validate timeline type correctly", async () => {
+      const invalidTimelineDto = {
+        serverSessionId: serverSessionId,
+        name: "Invalid Type Timeline",
+        type: "INVALID_TYPE", // Invalid enum value
+      };
+
+      await request(app.getHttpServer())
+        .post("/v1/timeline")
+        .send(invalidTimelineDto)
+        .expect(400);
+    });
+
+    it("should handle very long timeline names", async () => {
+      const longName = "A".repeat(1000); // Very long name
+      const longNameDto = {
+        serverSessionId: serverSessionId,
+        name: longName,
+        type: TimelineType.HOME,
+      };
+
+      // This might succeed or fail depending on database constraints
+      // The important thing is it doesn't crash the server
+      const response = await request(app.getHttpServer())
+        .post("/v1/timeline")
+        .send(longNameDto);
+
+      expect([201, 400]).toContain(response.status);
+
+      if (response.status === 201) {
+        createdTimelineIds.push(response.body.id);
+      }
+    });
+
+    it("should handle deletion of timeline that was already deleted externally", async () => {
+      // Create a timeline
+      const timelineResponse = await request(app.getHttpServer())
+        .post("/v1/timeline")
+        .send({
+          serverSessionId: serverSessionId,
+          name: "External Delete Test Timeline",
+          type: TimelineType.HOME,
+        })
+        .expect(201);
+
+      const timelineId = timelineResponse.body.id;
+
+      // Delete it directly via Prisma (simulating external deletion)
+      await prisma.timeline.delete({ where: { id: timelineId } });
+
+      // Try to delete via API (should return 403 since timeline doesn't exist)
+      await request(app.getHttpServer())
+        .delete(`/v1/timeline/${timelineId}`)
+        .expect(403);
+    });
   });
 
   // Add test for unauthorized access if AuthGuard mock wasn't used globally

@@ -151,6 +151,23 @@ export interface paths {
         patch: operations["TimelineController_updateOrder"];
         trace?: never;
     };
+    "/v1/timeline/{timelineId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a timeline configuration */
+        delete: operations["TimelineController_deleteTimeline"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/timeline/{serverSessionId}": {
         parameters: {
             query?: never;
@@ -652,6 +669,47 @@ export interface operations {
             };
             /** @description Unauthorized. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TimelineController_deleteTimeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                timelineId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Timeline configuration deleted successfully. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden (timeline not found or access denied). */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Timeline not found. */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -205,6 +205,28 @@ paths:
         - bearer: []
       summary: Update the order of timelines
       tags: *ref_2
+  /v1/timeline/{timelineId}:
+    delete:
+      operationId: TimelineController_deleteTimeline
+      parameters:
+        - name: timelineId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Timeline configuration deleted successfully.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden (timeline not found or access denied).
+        '404':
+          description: Timeline not found.
+      security:
+        - bearer: []
+      summary: Delete a timeline configuration
+      tags: *ref_2
   /v1/timeline/{serverSessionId}:
     get:
       description: >-

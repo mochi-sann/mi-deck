@@ -18,7 +18,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { GripVertical, Plus, Server } from "lucide-react";
+import { GripVertical, Plus, Server, Trash2 } from "lucide-react";
 import { APIClient } from "misskey-js/api.js";
 import { Fragment, Suspense, useEffect, useState } from "react";
 import { Button } from "../ui/button";
@@ -30,7 +30,15 @@ import { SwitchTimeLineType } from "./timelines/SwitchTimeLineType";
 type TimelineEntityType =
   components["schemas"]["TimelineWithServerSessionEntity"];
 
-function SortableTimeline({ timeline }: { timeline: TimelineEntityType }) {
+function SortableTimeline({
+  timeline,
+  onDelete,
+  isDeleting,
+}: {
+  timeline: TimelineEntityType;
+  onDelete: (timelineId: string) => void;
+  isDeleting?: boolean;
+}) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: timeline.id });
 
@@ -57,6 +65,17 @@ function SortableTimeline({ timeline }: { timeline: TimelineEntityType }) {
     },
   });
 
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (
+      window.confirm(
+        `タイムライン「${timeline.name}」を削除しますか？この操作は取り消せません。`,
+      )
+    ) {
+      onDelete(timeline.id);
+    }
+  };
+
   return (
     <div ref={setNodeRef} style={style}>
       <Card className="flex h-full w-80 flex-[0_0_320px] flex-col gap-0 rounded-none">
@@ -78,8 +97,22 @@ function SortableTimeline({ timeline }: { timeline: TimelineEntityType }) {
             {serverInfo?.name && <span>{serverInfo.name}</span>}
             <span>({timeline.type})</span>
           </CardTitle>
-          <div {...attributes} {...listeners} className="cursor-grab">
-            <GripVertical />
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleDelete}
+              className="h-8 w-8 p-0 text-red-500 hover:bg-red-50 hover:text-red-700"
+              title="タイムラインを削除"
+              disabled={isDeleting}
+            >
+              <Trash2
+                className={`h-4 w-4 ${isDeleting ? "animate-pulse" : ""}`}
+              />
+            </Button>
+            <div {...attributes} {...listeners} className="cursor-grab">
+              <GripVertical />
+            </div>
           </div>
         </CardHeader>
         <CardContent className="grow overflow-y-auto p-0">
@@ -91,13 +124,19 @@ function SortableTimeline({ timeline }: { timeline: TimelineEntityType }) {
 }
 
 export function TimelineList() {
-  const { data: timelines, status } = $api.useQuery("get", "/v1/timeline", {});
+  const {
+    data: timelines,
+    status,
+    refetch,
+  } = $api.useQuery("get", "/v1/timeline", {});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [localTimelines, setLocalTimelines] = useState<TimelineEntityType[]>(
     [],
   );
 
   const { mutate } = $api.useMutation("patch", "/v1/timeline/order");
+  const { mutate: deleteTimelineMutate, isPending: isDeleting } =
+    $api.useMutation("delete", "/v1/timeline/{timelineId}");
 
   useEffect(() => {
     if (timelines) {
@@ -132,6 +171,28 @@ export function TimelineList() {
     }
   };
 
+  const handleDeleteTimeline = (timelineId: string) => {
+    deleteTimelineMutate(
+      {
+        params: {
+          path: { timelineId },
+        },
+      },
+      {
+        onSuccess: () => {
+          // Remove from local state immediately for better UX
+          setLocalTimelines((prev) => prev.filter((t) => t.id !== timelineId));
+          // Refetch to ensure consistency
+          refetch();
+        },
+        onError: (error) => {
+          console.error("Failed to delete timeline:", error);
+          alert("タイムラインの削除に失敗しました。もう一度お試しください。");
+        },
+      },
+    );
+  };
+
   return (
     <div>
       <div className="flex h-screen overflow-x-auto overflow-y-hidden">
@@ -158,7 +219,12 @@ export function TimelineList() {
                   strategy={horizontalListSortingStrategy}
                 >
                   {localTimelines.map((timeline) => (
-                    <SortableTimeline key={timeline.id} timeline={timeline} />
+                    <SortableTimeline
+                      key={timeline.id}
+                      timeline={timeline}
+                      onDelete={handleDeleteTimeline}
+                      isDeleting={isDeleting}
+                    />
                   ))}
                 </SortableContext>
               ) : (

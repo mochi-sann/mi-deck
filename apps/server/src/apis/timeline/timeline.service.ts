@@ -83,6 +83,22 @@ export class TimelineService {
     await this.timelineRepository.updateTimelineOrder(timelineIds, userId);
   }
 
+  // Method to delete a timeline configuration
+  async deleteTimeline(timelineId: string, userId: string): Promise<void> {
+    try {
+      await this.timelineRepository.deleteTimeline(timelineId, userId);
+    } catch (error) {
+      console.error("Error deleting timeline:", {
+        timelineId,
+        userId,
+        error,
+      });
+
+      // Re-throw the error to be handled by the controller
+      throw error;
+    }
+  }
+
   // Existing method to fetch notes from a Misskey timeline (e.g., Home timeline)
   // This method fetches notes based on a SERVER SESSION ID.
   // It verifies ownership before proceeding.
