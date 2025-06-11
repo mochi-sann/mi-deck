@@ -27,6 +27,21 @@ export const userAndLocalMisskey = async () => {
       userId: "f8895928-12d9-47e6-85a3-8de88aaaa7a8",
       serverType: ServerType.Misskey,
       serverToken: "PK00RQIpfmS1diD38HCzB1Pmz055BvFG",
+      serverInfo: {
+        create: {
+          name: "localhost",
+          faviconUrl: "",
+          iconUrl: "",
+          themeColor: "",
+        },
+      },
+      serverUserInfo: {
+        create: {
+          name: "hoge",
+          username: "hoge",
+          avatarUrl: "http://localhost:3002/identity/hote@localhost:3002",
+        },
+      },
     },
   });
   const NewServerInfo = await prisma.serverInfo.create({

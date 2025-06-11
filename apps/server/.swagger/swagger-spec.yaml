@@ -301,15 +301,50 @@ components:
       properties:
         origin:
           type: string
-          example: https://example.com
-        sessionToken:
-          type: string
+          example: https://misskey.io
         serverType:
+          type: string
+          example: Misskey
+        sessionToken:
           type: string
       required:
         - origin
-        - sessionToken
         - serverType
+        - sessionToken
+    ServerInfoEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        iconUrl:
+          type: string
+          format: url
+        faviconUrl:
+          type: string
+          format: url
+        themeColor:
+          type: string
+      required:
+        - id
+    ServerUserInfoEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        username:
+          type: string
+        avatarUrl:
+          type: string
+          format: url
+      required:
+        - id
+        - username
     CreateServerSessionResponseEntity:
       type: object
       properties:
@@ -334,6 +369,10 @@ components:
         updatedAt:
           type: string
           format: date-time
+        serverInfo:
+          $ref: '#/components/schemas/ServerInfoEntity'
+        serverUserInfo:
+          $ref: '#/components/schemas/ServerUserInfoEntity'
       required:
         - id
         - userId
@@ -362,38 +401,6 @@ components:
           example: '#ffffff'
       required:
         - origin
-    ServerInfoEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        name:
-          type: string
-        serverSessionId:
-          type: string
-          format: uuid
-        iconUrl:
-          type: string
-        faviconUrl:
-          type: string
-        themeColor:
-          type: string
-      required:
-        - id
-        - createdAt
-        - updatedAt
-        - name
-        - serverSessionId
-        - iconUrl
-        - faviconUrl
-        - themeColor
     CreateTimelineDto:
       type: object
       properties:

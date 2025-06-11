@@ -198,10 +198,29 @@ export interface components {
             name: string;
         };
         CreateServerSessionDto: {
-            /** @example https://example.com */
+            /** @example https://misskey.io */
             origin: string;
-            sessionToken: string;
+            /** @example Misskey */
             serverType: string;
+            sessionToken: string;
+        };
+        ServerInfoEntity: {
+            /** Format: uuid */
+            id: string;
+            name?: string;
+            /** Format: url */
+            iconUrl?: string;
+            /** Format: url */
+            faviconUrl?: string;
+            themeColor?: string;
+        };
+        ServerUserInfoEntity: {
+            /** Format: uuid */
+            id: string;
+            name?: string;
+            username: string;
+            /** Format: url */
+            avatarUrl?: string;
         };
         CreateServerSessionResponseEntity: {
             /** Format: uuid */
@@ -216,6 +235,8 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            serverInfo?: components["schemas"]["ServerInfoEntity"];
+            serverUserInfo?: components["schemas"]["ServerUserInfoEntity"];
         };
         UpdateServerInfoDto: {
             /** @example https://example.com */
@@ -228,20 +249,6 @@ export interface components {
             faviconUrl?: string;
             /** @example #ffffff */
             themeColor?: string;
-        };
-        ServerInfoEntity: {
-            /** Format: uuid */
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            name: string;
-            /** Format: uuid */
-            serverSessionId: string;
-            iconUrl: string;
-            faviconUrl: string;
-            themeColor: string;
         };
         CreateTimelineDto: {
             /**

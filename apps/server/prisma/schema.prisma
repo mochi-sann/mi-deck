@@ -64,36 +64,38 @@ enum ServerType {
 }
 
 model ServerSession {
-  id             String      @id @default(uuid())
-  userId         String      @map("user_id")
-  user           User        @relation(fields: [userId], references: [id])
+  id             String     @id @default(uuid())
+  userId         String     @map("user_id")
+  user           User       @relation(fields: [userId], references: [id])
   origin         String // 修正されたフィールド名
-  serverToken    String      @map("server_token")
-  serverType     ServerType  @map("server_type")
-  createdAt      DateTime    @default(now()) @map("created_at")
-  updatedAt      DateTime    @updatedAt @map("updated_at")
+  serverToken    String     @map("server_token")
+  serverType     ServerType @map("server_type")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
   panels         Panel[]
-  serverInfo     ServerInfo?
-  serverUserInfo UserInfo?
+  serverInfo     ServerInfo @relation(fields: [serverInfoId], references: [id])
+  serverUserInfo UserInfo   @relation(fields: [userInfoId], references: [id])
   Timeline       Timeline[]
+  userInfoId     String
+  serverInfoId   String
 
-  @@unique([origin, userId])
+  @@unique([origin, userId, userInfoId])
   @@index([userId])
   @@map("server_session")
 }
 
 model ServerInfo {
-  id              String        @id @default(uuid())
-  serverSessionId String        @unique @map("server_session_id")
-  serverSession   ServerSession @relation(fields: [serverSessionId], references: [id])
+  id              String          @id @default(uuid())
+  serverSessionId String          @unique @map("server_session_id")
   name            String
   // softwareName    String?        @map("software_name")
   // softwareVersion String?        @map("software_version")
-  iconUrl         String        @map("icon_url")
-  faviconUrl      String        @map("favicon_url")
-  themeColor      String        @map("theme_color")
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
+  iconUrl         String          @map("icon_url")
+  faviconUrl      String          @map("favicon_url")
+  themeColor      String          @map("theme_color")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+  ServerSession   ServerSession[]
 
   @@index([serverSessionId])
   @@map("server_info")

@@ -13,7 +13,8 @@ import {
 } from "@/Component/ui/sidebar";
 import type { UserType } from "@/lib/configureAuth";
 import { useLogout } from "@/lib/configureAuth";
-import { LogOut, Settings, UserRound } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { FilePlus2, LogOut, Settings, UserRound } from "lucide-react";
 
 type NavUserProps = {
   user: UserType;
@@ -22,6 +23,7 @@ type NavUserProps = {
 export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar();
   const { mutateAsync: LgoutMuteteAsync } = useLogout();
+  const navigate = useNavigate();
 
   return (
     <SidebarMenu>
@@ -49,6 +51,10 @@ export function NavUser({ user }: NavUserProps) {
             align="end"
             sideOffset={4}
           >
+            <DropdownMenuItem onClick={() => navigate({ to: "/add-server" })}>
+              <FilePlus2 />
+              サーバーを追加
+            </DropdownMenuItem>
             <DropdownMenuItem>
               <Settings size={28} strokeWidth={3} absoluteStrokeWidth />
               設定
