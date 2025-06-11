@@ -26,6 +26,9 @@ export class TimelineEntity implements Timeline {
   @ApiProperty({ format: "date-time" })
   updatedAt: Date;
 
+  @ApiProperty()
+  order: number;
+
   constructor(partial: Partial<TimelineEntity>) {
     Object.assign(this, partial);
   }

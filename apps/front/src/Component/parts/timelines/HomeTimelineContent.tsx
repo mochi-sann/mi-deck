@@ -1,3 +1,4 @@
+import { Button } from "@/Component/ui/button";
 import { Spinner } from "@/Component/ui/spinner";
 import Text from "@/Component/ui/text";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -17,11 +18,8 @@ export function HomeTimelineContent({
   token: string;
   type: TimelineType;
 }) {
-  const { notes, error, hasMore, isLoading, fetchNotes } = useTimeline(
-    origin,
-    serverToken,
-    type,
-  );
+  const { notes, error, hasMore, isLoading, fetchNotes, retryFetch } =
+    useTimeline(origin, serverToken, type);
   const parentRef = useRef<HTMLDivElement>(null);
 
   const rowVirtualizer = useVirtualizer({
@@ -52,9 +50,14 @@ export function HomeTimelineContent({
 
   if (error) {
     return (
-      <Text color="red.500">
-        Error loading notes: {error.message || "Unknown error"}
-      </Text>
+      <div className="flex flex-col items-center gap-4 p-4">
+        <Text className="text-center text-red-500">
+          Error loading notes: {error.message || "Unknown error"}
+        </Text>
+        <Button onClick={retryFetch} variant="outline" size="sm">
+          Retry
+        </Button>
+      </div>
     );
   }
 

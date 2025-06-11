@@ -29,6 +29,7 @@ erDiagram
   String origin
   String server_token
   ServerType server_type
+  String misskey_user_id "nullable"
   DateTime created_at
   DateTime updated_at
 }
@@ -66,6 +67,7 @@ erDiagram
   String channel_id "nullable"
   DateTime created_at
   DateTime updated_at
+  Int order
 }
 "user_setting" }o--|| "user" : user
 "server_session" }o--|| "user" : user
@@ -105,6 +107,7 @@ erDiagram
   - `origin`: 
   - `server_token`: 
   - `server_type`: 
+  - `misskey_user_id`: 
   - `created_at`: 
   - `updated_at`: 
 
@@ -150,3 +153,4 @@ erDiagram
   - `channel_id`: 
   - `created_at`: 
   - `updated_at`: 
+  - `order`: 

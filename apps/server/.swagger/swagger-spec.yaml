@@ -184,6 +184,49 @@ paths:
         - bearer: []
       summary: Get all timeline configurations for the user
       tags: *ref_2
+  /v1/timeline/order:
+    patch:
+      operationId: TimelineController_updateOrder
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTimelineOrderDto'
+      responses:
+        '200':
+          description: Timeline order updated successfully.
+        '400':
+          description: Bad Request (validation failed).
+        '401':
+          description: Unauthorized.
+      security:
+        - bearer: []
+      summary: Update the order of timelines
+      tags: *ref_2
+  /v1/timeline/{timelineId}:
+    delete:
+      operationId: TimelineController_deleteTimeline
+      parameters:
+        - name: timelineId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Timeline configuration deleted successfully.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden (timeline not found or access denied).
+        '404':
+          description: Timeline not found.
+      security:
+        - bearer: []
+      summary: Delete a timeline configuration
+      tags: *ref_2
   /v1/timeline/{serverSessionId}:
     get:
       description: >-
@@ -280,15 +323,50 @@ components:
       properties:
         origin:
           type: string
-          example: https://example.com
-        sessionToken:
-          type: string
+          example: https://misskey.io
         serverType:
+          type: string
+          example: Misskey
+        sessionToken:
           type: string
       required:
         - origin
-        - sessionToken
         - serverType
+        - sessionToken
+    ServerInfoEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        iconUrl:
+          type: string
+          format: url
+        faviconUrl:
+          type: string
+          format: url
+        themeColor:
+          type: string
+      required:
+        - id
+    ServerUserInfoEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        username:
+          type: string
+        avatarUrl:
+          type: string
+          format: url
+      required:
+        - id
+        - username
     CreateServerSessionResponseEntity:
       type: object
       properties:
@@ -313,6 +391,10 @@ components:
         updatedAt:
           type: string
           format: date-time
+        serverInfo:
+          $ref: '#/components/schemas/ServerInfoEntity'
+        serverUserInfo:
+          $ref: '#/components/schemas/ServerUserInfoEntity'
       required:
         - id
         - userId
@@ -327,40 +409,20 @@ components:
         origin:
           type: string
           example: https://example.com
-      required:
-        - origin
-    ServerInfoEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
         name:
           type: string
-        serverSessionId:
-          type: string
-          format: uuid
+          example: My Server
         iconUrl:
           type: string
+          example: https://example.com/icon.png
         faviconUrl:
           type: string
+          example: https://example.com/favicon.png
         themeColor:
           type: string
+          example: '#ffffff'
       required:
-        - id
-        - createdAt
-        - updatedAt
-        - name
-        - serverSessionId
-        - iconUrl
-        - faviconUrl
-        - themeColor
+        - origin
     CreateTimelineDto:
       type: object
       properties:
@@ -425,6 +487,8 @@ components:
         updatedAt:
           format: date-time
           type: string
+        order:
+          type: number
       required:
         - id
         - serverSessionId
@@ -432,6 +496,7 @@ components:
         - type
         - createdAt
         - updatedAt
+        - order
     ServerSessionInfo:
       type: object
       properties:
@@ -481,6 +546,8 @@ components:
         updatedAt:
           format: date-time
           type: string
+        order:
+          type: number
         serverSession:
           description: Associated server session details
           allOf:
@@ -492,4 +559,15 @@ components:
         - type
         - createdAt
         - updatedAt
+        - order
         - serverSession
+    UpdateTimelineOrderDto:
+      type: object
+      properties:
+        timelineIds:
+          description: An array of timeline IDs in the desired order
+          type: array
+          items:
+            type: string
+      required:
+        - timelineIds

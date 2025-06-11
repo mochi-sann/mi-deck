@@ -1,59 +1,39 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString } from "class-validator";
+import { IsOptional, IsString, IsUrl } from "class-validator";
+import { ServerInfo } from "~/generated/prisma";
 
-export class ServerInfoEntity {
-  constructor(data: ServerInfoEntity) {
-    this.id = data.id;
-    this.createdAt = data.createdAt;
-    this.updatedAt = data.updatedAt;
-    this.name = data.name;
-    this.serverSessionId = data.serverSessionId;
-    this.iconUrl = data.iconUrl;
-    this.faviconUrl = data.faviconUrl;
-    this.themeColor = data.themeColor;
+export class ServerInfoEntity implements Partial<ServerInfo> {
+  constructor(data: Partial<ServerInfo>) {
+    if (data) {
+      this.id = data.id;
+      this.name = data.name;
+      this.iconUrl = data.iconUrl;
+      this.faviconUrl = data.faviconUrl;
+      this.themeColor = data.themeColor;
+    }
   }
+
   @IsString()
-  @ApiProperty({
-    type: "string",
-    format: "uuid",
-  })
+  @ApiProperty({ type: "string", format: "uuid" })
   id: string;
+
   @IsString()
-  @ApiProperty({
-    type: "string",
-    format: "date-time",
-  })
-  createdAt: Date;
+  @IsOptional()
+  @ApiProperty({ type: "string", required: false })
+  name?: string;
+
+  @IsUrl()
+  @IsOptional()
+  @ApiProperty({ type: "string", format: "url", required: false })
+  iconUrl?: string;
+
+  @IsUrl()
+  @IsOptional()
+  @ApiProperty({ type: "string", format: "url", required: false })
+  faviconUrl?: string;
+
   @IsString()
-  @ApiProperty({
-    type: "string",
-    format: "date-time",
-  })
-  updatedAt: Date;
-  @IsString()
-  @ApiProperty({
-    type: "string",
-  })
-  name: string;
-  @IsString()
-  @ApiProperty({
-    type: "string",
-    format: "uuid",
-  })
-  serverSessionId: string;
-  @IsString()
-  @ApiProperty({
-    type: "string",
-  })
-  iconUrl: string;
-  @IsString()
-  @ApiProperty({
-    type: "string",
-  })
-  faviconUrl: string;
-  @IsString()
-  @ApiProperty({
-    type: "string",
-  })
-  themeColor: string;
+  @IsOptional()
+  @ApiProperty({ type: "string", required: false })
+  themeColor?: string;
 }

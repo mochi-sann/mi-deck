@@ -10,8 +10,8 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "../auth/auth.gurd";
-import { CreateServerSessionDto } from "./dto/creste.dto";
-import { UpdateServerInfoDto } from "./dto/udpate-server-info.dto";
+import { CreateServerSessionDto } from "./dto/create-server-session.dto";
+import { UpdateServerInfoDto } from "./dto/update-server-info.dto";
 import { CreateServerSessionResponseEntity } from "./entities/create-server.entity";
 import { ServerInfoEntity } from "./entities/server-info.entity";
 import { ServerSessionsService } from "./server-sessions.service";
@@ -65,21 +65,27 @@ export class ServersessionsController {
   @ApiBearerAuth()
   async updateServerInfo(@Request() req, @Body() body: UpdateServerInfoDto) {
     const userId = req.user.id;
-    const serverSession =
+    const serverSessions =
       await this.serverSessionsService.getServerSessionfromUseridAndOrigin(
         userId,
         body.origin,
       );
-    console.log(
-      ...[
-        serverSession,
-        "👀 [server-sessions.controller.ts:75]: serverSession",
-      ].reverse(),
-    );
-    return await this.serverSessionsService.updateOrCreateServerInfo(
+    // For update, we use the first session found
+    const serverSession = serverSessions[0];
+    return await this.serverSessionsService.updateServerInfo(
       serverSession.id,
-      body.origin,
-      userId,
+      body,
     );
+    // console.log(
+    //   ...[
+    //     serverSession,
+    //     "👀 [server-sessions.controller.ts:75]: serverSession",
+    //   ].reverse(),
+    // );
+    // return await this.serverSessionsService.updateOrCreateServerInfo(
+    //   serverSession.id,
+    //   body.origin,
+    //   userId,
+    // );
   }
 }

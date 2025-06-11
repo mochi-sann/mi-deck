@@ -6,7 +6,7 @@ import { Note } from "misskey-js/entities.js";
 import { TimelineNotes } from "./TimelineNotes";
 
 // Component to fetch and display posts for a single timeline
-export function GlobalTimelineContent({
+export function LocalTimelineContent({
   origin,
   token: serverToken,
   type,
@@ -31,10 +31,10 @@ export function GlobalTimelineContent({
     queryKey: queryKey,
     queryFn: async () => {
       try {
-        const res = await client.request("notes/global-timeline", {});
+        const res = await client.request("notes/local-timeline", {});
         return res;
       } catch (err) {
-        console.error("Global timeline fetch error:", {
+        console.error("Local timeline fetch error:", {
           origin,
           error: err,
         });
@@ -52,7 +52,7 @@ export function GlobalTimelineContent({
           ) {
             throw new Error("Access denied. Check your permissions.");
           } else if (err.message.includes("404")) {
-            throw new Error("Global timeline not found or server unreachable.");
+            throw new Error("Local timeline not found or server unreachable.");
           } else if (err.message.includes("500")) {
             throw new Error("Server error. Please try again later.");
           } else if (
@@ -88,7 +88,7 @@ export function GlobalTimelineContent({
           }
         }
 
-        throw err; // Re-throw the error to be caught by React Query
+        throw err;
       }
     },
     retry: (failureCount, error) => {

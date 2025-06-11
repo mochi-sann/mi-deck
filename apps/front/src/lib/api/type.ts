@@ -134,6 +134,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/timeline/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update the order of timelines */
+        patch: operations["TimelineController_updateOrder"];
+        trace?: never;
+    };
+    "/v1/timeline/{timelineId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a timeline configuration */
+        delete: operations["TimelineController_deleteTimeline"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/timeline/{serverSessionId}": {
         parameters: {
             query?: never;
@@ -181,10 +215,29 @@ export interface components {
             name: string;
         };
         CreateServerSessionDto: {
-            /** @example https://example.com */
+            /** @example https://misskey.io */
             origin: string;
-            sessionToken: string;
+            /** @example Misskey */
             serverType: string;
+            sessionToken: string;
+        };
+        ServerInfoEntity: {
+            /** Format: uuid */
+            id: string;
+            name?: string;
+            /** Format: url */
+            iconUrl?: string;
+            /** Format: url */
+            faviconUrl?: string;
+            themeColor?: string;
+        };
+        ServerUserInfoEntity: {
+            /** Format: uuid */
+            id: string;
+            name?: string;
+            username: string;
+            /** Format: url */
+            avatarUrl?: string;
         };
         CreateServerSessionResponseEntity: {
             /** Format: uuid */
@@ -199,24 +252,20 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            serverInfo?: components["schemas"]["ServerInfoEntity"];
+            serverUserInfo?: components["schemas"]["ServerUserInfoEntity"];
         };
         UpdateServerInfoDto: {
             /** @example https://example.com */
             origin: string;
-        };
-        ServerInfoEntity: {
-            /** Format: uuid */
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            name: string;
-            /** Format: uuid */
-            serverSessionId: string;
-            iconUrl: string;
-            faviconUrl: string;
-            themeColor: string;
+            /** @example My Server */
+            name?: string;
+            /** @example https://example.com/icon.png */
+            iconUrl?: string;
+            /** @example https://example.com/favicon.png */
+            faviconUrl?: string;
+            /** @example #ffffff */
+            themeColor?: string;
         };
         CreateTimelineDto: {
             /**
@@ -260,6 +309,7 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            order: number;
         };
         ServerSessionInfo: {
             /**
@@ -294,8 +344,13 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            order: number;
             /** @description Associated server session details */
             serverSession: components["schemas"]["ServerSessionInfo"];
+        };
+        UpdateTimelineOrderDto: {
+            /** @description An array of timeline IDs in the desired order */
+            timelineIds: string[];
         };
     };
     responses: never;
@@ -578,6 +633,83 @@ export interface operations {
             };
             /** @description Forbidden (user does not own the server session). */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TimelineController_updateOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTimelineOrderDto"];
+            };
+        };
+        responses: {
+            /** @description Timeline order updated successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request (validation failed). */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TimelineController_deleteTimeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                timelineId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Timeline configuration deleted successfully. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden (timeline not found or access denied). */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Timeline not found. */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

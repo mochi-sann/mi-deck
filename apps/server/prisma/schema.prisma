@@ -70,6 +70,7 @@ model ServerSession {
   origin         String // 修正されたフィールド名
   serverToken    String      @map("server_token")
   serverType     ServerType  @map("server_type")
+  misskeyUserId  String?     @map("misskey_user_id") // Misskeyのユーザーid
   createdAt      DateTime    @default(now()) @map("created_at")
   updatedAt      DateTime    @updatedAt @map("updated_at")
   panels         Panel[]
@@ -77,7 +78,7 @@ model ServerSession {
   serverUserInfo UserInfo?
   Timeline       Timeline[]
 
-  @@unique([origin, userId])
+  @@unique([userId, origin, misskeyUserId])
   @@index([userId])
   @@map("server_session")
 }
@@ -144,6 +145,7 @@ model Timeline {
   channelId       String?       @map("channel_id") // CHANNELタイプの場合に使用
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
+  order           Int           @default(0)
 
   @@index([serverSessionId])
   @@map("timeline")

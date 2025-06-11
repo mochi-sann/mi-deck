@@ -1,10 +1,13 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  ParseUUIDPipe,
+  Patch,
   Post,
   Request,
   UseGuards,
@@ -17,6 +20,7 @@ import {
 } from "@nestjs/swagger";
 import { AuthGuard } from "../auth/auth.gurd";
 import { CreateTimelineDto } from "./dto/create-timeline.dto";
+import { UpdateTimelineOrderDto } from "./dto/update-timeline-order.dto";
 import { TimelineEntity } from "./entities/timeline.entity";
 import { TimelineWithServerSessionEntity } from "./entities/timelineWithServerSession.entity";
 import { TimelineService } from "./timeline.service";
@@ -60,10 +64,63 @@ export class TimelineController {
   @ApiResponse({ status: 401, description: "Unauthorized." })
   findAll(@Request() req) {
     const userId = req.user.id;
-    // TODO: Implement findAllByUserId in TimelineService
-    // return this.timelineService.findAllByUserId(userId);
-    // Placeholder until service method is implemented:
-    return this.timelineService.findAllByUserId(userId); // Assuming this method will be added
+    return this.timelineService.findAllByUserId(userId);
+  }
+
+  @Patch("order")
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "Update the order of timelines" })
+  @ApiResponse({
+    status: 200,
+    description: "Timeline order updated successfully.",
+  })
+  @ApiResponse({
+    status: 400,
+    description: "Bad Request (validation failed or empty array).",
+  })
+  @ApiResponse({ status: 401, description: "Unauthorized." })
+  @ApiResponse({
+    status: 403,
+    description: "Forbidden (timeline not owned by user).",
+  })
+  updateOrder(
+    @Body() updateTimelineOrderDto: UpdateTimelineOrderDto,
+    @Request() req,
+  ) {
+    const userId = req.user.id;
+    return this.timelineService.updateOrder(
+      updateTimelineOrderDto.timelineIds,
+      userId,
+    );
+  }
+
+  @Delete(":timelineId")
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: "Delete a timeline configuration" })
+  @ApiResponse({
+    status: 204,
+    description: "Timeline configuration deleted successfully.",
+  })
+  @ApiResponse({
+    status: 400,
+    description: "Bad Request (invalid UUID format).",
+  })
+  @ApiResponse({ status: 401, description: "Unauthorized." })
+  @ApiResponse({
+    status: 403,
+    description: "Forbidden (timeline not found or access denied).",
+  })
+  @ApiResponse({ status: 404, description: "Timeline not found." })
+  async deleteTimeline(
+    @Param("timelineId", ParseUUIDPipe) timelineId: string,
+    @Request() req,
+  ): Promise<void> {
+    const userId = req.user.id;
+    return this.timelineService.deleteTimeline(timelineId, userId);
   }
 
   // Existing endpoint to get notes (currently home timeline) for a specific timeline configuration
