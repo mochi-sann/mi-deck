@@ -29,6 +29,7 @@ erDiagram
   String origin
   String server_token
   ServerType server_type
+  String misskey_user_id "nullable"
   DateTime created_at
   DateTime updated_at
 }
@@ -106,6 +107,7 @@ erDiagram
   - `origin`: 
   - `server_token`: 
   - `server_type`: 
+  - `misskey_user_id`: 
   - `created_at`: 
   - `updated_at`: 
 
