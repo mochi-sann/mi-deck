@@ -38,10 +38,6 @@ Table server_session {
   serverInfo server_info
   serverUserInfo user_info
   Timeline timeline [not null]
-
-  indexes {
-    (origin, userId) [unique]
-  }
 }
 
 Table server_info {
