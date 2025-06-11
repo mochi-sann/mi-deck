@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Request,
@@ -75,8 +76,15 @@ export class TimelineController {
     status: 200,
     description: "Timeline order updated successfully.",
   })
-  @ApiResponse({ status: 400, description: "Bad Request (validation failed)." })
+  @ApiResponse({
+    status: 400,
+    description: "Bad Request (validation failed or empty array).",
+  })
   @ApiResponse({ status: 401, description: "Unauthorized." })
+  @ApiResponse({
+    status: 403,
+    description: "Forbidden (timeline not owned by user).",
+  })
   updateOrder(
     @Body() updateTimelineOrderDto: UpdateTimelineOrderDto,
     @Request() req,
@@ -97,6 +105,10 @@ export class TimelineController {
     status: 204,
     description: "Timeline configuration deleted successfully.",
   })
+  @ApiResponse({
+    status: 400,
+    description: "Bad Request (invalid UUID format).",
+  })
   @ApiResponse({ status: 401, description: "Unauthorized." })
   @ApiResponse({
     status: 403,
@@ -104,7 +116,7 @@ export class TimelineController {
   })
   @ApiResponse({ status: 404, description: "Timeline not found." })
   async deleteTimeline(
-    @Param("timelineId") timelineId: string,
+    @Param("timelineId", ParseUUIDPipe) timelineId: string,
     @Request() req,
   ): Promise<void> {
     const userId = req.user.id;
