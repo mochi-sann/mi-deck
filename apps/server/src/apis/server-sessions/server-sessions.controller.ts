@@ -65,11 +65,13 @@ export class ServersessionsController {
   @ApiBearerAuth()
   async updateServerInfo(@Request() req, @Body() body: UpdateServerInfoDto) {
     const userId = req.user.id;
-    const serverSession =
+    const serverSessions =
       await this.serverSessionsService.getServerSessionfromUseridAndOrigin(
         userId,
         body.origin,
       );
+    // For update, we use the first session found
+    const serverSession = serverSessions[0];
     return await this.serverSessionsService.updateServerInfo(
       serverSession.id,
       body,
