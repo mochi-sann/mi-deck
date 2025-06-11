@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { APIClient } from "misskey-js/api.js";
+import { Note } from "misskey-js/entities.js";
 import { ServerSession } from "~/generated/prisma";
 // PrismaService is removed as it's now used in the repository
 import { CreateTimelineDto } from "./dto/create-timeline.dto";
@@ -115,18 +116,71 @@ export class TimelineService {
     // Adapt this based on the *configured* timeline type if needed,
     // or keep it specifically for fetching the home timeline notes.
     // For now, it fetches the home timeline associated with the session.
-    const timelineNotes = await client
-      .request("notes/timeline", {
+    let timelineNotes: Note[];
+    try {
+      timelineNotes = await client.request("notes/timeline", {
         limit: 100, // Example limit
-      })
-      .then((res) => res)
-      .catch((err) => {
-        console.error("Error fetching timeline notes:", err);
-        // Consider more specific error handling based on Misskey API errors
-        throw new UnauthorizedException(
-          `Could not fetch timeline notes from ${serverSession.origin}`,
-        );
       });
+    } catch (err) {
+      console.error("Error fetching timeline notes:", {
+        origin: serverSession.origin,
+        serverSessionId,
+        userId,
+        error: err,
+      });
+
+      // Handle different types of Misskey API errors
+      if (err && typeof err === "object" && "code" in err) {
+        const misskeyError = err as {
+          code: string;
+          message?: string;
+          id?: string;
+        };
+
+        switch (misskeyError.code) {
+          case "RATE_LIMIT_EXCEEDED":
+            throw new UnauthorizedException(
+              `Rate limit exceeded for ${serverSession.origin}. Please try again later.`,
+            );
+          case "INVALID_TOKEN":
+          case "CREDENTIAL_REQUIRED":
+            throw new UnauthorizedException(
+              `Invalid or expired token for ${serverSession.origin}. Please re-authenticate.`,
+            );
+          case "SUSPENDED":
+            throw new ForbiddenException(
+              `Account suspended on ${serverSession.origin}.`,
+            );
+          case "BLOCKED":
+            throw new ForbiddenException(
+              `Access blocked on ${serverSession.origin}.`,
+            );
+          default:
+            throw new UnauthorizedException(
+              `API error from ${serverSession.origin}: ${misskeyError.message || misskeyError.code}`,
+            );
+        }
+      }
+
+      // Handle network errors
+      if (err instanceof Error) {
+        if (err.message.includes("fetch") || err.message.includes("network")) {
+          throw new UnauthorizedException(
+            `Network error connecting to ${serverSession.origin}. Server may be unreachable.`,
+          );
+        }
+        if (err.message.includes("timeout")) {
+          throw new UnauthorizedException(
+            `Timeout error connecting to ${serverSession.origin}. Server is taking too long to respond.`,
+          );
+        }
+      }
+
+      // Generic fallback error
+      throw new UnauthorizedException(
+        `Could not fetch timeline notes from ${serverSession.origin}: ${err instanceof Error ? err.message : "Unknown error"}`,
+      );
+    }
     console.log(timelineNotes);
 
     return timelineNotes; // Returns the array of notes

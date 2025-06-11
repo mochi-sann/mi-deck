@@ -119,7 +119,9 @@ describe("useTimeline", () => {
       }
     });
 
-    expect(result.current.error?.message).toBe("Connection lost");
+    expect(result.current.error?.message).toBe(
+      `Connection lost to ${mockOrigin}. Timeline updates may be delayed.`,
+    );
   });
 
   it("should handle new notes from WebSocket", async () => {

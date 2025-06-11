@@ -46,9 +46,14 @@ function SortableTimeline({ timeline }: { timeline: TimelineEntityType }) {
   const { data: serverInfo } = useSuspenseQuery({
     queryKey: queryKey,
     queryFn: async () => {
-      return await client.request("meta", {
-        detail: true,
-      });
+      return await client
+        .request("meta", {
+          detail: true,
+        })
+        .then((res) => res)
+        .catch((err) => {
+          return err;
+        });
     },
   });
 
