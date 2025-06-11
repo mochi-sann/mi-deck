@@ -72,6 +72,7 @@ export class ServerSessionsService {
         origin: data.origin,
         serverType: serverType,
         serverToken: fetchMisskey.token,
+        misskeyUserId: MisskeyUserInfo.id,
         user: {
           connect: {
             id: userId,
@@ -117,18 +118,20 @@ export class ServerSessionsService {
   }
 
   async getServerSessionfromUseridAndOrigin(userId: string, origin: string) {
-    // Use repository to find server session by user ID and origin
-    const server =
+    // Use repository to find server sessions by user ID and origin
+    const servers =
       await this.serverSessionsRepository.findServerSessionByUserIdAndOrigin(
         userId,
         origin,
       );
-    if (!server) {
+    if (!servers || servers.length === 0) {
       throw new NotFoundException(
         `Server session for user ${userId} and origin ${origin} not found`,
       );
     }
-    return new CreateServerSessionResponseEntity(server);
+    return servers.map(
+      (server) => new CreateServerSessionResponseEntity(server),
+    );
   }
 
   async updateServerInfo(serverSessionId: string, data: UpdateServerInfoDto) {

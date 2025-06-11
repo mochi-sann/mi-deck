@@ -41,7 +41,7 @@ Table server_session {
   Timeline timeline [not null]
 
   indexes {
-    (origin, userId, misskeyUserId) [unique]
+    (userId, origin, misskeyUserId) [unique]
   }
 }
 

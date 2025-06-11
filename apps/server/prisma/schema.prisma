@@ -78,7 +78,7 @@ model ServerSession {
   serverUserInfo UserInfo?
   Timeline       Timeline[]
 
-  @@unique([origin, userId, misskeyUserId])
+  @@unique([userId, origin, misskeyUserId])
   @@index([userId])
   @@map("server_session")
 }

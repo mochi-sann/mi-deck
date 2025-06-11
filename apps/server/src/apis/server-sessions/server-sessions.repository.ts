@@ -41,11 +41,25 @@ export class ServerSessionsRepository {
   async findServerSessionByUserIdAndOrigin(
     userId: string,
     origin: string,
+  ): Promise<ServerSession[]> {
+    return this.prisma.serverSession.findMany({
+      where: { userId, origin },
+      include: {
+        serverInfo: true,
+        serverUserInfo: true,
+      },
+    });
+  }
+
+  async findServerSessionByUserIdOriginAndMisskeyUserId(
+    userId: string,
+    origin: string,
+    misskeyUserId: string,
   ): Promise<ServerSession | null> {
     return this.prisma.serverSession.findUnique({
       where: {
         // biome-ignore lint/style/useNamingConvention: Prisma constraint name
-        origin_userId: { userId, origin },
+        userId_origin_misskeyUserId: { userId, origin, misskeyUserId },
       },
       include: {
         serverInfo: true,
@@ -57,11 +71,12 @@ export class ServerSessionsRepository {
   async findServerSessionToken(
     userId: string,
     origin: string,
+    misskeyUserId: string,
   ): Promise<{ serverToken: string } | null> {
     return this.prisma.serverSession.findUnique({
       where: {
         // biome-ignore lint/style/useNamingConvention: Prisma constraint name
-        origin_userId: { userId, origin },
+        userId_origin_misskeyUserId: { userId, origin, misskeyUserId },
       },
       select: { serverToken: true },
     });
