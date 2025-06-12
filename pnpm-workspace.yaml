@@ -8,7 +8,11 @@ onlyBuiltDependencies:
   - '@prisma/engines'
   - '@scarf/scarf'
   - '@swc/core'
+  - '@tailwindcss/oxide'
   - bcrypt
+  - electron
+  - electron-winstaller
   - esbuild
   - lefthook
+  - msw
   - prisma
