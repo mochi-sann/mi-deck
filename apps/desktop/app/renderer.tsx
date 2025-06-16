@@ -1,16 +1,34 @@
-import { WindowContextProvider, menuItems } from "@/lib/window";
-import appIcon from "@/resources/build/icon.png";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
 import React from "react";
 import reactDom from "react-dom/client";
-import App from "./app";
-import "./styles/app.css";
+import { WindowContextProvider, menuItems } from "../lib/window";
+import appIcon from "../resources/build/icon.png";
+import { routeTree } from "./routeTree.gen";
+import "./index.css";
+
+const queryClient = new QueryClient();
+
+const router = createRouter({
+  routeTree,
+});
+
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
 
 reactDom.createRoot(document.getElementById("app") as HTMLElement).render(
   <React.StrictMode>
     <WindowContextProvider
-      titlebar={{ title: "Electron React App", icon: appIcon, menuItems }}
+      titlebar={{ title: "Mi-Deck", icon: appIcon, menuItems }}
     >
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
     </WindowContextProvider>
   </React.StrictMode>,
 );

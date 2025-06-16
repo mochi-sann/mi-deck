@@ -1,7 +1,9 @@
 import { resolve } from "node:path";
 import tailwindcss from "@tailwindcss/vite";
-import react from "@vitejs/plugin-react";
+import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
+import react from "@vitejs/plugin-react-swc";
 import { defineConfig, externalizeDepsPlugin } from "electron-vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   main: {
@@ -49,11 +51,29 @@ export default defineConfig({
     },
     resolve: {
       alias: {
+        "@": resolve(__dirname, "app"),
         "@/app": resolve(__dirname, "app"),
         "@/lib": resolve(__dirname, "lib"),
         "@/resources": resolve(__dirname, "resources"),
       },
     },
-    plugins: [tailwindcss(), react()],
+    plugins: [
+      tsconfigPaths({ root: "./app" }),
+      TanStackRouterVite({
+        autoCodeSplitting: true,
+        routesDirectory: resolve(__dirname, "app/routes"),
+      }),
+      react(),
+      tailwindcss(),
+    ],
+    server: {
+      proxy: {
+        "/api": {
+          target: process.env.SERVER_ENDPOINT || "http://localhost:3001",
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ""),
+        },
+      },
+    },
   },
 });

@@ -1,6 +1,6 @@
-import { useWindowContext } from "@/lib/window";
 import { useEffect, useRef } from "react";
 import { useTitlebarContext } from "./TitlebarContext";
+import { useWindowContext } from "./WindowContext";
 
 /**
  * Renders the titlebar menu component.

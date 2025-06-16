@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useTitlebarContext } from "./TitlebarContext";
-import { TitlebarMenu } from "./TitlebarMenu";
 import { useWindowContext } from "./WindowContext";
 
 export const Titlebar = () => {
@@ -45,7 +44,6 @@ export const Titlebar = () => {
       >
         {title}
       </div>
-      {menusVisible && <TitlebarMenu />}
       {wcontext?.platform === "win32" && <TitlebarControls />}
     </div>
   );
@@ -118,5 +116,3 @@ export interface TitlebarProps {
   title: string;
   titleCentered?: boolean;
   icon?: string;
-  menuItems?: TitlebarMenu[];
-}
