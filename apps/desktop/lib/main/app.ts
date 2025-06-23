@@ -10,21 +10,22 @@ export function createAppWindow(): void {
 
   // Create the main window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
-    show: false,
+    width: 1200,
+    height: 900,
+    show: true,
     backgroundColor: "#1c1c1c",
     icon: appIcon,
-    frame: false,
-    titleBarStyle: "hiddenInset",
+    frame: true,
+    titleBarStyle: "default",
     title: "Electron React App",
     maximizable: false,
-    resizable: false,
+    resizable: true,
     webPreferences: {
       preload: join(__dirname, "../preload/preload.js"),
       sandbox: false,
     },
   });
+  mainWindow.webContents.openDevTools();
 
   // Register IPC events for the main window.
   registerWindowIPC(mainWindow);

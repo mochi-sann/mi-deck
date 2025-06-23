@@ -116,3 +116,4 @@ export interface TitlebarProps {
   title: string;
   titleCentered?: boolean;
   icon?: string;
+}
