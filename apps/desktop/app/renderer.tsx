@@ -3,30 +3,41 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import React from "react";
 import reactDom from "react-dom/client";
-import { WindowContextProvider, menuItems } from "../lib/window";
+import { WindowContextProvider } from "../lib/window";
 import appIcon from "../resources/build/icon.png";
+import { useUser } from "./lib/configureAuth";
 import { routeTree } from "./routeTree.gen";
 import "./index.css";
+import { SidebarProvider } from "./Component/ui/sidebar";
 
 const queryClient = new QueryClient();
 
-const router = createRouter({
-  routeTree,
-});
+function App() {
+  const { data: user } = useUser();
 
-declare module "@tanstack/react-router" {
-  interface Register {
-    router: typeof router;
-  }
+  const router = React.useMemo(
+    () =>
+      createRouter({
+        routeTree,
+        context: {
+          auth: {
+            isAuth: !!user?.isAuth,
+          },
+        },
+      }),
+    [user?.isAuth],
+  );
+
+  return <RouterProvider router={router} />;
 }
 
 reactDom.createRoot(document.getElementById("app") as HTMLElement).render(
   <React.StrictMode>
-    <WindowContextProvider
-      titlebar={{ title: "Mi-Deck", icon: appIcon, menuItems }}
-    >
+    <WindowContextProvider titlebar={{ title: "Mi-Deck", icon: appIcon }}>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <SidebarProvider>
+          <App />
+        </SidebarProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </WindowContextProvider>
