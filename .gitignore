@@ -148,3 +148,4 @@ apps/server/src/generated/prisma
 .turbo
 apps/desktop/.claude
 apps/desktop/app/src/routeTree.gen.ts
+apps/desktop/app/routeTree.gen.ts

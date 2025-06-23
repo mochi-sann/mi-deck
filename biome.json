@@ -17,6 +17,7 @@
       "apps/server/dist/**",
       "apps/front/dist/**",
       "apps/front/src/routeTree.gen.ts",
+      "apps/desktop/src/routeTree.gen.ts",
       "apps/front/styled-system/**",
       "apps/front/src/lib/api/type.ts",
       "misskey-db",
@@ -25,7 +26,10 @@
       "/nix",
       "apps/front/storybook-static/",
       "apps/front/coverage",
-      "playwright-report/"
+      "playwright-report/",
+      "apps/desktop/app/lib/api/type.ts",
+      "apps/desktop/app/out/**",
+      "**/routeTree.gen.ts"
     ]
   },
   "formatter": {

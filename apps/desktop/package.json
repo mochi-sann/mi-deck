@@ -9,6 +9,8 @@
     "url": "https://github.com/guasam"
   },
   "scripts": {
+    "watch-routes": "tsr watch",
+    "predev": "npx openapi-typescript ../server/.swagger/swagger-spec.yaml -o ./app/lib/api/type.ts",
     "dev": "electron-vite dev -w",
     "start": "electron-vite preview",
     "postinstall": "electron-builder install-app-deps",

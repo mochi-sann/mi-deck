@@ -100,3 +100,18 @@ The project includes Docker Compose setup for local Misskey instance:
 - Server tests use Vitest + Supertest
 - Use MSW for mocking network requests
 - Test files should be co-located with source files using `.test.ts` or `.test.tsx` extension
+
+## 開発日誌を作成すること
+
+`memo/dev_diary/yyyy-mm-dd_hhmm.md`の形式で開発日誌を作成してください。内容は以下の通りです。
+
+- ** 日付 **: yyyy-mm-dd hh:mm
+- ** 作業内容 **:
+·何をしたか
+- どのような問題が発生したか
+どのように解決したか
+** 次回の予定 **:
+
+- ** 感想 **: 開発の進捗や学び
+-** 気分 **: なんかいい感じのことを書く
+** 愚痴 **: なんかいい感じのことを書く
