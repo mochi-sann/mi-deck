@@ -1,8 +1,8 @@
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
-import { registerWindowIPC } from "@/lib/window/ipcEvents";
 import appIcon from "@/resources/build/icon.png?asset";
 import { net, BrowserWindow, app, protocol, shell } from "electron";
+import { registerWindowIPC } from "../window/ipcEvents";
 
 export function createAppWindow(): void {
   // Register custom protocol for resources
