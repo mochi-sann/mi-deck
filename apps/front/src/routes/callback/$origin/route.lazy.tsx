@@ -1,5 +1,9 @@
 import { Button } from "@/Component/ui/button";
 import Text from "@/Component/ui/text";
+import {
+  PENDING_AUTH_KEY_PREFIX,
+  PeendingAuthType,
+} from "@/lib/auth/clientAuth";
 import { useAuth } from "@/lib/auth/context";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
@@ -25,13 +29,13 @@ function AuthCallbackComponent() {
       try {
         console.log("Starting authentication with:", { origin, search });
 
+        console.log(
+          ...[
+            { search, origin },
+            "👀 [route.lazy.tsx:30]: {search , origin}",
+          ].reverse(),
+        );
         if (search.session === "") {
-          console.log(
-            ...[
-              { search, origin },
-              "👀 [route.lazy.tsx:30]: {search , origin}",
-            ].reverse(),
-          );
           throw new Error("セッショントークンが提供されていません");
         }
 
@@ -43,23 +47,17 @@ function AuthCallbackComponent() {
           decodedOrigin,
         );
 
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (key?.startsWith("miauth-pending-")) {
-            try {
-              const data = JSON.parse(localStorage.getItem(key) || "{}");
-              console.log("Found pending auth:", data);
-              if (data.origin === decodedOrigin) {
-                uuid = data.uuid;
-                console.log("Found matching UUID:", uuid);
-                break;
-              }
-            } catch (e) {
-              console.warn("Invalid JSON in localStorage key:", key, e);
-            }
-          }
-        }
+        const pendingAuth =
+          localStorage.getItem(PENDING_AUTH_KEY_PREFIX) || "{}";
+        const PenndingAuthData: PeendingAuthType = JSON.parse(pendingAuth);
+        uuid = PenndingAuthData.uuid;
 
+        console.log(
+          ...[
+            PenndingAuthData,
+            "👀 [route.lazy.tsx:55]: PenndingAuthData",
+          ].reverse(),
+        );
         if (!uuid) {
           throw new Error(
             `認証セッションが見つかりません (origin: ${decodedOrigin})`,

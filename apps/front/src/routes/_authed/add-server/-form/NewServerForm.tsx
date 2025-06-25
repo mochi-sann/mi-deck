@@ -31,6 +31,7 @@ export const NewServerForm: React.FC = () => {
 
       await auth.initiateAuth(origin);
     } catch (err) {
+      console.log(...[err, "👀 [NewServerForm.tsx:34]: err"].reverse());
       setError(
         err instanceof Error ? err.message : "サーバー追加に失敗しました",
       );

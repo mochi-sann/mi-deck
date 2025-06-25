@@ -13,6 +13,17 @@ export interface MiAuthResult {
   server?: MisskeyServerConnection;
   error?: string;
 }
+export type PeendingAuthType = {
+  uuid: string;
+  origin: string;
+  timestamp: number;
+  options: {
+    appName: string;
+    appDescription?: string;
+    permissions: typeof Misskey.permissions;
+  };
+};
+export const PENDING_AUTH_KEY_PREFIX = "miauth-pending-local" as const;
 
 class ClientAuthManager {
   private defaultAuthOptions: MiAuthOptions = {
@@ -49,7 +60,7 @@ class ClientAuthManager {
       const { url, uuid } = this.generateMiAuthUrl(origin, options);
 
       // Store pending auth session
-      const pendingAuth = {
+      const pendingAuth: PeendingAuthType = {
         uuid,
         origin,
         timestamp: Date.now(),
@@ -57,14 +68,14 @@ class ClientAuthManager {
       };
 
       localStorage.setItem(
-        `miauth-pending-${uuid}`,
+        PENDING_AUTH_KEY_PREFIX,
         JSON.stringify(pendingAuth),
       );
 
       // Open auth window
       const authWindow = window.open(
         url,
-        "_blank",
+        "_self",
         "width=600,height=700,scrollbars=yes,resizable=yes",
       );
 
