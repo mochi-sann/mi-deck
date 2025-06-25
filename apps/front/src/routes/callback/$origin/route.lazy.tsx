@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth/context";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
-export const Route = createLazyFileRoute("/auth/callback/$origin")({
+export const Route = createLazyFileRoute("/callback/$origin")({
   component: AuthCallbackComponent,
 });
 
@@ -19,12 +19,19 @@ function AuthCallbackComponent() {
   );
   const [error, setError] = useState<string | undefined>();
 
+  // http://localhost:3000/callback/misskey.mochi33.com?session=56a8ff0a-bcfa-49fe-8104-398a8f52cfd2
   useEffect(() => {
     const completeAuthentication = async () => {
       try {
         console.log("Starting authentication with:", { origin, search });
 
-        if (!search.session) {
+        if (search.session === "") {
+          console.log(
+            ...[
+              { search, origin },
+              "👀 [route.lazy.tsx:30]: {search , origin}",
+            ].reverse(),
+          );
           throw new Error("セッショントークンが提供されていません");
         }
 

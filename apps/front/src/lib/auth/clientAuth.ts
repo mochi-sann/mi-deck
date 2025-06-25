@@ -29,7 +29,7 @@ class ClientAuthManager {
     const currentOrigin = window.location.origin;
     const uuid = crypto.randomUUID();
 
-    const callbackUrl = `${currentOrigin}/auth/callback/${encodeURIComponent(origin)}`;
+    const callbackUrl = `${currentOrigin}/callback/${encodeURIComponent(origin)}`;
     const miAuthUrl = `https://${origin}/miauth/${uuid}?name=${encodeURIComponent(authOptions.appName)}&permission=${authOptions.permissions.join(",")}&callback=${encodeURIComponent(callbackUrl)}`;
 
     if (authOptions.appDescription) {
