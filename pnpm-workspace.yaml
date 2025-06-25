@@ -8,7 +8,9 @@ onlyBuiltDependencies:
   - '@prisma/engines'
   - '@scarf/scarf'
   - '@swc/core'
+  - '@tailwindcss/oxide'
   - bcrypt
   - esbuild
   - lefthook
+  - msw
   - prisma

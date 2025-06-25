@@ -1,4 +1,3 @@
-import { useAuth } from "@/lib/auth/context";
 import { useStorage } from "@/lib/storage/context";
 import type { TimelineConfig } from "@/lib/storage/types";
 import {
@@ -96,7 +95,13 @@ function SortableTimeline({
   const timelineForSwitch = {
     id: timeline.id,
     name: timeline.name,
-    type: timeline.type.toUpperCase() as "HOME" | "LOCAL" | "GLOBAL" | "SOCIAL",
+    type: timeline.type.toUpperCase() as
+      | "HOME"
+      | "LOCAL"
+      | "GLOBAL"
+      | "LIST"
+      | "USER"
+      | "CHANNEL",
     serverSessionId: timeline.serverId,
     serverSession: {
       id: server.id,
@@ -164,7 +169,6 @@ function SortableTimeline({
 
 export function ClientTimelineList() {
   const storage = useStorage();
-  const auth = useAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -233,15 +237,7 @@ export function ClientTimelineList() {
     );
   }
 
-  if (!auth.isAuthenticated) {
-    return (
-      <div className="flex h-screen overflow-x-auto overflow-y-hidden">
-        <Card className="flex flex-1 items-center justify-center">
-          <Text>サーバーに接続してください。</Text>
-        </Card>
-      </div>
-    );
-  }
+  // Allow access without authentication - users can add servers as needed
 
   return (
     <div>

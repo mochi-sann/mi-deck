@@ -1,26 +1,19 @@
-import { useUser } from "@/lib/configureAuth";
-import type { UserType } from "@/lib/configureAuth";
-import { cn } from "@/lib/utils"; // cnをインポート
+import { cn } from "@/lib/utils";
 import { Pen } from "lucide-react";
 import { NewNote } from "../logics/NewNote";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
-import { LoadingSpinner } from "../ui/loading-spinner";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarMenuButton,
   SidebarTrigger,
-  useSidebar, // useSidebarをインポート
+  useSidebar,
 } from "../ui/sidebar";
-import { NavUser } from "./Sidebar/nav-user";
+import { NavContent } from "./Sidebar/nav-content";
 
-type AppSidebarPresenterProps = {
-  user: UserType;
-};
-
-export const AppSidebarPresenter = ({ user }: AppSidebarPresenterProps) => {
+export const AppSidebarPresenter = () => {
   const { state } = useSidebar(); // useSidebarからstateを取得
 
   return (
@@ -34,7 +27,9 @@ export const AppSidebarPresenter = ({ user }: AppSidebarPresenterProps) => {
         )}
       />
       <div className="h-12 " />
-      <SidebarContent />
+      <SidebarContent>
+        <NavContent />
+      </SidebarContent>
       <SidebarFooter>
         <Dialog>
           <DialogTrigger asChild>
@@ -56,22 +51,13 @@ export const AppSidebarPresenter = ({ user }: AppSidebarPresenterProps) => {
             <NewNote />
           </DialogContent>
         </Dialog>
-        <NavUser user={user} />
+        {/* NavUser removed - no longer requires server-based authentication */}
       </SidebarFooter>
     </Sidebar>
   );
 };
 
 export const AppSidebar = () => {
-  const { status, data: userData } = useUser();
-
-  if (status === "pending" || !userData) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
-  }
-
-  return <AppSidebarPresenter user={userData} />;
+  // No server-based authentication required - client-side only
+  return <AppSidebarPresenter />;
 };

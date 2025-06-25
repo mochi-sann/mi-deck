@@ -1,5 +1,4 @@
-import { fetchClient } from "./api/fetchClient";
-import { components } from "./api/type";
+// Server API removed - client-side auth only
 import { configureAuth } from "./auth/authLib";
 
 const AuthTokenStorageKey = "mi-deck-auth-token";
@@ -11,9 +10,17 @@ export const AuthTokenStorage = {
   clearToken: () => window.localStorage.removeItem(AuthTokenStorageKey),
 };
 
-export type LoginCredentials = components["schemas"]["LoginDto"];
+// Legacy server types - no longer used in client-side app
+export type LoginCredentials = {
+  email: string;
+  password: string;
+};
 
-export type SignUpCredentials = components["schemas"]["SignUpDto"];
+export type SignUpCredentials = {
+  email: string;
+  password: string;
+  name: string;
+};
 export type UserType = {
   id: string;
   email: string;
@@ -22,20 +29,10 @@ export type UserType = {
   avatarUrl: string;
 };
 
+// Legacy server auth function - no longer used
 export const getuserInfo = async (jwt: string): Promise<UserType | null> => {
-  const userResponse = await fetchClient.GET("/v1/auth/me", {
-    headers: {
-      authorization: `Bearer ${jwt}`,
-    },
-  });
-  if (userResponse.response.status >= 400 || !userResponse.data?.id) {
-    console.log(userResponse.response.status);
-    // throw new Error("Login failed");
-    return null;
-  }
-  return userResponse.data
-    ? { isAuth: !!userResponse.data.id, avatarUrl: "", ...userResponse.data }
-    : null;
+  console.warn("getuserInfo called but server auth is disabled");
+  return null;
 };
 export async function userFn() {
   console.log("userFn");
@@ -54,25 +51,15 @@ export async function handleUserResponse(jwt: string) {
 }
 
 export async function loginFn(data: LoginCredentials) {
-  const response = await fetchClient.POST("/v1/auth/login", {
-    body: data,
-  });
-  if (response.response.status >= 400 || !response.data?.accessToken) {
-    throw new Error("Login failed");
-  }
-  const user = await handleUserResponse(response.data?.accessToken);
-  return user;
+  console.warn("loginFn called but server auth is disabled");
+  throw new Error("Server login is disabled - use Misskey server auth instead");
 }
 
 export async function registerFn(data: SignUpCredentials) {
-  const response = await fetchClient.POST("/v1/auth/signUp", {
-    body: data,
-  });
-  if (response.response.status >= 400 || !response.data?.accessToken) {
-    throw new Error("Login failed");
-  }
-  const user = await handleUserResponse(response.data.accessToken);
-  return user;
+  console.warn("registerFn called but server auth is disabled");
+  throw new Error(
+    "Server registration is disabled - use Misskey server auth instead",
+  );
 }
 
 export async function logoutFn() {
