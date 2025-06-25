@@ -101,14 +101,14 @@ class ClientAuthManager {
       await storageManager.initialize();
 
       // Retrieve pending auth session
-      const pendingAuthData = localStorage.getItem(`miauth-pending-${uuid}`);
+      const pendingAuthData = localStorage.getItem(PENDING_AUTH_KEY_PREFIX);
       console.log("Retrieved pending auth data:", pendingAuthData);
 
       if (!pendingAuthData) {
         return { success: false, error: "Auth session not found or expired" };
       }
 
-      const pendingAuth = JSON.parse(pendingAuthData);
+      const pendingAuth: PeendingAuthType = JSON.parse(pendingAuthData);
       const origin = pendingAuth.origin;
       console.log("Using origin from pending auth:", origin);
 
@@ -120,8 +120,10 @@ class ClientAuthManager {
 
       console.log("Making API requests to validate token...");
       const [userInfo, serverInfo] = await Promise.all([
-        misskeyClient.request("i"),
-        misskeyClient.request("meta", { detail: false }),
+        misskeyClient.request("i", {
+          detail: true, // Get detailed user info
+        }),
+        misskeyClient.request("meta", { detail: true }),
       ]);
       console.log("API requests successful:", { userInfo, serverInfo });
 
@@ -151,14 +153,14 @@ class ClientAuthManager {
       const savedServer = await storageManager.addServer(serverConnection);
 
       // Clean up pending auth
-      localStorage.removeItem(`miauth-pending-${uuid}`);
+      localStorage.removeItem(PENDING_AUTH_KEY_PREFIX);
 
       return { success: true, server: savedServer };
     } catch (error) {
       console.error("Failed to complete auth:", error);
 
       // Clean up pending auth on error
-      localStorage.removeItem(`miauth-pending-${uuid}`);
+      localStorage.removeItem(PENDING_AUTH_KEY_PREFIX);
 
       return {
         success: false,
@@ -220,7 +222,7 @@ class ClientAuthManager {
         credential: server.accessToken,
       });
 
-      await misskeyClient.request("i");
+      await misskeyClient.request("i", {});
       return true;
     } catch (error) {
       console.error("Token validation failed:", error);
