@@ -1,26 +1,41 @@
 import { ServerInfoBox } from "@/Component/parts/ServerList";
+import { useAuth } from "@/lib/auth/context";
+import { useStorage } from "@/lib/storage/context";
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { $api } from "../../lib/api/fetchClient";
 
 export const Route = createLazyFileRoute("/_authed/about")({
   component: About,
 });
 
 function About() {
-  const { data, status } = $api.useQuery("get", "/v1/server-sessions");
+  const storage = useStorage();
+  const auth = useAuth();
 
-  const { mutateAsync } = $api.useMutation(
-    "post",
-    "/v1/server-sessions/update-server-info",
-  );
-  const onClick = async (origin: string) => {
-    await mutateAsync({
-      body: {
-        origin,
-      },
-    });
+  const handleRefresh = async (serverId: string) => {
+    try {
+      await auth.refreshServerInfo(serverId);
+    } catch (error) {
+      console.error("Failed to refresh server info:", error);
+    }
   };
-  if (status === "pending") {
+
+  const handleRemove = async (serverId: string) => {
+    try {
+      await auth.removeServer(serverId);
+    } catch (error) {
+      console.error("Failed to remove server:", error);
+    }
+  };
+
+  const handleSelect = async (serverId: string) => {
+    try {
+      await auth.switchServer(serverId);
+    } catch (error) {
+      console.error("Failed to switch server:", error);
+    }
+  };
+
+  if (storage.isLoading) {
     return <div>Loading...</div>;
   }
 
@@ -28,11 +43,18 @@ function About() {
     <div className="p-2">
       <div className="font-bold text-2xl">About</div>
       <div className="flex flex-col gap-2">
-        {data
-          ? data.map((d) => (
-              <ServerInfoBox onClick={onClick} key={d.id} serverInfo={d} />
+        {storage.servers.length > 0
+          ? storage.servers.map((server) => (
+              <ServerInfoBox
+                key={server.id}
+                serverInfo={server}
+                onRefresh={handleRefresh}
+                onRemove={handleRemove}
+                onSelect={handleSelect}
+                isSelected={storage.currentServerId === server.id}
+              />
             ))
-          : "No data"}
+          : "No servers connected"}
       </div>
     </div>
   );

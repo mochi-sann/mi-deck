@@ -349,7 +349,13 @@ export interface components {
             serverSession: components["schemas"]["ServerSessionInfo"];
         };
         UpdateTimelineOrderDto: {
-            /** @description An array of timeline IDs in the desired order */
+            /**
+             * @description An array of timeline IDs in the desired order
+             * @example [
+             *       "123e4567-e89b-12d3-a456-426614174000",
+             *       "456e7890-e89b-12d3-a456-426614174001"
+             *     ]
+             */
             timelineIds: string[];
         };
     };
@@ -660,7 +666,7 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description Bad Request (validation failed). */
+            /** @description Bad Request (validation failed or empty array). */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -669,6 +675,13 @@ export interface operations {
             };
             /** @description Unauthorized. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden (timeline not owned by user). */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -689,6 +702,13 @@ export interface operations {
         responses: {
             /** @description Timeline configuration deleted successfully. */
             204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request (invalid UUID format). */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };

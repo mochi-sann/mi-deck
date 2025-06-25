@@ -1,7 +1,5 @@
-import { Button } from "@/Component/ui/button";
-import Text from "@/Component/ui/text";
-import { $api } from "@/lib/api/fetchClient";
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 export const Route = createLazyFileRoute(
   "/_authed/add-server/fallback/$origin",
@@ -10,33 +8,22 @@ export const Route = createLazyFileRoute(
 });
 
 function RouteComponent() {
-  const search = Route.useSearch();
-  const params = Route.useParams();
-  const sessionToken = search.session;
-  const { mutateAsync, status } = $api.useMutation(
-    "post",
-    "/v1/server-sessions",
-    {},
-  );
-  const OnSubmit = async () => {
-    const response = await mutateAsync({
-      body: {
-        sessionToken: sessionToken || "",
-        origin: `https://${params.origin}`,
-        serverType: "misskey",
-      },
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // This route is deprecated - redirect to the new auth callback
+    navigate({
+      to: "/auth/callback/$origin",
+      params: { origin: Route.useParams().origin },
+      search: Route.useSearch() as Record<string, unknown>,
     });
-    console.log(response);
-  };
+  }, [navigate]);
+
   return (
-    <div>
-      "/_authed/add-server/fallback"!
-      <pre>{JSON.stringify({ search: search }, null, 2)}</pre>
-      <Button onClick={OnSubmit} isLoading={status === "pending"}>
-        サーバーを追加
-      </Button>
-      {status === "error" ? <Text>エラーが発生しました</Text> : null}
-      {status === "success" ? <Text>サーバーを追加しました</Text> : null}
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="text-center">
+        <p>リダイレクト中...</p>
+      </div>
     </div>
   );
 }
