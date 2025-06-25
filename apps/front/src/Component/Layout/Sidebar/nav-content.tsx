@@ -1,8 +1,15 @@
 import { useStorage } from "@/lib/storage/context";
 import { Home, Plus, Server, Settings } from "lucide-react";
 import { Fragment, useState } from "react";
+import { NewServerForm } from "../../../routes/_authed/add-server/-form/NewServerForm";
 import { Button } from "../../ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../ui/dialog";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -10,7 +17,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../../ui/sidebar";
-import { NewServerForm } from "../../../routes/_authed/add-server/-form/NewServerForm";
 
 export function NavContent() {
   const storage = useStorage();
@@ -19,13 +25,13 @@ export function NavContent() {
   return (
     <Fragment>
       <SidebarGroup>
-        <SidebarGroupLabel>øø</SidebarGroupLabel>
+        <SidebarGroupLabel>„Åª„Éº„ÇÄ</SidebarGroupLabel>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <a href="/">
                 <Home />
-                <span>øøø</span>
+                <span>hhhhhhhhhhhhhh</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -33,7 +39,7 @@ export function NavContent() {
             <SidebarMenuButton asChild>
               <a href="/settings">
                 <Settings />
-                <span>øø</span>
+                <span>bbbbbbbbbbbbb</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -42,9 +48,12 @@ export function NavContent() {
 
       <SidebarGroup>
         <SidebarGroupLabel>
-          <div className="flex items-center justify-between w-full">
-            <span>µ¸–¸</span>
-            <Dialog open={isAddServerDialogOpen} onOpenChange={setIsAddServerDialogOpen}>
+          <div className="flex w-full items-center justify-between">
+            <span>„Å™„Å´„Åã</span>
+            <Dialog
+              open={isAddServerDialogOpen}
+              onOpenChange={setIsAddServerDialogOpen}
+            >
               <DialogTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
                   <Plus className="h-4 w-4" />
@@ -52,9 +61,9 @@ export function NavContent() {
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>∞WDµ¸–¸í˝†</DialogTitle>
+                  <DialogTitle>ssss</DialogTitle>
                 </DialogHeader>
-                <NewServerForm 
+                <NewServerForm
                   onSuccess={() => setIsAddServerDialogOpen(false)}
                 />
               </DialogContent>
@@ -66,7 +75,9 @@ export function NavContent() {
             <SidebarMenuItem>
               <SidebarMenuButton disabled>
                 <Server />
-                <span className="text-muted-foreground">µ¸–¸LBä~[ì</span>
+                <span className="text-muted-foreground">
+                  heeeeeeeeeeeeeeeee
+                </span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ) : (
