@@ -1,4 +1,3 @@
-import { permissions } from "misskey-js";
 import * as Misskey from "misskey-js";
 import { storageManager } from "../storage";
 import type { MisskeyServerConnection } from "../storage/types";
@@ -6,7 +5,7 @@ import type { MisskeyServerConnection } from "../storage/types";
 export interface MiAuthOptions {
   appName: string;
   appDescription?: string;
-  permissions: string[];
+  permissions: typeof Misskey.permissions;
 }
 
 export interface MiAuthResult {
@@ -19,7 +18,7 @@ class ClientAuthManager {
   private defaultAuthOptions: MiAuthOptions = {
     appName: "mi-deck",
     appDescription: "Misskey Timeline Deck Client",
-    permissions: permissions,
+    permissions: Misskey.permissions,
   };
 
   private generateMiAuthUrl(
@@ -87,16 +86,20 @@ class ClientAuthManager {
     sessionToken: string,
   ): Promise<MiAuthResult> {
     try {
+      console.log("CompleteAuth called with:", { uuid, sessionToken });
       await storageManager.initialize();
 
       // Retrieve pending auth session
       const pendingAuthData = localStorage.getItem(`miauth-pending-${uuid}`);
+      console.log("Retrieved pending auth data:", pendingAuthData);
+
       if (!pendingAuthData) {
         return { success: false, error: "Auth session not found or expired" };
       }
 
       const pendingAuth = JSON.parse(pendingAuthData);
       const origin = pendingAuth.origin;
+      console.log("Using origin from pending auth:", origin);
 
       // Validate session token and get user info
       const misskeyClient = new Misskey.api.APIClient({
@@ -104,10 +107,12 @@ class ClientAuthManager {
         credential: sessionToken,
       });
 
+      console.log("Making API requests to validate token...");
       const [userInfo, serverInfo] = await Promise.all([
         misskeyClient.request("i"),
         misskeyClient.request("meta", { detail: false }),
       ]);
+      console.log("API requests successful:", { userInfo, serverInfo });
 
       // Create server connection
       const serverConnection: Omit<

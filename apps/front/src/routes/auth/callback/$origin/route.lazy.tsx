@@ -22,17 +22,53 @@ function AuthCallbackComponent() {
   useEffect(() => {
     const completeAuthentication = async () => {
       try {
+        console.log("Starting authentication with:", { origin, search });
+
         if (!search.session) {
-          throw new Error("No session token provided");
+          throw new Error("セッショントークンが提供されていません");
         }
 
-        // Extract UUID from URL or generate one (MiAuth should provide it)
-        const urlParams = new URLSearchParams(window.location.search);
-        const uuid = urlParams.get("uuid") || crypto.randomUUID();
+        // Find pending auth session from localStorage
+        let uuid: string | null = null;
+        const decodedOrigin = decodeURIComponent(origin);
+        console.log(
+          "Looking for pending auth session for origin:",
+          decodedOrigin,
+        );
 
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key?.startsWith("miauth-pending-")) {
+            try {
+              const data = JSON.parse(localStorage.getItem(key) || "{}");
+              console.log("Found pending auth:", data);
+              if (data.origin === decodedOrigin) {
+                uuid = data.uuid;
+                console.log("Found matching UUID:", uuid);
+                break;
+              }
+            } catch (e) {
+              console.warn("Invalid JSON in localStorage key:", key, e);
+            }
+          }
+        }
+
+        if (!uuid) {
+          throw new Error(
+            `認証セッションが見つかりません (origin: ${decodedOrigin})`,
+          );
+        }
+
+        console.log(
+          "Completing auth with UUID:",
+          uuid,
+          "and session:",
+          search.session,
+        );
         const result = await auth.completeAuth(uuid, search.session);
 
         if (result.success) {
+          console.log("Authentication successful");
           setStatus("success");
           // Redirect to main app after success
           setTimeout(() => {
@@ -43,13 +79,13 @@ function AuthCallbackComponent() {
         }
       } catch (err) {
         console.error("Auth callback failed:", err);
-        setError(err instanceof Error ? err.message : "Authentication failed");
+        setError(err instanceof Error ? err.message : "認証に失敗しました");
         setStatus("error");
       }
     };
 
     completeAuthentication();
-  }, [search.session, origin, auth, navigate]);
+  }, [search, origin, auth, navigate]);
 
   const handleRetry = () => {
     window.close(); // Close popup and let user try again
