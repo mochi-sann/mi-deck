@@ -1,4 +1,5 @@
 import * as Misskey from "misskey-js";
+import { User } from "misskey-js/entities.js";
 import { storageManager } from "../storage";
 import type { MisskeyServerConnection } from "../storage/types";
 
@@ -109,13 +110,36 @@ class ClientAuthManager {
       }
 
       const pendingAuth: PeendingAuthType = JSON.parse(pendingAuthData);
+
+      const fetchMisskey: {
+        ok: boolean;
+        token: string;
+        user: User;
+      } = await fetch(
+        `https://${pendingAuth.origin}/api/miauth/${sessionToken}/check`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Length": "0",
+          },
+        },
+      )
+        .then((res) => res.json())
+        .catch((err) => {
+          console.error(err);
+          return new Error("can not auth misskey server");
+        });
+
+      if (!fetchMisskey || fetchMisskey.ok === false) {
+        throw new Error("Cannot authenticate with Misskey server");
+      }
       const origin = pendingAuth.origin;
       console.log("Using origin from pending auth:", origin);
 
       // Validate session token and get user info
       const misskeyClient = new Misskey.api.APIClient({
         origin: `https://${origin}`,
-        credential: sessionToken,
+        credential: fetchMisskey.token,
       });
 
       console.log("Making API requests to validate token...");
@@ -133,7 +157,7 @@ class ClientAuthManager {
         "id" | "createdAt" | "updatedAt"
       > = {
         origin: `https://${origin}`,
-        accessToken: sessionToken,
+        accessToken: fetchMisskey.token,
         isActive: true,
         userInfo: {
           id: userInfo.id,
