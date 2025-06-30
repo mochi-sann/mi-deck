@@ -23,7 +23,7 @@ export interface TimelineConfig {
   id: string;
   name: string;
   serverId: string;
-  type: "home" | "local" | "social" | "global";
+  type: "home" | "local" | "social" | "global" | "list" | "channel";
   order: number;
   isVisible: boolean;
   settings?: {

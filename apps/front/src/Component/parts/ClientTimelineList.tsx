@@ -25,7 +25,10 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import Text from "../ui/text";
 import { ClientCreateTimelineDialog } from "./ClientCreateTimelineDialog";
-import { SwitchTimeLineType } from "./timelines/SwitchTimeLineType";
+import {
+  SwitchTimeLineType,
+  SwitchTimeLineTypeProps,
+} from "./timelines/SwitchTimeLineType";
 
 function SortableTimeline({
   timeline,
@@ -92,28 +95,29 @@ function SortableTimeline({
   };
 
   // Convert our TimelineConfig to the format expected by SwitchTimeLineType
-  const timelineForSwitch = {
+  const timelineForSwitch: SwitchTimeLineTypeProps["timeline"] = {
     id: timeline.id,
     name: timeline.name,
-    type: timeline.type.toUpperCase() as
-      | "HOME"
-      | "LOCAL"
-      | "GLOBAL"
-      | "LIST"
-      | "USER"
-      | "CHANNEL",
-    serverSessionId: timeline.serverId,
-    serverSession: {
-      id: server.id,
-      origin: server.origin,
-      serverToken: server.accessToken || "",
-      serverType: "Misskey" as const,
-    },
+    type: timeline.type.toLowerCase() as
+      | "home"
+      | "local"
+      | "global"
+      | "list"
+      | "list"
+      | "channel",
+    server: server,
+    serverId: server.id,
+    isVisible: timeline.isVisible,
+    // serverSessionId: timeline.serverId,
+    // serverSession: {
+    //   id: server.id,
+    //   origin: server.origin,
+    //   serverToken: server.accessToken || "",
+    //   serverType: "Misskey" as const,
+    // },
     order: timeline.order,
-    createdAt: timeline.createdAt.toISOString(),
-    updatedAt: timeline.updatedAt.toISOString(),
-    listId: null,
-    channelId: null,
+    createdAt: timeline.createdAt,
+    updatedAt: timeline.updatedAt,
   };
 
   return (

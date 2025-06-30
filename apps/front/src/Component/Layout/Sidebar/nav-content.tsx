@@ -1,7 +1,7 @@
 import { useStorage } from "@/lib/storage/context";
+import { NewServerForm } from "@/routes/_authed/add-server/-form/NewServerForm";
 import { Home, Plus, Server, Settings } from "lucide-react";
 import { Fragment, useState } from "react";
-import { NewServerForm } from "../../../routes/_authed/add-server/-form/NewServerForm";
 import { Button } from "../../ui/button";
 import {
   Dialog,
@@ -49,7 +49,7 @@ export function NavContent() {
       <SidebarGroup>
         <SidebarGroupLabel>
           <div className="flex w-full items-center justify-between">
-            <span>なにか</span>
+            <span>サーバーを追加</span>
             <Dialog
               open={isAddServerDialogOpen}
               onOpenChange={setIsAddServerDialogOpen}
@@ -63,9 +63,7 @@ export function NavContent() {
                 <DialogHeader>
                   <DialogTitle>ssss</DialogTitle>
                 </DialogHeader>
-                <NewServerForm
-                  onSuccess={() => setIsAddServerDialogOpen(false)}
-                />
+                <NewServerForm />
               </DialogContent>
             </Dialog>
           </div>

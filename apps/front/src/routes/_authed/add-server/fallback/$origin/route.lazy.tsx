@@ -13,9 +13,11 @@ function RouteComponent() {
   useEffect(() => {
     // This route is deprecated - redirect to the new auth callback
     navigate({
-      to: "/auth/callback/$origin",
+      to: "/callback/$origin",
       params: { origin: Route.useParams().origin },
-      search: Route.useSearch() as Record<string, unknown>,
+      search: {
+        session: Route.useSearch().session || "",
+      },
     });
   }, [navigate]);
 
