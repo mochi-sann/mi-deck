@@ -209,6 +209,110 @@ class LocalStorageManager {
       console.error("Failed to clear auth state:", error);
     }
   }
+
+  // Import/Export functionality
+  async exportData(): Promise<string> {
+    const servers = this.getStoredData<MisskeyServerConnection>(
+      STORAGE_KEYS.servers,
+    );
+    const timelines = this.getStoredData<TimelineConfig>(
+      STORAGE_KEYS.timelines,
+    );
+    const authState = await this.getAuthState();
+
+    const exportData = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      data: {
+        servers,
+        timelines,
+        authState: authState || null,
+      },
+    };
+
+    return JSON.stringify(exportData, null, 2);
+  }
+
+  async importData(jsonData: string): Promise<void> {
+    let importData: {
+      version: number;
+      exportedAt: string;
+      data: {
+        servers: MisskeyServerConnection[];
+        timelines: TimelineConfig[];
+        authState: ClientAuthState | null;
+      };
+    };
+
+    try {
+      importData = JSON.parse(jsonData);
+    } catch (error) {
+      throw new Error("無効なJSONデータです");
+    }
+
+    // Version check
+    if (!importData.version || importData.version !== 1) {
+      throw new Error("サポートされていないデータバージョンです");
+    }
+
+    // Validate data structure
+    if (!importData.data || typeof importData.data !== "object") {
+      throw new Error("データ構造が無効です");
+    }
+
+    const { servers, timelines, authState } = importData.data;
+
+    try {
+      // Clear existing data
+      this.setStoredData(STORAGE_KEYS.servers, []);
+      this.setStoredData(STORAGE_KEYS.timelines, []);
+      localStorage.removeItem(STORAGE_KEYS.authState);
+
+      // Import servers
+      if (Array.isArray(servers)) {
+        const serversWithDates = servers.map((server) => ({
+          ...server,
+          createdAt: new Date(server.createdAt),
+          updatedAt: new Date(server.updatedAt),
+        }));
+        this.setStoredData(STORAGE_KEYS.servers, serversWithDates);
+      }
+
+      // Import timelines
+      if (Array.isArray(timelines)) {
+        const timelinesWithDates = timelines.map((timeline) => ({
+          ...timeline,
+          createdAt: new Date(timeline.createdAt),
+          updatedAt: new Date(timeline.updatedAt),
+        }));
+        this.setStoredData(STORAGE_KEYS.timelines, timelinesWithDates);
+      }
+
+      // Import auth state
+      if (authState) {
+        const authStateWithDates = {
+          ...authState,
+          lastUpdated: new Date(authState.lastUpdated),
+        };
+        await this.setAuthState(authStateWithDates);
+      }
+    } catch (error) {
+      throw new Error(
+        `データのインポートに失敗しました: ${error instanceof Error ? error.message : "不明なエラー"}`,
+      );
+    }
+  }
+
+  async clearAllData(): Promise<void> {
+    try {
+      localStorage.removeItem(STORAGE_KEYS.servers);
+      localStorage.removeItem(STORAGE_KEYS.timelines);
+      localStorage.removeItem(STORAGE_KEYS.authState);
+    } catch (error) {
+      console.error("Failed to clear all data:", error);
+      throw new Error("データの削除に失敗しました");
+    }
+  }
 }
 
 export const localStorageManager = new LocalStorageManager();

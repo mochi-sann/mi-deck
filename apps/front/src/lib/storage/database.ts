@@ -207,6 +207,126 @@ class DatabaseManager {
     const db = this.ensureDb();
     await db.delete("auth", "current");
   }
+
+  // Import/Export functionality
+  async exportData(): Promise<string> {
+    const db = this.ensureDb();
+
+    const [servers, timelines, authState] = await Promise.all([
+      db.getAll("servers"),
+      db.getAll("timelines"),
+      db.get("auth", "current"),
+    ]);
+
+    const exportData = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      data: {
+        servers,
+        timelines,
+        authState: authState || null,
+      },
+    };
+
+    return JSON.stringify(exportData, null, 2);
+  }
+
+  async importData(jsonData: string): Promise<void> {
+    const db = this.ensureDb();
+
+    let importData: {
+      version: number;
+      exportedAt: string;
+      data: {
+        servers: MisskeyServerConnection[];
+        timelines: TimelineConfig[];
+        authState: ClientAuthState | null;
+      };
+    };
+
+    try {
+      importData = JSON.parse(jsonData);
+    } catch (error) {
+      throw new Error("無効なJSONデータです");
+    }
+
+    // Version check
+    if (!importData.version || importData.version !== 1) {
+      throw new Error("サポートされていないデータバージョンです");
+    }
+
+    // Validate data structure
+    if (!importData.data || typeof importData.data !== "object") {
+      throw new Error("データ構造が無効です");
+    }
+
+    const { servers, timelines, authState } = importData.data;
+
+    // Begin transaction
+    const tx = db.transaction(["servers", "timelines", "auth"], "readwrite");
+
+    try {
+      // Clear existing data (optional - you might want to make this configurable)
+      await tx.objectStore("servers").clear();
+      await tx.objectStore("timelines").clear();
+      await tx.objectStore("auth").clear();
+
+      // Import servers
+      if (Array.isArray(servers)) {
+        for (const server of servers) {
+          // Convert date strings back to Date objects
+          const serverWithDates = {
+            ...server,
+            createdAt: new Date(server.createdAt),
+            updatedAt: new Date(server.updatedAt),
+          };
+          await tx.objectStore("servers").put(serverWithDates);
+        }
+      }
+
+      // Import timelines
+      if (Array.isArray(timelines)) {
+        for (const timeline of timelines) {
+          // Convert date strings back to Date objects
+          const timelineWithDates = {
+            ...timeline,
+            createdAt: new Date(timeline.createdAt),
+            updatedAt: new Date(timeline.updatedAt),
+          };
+          await tx.objectStore("timelines").put(timelineWithDates);
+        }
+      }
+
+      // Import auth state
+      if (authState) {
+        const authStateWithDates = {
+          ...authState,
+          lastUpdated: new Date(authState.lastUpdated),
+        };
+        await tx.objectStore("auth").put(authStateWithDates, "current");
+      }
+
+      await tx.done;
+    } catch (error) {
+      tx.abort();
+      throw new Error(
+        `データのインポートに失敗しました: ${error instanceof Error ? error.message : "不明なエラー"}`,
+      );
+    }
+  }
+
+  async clearAllData(): Promise<void> {
+    const db = this.ensureDb();
+    const tx = db.transaction(["servers", "timelines", "auth"], "readwrite");
+
+    await Promise.all([
+      tx.objectStore("servers").clear(),
+      tx.objectStore("timelines").clear(),
+      tx.objectStore("auth").clear(),
+    ]);
+
+    await tx.done;
+  }
 }
 
 export const databaseManager = new DatabaseManager();

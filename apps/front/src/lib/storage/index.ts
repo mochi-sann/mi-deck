@@ -31,6 +31,10 @@ interface StorageInterface {
   getAuthState(): Promise<ClientAuthState | undefined>;
   setAuthState(state: ClientAuthState): Promise<void>;
   clearAuthState(): Promise<void>;
+
+  exportData(): Promise<string>;
+  importData(jsonData: string): Promise<void>;
+  clearAllData(): Promise<void>;
 }
 
 class StorageManager implements StorageInterface {
@@ -151,6 +155,22 @@ class StorageManager implements StorageInterface {
   async clearAuthState(): Promise<void> {
     this.ensureInitialized();
     return this.storage.clearAuthState();
+  }
+
+  // Import/Export functionality
+  async exportData(): Promise<string> {
+    this.ensureInitialized();
+    return this.storage.exportData();
+  }
+
+  async importData(jsonData: string): Promise<void> {
+    this.ensureInitialized();
+    return this.storage.importData(jsonData);
+  }
+
+  async clearAllData(): Promise<void> {
+    this.ensureInitialized();
+    return this.storage.clearAllData();
   }
 
   /**

@@ -10,7 +10,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
   return (
     <div className="m-0 flex h-svh w-dvw overscroll-none p-0 ">
       <AppSidebar />
-      <div className="flex h-svh w-dvw flex-1 flex-col overflow-x-auto overflow-y-hidden">
+      <div className="flex h-svh w-dvw flex-1 flex-col overflow-x-auto overflow-y-scroll">
         <div>{props.children}</div>
       </div>
     </div>

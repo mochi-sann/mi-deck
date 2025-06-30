@@ -10,9 +10,11 @@ import {
 } from "@/Component/ui/select";
 import { Separator } from "@/Component/ui/separator";
 import { Switch } from "@/Component/ui/switch";
+import { storageManager } from "@/lib/storage";
 import { useStorage } from "@/lib/storage/context";
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { Settings } from "lucide-react";
+import { AlertTriangle, Download, Settings, Upload } from "lucide-react";
+import { useRef, useState } from "react";
 
 export const Route = createLazyFileRoute("/_authed/settings")({
   component: SettingsPage,
@@ -20,41 +22,71 @@ export const Route = createLazyFileRoute("/_authed/settings")({
 
 function SettingsPage() {
   const storage = useStorage();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
 
-  const handleExportData = () => {
-    const data = {
-      servers: storage.servers,
-      timelines: storage.timelines,
-      currentServerId: storage.currentServerId,
-      exportedAt: new Date().toISOString(),
-    };
+  const handleExportData = async () => {
+    setIsExporting(true);
+    try {
+      const exportData = await storageManager.exportData();
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `mi-deck-settings-${new Date().toISOString().split("T")[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+      const blob = new Blob([exportData], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `mi-deck-data-${new Date().toISOString().split("T")[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("データのエクスポートに失敗しました:", error);
+      alert("データのエクスポートに失敗しました");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsImporting(true);
+    try {
+      const text = await file.text();
+      await storageManager.importData(text);
+
+      // Force refresh to update UI with new data
+      window.location.reload();
+    } catch (error) {
+      console.error("データのインポートに失敗しました:", error);
+      alert(
+        `データのインポートに失敗しました: ${error instanceof Error ? error.message : "不明なエラー"}`,
+      );
+    } finally {
+      setIsImporting(false);
+      // Reset the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
   };
 
   const handleClearData = async () => {
     if (confirm("すべてのデータを削除しますか？この操作は元に戻せません。")) {
-      // すべてのサーバーとタイムラインを削除
-      const serverIds = storage.servers.map((s) => s.id);
-      const timelineIds = storage.timelines.map((t) => t.id);
-
       try {
-        // すべてのタイムラインを削除
-        await Promise.all(timelineIds.map((id) => storage.deleteTimeline(id)));
-        // すべてのサーバーを削除
-        await Promise.all(serverIds.map((id) => storage.deleteServer(id)));
-        // 現在のサーバーをクリア
-        await storage.setCurrentServer(undefined);
+        await storageManager.clearAllData();
+        // Force refresh to update UI
+        window.location.reload();
       } catch (error) {
         console.error("データの削除に失敗しました:", error);
         alert("データの削除に失敗しました");
@@ -63,7 +95,7 @@ function SettingsPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-4xl space-y-6 p-6">
+    <div className="container mx-auto h-screen max-w-4xl space-y-6 p-6">
       <div className="mb-6 flex items-center gap-2">
         <Settings className="h-6 w-6" />
         <h1 className="font-bold text-2xl">設定</h1>
@@ -212,23 +244,57 @@ function SettingsPage() {
         <CardContent className="space-y-4">
           <div className="flex flex-col gap-4">
             <div>
-              <h4 className="mb-2 font-medium">データのエクスポート</h4>
+              <h4 className="mb-2 flex items-center gap-2 font-medium">
+                <Download className="h-4 w-4" />
+                データのエクスポート
+              </h4>
               <p className="mb-3 text-muted-foreground text-sm">
-                サーバー情報とタイムライン設定をJSONファイルとしてダウンロードします
+                サーバー情報、タイムライン設定、認証状態をJSONファイルとしてダウンロードします
               </p>
-              <Button onClick={handleExportData} variant="outline">
-                データをエクスポート
+              <Button
+                onClick={handleExportData}
+                variant="outline"
+                disabled={isExporting}
+              >
+                {isExporting ? "エクスポート中..." : "データをエクスポート"}
               </Button>
             </div>
 
             <Separator />
 
             <div>
-              <h4 className="mb-2 font-medium text-destructive">
+              <h4 className="mb-2 flex items-center gap-2 font-medium">
+                <Upload className="h-4 w-4" />
+                データのインポート
+              </h4>
+              <p className="mb-3 text-muted-foreground text-sm">
+                以前にエクスポートしたJSONファイルからデータを復元します（既存のデータは上書きされます）
+              </p>
+              <Button
+                onClick={handleImportClick}
+                variant="outline"
+                disabled={isImporting}
+              >
+                {isImporting ? "インポート中..." : "データをインポート"}
+              </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".json"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </div>
+
+            <Separator />
+
+            <div>
+              <h4 className="mb-2 flex items-center gap-2 font-medium text-destructive">
+                <AlertTriangle className="h-4 w-4" />
                 データの削除
               </h4>
               <p className="mb-3 text-muted-foreground text-sm">
-                すべてのサーバー情報とタイムライン設定を削除します（この操作は元に戻せません）
+                すべてのサーバー情報、タイムライン設定、認証状態を削除します（この操作は元に戻せません）
               </p>
               <Button onClick={handleClearData} variant="destructive">
                 すべてのデータを削除
