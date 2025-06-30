@@ -1,7 +1,7 @@
-import { MenuFieldSet } from "@/Component/forms/MenuFieldSet";
-import { TextFieldSet } from "@/Component/forms/TextFieldSet";
-import { Button } from "@/Component/ui/button";
-import Text from "@/Component/ui/text";
+import { MenuFieldSet } from "@/components/forms/MenuFieldSet";
+import { TextFieldSet } from "@/components/forms/TextFieldSet";
+import { Button } from "@/components/ui/button";
+import Text from "@/components/ui/text";
 import { useStorage } from "@/lib/storage/context";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
 import { valibotResolver } from "@hookform/resolvers/valibot";

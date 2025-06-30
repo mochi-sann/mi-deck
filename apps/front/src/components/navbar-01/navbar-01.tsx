@@ -1,5 +1,5 @@
-import { Button } from "@/Component/ui/button";
-import { useSidebar } from "@/Component/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { useSidebar } from "@/components/ui/sidebar";
 import { Menu } from "lucide-react";
 import { NavigationSheet } from "./navigation-sheet";
 

@@ -1,5 +1,5 @@
-import { Spinner } from "@/Component/ui/spinner";
-import Text from "@/Component/ui/text";
+import { Spinner } from "@/components/ui/spinner";
+import Text from "@/components/ui/text";
 import { useStorage } from "@/lib/storage/context";
 import { Suspense } from "react";
 import { CreateTimelineForm } from "./CreateTimelineForm";
