@@ -91,7 +91,7 @@ export const NewNote = () => {
     const serverToken =
       serverSessions?.find(
         (serverSession) => serverSession.id === values.serverSessionId,
-      )?.serverToken || "";
+      )?.accessToken || "";
 
     const client = new APIClient({
       origin: origin,
@@ -106,7 +106,6 @@ export const NewNote = () => {
       );
 
       await client.request("notes/create", {
-        // この行の型エラーが解消されることを期待
         text: values.noteContent,
         visibility: values.visibility,
         localOnly: values.isLocalOnly,

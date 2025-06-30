@@ -1,24 +1,41 @@
-import { $api } from "@/lib/api/fetchClient";
+import { useTimeline } from "@/Component/parts/timelines/hooks/useTimeline";
+import { useStorage } from "@/lib/storage/context";
 import type React from "react";
 
 export const Timeline: React.FC = () => {
-  const { isPending, error, data } = $api.useQuery(
-    "get",
-    "/v1/timeline/{serverSessionId}",
-    {
-      params: {
-        path: {
-          serverSessionId: "f8895928-12d9-47e6-85a3-8de88aaaa7a8",
-        },
-      },
-    },
-  );
-  if (isPending) return "Loading...";
+  const { servers, currentServerId } = useStorage();
 
-  if (error) return `An error has occurred: ${JSON.stringify(error)}`;
+  const currentServer = servers.find((s) => s.id === currentServerId);
+
+  const { notes, error, isLoading } = useTimeline(
+    currentServer?.origin || "",
+    currentServer?.accessToken || "",
+    "home",
+  );
+
+  if (!currentServer) {
+    return <div>No server selected</div>;
+  }
+
+  if (isLoading) return "Loading...";
+
+  if (error) return `An error has occurred: ${error.message}`;
+
   return (
     <div>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <h3>Timeline for {currentServer.origin}</h3>
+      {notes.map((note) => (
+        <div
+          key={note.id}
+          style={{ border: "1px solid #ccc", margin: "10px", padding: "10px" }}
+        >
+          <p>
+            <strong>{note.user.name || note.user.username}</strong>
+          </p>
+          <p>{note.text}</p>
+          <small>{new Date(note.createdAt).toLocaleString()}</small>
+        </div>
+      ))}
     </div>
   );
 };

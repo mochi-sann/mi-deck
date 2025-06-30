@@ -208,7 +208,7 @@ class ClientAuthManager {
       });
 
       const [userInfo, serverInfo] = await Promise.all([
-        misskeyClient.request("i"),
+        misskeyClient.request("i", {}),
         misskeyClient.request("meta", { detail: false }),
       ]);
 

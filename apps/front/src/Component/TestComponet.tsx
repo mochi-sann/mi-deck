@@ -1,12 +1,25 @@
 import type React from "react";
-import { $api } from "../lib/api/fetchClient";
+import { useStorage } from "../lib/storage/context";
 
 export const TestComponet: React.FC = () => {
-  const { isPending, error, data } = $api.useQuery("get", "/v1/auth/me");
+  const { servers, currentServerId, isLoading, error } = useStorage();
 
-  if (isPending) return "Loading...";
+  const currentServer = servers.find((s) => s.id === currentServerId);
 
-  if (error) return `An error has occurred: ${JSON.stringify(error)}`;
+  if (isLoading) return "Loading...";
 
-  return <div>{JSON.stringify(data)}</div>;
+  if (error) return `An error has occurred: ${error}`;
+
+  return (
+    <div>
+      <h3>Current Server:</h3>
+      {currentServer ? (
+        <pre>{JSON.stringify(currentServer, null, 2)}</pre>
+      ) : (
+        <p>No server selected</p>
+      )}
+      <h3>All Servers:</h3>
+      <pre>{JSON.stringify(servers, null, 2)}</pre>
+    </div>
+  );
 };

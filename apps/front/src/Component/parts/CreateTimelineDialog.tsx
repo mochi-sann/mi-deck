@@ -23,8 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/Component/ui/select";
-import { $api } from "@/lib/api/fetchClient";
-import { components } from "@/lib/api/type";
+import { useStorage } from "@/lib/storage/context";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useForm } from "react-hook-form";
 import * as v from "valibot";
@@ -35,19 +34,14 @@ type CreateTimelineDialogProps = {
   onSuccess: () => void;
 };
 
-type ServerSessionEntity =
-  components["schemas"]["CreateServerSessionResponseEntity"];
-
 const formSchema = v.object({
-  serverSessionId: v.pipe(v.string(), v.nonEmpty("サーバーを選択してください")), // エラーメッセージを第一引数に移動
+  serverId: v.pipe(v.string(), v.nonEmpty("サーバーを選択してください")),
   type: v.union(
     [
       v.literal("home"),
       v.literal("local"),
+      v.literal("social"),
       v.literal("global"),
-      v.literal("list"),
-      v.literal("user"),
-      v.literal("channel"),
     ],
     "タイムラインタイプを選択してください",
   ),
@@ -61,17 +55,12 @@ export function CreateTimelineDialog({
   onClose,
   onSuccess,
 }: CreateTimelineDialogProps) {
-  const { data: serverSessions, status: serverSessionsStatus } = $api.useQuery(
-    "get",
-    "/v1/server-sessions",
-    {},
-  );
-  const createTimelineMutation = $api.useMutation("post", "/v1/timeline");
+  const { servers, addTimeline } = useStorage();
 
   const form = useForm<FormValues>({
     resolver: valibotResolver(formSchema),
     defaultValues: {
-      serverSessionId: "",
+      serverId: "",
       type: "home",
       name: "",
     },
@@ -79,30 +68,21 @@ export function CreateTimelineDialog({
 
   const onSubmit = async (values: FormValues) => {
     try {
-      await createTimelineMutation.mutateAsync({
-        body: {
-          serverSessionId: values.serverSessionId,
-          type: values.type.toUpperCase() as
-            | "HOME"
-            | "LOCAL"
-            | "GLOBAL"
-            | "LIST"
-            | "USER"
-            | "CHANNEL",
-          name: values.name,
-        },
+      const timelineCount = 0; // Simple ordering for now
+
+      await addTimeline({
+        serverId: values.serverId,
+        type: values.type,
+        name: values.name,
+        order: timelineCount,
+        isVisible: true,
       });
       onSuccess();
       form.reset();
     } catch (error) {
       console.error("Failed to create timeline:", error);
-      // エラーハンドリングをここに追加
     }
   };
-
-  const typedServerSessions = serverSessions as
-    | ServerSessionEntity[]
-    | undefined;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -120,14 +100,13 @@ export function CreateTimelineDialog({
           >
             <FormField
               control={form.control}
-              name="serverSessionId"
+              name="serverId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>サーバー</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    disabled={serverSessionsStatus === "pending"}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -135,9 +114,10 @@ export function CreateTimelineDialog({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {typedServerSessions?.map((session) => (
-                        <SelectItem key={session.id} value={session.id}>
-                          {new URL(session.origin).hostname}
+                      {servers.map((server) => (
+                        <SelectItem key={server.id} value={server.id}>
+                          {server.serverInfo?.name ||
+                            new URL(server.origin).hostname}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -165,6 +145,7 @@ export function CreateTimelineDialog({
                     <SelectContent>
                       <SelectItem value="home">ホーム</SelectItem>
                       <SelectItem value="local">ローカル</SelectItem>
+                      <SelectItem value="social">ソーシャル</SelectItem>
                       <SelectItem value="global">グローバル</SelectItem>
                     </SelectContent>
                   </Select>
@@ -191,9 +172,7 @@ export function CreateTimelineDialog({
             />
 
             <DialogFooter>
-              <Button type="submit" disabled={createTimelineMutation.isPending}>
-                {createTimelineMutation.isPending ? "作成中..." : "作成"}
-              </Button>
+              <Button type="submit">作成</Button>
             </DialogFooter>
           </form>
         </Form>
