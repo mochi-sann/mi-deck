@@ -140,7 +140,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
     setError(undefined);
 
     // Reset storage manager state
-    (storageManager as unknown).initialized = false;
+    (storageManager as unknown as { initialized: boolean }).initialized = false;
 
     await initializeStorage();
   };

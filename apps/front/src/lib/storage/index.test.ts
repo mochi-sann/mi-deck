@@ -48,7 +48,7 @@ describe("StorageManager", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     // Reset the initialized state for each test
-    (storageManager as unknown).initialized = false;
+    (storageManager as unknown as { initialized: boolean }).initialized = false;
   });
 
   describe("Initialization", () => {
