@@ -14,7 +14,22 @@ class LocalStorageManager {
   private getStoredData<T>(key: string): T[] {
     try {
       const data = localStorage.getItem(key);
-      return data ? JSON.parse(data) : [];
+      if (!data) return [];
+
+      const parsed = JSON.parse(data);
+      // Convert date strings back to Date objects if they exist
+      return parsed.map((item: Record<string, unknown>) => {
+        if (item.createdAt && typeof item.createdAt === "string") {
+          item.createdAt = new Date(item.createdAt);
+        }
+        if (item.updatedAt && typeof item.updatedAt === "string") {
+          item.updatedAt = new Date(item.updatedAt);
+        }
+        if (item.lastUpdated && typeof item.lastUpdated === "string") {
+          item.lastUpdated = new Date(item.lastUpdated);
+        }
+        return item as T;
+      });
     } catch {
       return [];
     }
@@ -25,6 +40,7 @@ class LocalStorageManager {
       localStorage.setItem(key, JSON.stringify(data));
     } catch (error) {
       console.error("Failed to save to localStorage:", error);
+      throw error; // Re-throw the error so it can be caught by importData
     }
   }
 
@@ -184,7 +200,14 @@ class LocalStorageManager {
   async getAuthState(): Promise<ClientAuthState | undefined> {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.authState);
-      return data ? JSON.parse(data) : undefined;
+      if (!data) return undefined;
+
+      const parsed = JSON.parse(data);
+      // Convert date strings back to Date objects
+      if (parsed.lastUpdated && typeof parsed.lastUpdated === "string") {
+        parsed.lastUpdated = new Date(parsed.lastUpdated);
+      }
+      return parsed;
     } catch {
       return undefined;
     }
