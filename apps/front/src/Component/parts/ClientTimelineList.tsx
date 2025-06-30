@@ -18,7 +18,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { AlertCircle, GripVertical, Plus, Server, Trash2 } from "lucide-react";
+import { GripVertical, Plus, Server, Trash2 } from "lucide-react";
 import { APIClient } from "misskey-js/api.js";
 import { Fragment, Suspense, useState } from "react";
 import { Button } from "../ui/button";
@@ -234,34 +234,6 @@ export function ClientTimelineList() {
                 再試行中... ({storage.retryCount}/3)
               </Text>
             )}
-          </div>
-        </Card>
-      </div>
-    );
-  }
-
-  if (storage.error) {
-    return (
-      <div className="flex h-screen overflow-x-auto overflow-y-hidden">
-        <Card className="flex flex-1 items-center justify-center">
-          <div className="flex flex-col items-center gap-4 text-center">
-            <AlertCircle className="h-16 w-16 text-destructive" />
-            <div>
-              <Text className="font-semibold text-lg">
-                エラーが発生しました
-              </Text>
-              <Text className="text-muted-foreground text-sm">
-                タイムラインの読み込みに失敗しました: {storage.error}
-              </Text>
-            </div>
-            <div className="flex gap-2">
-              <Button onClick={storage.retry} variant="outline" size="sm">
-                再試行
-              </Button>
-              <Button onClick={storage.clearError} variant="ghost" size="sm">
-                エラーをクリア
-              </Button>
-            </div>
           </div>
         </Card>
       </div>
