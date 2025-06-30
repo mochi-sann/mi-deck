@@ -28,7 +28,7 @@ import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useForm } from "react-hook-form";
 import * as v from "valibot";
 
-type CreateTimelineDialogProps = {
+type ClientCreateTimelineDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
@@ -50,12 +50,12 @@ const formSchema = v.object({
 
 type FormValues = v.InferOutput<typeof formSchema>;
 
-export function CreateTimelineDialog({
+export function ClientCreateTimelineDialog({
   isOpen,
   onClose,
   onSuccess,
-}: CreateTimelineDialogProps) {
-  const { servers, addTimeline } = useStorage();
+}: ClientCreateTimelineDialogProps) {
+  const storage = useStorage();
 
   const form = useForm<FormValues>({
     resolver: valibotResolver(formSchema),
@@ -68,19 +68,27 @@ export function CreateTimelineDialog({
 
   const onSubmit = async (values: FormValues) => {
     try {
-      const timelineCount = 0; // Simple ordering for now
+      // Get the next order number
+      const maxOrder = Math.max(...storage.timelines.map((t) => t.order), -1);
 
-      await addTimeline({
+      await storage.addTimeline({
+        name: values.name,
         serverId: values.serverId,
         type: values.type,
-        name: values.name,
-        order: timelineCount,
+        order: maxOrder + 1,
         isVisible: true,
+        settings: {
+          withReplies: false,
+          withFiles: false,
+          excludeNsfw: false,
+        },
       });
+
       onSuccess();
       form.reset();
     } catch (error) {
       console.error("Failed to create timeline:", error);
+      alert("タイムラインの作成に失敗しました。");
     }
   };
 
@@ -107,6 +115,7 @@ export function CreateTimelineDialog({
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    disabled={storage.isLoading}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -114,7 +123,7 @@ export function CreateTimelineDialog({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {servers.map((server) => (
+                      {storage.servers.map((server) => (
                         <SelectItem key={server.id} value={server.id}>
                           {server.serverInfo?.name ||
                             new URL(server.origin).hostname}
@@ -172,7 +181,9 @@ export function CreateTimelineDialog({
             />
 
             <DialogFooter>
-              <Button type="submit">作成</Button>
+              <Button type="submit" disabled={storage.isLoading}>
+                {storage.isLoading ? "作成中..." : "作成"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>

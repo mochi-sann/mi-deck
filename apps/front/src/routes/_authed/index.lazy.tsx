@@ -1,4 +1,4 @@
-import { TimelineList } from "@/Component/parts/TimelineList";
+import { ClientTimelineList } from "@/Component/parts/ClientTimelineList";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/_authed/")({
@@ -8,7 +8,7 @@ export const Route = createLazyFileRoute("/_authed/")({
 function RouteComponent() {
   return (
     <div>
-      <TimelineList />
+      <ClientTimelineList />
     </div>
   );
 }

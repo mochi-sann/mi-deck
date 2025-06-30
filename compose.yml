@@ -48,7 +48,7 @@ services:
   #     - app-network
   misskey-web:
     # build: .
-    image : misskey/misskey:2025.4.1
+    image : misskey/misskey:2025.6.3
     # restart: always
     links:
       - misskey-db

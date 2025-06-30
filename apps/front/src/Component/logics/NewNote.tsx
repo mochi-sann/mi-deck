@@ -1,6 +1,7 @@
-import { $api } from "@/lib/api/fetchClient";
+import { storageManager } from "@/lib/storage";
 import { uploadAndCompressFiles } from "@/lib/uploadAndCompresFiles";
 import { valibotResolver } from "@hookform/resolvers/valibot";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { APIClient } from "misskey-js/api.js";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -53,20 +54,21 @@ const visibilityOptions = [
   { value: "home", label: "ホーム" },
   { value: "followers", label: "フォロワー" },
   { value: "specified", label: "指定ユーザー" }, // 変更: スキーマに合わせてコメントアウトを解除
-  // { value: "private", label: "ダイレクト" }, // スキーマに合わせてコメントアウト (またはスキーマに追加)
 ] as const;
 type FormSchema = v.InferOutput<typeof formSchema>;
 
 export const NewNote = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const getAllServersFn = () => {
+    return storageManager.getAllServers();
+  };
 
-  const { data: serverSessions, isLoading: isLoadingServers } = $api.useQuery(
-    "get",
-    "/v1/server-sessions",
-    {},
-    {},
-  );
+  const { data: serverSessions, isLoading: isLoadingServers } =
+    useSuspenseQuery({
+      queryKey: ["getAllServers"],
+      queryFn: getAllServersFn,
+    });
 
   const form = useForm<FormSchema>({
     resolver: valibotResolver(formSchema),
@@ -88,7 +90,7 @@ export const NewNote = () => {
     const serverToken =
       serverSessions?.find(
         (serverSession) => serverSession.id === values.serverSessionId,
-      )?.serverToken || "";
+      )?.accessToken || "";
 
     const client = new APIClient({
       origin: origin,
@@ -103,7 +105,6 @@ export const NewNote = () => {
       );
 
       await client.request("notes/create", {
-        // この行の型エラーが解消されることを期待
         text: values.noteContent,
         visibility: values.visibility,
         localOnly: values.isLocalOnly,

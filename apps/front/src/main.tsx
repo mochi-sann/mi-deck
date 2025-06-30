@@ -5,7 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 
 import { SidebarProvider } from "./Component/ui/sidebar";
-import { useUser } from "./lib/configureAuth";
+import { AuthProvider, useAuth } from "./lib/auth/context";
+import { StorageProvider } from "./lib/storage/context";
 import { routeTree } from "./routeTree.gen";
 
 // Create a new router instance
@@ -20,18 +21,18 @@ const router = createRouter({
 });
 
 function InnerApp() {
-  const { data, status } = useUser();
+  const auth = useAuth();
 
-  if (status === "pending" && !data) {
+  if (auth.isLoading) {
     return <div>Loading...</div>;
   }
-  console.log(...[data, "👀 [main.tsx:25]: data"].reverse());
+
   return (
     <RouterProvider
       router={router}
       context={{
         auth: {
-          isAuth: data?.isAuth || false,
+          isAuth: auth.isAuthenticated,
         },
       }}
     />
@@ -54,9 +55,13 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <SidebarProvider>
-        <InnerApp />
-      </SidebarProvider>
+      <StorageProvider>
+        <AuthProvider>
+          <SidebarProvider>
+            <InnerApp />
+          </SidebarProvider>
+        </AuthProvider>
+      </StorageProvider>
     </QueryClientProvider>
   </StrictMode>,
 );

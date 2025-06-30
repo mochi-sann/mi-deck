@@ -5,6 +5,9 @@ import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { afterAll, afterEach, beforeAll } from "vitest";
 
+// Setup fake IndexedDB for testing
+import "fake-indexeddb/auto";
+
 // Define mock data type based on your schema
 type TimelineEntityType =
   components["schemas"]["TimelineWithServerSessionEntity"];

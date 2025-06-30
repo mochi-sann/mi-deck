@@ -11,8 +11,21 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Validate origin and token
+  const isValidConfig =
+    origin && token && origin.trim() !== "" && token.trim() !== "";
+
+  // If config is invalid, set error state
+  if (!isValidConfig && !error) {
+    setError(
+      new Error(
+        "サーバーまたは認証情報が設定されていません。サーバーを追加してください。",
+      ),
+    );
+  }
+
   const fetchNotes = async (untilId?: string) => {
-    if (isLoading || !hasMore) return;
+    if (isLoading || !hasMore || !isValidConfig) return;
 
     setIsLoading(true);
     try {

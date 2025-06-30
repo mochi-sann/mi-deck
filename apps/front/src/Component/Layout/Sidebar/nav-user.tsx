@@ -11,18 +11,11 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/Component/ui/sidebar";
-import type { UserType } from "@/lib/configureAuth";
-import { useLogout } from "@/lib/configureAuth";
 import { useNavigate } from "@tanstack/react-router";
-import { FilePlus2, LogOut, Settings, UserRound } from "lucide-react";
+import { FilePlus2, Settings, UserRound } from "lucide-react";
 
-type NavUserProps = {
-  user: UserType;
-};
-
-export function NavUser({ user }: NavUserProps) {
+export function NavUser() {
   const { isMobile } = useSidebar();
-  const { mutateAsync: LgoutMuteteAsync } = useLogout();
   const navigate = useNavigate();
 
   return (
@@ -35,13 +28,13 @@ export function NavUser({ user }: NavUserProps) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground "
             >
               <Avatar className="h-8 w-8 rounded-lg ">
-                <AvatarImage src={user.avatarUrl} alt={user.name} />
+                <AvatarImage alt={"ユーザーアイコン"} />
                 <AvatarFallback className="rounded-lg">
                   <UserRound />
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-lg leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">ユーザーインフォ</span>
               </div>
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -58,10 +51,6 @@ export function NavUser({ user }: NavUserProps) {
             <DropdownMenuItem>
               <Settings size={28} strokeWidth={3} absoluteStrokeWidth />
               設定
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={LgoutMuteteAsync}>
-              <LogOut />
-              Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

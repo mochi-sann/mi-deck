@@ -1,65 +1,60 @@
-import { components } from "@/lib/api/type";
+import type {
+  MisskeyServerConnection,
+  TimelineConfig,
+} from "@/lib/storage/types";
 import type React from "react";
 import { HomeTimelineContent } from "./HomeTimelineContent";
 
 export type SwitchTimeLineTypeProps = {
-  timeline: components["schemas"]["TimelineWithServerSessionEntity"];
+  timeline: TimelineConfig & { server: MisskeyServerConnection };
 };
 
 export const SwitchTimeLineType: React.FC<SwitchTimeLineTypeProps> = (
   props,
 ) => {
-  switch (props.timeline.type) {
-    case "HOME":
+  const { timeline } = props;
+
+  switch (timeline.type) {
+    case "home":
       return (
         <HomeTimelineContent
-          origin={props.timeline.serverSession.origin}
-          // IMPORTANT: Ensure serverToken is actually available here!
-          // If not, the backend response needs to include it.
-          token={
-            props.timeline.serverSession.serverToken ?? "" // Assuming serverToken exists, add proper typing if possible
-          }
+          origin={timeline.server.origin}
+          token={timeline.server.accessToken ?? ""}
           type={"home"}
         />
       );
 
-    case "LOCAL":
+    case "local":
       return (
         <HomeTimelineContent
-          origin={props.timeline.serverSession.origin}
-          // IMPORTANT: Ensure serverToken is actually available here!
-          // If not, the backend response needs to include it.
-          token={
-            props.timeline.serverSession.serverToken ?? "" // Assuming serverToken exists, add proper typing if possible
-          }
+          origin={timeline.server.origin}
+          token={timeline.server.accessToken ?? ""}
           type={"local"}
         />
       );
 
-    case "GLOBAL":
+    case "social":
       return (
         <HomeTimelineContent
-          origin={props.timeline.serverSession.origin}
-          // IMPORTANT: Ensure serverToken is actually available here!
-          // If not, the backend response needs to include it.
-          token={
-            props.timeline.serverSession.serverToken ?? "" // Assuming serverToken exists, add proper typing if possible
-          }
+          origin={timeline.server.origin}
+          token={timeline.server.accessToken ?? ""}
+          type={"local"}
+        />
+      );
+
+    case "global":
+      return (
+        <HomeTimelineContent
+          origin={timeline.server.origin}
+          token={timeline.server.accessToken ?? ""}
           type={"global"}
         />
       );
-    // case "LIST":
-    // case "USER":
-    // case "CHANNEL":
     default:
-      <div>
-        <p>No matching timeline type</p>
-      </div>;
+      return (
+        <div>
+          <p>No matching timeline type: {timeline.type}</p>
+        </div>
+      );
   }
-  return (
-    <div>
-      {" "}
-      <p>not matchd timelint type</p>
-    </div>
-  );
 };
