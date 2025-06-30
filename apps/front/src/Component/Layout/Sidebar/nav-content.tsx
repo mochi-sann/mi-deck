@@ -25,13 +25,13 @@ export function NavContent() {
   return (
     <Fragment>
       <SidebarGroup>
-        <SidebarGroupLabel>ほーむ</SidebarGroupLabel>
+        <SidebarGroupLabel>ナビゲーション</SidebarGroupLabel>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <a href="/">
                 <Home />
-                <span>hhhhhhhhhhhhhh</span>
+                <span>ホーム</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -39,7 +39,7 @@ export function NavContent() {
             <SidebarMenuButton asChild>
               <a href="/settings">
                 <Settings />
-                <span>bbbbbbbbbbbbb</span>
+                <span>設定</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -49,7 +49,7 @@ export function NavContent() {
       <SidebarGroup>
         <SidebarGroupLabel>
           <div className="flex w-full items-center justify-between">
-            <span>サーバーを追加</span>
+            <span>サーバー</span>
             <Dialog
               open={isAddServerDialogOpen}
               onOpenChange={setIsAddServerDialogOpen}
@@ -61,7 +61,7 @@ export function NavContent() {
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>ssss</DialogTitle>
+                  <DialogTitle>新しいサーバーを追加</DialogTitle>
                 </DialogHeader>
                 <NewServerForm />
               </DialogContent>
@@ -74,7 +74,7 @@ export function NavContent() {
               <SidebarMenuButton disabled>
                 <Server />
                 <span className="text-muted-foreground">
-                  heeeeeeeeeeeeeeeee
+                  サーバーがありません
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>

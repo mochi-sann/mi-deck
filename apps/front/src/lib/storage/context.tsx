@@ -66,13 +66,49 @@ export function StorageProvider({ children }: StorageProviderProps) {
   const [retryCount, setRetryCount] = useState(0);
   const [isStorageInitialized, setIsStorageInitialized] = useState(false);
 
+  // Create storage-specific error with enhanced information
+  const createStorageError = useCallback(
+    (originalError: unknown, context: string): Error => {
+      const baseMessage =
+        originalError instanceof Error
+          ? originalError.message
+          : "Unknown storage error";
+
+      // Create a new error with enhanced context for error boundaries
+      const storageError = new Error(
+        `Storage Error (${context}): ${baseMessage}`,
+      );
+      storageError.name = "StorageError";
+
+      // Add cause property manually for compatibility
+      Object.defineProperty(storageError, "cause", {
+        value: originalError,
+        enumerable: false,
+        writable: false,
+      });
+
+      // Add specific error properties for error boundary detection
+      Object.defineProperty(storageError, "isStorageError", {
+        value: true,
+        enumerable: false,
+      });
+
+      return storageError;
+    },
+    [],
+  );
+
   const loadData = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(undefined);
 
       if (!isStorageInitialized) {
-        throw new Error("Storage not initialized");
+        const initError = createStorageError(
+          new Error("Storage not initialized"),
+          "Data Loading",
+        );
+        throw initError;
       }
 
       const [serverData, timelineData, authState] = await Promise.all([
@@ -95,11 +131,18 @@ export function StorageProvider({ children }: StorageProviderProps) {
       if (retryCount < 3 && shouldAutoRetry(err)) {
         setRetryCount((prev) => prev + 1);
         setTimeout(() => loadData(), 1000 * (retryCount + 1)); // Exponential backoff
+      } else if (retryCount >= 3) {
+        // After max retries, throw enhanced error for error boundary
+        const maxRetryError = createStorageError(
+          err,
+          `Data Loading (max retries exceeded: ${retryCount})`,
+        );
+        throw maxRetryError;
       }
     } finally {
       setIsLoading(false);
     }
-  }, [isStorageInitialized, retryCount]);
+  }, [isStorageInitialized, retryCount, createStorageError]);
 
   const shouldAutoRetry = (error: unknown): boolean => {
     if (!(error instanceof Error)) return false;
@@ -140,7 +183,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
     setError(undefined);
 
     // Reset storage manager state
-    (storageManager as unknown as { initialized: boolean }).initialized = false;
+    storageManager.reset();
 
     await initializeStorage();
   };
@@ -197,11 +240,13 @@ export function StorageProvider({ children }: StorageProviderProps) {
           return await operation(); // Retry the operation
         } catch (retryErr) {
           console.error(`Retry failed for ${errorContext}:`, retryErr);
-          throw retryErr;
+          // Throw enhanced error for error boundaries to catch
+          throw createStorageError(retryErr, errorContext);
         }
       }
 
-      throw err;
+      // Throw enhanced error for error boundaries to catch
+      throw createStorageError(err, errorContext);
     }
   };
 

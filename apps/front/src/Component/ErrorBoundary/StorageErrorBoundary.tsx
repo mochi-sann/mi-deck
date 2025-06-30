@@ -37,8 +37,14 @@ export class StorageErrorBoundary extends Component<
   ): Partial<StorageErrorBoundaryState> {
     // ストレージ関連のエラーかどうかを判定
     const isStorageError =
+      // Enhanced error detection from storage context
+      error.name === "StorageError" ||
+      (error as unknown as { isStorageError?: boolean }).isStorageError ===
+        true ||
+      // Legacy error detection
       error.message.includes("Storage not initialized") ||
       error.message.includes("Database not initialized") ||
+      error.message.includes("Storage Error") ||
       error.message.includes("Failed to") ||
       error.name === "QuotaExceededError" ||
       error.name === "NotAllowedError" ||

@@ -152,6 +152,15 @@ class StorageManager implements StorageInterface {
     this.ensureInitialized();
     return this.storage.clearAuthState();
   }
+
+  /**
+   * Reset the storage manager to uninitialized state
+   * This is primarily used for testing and error recovery
+   */
+  public reset(): void {
+    this.initialized = false;
+    this.storage = localStorageManager;
+  }
 }
 
 export const storageManager = new StorageManager();
