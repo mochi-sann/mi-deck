@@ -210,3 +210,4 @@ class DatabaseManager {
 }
 
 export const databaseManager = new DatabaseManager();
+export { DatabaseManager };

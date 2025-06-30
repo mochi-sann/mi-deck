@@ -18,11 +18,12 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { GripVertical, Plus, Server, Trash2 } from "lucide-react";
+import { AlertCircle, GripVertical, Plus, Server, Trash2 } from "lucide-react";
 import { APIClient } from "misskey-js/api.js";
 import { Fragment, Suspense, useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { LoadingSpinner } from "../ui/loading-spinner";
 import Text from "../ui/text";
 import { ClientCreateTimelineDialog } from "./ClientCreateTimelineDialog";
 import {
@@ -225,7 +226,15 @@ export function ClientTimelineList() {
     return (
       <div className="flex h-screen overflow-x-auto overflow-y-hidden">
         <Card className="flex flex-1 items-center justify-center">
-          <Text>読み込み中...</Text>
+          <div className="flex flex-col items-center gap-2">
+            <LoadingSpinner />
+            <Text>タイムラインを読み込み中...</Text>
+            {storage.retryCount > 0 && (
+              <Text className="text-sm text-muted-foreground">
+                再試行中... ({storage.retryCount}/3)
+              </Text>
+            )}
+          </div>
         </Card>
       </div>
     );
@@ -235,7 +244,25 @@ export function ClientTimelineList() {
     return (
       <div className="flex h-screen overflow-x-auto overflow-y-hidden">
         <Card className="flex flex-1 items-center justify-center">
-          <Text>タイムラインの読み込みに失敗しました: {storage.error}</Text>
+          <div className="flex flex-col items-center gap-4 text-center">
+            <AlertCircle className="h-16 w-16 text-destructive" />
+            <div>
+              <Text className="text-lg font-semibold">
+                エラーが発生しました
+              </Text>
+              <Text className="text-sm text-muted-foreground">
+                タイムラインの読み込みに失敗しました: {storage.error}
+              </Text>
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={storage.retry} variant="outline" size="sm">
+                再試行
+              </Button>
+              <Button onClick={storage.clearError} variant="ghost" size="sm">
+                エラーをクリア
+              </Button>
+            </div>
+          </div>
         </Card>
       </div>
     );
