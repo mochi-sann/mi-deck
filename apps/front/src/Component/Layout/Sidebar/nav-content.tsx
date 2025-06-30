@@ -1,5 +1,6 @@
 import { useStorage } from "@/lib/storage/context";
 import { NewServerForm } from "@/routes/_authed/add-server/-form/NewServerForm";
+import { Link } from "@tanstack/react-router";
 import { Home, Plus, Server, Settings } from "lucide-react";
 import { Fragment, useState } from "react";
 import { Button } from "../../ui/button";
@@ -29,18 +30,18 @@ export function NavContent() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <a href="/">
+              <Link to="/">
                 <Home />
                 <span>ホーム</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <a href="/settings">
+              <Link to="/settings">
                 <Settings />
                 <span>設定</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
