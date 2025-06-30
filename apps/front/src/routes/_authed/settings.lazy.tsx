@@ -1,8 +1,8 @@
-import { ApplicationInfo } from "@/Component/settings/ApplicationInfo";
-import { ApplicationSettings } from "@/Component/settings/ApplicationSettings";
-import { DataManagement } from "@/Component/settings/DataManagement";
-import { ServerInfo } from "@/Component/settings/ServerInfo";
-import { TimelineSettings } from "@/Component/settings/TimelineSettings";
+import { ApplicationInfo } from "@/features/settings/components/ApplicationInfo";
+import { ApplicationSettings } from "@/features/settings/components/ApplicationSettings";
+import { DataManagement } from "@/features/settings/components/DataManagement";
+import { ServerInfo } from "@/features/settings/components/ServerInfo";
+import { TimelineSettings } from "@/features/settings/components/TimelineSettings";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { Settings } from "lucide-react";
 

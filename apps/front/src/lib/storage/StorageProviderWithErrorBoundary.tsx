@@ -1,4 +1,4 @@
-import { StorageErrorBoundary } from "@/Component/ErrorBoundary/StorageErrorBoundary";
+import { StorageErrorBoundary } from "@/components/error-boundary/StorageErrorBoundary";
 import type { ReactNode } from "react";
 import { StorageProvider } from "./context";
 

@@ -1,5 +1,5 @@
-import { ServerInfoBox } from "@/Component/parts/ServerList";
-import { useAuth } from "@/lib/auth/context";
+import { useAuth } from "@/features/auth";
+import { ServerInfoBox } from "@/features/server-management";
 import { useStorage } from "@/lib/storage/context";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
