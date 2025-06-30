@@ -49,7 +49,7 @@ class DatabaseManager {
     });
   }
 
-  private ensureDB(): IDBPDatabase<MiDeckDb> {
+  private ensureDb(): IDBPDatabase<MiDeckDb> {
     if (!this.db) {
       throw new Error("Database not initialized. Call initialize() first.");
     }
@@ -60,7 +60,7 @@ class DatabaseManager {
   async addServer(
     server: Omit<MisskeyServerConnection, "id" | "createdAt" | "updatedAt">,
   ): Promise<MisskeyServerConnection> {
-    const db = this.ensureDB();
+    const db = this.ensureDb();
     const now = new Date();
     const newServer: MisskeyServerConnection = {
       ...server,
@@ -74,12 +74,12 @@ class DatabaseManager {
   }
 
   async getServer(id: string): Promise<MisskeyServerConnection | undefined> {
-    const db = this.ensureDB();
+    const db = this.ensureDb();
     return await db.get("servers", id);
   }
 
   async getAllServers(): Promise<MisskeyServerConnection[]> {
-    const db = this.ensureDB();
+    const db = this.ensureDb();
     return await db.getAll("servers");
   }
 
@@ -87,7 +87,7 @@ class DatabaseManager {
     id: string,
     updates: Partial<MisskeyServerConnection>,
   ): Promise<void> {
-    const db = this.ensureDB();
+    const db = this.ensureDb();
     const server = await db.get("servers", id);
     if (!server) {
       throw new Error(`Server with id ${id} not found`);
@@ -103,7 +103,7 @@ class DatabaseManager {
   }
 
   async deleteServer(id: string): Promise<void> {
-    const db = this.ensureDB();
+    const db = this.ensureDb();
     const tx = db.transaction(["servers", "timelines"], "readwrite");
 
     // Delete server
@@ -123,7 +123,7 @@ class DatabaseManager {
   async addTimeline(
     timeline: Omit<TimelineConfig, "id" | "createdAt" | "updatedAt">,
   ): Promise<TimelineConfig> {
-    const db = this.ensureDB();
+    const db = this.ensureDb();
     const now = new Date();
     const newTimeline: TimelineConfig = {
       ...timeline,
@@ -137,18 +137,18 @@ class DatabaseManager {
   }
 
   async getTimeline(id: string): Promise<TimelineConfig | undefined> {
-    const db = this.ensureDB();
+    const db = this.ensureDb();
     return await db.get("timelines", id);
   }
 
   async getTimelinesByServer(serverId: string): Promise<TimelineConfig[]> {
-    const db = this.ensureDB();
+    const db = this.ensureDb();
     const index = db.transaction("timelines").store.index("by-server");
     return await index.getAll(serverId);
   }
 
   async getAllTimelines(): Promise<TimelineConfig[]> {
-    const db = this.ensureDB();
+    const db = this.ensureDb();
     return await db.getAll("timelines");
   }
 
@@ -156,7 +156,7 @@ class DatabaseManager {
     id: string,
     updates: Partial<TimelineConfig>,
   ): Promise<void> {
-    const db = this.ensureDB();
+    const db = this.ensureDb();
     const timeline = await db.get("timelines", id);
     if (!timeline) {
       throw new Error(`Timeline with id ${id} not found`);
@@ -172,12 +172,12 @@ class DatabaseManager {
   }
 
   async deleteTimeline(id: string): Promise<void> {
-    const db = this.ensureDB();
+    const db = this.ensureDb();
     await db.delete("timelines", id);
   }
 
   async reorderTimelines(timelineIds: string[]): Promise<void> {
-    const db = this.ensureDB();
+    const db = this.ensureDb();
     const tx = db.transaction("timelines", "readwrite");
 
     for (let i = 0; i < timelineIds.length; i++) {
@@ -194,17 +194,17 @@ class DatabaseManager {
 
   // Auth state management
   async getAuthState(): Promise<ClientAuthState | undefined> {
-    const db = this.ensureDB();
+    const db = this.ensureDb();
     return await db.get("auth", "current");
   }
 
   async setAuthState(state: ClientAuthState): Promise<void> {
-    const db = this.ensureDB();
+    const db = this.ensureDb();
     await db.put("auth", { ...state, lastUpdated: new Date() }, "current");
   }
 
   async clearAuthState(): Promise<void> {
-    const db = this.ensureDB();
+    const db = this.ensureDb();
     await db.delete("auth", "current");
   }
 }

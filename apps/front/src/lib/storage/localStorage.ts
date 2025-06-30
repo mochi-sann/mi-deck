@@ -5,9 +5,9 @@ import type {
 } from "./types";
 
 const STORAGE_KEYS = {
-  SERVERS: "mi-deck-servers",
-  TIMELINES: "mi-deck-timelines",
-  AUTH_STATE: "mi-deck-auth-state",
+  servers: "mi-deck-servers",
+  timelines: "mi-deck-timelines",
+  authState: "mi-deck-auth-state",
 } as const;
 
 class LocalStorageManager {
@@ -33,7 +33,7 @@ class LocalStorageManager {
     server: Omit<MisskeyServerConnection, "id" | "createdAt" | "updatedAt">,
   ): Promise<MisskeyServerConnection> {
     const servers = this.getStoredData<MisskeyServerConnection>(
-      STORAGE_KEYS.SERVERS,
+      STORAGE_KEYS.servers,
     );
     const now = new Date();
     const newServer: MisskeyServerConnection = {
@@ -44,19 +44,19 @@ class LocalStorageManager {
     };
 
     servers.push(newServer);
-    this.setStoredData(STORAGE_KEYS.SERVERS, servers);
+    this.setStoredData(STORAGE_KEYS.servers, servers);
     return newServer;
   }
 
   async getServer(id: string): Promise<MisskeyServerConnection | undefined> {
     const servers = this.getStoredData<MisskeyServerConnection>(
-      STORAGE_KEYS.SERVERS,
+      STORAGE_KEYS.servers,
     );
     return servers.find((s) => s.id === id);
   }
 
   async getAllServers(): Promise<MisskeyServerConnection[]> {
-    return this.getStoredData<MisskeyServerConnection>(STORAGE_KEYS.SERVERS);
+    return this.getStoredData<MisskeyServerConnection>(STORAGE_KEYS.servers);
   }
 
   async updateServer(
@@ -64,7 +64,7 @@ class LocalStorageManager {
     updates: Partial<MisskeyServerConnection>,
   ): Promise<void> {
     const servers = this.getStoredData<MisskeyServerConnection>(
-      STORAGE_KEYS.SERVERS,
+      STORAGE_KEYS.servers,
     );
     const index = servers.findIndex((s) => s.id === id);
 
@@ -78,22 +78,22 @@ class LocalStorageManager {
       updatedAt: new Date(),
     };
 
-    this.setStoredData(STORAGE_KEYS.SERVERS, servers);
+    this.setStoredData(STORAGE_KEYS.servers, servers);
   }
 
   async deleteServer(id: string): Promise<void> {
     const servers = this.getStoredData<MisskeyServerConnection>(
-      STORAGE_KEYS.SERVERS,
+      STORAGE_KEYS.servers,
     );
     const filteredServers = servers.filter((s) => s.id !== id);
-    this.setStoredData(STORAGE_KEYS.SERVERS, filteredServers);
+    this.setStoredData(STORAGE_KEYS.servers, filteredServers);
 
     // Delete associated timelines
     const timelines = this.getStoredData<TimelineConfig>(
-      STORAGE_KEYS.TIMELINES,
+      STORAGE_KEYS.timelines,
     );
     const filteredTimelines = timelines.filter((t) => t.serverId !== id);
-    this.setStoredData(STORAGE_KEYS.TIMELINES, filteredTimelines);
+    this.setStoredData(STORAGE_KEYS.timelines, filteredTimelines);
   }
 
   // Timeline management
@@ -101,7 +101,7 @@ class LocalStorageManager {
     timeline: Omit<TimelineConfig, "id" | "createdAt" | "updatedAt">,
   ): Promise<TimelineConfig> {
     const timelines = this.getStoredData<TimelineConfig>(
-      STORAGE_KEYS.TIMELINES,
+      STORAGE_KEYS.timelines,
     );
     const now = new Date();
     const newTimeline: TimelineConfig = {
@@ -112,26 +112,26 @@ class LocalStorageManager {
     };
 
     timelines.push(newTimeline);
-    this.setStoredData(STORAGE_KEYS.TIMELINES, timelines);
+    this.setStoredData(STORAGE_KEYS.timelines, timelines);
     return newTimeline;
   }
 
   async getTimeline(id: string): Promise<TimelineConfig | undefined> {
     const timelines = this.getStoredData<TimelineConfig>(
-      STORAGE_KEYS.TIMELINES,
+      STORAGE_KEYS.timelines,
     );
     return timelines.find((t) => t.id === id);
   }
 
   async getTimelinesByServer(serverId: string): Promise<TimelineConfig[]> {
     const timelines = this.getStoredData<TimelineConfig>(
-      STORAGE_KEYS.TIMELINES,
+      STORAGE_KEYS.timelines,
     );
     return timelines.filter((t) => t.serverId === serverId);
   }
 
   async getAllTimelines(): Promise<TimelineConfig[]> {
-    return this.getStoredData<TimelineConfig>(STORAGE_KEYS.TIMELINES);
+    return this.getStoredData<TimelineConfig>(STORAGE_KEYS.timelines);
   }
 
   async updateTimeline(
@@ -139,7 +139,7 @@ class LocalStorageManager {
     updates: Partial<TimelineConfig>,
   ): Promise<void> {
     const timelines = this.getStoredData<TimelineConfig>(
-      STORAGE_KEYS.TIMELINES,
+      STORAGE_KEYS.timelines,
     );
     const index = timelines.findIndex((t) => t.id === id);
 
@@ -153,20 +153,20 @@ class LocalStorageManager {
       updatedAt: new Date(),
     };
 
-    this.setStoredData(STORAGE_KEYS.TIMELINES, timelines);
+    this.setStoredData(STORAGE_KEYS.timelines, timelines);
   }
 
   async deleteTimeline(id: string): Promise<void> {
     const timelines = this.getStoredData<TimelineConfig>(
-      STORAGE_KEYS.TIMELINES,
+      STORAGE_KEYS.timelines,
     );
     const filteredTimelines = timelines.filter((t) => t.id !== id);
-    this.setStoredData(STORAGE_KEYS.TIMELINES, filteredTimelines);
+    this.setStoredData(STORAGE_KEYS.timelines, filteredTimelines);
   }
 
   async reorderTimelines(timelineIds: string[]): Promise<void> {
     const timelines = this.getStoredData<TimelineConfig>(
-      STORAGE_KEYS.TIMELINES,
+      STORAGE_KEYS.timelines,
     );
 
     timelineIds.forEach((id, index) => {
@@ -177,13 +177,13 @@ class LocalStorageManager {
       }
     });
 
-    this.setStoredData(STORAGE_KEYS.TIMELINES, timelines);
+    this.setStoredData(STORAGE_KEYS.timelines, timelines);
   }
 
   // Auth state management
   async getAuthState(): Promise<ClientAuthState | undefined> {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.AUTH_STATE);
+      const data = localStorage.getItem(STORAGE_KEYS.authState);
       return data ? JSON.parse(data) : undefined;
     } catch {
       return undefined;
@@ -194,7 +194,7 @@ class LocalStorageManager {
     try {
       const stateWithTimestamp = { ...state, lastUpdated: new Date() };
       localStorage.setItem(
-        STORAGE_KEYS.AUTH_STATE,
+        STORAGE_KEYS.authState,
         JSON.stringify(stateWithTimestamp),
       );
     } catch (error) {
@@ -204,7 +204,7 @@ class LocalStorageManager {
 
   async clearAuthState(): Promise<void> {
     try {
-      localStorage.removeItem(STORAGE_KEYS.AUTH_STATE);
+      localStorage.removeItem(STORAGE_KEYS.authState);
     } catch (error) {
       console.error("Failed to clear auth state:", error);
     }

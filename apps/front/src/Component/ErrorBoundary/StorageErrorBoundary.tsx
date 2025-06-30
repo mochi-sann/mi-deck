@@ -176,7 +176,7 @@ export class StorageErrorBoundary extends Component<
 
       // デフォルトのエラーUI
       return (
-        <div className="p-4 max-w-2xl mx-auto">
+        <div className="mx-auto max-w-2xl p-4">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-destructive">
@@ -198,11 +198,11 @@ export class StorageErrorBoundary extends Component<
                   <summary className="cursor-pointer text-muted-foreground">
                     詳細なエラー情報（開発用）
                   </summary>
-                  <pre className="mt-2 overflow-auto bg-muted p-2 rounded text-xs">
+                  <pre className="mt-2 overflow-auto rounded bg-muted p-2 text-xs">
                     {this.state.error.stack}
                   </pre>
                   {this.state.errorInfo && (
-                    <pre className="mt-2 overflow-auto bg-muted p-2 rounded text-xs">
+                    <pre className="mt-2 overflow-auto rounded bg-muted p-2 text-xs">
                       {this.state.errorInfo.componentStack}
                     </pre>
                   )}
@@ -259,7 +259,7 @@ export const StorageErrorFallback = ({
   };
 
   return (
-    <div className="p-4 max-w-2xl mx-auto">
+    <div className="mx-auto max-w-2xl p-4">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">

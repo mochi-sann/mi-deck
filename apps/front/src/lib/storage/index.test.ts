@@ -48,7 +48,7 @@ describe("StorageManager", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     // Reset the initialized state for each test
-    (storageManager as any).initialized = false;
+    (storageManager as unknown).initialized = false;
   });
 
   describe("Initialization", () => {
@@ -131,13 +131,18 @@ describe("StorageManager", () => {
       ["clearAuthState", []],
     ] as const;
 
-    testMethods.forEach(([methodName, args]) => {
+    for (const [methodName, args] of testMethods) {
       it(`should throw error when ${methodName} is called before initialization`, async () => {
         await expect(
-          (storageManager as any)[methodName](...args),
+          (
+            storageManager as unknown as Record<
+              string,
+              (...args: unknown[]) => Promise<unknown>
+            >
+          )[methodName](...args),
         ).rejects.toThrow("Storage not initialized. Call initialize() first.");
       });
-    });
+    }
   });
 
   describe("Storage Operations After Initialization", () => {

@@ -1,6 +1,7 @@
 import {
   type ReactNode,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -65,7 +66,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
   const [retryCount, setRetryCount] = useState(0);
   const [isStorageInitialized, setIsStorageInitialized] = useState(false);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(undefined);
@@ -98,7 +99,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isStorageInitialized, retryCount]);
 
   const shouldAutoRetry = (error: unknown): boolean => {
     if (!(error instanceof Error)) return false;
@@ -120,7 +121,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
     );
   };
 
-  const initializeStorage = async () => {
+  const initializeStorage = useCallback(async () => {
     try {
       await storageManager.initialize();
       setIsStorageInitialized(true);
@@ -131,7 +132,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
       setIsLoading(false);
       setIsStorageInitialized(false);
     }
-  };
+  }, [loadData]);
 
   const reinitializeStorage = async () => {
     setIsStorageInitialized(false);
@@ -139,7 +140,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
     setError(undefined);
 
     // Reset storage manager state
-    (storageManager as any).initialized = false;
+    (storageManager as unknown).initialized = false;
 
     await initializeStorage();
   };
@@ -173,7 +174,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
   // Initialize storage and load data
   useEffect(() => {
     initializeStorage();
-  }, []);
+  }, [initializeStorage]);
 
   // Enhanced error handling wrapper for storage operations
   const withErrorHandling = async <T,>(

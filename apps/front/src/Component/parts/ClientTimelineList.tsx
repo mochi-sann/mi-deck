@@ -230,7 +230,7 @@ export function ClientTimelineList() {
             <LoadingSpinner />
             <Text>タイムラインを読み込み中...</Text>
             {storage.retryCount > 0 && (
-              <Text className="text-sm text-muted-foreground">
+              <Text className="text-muted-foreground text-sm">
                 再試行中... ({storage.retryCount}/3)
               </Text>
             )}
@@ -247,10 +247,10 @@ export function ClientTimelineList() {
           <div className="flex flex-col items-center gap-4 text-center">
             <AlertCircle className="h-16 w-16 text-destructive" />
             <div>
-              <Text className="text-lg font-semibold">
+              <Text className="font-semibold text-lg">
                 エラーが発生しました
               </Text>
-              <Text className="text-sm text-muted-foreground">
+              <Text className="text-muted-foreground text-sm">
                 タイムラインの読み込みに失敗しました: {storage.error}
               </Text>
             </div>
