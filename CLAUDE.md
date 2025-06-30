@@ -7,7 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a monorepo using pnpm workspaces with Turbo for build orchestration. The project consists of:
 
 - **Frontend** (`apps/front`): React application using Vite, TanStack Router, TanStack Query, and Tailwind CSS
-- **Server** (`apps/server`): NestJS API server with Prisma ORM and PostgreSQL
+
+**Note**: The server (`apps/server`) has been removed as of the `remove-server` branch. The application now operates as a client-only architecture that directly connects to Misskey instances.
 
 ## Commands
 
@@ -28,8 +29,8 @@ Use `pnpm run front -- <command>` for frontend-specific tasks:
 - `pnpm run front -- storybook` - Start Storybook
 - `pnpm run front -- typecheck` - Run TypeScript type checking
 
-### Server-specific Commands
-Use `pnpm run server -- <command>` for server-specific tasks:
+### Server-specific Commands (Legacy - Server Removed)
+These commands were available when the server existed:
 - `pnpm run server -- dev` - Start server in development mode
 - `pnpm run server -- test` - Run server tests
 - `pnpm run server -- test:e2e` - Run e2e tests
@@ -38,48 +39,55 @@ Use `pnpm run server -- <command>` for server-specific tasks:
 - `pnpm run server -- db:studio` - Open Prisma Studio
 
 ### E2E Testing
-- `pnpm run test:e2e:server` - Run server e2e tests
+- `pnpm run test:e2e:server` - Run server e2e tests (legacy, server removed)
+- `npx playwright test` - Run Playwright E2E tests for frontend
 
 ## Package Manager
 
 **IMPORTANT**: Always use `pnpm` commands (e.g., `pnpm install`, `pnpm test`). Never use npm or yarn.
+
+## Code Quality Tools
+
+- **Linter/Formatter**: Biome (replaces ESLint + Prettier)
+- **Git Hooks**: Lefthook for pre-commit hooks
+- **TypeScript**: Strict type checking enabled
+- **Build Tool**: Vite for fast development and building
 
 ## Authentication
 
 - Default login email: `example2@example.com`
 - Default password: `password`
 
-## Database
+## Database (Legacy - Server Removed)
 
-- Uses PostgreSQL with Prisma ORM
-- Prisma schema location: `apps/server/prisma/schema.prisma`
-- Generated Prisma client: `apps/server/src/generated/prisma`
+Previously used PostgreSQL with Prisma ORM:
+- Prisma schema was located at: `apps/server/prisma/schema.prisma`
+- Generated Prisma client was at: `apps/server/src/generated/prisma`
+
+**Current**: The application now uses client-side storage and directly connects to Misskey instances.
 
 ## API Integration
 
-- Frontend uses openapi-fetch and openapi-react-query for API calls
-- API types are auto-generated from server's Swagger spec
-- Frontend directly connects to Misskey instances using misskey-js library
+- **Current**: Frontend directly connects to Misskey instances using misskey-js library
+- **Client Storage**: Uses IndexedDB/localStorage for client-side data persistence
+- **Legacy**: Previously used openapi-fetch and openapi-react-query for internal API calls
 
 ## Architecture Notes
 
 ### Frontend Architecture
 - **Router**: TanStack Router with file-based routing in `apps/front/src/routes/`
 - **State Management**: TanStack Query for server state, React Context for client state
-- **Authentication**: JWT-based auth with protected routes using `_authed` layout
+- **Storage**: Custom storage system using IndexedDB/localStorage (`apps/front/src/lib/storage/`)
+- **Authentication**: Misskey-based auth with protected routes using `_authed` layout
 - **UI Components**: Park UI (Radix UI + Tailwind CSS) in `apps/front/src/Component/ui/`
 - **Testing**: Vitest with React Testing Library, MSW for API mocking
+- **Styling**: Tailwind CSS with Park UI (Panda CSS) design system
 
-### Server Architecture
-- **Framework**: NestJS with modular structure
-- **Database**: Prisma ORM with PostgreSQL
-- **Auth**: JWT-based authentication
-- **API Documentation**: Swagger/OpenAPI with Scalar UI
-- **Main Modules**:
-  - `auth` - Authentication and authorization
-  - `user` - User management
-  - `server-sessions` - Misskey server connection management
-  - `timeline` - Timeline management
+### Client-Side Architecture
+- **Misskey Integration**: Direct connection to Misskey instances via misskey-js
+- **Data Persistence**: Local storage management with error boundaries
+- **Timeline Management**: Client-side timeline configuration and caching
+- **Error Handling**: Comprehensive error boundaries for storage and network failures
 
 ## Git Conventions
 
@@ -97,9 +105,10 @@ The project includes Docker Compose setup for local Misskey instance:
 
 - Aim for high test coverage
 - Frontend tests use Vitest + React Testing Library
-- Server tests use Vitest + Supertest
-- Use MSW for mocking network requests
+- Use MSW for mocking network requests  
 - Test files should be co-located with source files using `.test.ts` or `.test.tsx` extension
+- E2E tests use Playwright with configuration in `playwright.config.ts`
+- Storybook available for component testing and documentation
 ## 開発日誌を作成すること
 
 `memo/dev_diary/yyyy-mm-dd_hhmm.md`の形式で開発日誌を作成してください。内容は以下の通りです。
