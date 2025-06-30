@@ -356,6 +356,206 @@ describe("DatabaseManager", () => {
     });
   });
 
+  describe("Import/Export Functionality", () => {
+    let testServerId: string;
+    let testTimelineId: string;
+
+    beforeEach(async () => {
+      // Add test server
+      const server = await databaseManager.addServer({
+        origin: "https://test.example.com",
+        accessToken: "test-token",
+        isActive: true,
+        userInfo: {
+          id: "user-123",
+          username: "testuser",
+          name: "Test User",
+        },
+        serverInfo: {
+          name: "Test Server",
+          version: "13.0.0",
+        },
+      });
+      testServerId = server.id;
+
+      // Add test timeline
+      const timeline = await databaseManager.addTimeline({
+        name: "Test Timeline",
+        serverId: testServerId,
+        type: "home",
+        order: 0,
+        isVisible: true,
+        settings: {
+          withReplies: true,
+          withFiles: false,
+        },
+      });
+      testTimelineId = timeline.id;
+
+      // Set test auth state
+      await databaseManager.setAuthState({
+        currentServerId: testServerId,
+        servers: [server],
+        timelines: [timeline],
+        lastUpdated: new Date(),
+      });
+    });
+
+    it("should export data successfully", async () => {
+      const exportedData = await databaseManager.exportData();
+      const parsed = JSON.parse(exportedData);
+
+      expect(parsed.version).toBe(1);
+      expect(parsed.exportedAt).toBeDefined();
+      expect(new Date(parsed.exportedAt)).toBeInstanceOf(Date);
+
+      expect(parsed.data.servers).toHaveLength(1);
+      expect(parsed.data.servers[0].id).toBe(testServerId);
+      expect(parsed.data.servers[0].origin).toBe("https://test.example.com");
+
+      expect(parsed.data.timelines).toHaveLength(1);
+      expect(parsed.data.timelines[0].id).toBe(testTimelineId);
+      expect(parsed.data.timelines[0].name).toBe("Test Timeline");
+
+      expect(parsed.data.authState).toBeDefined();
+      expect(parsed.data.authState.currentServerId).toBe(testServerId);
+    });
+
+    it("should import data successfully", async () => {
+      // First export data
+      const exportedData = await databaseManager.exportData();
+
+      // Clear all data
+      await databaseManager.clearAllData();
+
+      // Verify data is cleared
+      const serversAfterClear = await databaseManager.getAllServers();
+      const timelinesAfterClear = await databaseManager.getAllTimelines();
+      const authStateAfterClear = await databaseManager.getAuthState();
+
+      expect(serversAfterClear).toHaveLength(0);
+      expect(timelinesAfterClear).toHaveLength(0);
+      expect(authStateAfterClear).toBeUndefined();
+
+      // Import data back
+      await databaseManager.importData(exportedData);
+
+      // Verify data is restored
+      const serversAfterImport = await databaseManager.getAllServers();
+      const timelinesAfterImport = await databaseManager.getAllTimelines();
+      const authStateAfterImport = await databaseManager.getAuthState();
+
+      expect(serversAfterImport).toHaveLength(1);
+      expect(serversAfterImport[0].origin).toBe("https://test.example.com");
+      expect(serversAfterImport[0].createdAt).toBeInstanceOf(Date);
+      expect(serversAfterImport[0].updatedAt).toBeInstanceOf(Date);
+
+      expect(timelinesAfterImport).toHaveLength(1);
+      expect(timelinesAfterImport[0].name).toBe("Test Timeline");
+      expect(timelinesAfterImport[0].createdAt).toBeInstanceOf(Date);
+      expect(timelinesAfterImport[0].updatedAt).toBeInstanceOf(Date);
+
+      expect(authStateAfterImport).toBeDefined();
+      expect(authStateAfterImport?.currentServerId).toBe(testServerId);
+      expect(authStateAfterImport?.lastUpdated).toBeInstanceOf(Date);
+    });
+
+    it("should handle invalid JSON during import", async () => {
+      await expect(databaseManager.importData("invalid json")).rejects.toThrow(
+        "無効なJSONデータです",
+      );
+    });
+
+    it("should handle unsupported version during import", async () => {
+      const invalidData = JSON.stringify({
+        version: 999,
+        data: {},
+      });
+
+      await expect(databaseManager.importData(invalidData)).rejects.toThrow(
+        "サポートされていないデータバージョンです",
+      );
+    });
+
+    it("should handle invalid data structure during import", async () => {
+      const invalidData = JSON.stringify({
+        version: 1,
+        // Missing data property
+      });
+
+      await expect(databaseManager.importData(invalidData)).rejects.toThrow(
+        "データ構造が無効です",
+      );
+    });
+
+    it("should import empty data successfully", async () => {
+      const emptyData = JSON.stringify({
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        data: {
+          servers: [],
+          timelines: [],
+          authState: null,
+        },
+      });
+
+      await databaseManager.importData(emptyData);
+
+      const servers = await databaseManager.getAllServers();
+      const timelines = await databaseManager.getAllTimelines();
+      const authState = await databaseManager.getAuthState();
+
+      expect(servers).toHaveLength(0);
+      expect(timelines).toHaveLength(0);
+      expect(authState).toBeUndefined();
+    });
+
+    it("should clear all data successfully", async () => {
+      // Verify data exists
+      const serversBefore = await databaseManager.getAllServers();
+      const timelinesBefore = await databaseManager.getAllTimelines();
+      const authStateBefore = await databaseManager.getAuthState();
+
+      expect(serversBefore).toHaveLength(1);
+      expect(timelinesBefore).toHaveLength(1);
+      expect(authStateBefore).toBeDefined();
+
+      // Clear all data
+      await databaseManager.clearAllData();
+
+      // Verify data is cleared
+      const serversAfter = await databaseManager.getAllServers();
+      const timelinesAfter = await databaseManager.getAllTimelines();
+      const authStateAfter = await databaseManager.getAuthState();
+
+      expect(serversAfter).toHaveLength(0);
+      expect(timelinesAfter).toHaveLength(0);
+      expect(authStateAfter).toBeUndefined();
+    });
+
+    it("should preserve data relationships during import/export", async () => {
+      // Export data
+      const exportedData = await databaseManager.exportData();
+
+      // Clear and import
+      await databaseManager.clearAllData();
+      await databaseManager.importData(exportedData);
+
+      // Verify relationships
+      const servers = await databaseManager.getAllServers();
+      const timelines = await databaseManager.getAllTimelines();
+
+      expect(timelines[0].serverId).toBe(servers[0].id);
+
+      // Verify timeline can be retrieved by server
+      const serverTimelines = await databaseManager.getTimelinesByServer(
+        servers[0].id,
+      );
+      expect(serverTimelines).toHaveLength(1);
+      expect(serverTimelines[0].id).toBe(timelines[0].id);
+    });
+  });
+
   describe("Error Handling", () => {
     it("should throw error when database is not initialized", async () => {
       // Test the ensureDB method by accessing a new database manager instance

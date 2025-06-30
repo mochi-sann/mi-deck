@@ -21,6 +21,9 @@ vi.mock("./database", () => ({
     getAuthState: vi.fn(),
     setAuthState: vi.fn(),
     clearAuthState: vi.fn(),
+    exportData: vi.fn(),
+    importData: vi.fn(),
+    clearAllData: vi.fn(),
   },
 }));
 
@@ -41,6 +44,9 @@ vi.mock("./localStorage", () => ({
     getAuthState: vi.fn(),
     setAuthState: vi.fn(),
     clearAuthState: vi.fn(),
+    exportData: vi.fn(),
+    importData: vi.fn(),
+    clearAllData: vi.fn(),
   },
 }));
 
@@ -129,6 +135,9 @@ describe("StorageManager", () => {
         ],
       ],
       ["clearAuthState", []],
+      ["exportData", []],
+      ["importData", ["{}"]],
+      ["clearAllData", []],
     ] as const;
 
     for (const [methodName, args] of testMethods) {
@@ -311,6 +320,48 @@ describe("StorageManager", () => {
         expect(databaseManager.clearAuthState).toHaveBeenCalled();
       });
     });
+
+    describe("Import/Export Operations", () => {
+      it("should delegate exportData to database manager", async () => {
+        const { databaseManager } = await import("./database");
+        const mockExportData = JSON.stringify({
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          data: { servers: [], timelines: [], authState: null },
+        });
+
+        vi.mocked(databaseManager.exportData).mockResolvedValue(mockExportData);
+
+        const result = await storageManager.exportData();
+
+        expect(databaseManager.exportData).toHaveBeenCalled();
+        expect(result).toEqual(mockExportData);
+      });
+
+      it("should delegate importData to database manager", async () => {
+        const { databaseManager } = await import("./database");
+        vi.mocked(databaseManager.importData).mockResolvedValue();
+
+        const importData = JSON.stringify({
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          data: { servers: [], timelines: [], authState: null },
+        });
+
+        await storageManager.importData(importData);
+
+        expect(databaseManager.importData).toHaveBeenCalledWith(importData);
+      });
+
+      it("should delegate clearAllData to database manager", async () => {
+        const { databaseManager } = await import("./database");
+        vi.mocked(databaseManager.clearAllData).mockResolvedValue();
+
+        await storageManager.clearAllData();
+
+        expect(databaseManager.clearAllData).toHaveBeenCalled();
+      });
+    });
   });
 
   describe("Fallback to localStorage", () => {
@@ -343,6 +394,35 @@ describe("StorageManager", () => {
 
       expect(localStorageManager.addServer).toHaveBeenCalledWith(serverData);
       expect(result).toEqual(mockServer);
+    });
+
+    it("should use localStorage for import/export operations when IndexedDB fails", async () => {
+      const { localStorageManager } = await import("./localStorage");
+      const mockExportData = JSON.stringify({
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        data: { servers: [], timelines: [], authState: null },
+      });
+
+      // Test export
+      vi.mocked(localStorageManager.exportData).mockResolvedValue(
+        mockExportData,
+      );
+      const exportResult = await storageManager.exportData();
+      expect(localStorageManager.exportData).toHaveBeenCalled();
+      expect(exportResult).toEqual(mockExportData);
+
+      // Test import
+      vi.mocked(localStorageManager.importData).mockResolvedValue();
+      await storageManager.importData(mockExportData);
+      expect(localStorageManager.importData).toHaveBeenCalledWith(
+        mockExportData,
+      );
+
+      // Test clear all data
+      vi.mocked(localStorageManager.clearAllData).mockResolvedValue();
+      await storageManager.clearAllData();
+      expect(localStorageManager.clearAllData).toHaveBeenCalled();
     });
   });
 });
