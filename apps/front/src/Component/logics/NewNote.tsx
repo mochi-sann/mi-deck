@@ -43,7 +43,7 @@ const formSchema = v.object({
   ),
   isLocalOnly: v.boolean(),
   visibility: v.picklist(
-    ["public", "home", "followers", "specified"] as const, // 変更: v.picklist を使用し、エラーメッセージのスキーマに合わせる
+    ["public", "home", "followers", "specified", "private"] as const, // 変更: v.picklist を使用し、エラーメッセージのスキーマに合わせる
     "公開範囲を選択してください。", // エラーメッセージを追加
   ),
 });
@@ -53,7 +53,7 @@ const visibilityOptions = [
   { value: "home", label: "ホーム" },
   { value: "followers", label: "フォロワー" },
   { value: "specified", label: "指定ユーザー" }, // 変更: スキーマに合わせてコメントアウトを解除
-  // { value: "private", label: "ダイレクト" }, // スキーマに合わせてコメントアウト (またはスキーマに追加)
+  { value: "private", label: "ダイレクト" }, // スキーマに合わせてコメントアウト (またはスキーマに追加)
 ] as const;
 type FormSchema = v.InferOutput<typeof formSchema>;
 
