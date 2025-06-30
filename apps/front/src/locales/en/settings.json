@@ -1,0 +1,25 @@
+{
+  "title": "Settings",
+  "applicationInfo": "Application Information",
+  "version": "Version",
+  "buildDate": "Build Date",
+  "connectedServers": "Connected Servers",
+  "timelineCount": "Timeline Count",
+  "language": {
+    "title": "Language",
+    "description": "Select your preferred language",
+    "japanese": "日本語",
+    "english": "English"
+  },
+  "theme": {
+    "title": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "enabled": "Enable notifications",
+    "sound": "Notification sound"
+  }
+}

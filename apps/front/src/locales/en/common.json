@@ -1,0 +1,28 @@
+{
+  "navigation": {
+    "title": "Navigation",
+    "home": "Home",
+    "settings": "Settings",
+    "server": "Server",
+    "addNewServer": "Add New Server",
+    "noServers": "No servers available"
+  },
+  "loading": "Loading...",
+  "error": "An error occurred",
+  "retry": "Retry",
+  "close": "Close",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "add": "Add",
+  "remove": "Remove",
+  "confirm": "Confirm",
+  "back": "Back",
+  "next": "Next",
+  "previous": "Previous",
+  "search": "Search",
+  "clear": "Clear",
+  "submit": "Submit",
+  "reset": "Reset"
+}

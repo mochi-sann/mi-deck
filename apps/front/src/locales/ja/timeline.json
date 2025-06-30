@@ -1,0 +1,12 @@
+{
+  "loading": "タイムラインを読み込み中...",
+  "noServerSelected": "サーバーが選択されていません",
+  "initializingStorage": "ストレージを初期化中...",
+  "noTimelines": "タイムラインがありません",
+  "createTimeline": "タイムラインを作成",
+  "error": {
+    "loadFailed": "タイムラインの読み込みに失敗しました",
+    "connectionFailed": "サーバーへの接続に失敗しました",
+    "authenticationFailed": "認証に失敗しました"
+  }
+}

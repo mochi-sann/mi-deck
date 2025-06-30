@@ -1,0 +1,25 @@
+{
+  "title": "設定",
+  "applicationInfo": "アプリケーション情報",
+  "version": "バージョン",
+  "buildDate": "ビルド日",
+  "connectedServers": "接続サーバー数",
+  "timelineCount": "タイムライン数",
+  "language": {
+    "title": "言語",
+    "description": "表示言語を選択してください",
+    "japanese": "日本語",
+    "english": "English"
+  },
+  "theme": {
+    "title": "テーマ",
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム"
+  },
+  "notifications": {
+    "title": "通知",
+    "enabled": "通知を有効にする",
+    "sound": "通知音"
+  }
+}

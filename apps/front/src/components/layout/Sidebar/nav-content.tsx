@@ -3,6 +3,7 @@ import { NewServerForm } from "@/routes/_authed/add-server/-form/NewServerForm";
 import { Link } from "@tanstack/react-router";
 import { Home, Plus, Server, Settings } from "lucide-react";
 import { Fragment, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "../../ui/button";
 import {
   Dialog,
@@ -20,19 +21,20 @@ import {
 } from "../../ui/sidebar";
 
 export function NavContent() {
+  const { t } = useTranslation();
   const storage = useStorage();
   const [isAddServerDialogOpen, setIsAddServerDialogOpen] = useState(false);
 
   return (
     <Fragment>
       <SidebarGroup>
-        <SidebarGroupLabel>ナビゲーション</SidebarGroupLabel>
+        <SidebarGroupLabel>{t("navigation.title")}</SidebarGroupLabel>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link to="/">
                 <Home />
-                <span>ホーム</span>
+                <span>{t("navigation.home")}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -40,7 +42,7 @@ export function NavContent() {
             <SidebarMenuButton asChild>
               <Link to="/settings">
                 <Settings />
-                <span>設定</span>
+                <span>{t("navigation.settings")}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -50,7 +52,7 @@ export function NavContent() {
       <SidebarGroup>
         <SidebarGroupLabel>
           <div className="flex w-full items-center justify-between">
-            <span>サーバー</span>
+            <span>{t("navigation.server")}</span>
             <Dialog
               open={isAddServerDialogOpen}
               onOpenChange={setIsAddServerDialogOpen}
@@ -62,7 +64,7 @@ export function NavContent() {
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>新しいサーバーを追加</DialogTitle>
+                  <DialogTitle>{t("navigation.addNewServer")}</DialogTitle>
                 </DialogHeader>
                 <NewServerForm />
               </DialogContent>
@@ -75,7 +77,7 @@ export function NavContent() {
               <SidebarMenuButton disabled>
                 <Server />
                 <span className="text-muted-foreground">
-                  サーバーがありません
+                  {t("navigation.noServers")}
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>

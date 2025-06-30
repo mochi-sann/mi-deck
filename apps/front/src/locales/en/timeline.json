@@ -1,0 +1,12 @@
+{
+  "loading": "Loading timeline...",
+  "noServerSelected": "No server selected",
+  "initializingStorage": "Initializing storage...",
+  "noTimelines": "No timelines available",
+  "createTimeline": "Create Timeline",
+  "error": {
+    "loadFailed": "Failed to load timeline",
+    "connectionFailed": "Failed to connect to server",
+    "authenticationFailed": "Authentication failed"
+  }
+}
