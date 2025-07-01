@@ -4,8 +4,36 @@
   "initializingStorage": "Initializing storage...",
   "noTimelines": "No timelines available",
   "createTimeline": "Create Timeline",
+  "noServerDescription": "Please select a server from the sidebar",
+  "homeTimeline": "Home Timeline",
+  "noNotes": "No notes available",
+  "createDialog": {
+    "title": "Create New Timeline",
+    "description": "Configure the timeline you want to display.",
+    "serverLabel": "Server",
+    "serverPlaceholder": "Select a server",
+    "typeLabel": "Timeline Type",
+    "typePlaceholder": "Select timeline type",
+    "nameLabel": "Timeline Name",
+    "namePlaceholder": "e.g. My Home Timeline",
+    "createButton": "Create",
+    "creatingButton": "Creating...",
+    "createFailed": "Failed to create timeline.",
+    "types": {
+      "home": "Home",
+      "local": "Local",
+      "social": "Social",
+      "global": "Global"
+    },
+    "validation": {
+      "selectServer": "Please select a server",
+      "selectType": "Please select a timeline type",
+      "enterName": "Please enter a timeline name"
+    }
+  },
   "error": {
     "loadFailed": "Failed to load timeline",
+    "loadFailedWithMessage": "An error occurred while loading the timeline: {{message}}",
     "connectionFailed": "Failed to connect to server",
     "authenticationFailed": "Authentication failed"
   }

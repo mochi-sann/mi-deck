@@ -1,6 +1,7 @@
 import { NewNote } from "@/features/notes";
 import { cn } from "@/lib/utils";
 import { Pen } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import {
@@ -14,6 +15,7 @@ import {
 import { NavContent } from "./Sidebar/nav-content";
 
 export const AppSidebarPresenter = () => {
+  const { t } = useTranslation("common");
   const { state } = useSidebar(); // useSidebarからstateを取得
 
   return (
@@ -43,7 +45,9 @@ export const AppSidebarPresenter = () => {
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-lg leading-tight">
-                <span className="truncate font-medium">ノート</span>
+                <span className="truncate font-medium">
+                  {t("sidebar.note")}
+                </span>
               </div>
             </SidebarMenuButton>
           </DialogTrigger>

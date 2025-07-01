@@ -30,36 +30,41 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { APIClient } from "misskey-js/api.js";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import * as v from "valibot";
 
 // Define the form schema using Valibot
-const formSchema = v.object({
-  serverSessionId: v.pipe(
-    v.string(), // 変更: v.pipe を使用
-    v.nonEmpty("投稿先サーバーを選択してください。"),
-  ),
-  noteContent: v.pipe(
-    v.string(), // 変更: v.pipe を使用
-    v.minLength(1, "ノートの内容を入力してください。"),
-  ),
-  isLocalOnly: v.boolean(),
-  visibility: v.picklist(
-    ["public", "home", "followers", "specified"] as const, // 変更: v.picklist を使用し、エラーメッセージのスキーマに合わせる
-    "公開範囲を選択してください。", // エラーメッセージを追加
-  ),
-});
-
-const visibilityOptions = [
-  { value: "public", label: "公開" },
-  { value: "home", label: "ホーム" },
-  { value: "followers", label: "フォロワー" },
-  { value: "specified", label: "指定ユーザー" }, // 変更: スキーマに合わせてコメントアウトを解除
-] as const;
-type FormSchema = v.InferOutput<typeof formSchema>;
+const createFormSchema = (t: (key: string) => string) =>
+  v.object({
+    serverSessionId: v.pipe(
+      v.string(),
+      v.nonEmpty(t("newNote.validation.selectServer")),
+    ),
+    noteContent: v.pipe(
+      v.string(),
+      v.minLength(1, t("newNote.validation.enterContent")),
+    ),
+    isLocalOnly: v.boolean(),
+    visibility: v.picklist(
+      ["public", "home", "followers", "specified"] as const,
+      t("newNote.validation.selectVisibility"),
+    ),
+  });
 
 export const NewNote = () => {
+  const { t } = useTranslation("notes");
   const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const formSchema = createFormSchema(t);
+  type FormSchema = v.InferOutput<typeof formSchema>;
+
+  const visibilityOptions = [
+    { value: "public", label: t("newNote.visibility.public") },
+    { value: "home", label: t("newNote.visibility.home") },
+    { value: "followers", label: t("newNote.visibility.followers") },
+    { value: "specified", label: t("newNote.visibility.specified") },
+  ] as const;
   const getAllServersFn = () => {
     return storageManager.getAllServers();
   };
@@ -125,10 +130,8 @@ export const NewNote = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <DialogHeader>
-          <DialogTitle>新しいノートを作成</DialogTitle>
-          <DialogDescription>
-            ノートの内容を入力してください。
-          </DialogDescription>
+          <DialogTitle>{t("newNote.title")}</DialogTitle>
+          <DialogDescription>{t("newNote.description")}</DialogDescription>
         </DialogHeader>
 
         <FormField
@@ -136,7 +139,7 @@ export const NewNote = () => {
           name="serverSessionId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>投稿先サーバー</FormLabel>
+              <FormLabel>{t("newNote.serverLabel")}</FormLabel>
               <Select
                 onValueChange={field.onChange}
                 defaultValue={String(field.value ?? "")} // 変更: String() でキャスト
@@ -148,8 +151,8 @@ export const NewNote = () => {
                     <SelectValue
                       placeholder={
                         isLoadingServers
-                          ? "サーバーを読み込み中..."
-                          : "サーバーを選択..."
+                          ? t("newNote.serverLoading")
+                          : t("newNote.serverPlaceholder")
                       }
                     />
                   </SelectTrigger>
@@ -171,7 +174,7 @@ export const NewNote = () => {
           name="visibility"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>公開範囲</FormLabel>
+              <FormLabel>{t("newNote.visibilityLabel")}</FormLabel>
               <Select
                 onValueChange={field.onChange}
                 defaultValue={String(field.value ?? "public")} // 変更: String() でキャスト、デフォルト値を指定
@@ -180,7 +183,9 @@ export const NewNote = () => {
               >
                 <FormControl>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder={"公開範囲を選択"} />
+                    <SelectValue
+                      placeholder={t("newNote.visibilityPlaceholder")}
+                    />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -200,7 +205,7 @@ export const NewNote = () => {
           name="isLocalOnly"
           render={({ field }) => (
             <FormItem className="flex items-center space-x-2">
-              <FormLabel>ローカルのみ</FormLabel>
+              <FormLabel>{t("newNote.localOnlyLabel")}</FormLabel>
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -218,10 +223,10 @@ export const NewNote = () => {
           name="noteContent"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>ノート内容</FormLabel>
+              <FormLabel>{t("newNote.contentLabel")}</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="ここにノートの内容を入力..."
+                  placeholder={t("newNote.contentPlaceholder")}
                   rows={4}
                   {...field}
                 />
@@ -235,7 +240,9 @@ export const NewNote = () => {
 
         <DialogFooter>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "投稿中..." : "投稿"}
+            {isSubmitting
+              ? t("newNote.postingButton")
+              : t("newNote.postButton")}
           </Button>
         </DialogFooter>
       </form>

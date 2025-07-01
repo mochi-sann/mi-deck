@@ -4,8 +4,36 @@
   "initializingStorage": "ストレージを初期化中...",
   "noTimelines": "タイムラインがありません",
   "createTimeline": "タイムラインを作成",
+  "noServerDescription": "サイドバーからサーバーを選択してください",
+  "homeTimeline": "ホームタイムライン",
+  "noNotes": "ノートがありません",
+  "createDialog": {
+    "title": "新しいタイムラインを作成",
+    "description": "表示したいタイムラインの設定を行います。",
+    "serverLabel": "サーバー",
+    "serverPlaceholder": "サーバーを選択",
+    "typeLabel": "タイムラインタイプ",
+    "typePlaceholder": "タイムラインタイプを選択",
+    "nameLabel": "タイムライン名",
+    "namePlaceholder": "例: 私のホームタイムライン",
+    "createButton": "作成",
+    "creatingButton": "作成中...",
+    "createFailed": "タイムラインの作成に失敗しました。",
+    "types": {
+      "home": "ホーム",
+      "local": "ローカル",
+      "social": "ソーシャル",
+      "global": "グローバル"
+    },
+    "validation": {
+      "selectServer": "サーバーを選択してください",
+      "selectType": "タイムラインタイプを選択してください",
+      "enterName": "タイムライン名を入力してください"
+    }
+  },
   "error": {
     "loadFailed": "タイムラインの読み込みに失敗しました",
+    "loadFailedWithMessage": "タイムラインの読み込みでエラーが発生しました: {{message}}",
     "connectionFailed": "サーバーへの接続に失敗しました",
     "authenticationFailed": "認証に失敗しました"
   }

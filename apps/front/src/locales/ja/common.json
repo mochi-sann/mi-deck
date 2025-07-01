@@ -24,5 +24,12 @@
   "search": "検索",
   "clear": "クリア",
   "submit": "送信",
-  "reset": "リセット"
+  "reset": "リセット",
+  "sidebar": {
+    "note": "ノート"
+  },
+  "fileUpload": {
+    "label": "ファイルを選択",
+    "removeImage": "画像 {{index}} を削除"
+  }
 }

@@ -24,5 +24,12 @@
   "search": "Search",
   "clear": "Clear",
   "submit": "Submit",
-  "reset": "Reset"
+  "reset": "Reset",
+  "sidebar": {
+    "note": "Note"
+  },
+  "fileUpload": {
+    "label": "Select Files",
+    "removeImage": "Remove image {{index}}"
+  }
 }
