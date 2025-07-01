@@ -1,5 +1,6 @@
 {
   "title": "Settings",
+  "applicationSettings": "Application Settings",
   "applicationInfo": "Application Information",
   "version": "Version",
   "buildDate": "Build Date",
@@ -12,7 +13,8 @@
     "english": "English"
   },
   "theme": {
-    "title": "Theme",
+    "title": "Dark Mode",
+    "description": "Switch the app appearance to dark theme",
     "light": "Light",
     "dark": "Dark",
     "system": "System"

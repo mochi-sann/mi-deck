@@ -9,19 +9,27 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import type { SupportedLanguage } from "@/lib/i18n/types";
+import { useTranslation } from "react-i18next";
 
 export function ApplicationSettings() {
+  const { t, i18n } = useTranslation("settings");
+
+  const handleLanguageChange = (value: string) => {
+    void i18n.changeLanguage(value as SupportedLanguage);
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>アプリケーション設定</CardTitle>
+        <CardTitle>{t("applicationSettings")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
-            <Label htmlFor="theme-toggle">ダークモード</Label>
+            <Label htmlFor="theme-toggle">{t("theme.title")}</Label>
             <p className="text-muted-foreground text-sm">
-              アプリの外観をダークテーマに切り替えます
+              {t("theme.description")}
             </p>
           </div>
           <Switch id="theme-toggle" />
@@ -30,14 +38,17 @@ export function ApplicationSettings() {
         <Separator />
 
         <div className="space-y-2">
-          <Label>言語設定</Label>
-          <Select defaultValue="ja">
+          <Label>{t("language.title")}</Label>
+          <p className="text-muted-foreground text-sm">
+            {t("language.description")}
+          </p>
+          <Select value={i18n.language} onValueChange={handleLanguageChange}>
             <SelectTrigger className="w-48">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="ja">日本語</SelectItem>
-              <SelectItem value="en">English</SelectItem>
+              <SelectItem value="ja">{t("language.japanese")}</SelectItem>
+              <SelectItem value="en">{t("language.english")}</SelectItem>
             </SelectContent>
           </Select>
         </div>

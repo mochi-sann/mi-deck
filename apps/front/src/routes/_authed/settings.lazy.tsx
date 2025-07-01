@@ -1,4 +1,3 @@
-import { LanguageSelector } from "@/components/ui/language-selector";
 import { ApplicationInfo } from "@/features/settings/components/ApplicationInfo";
 import { ApplicationSettings } from "@/features/settings/components/ApplicationSettings";
 import { DataManagement } from "@/features/settings/components/DataManagement";
@@ -22,7 +21,6 @@ function SettingsPage() {
           <Settings className="h-6 w-6" />
           <h1 className="font-bold text-2xl">{t("title")}</h1>
         </div>
-        <LanguageSelector />
       </div>
 
       <ApplicationSettings />

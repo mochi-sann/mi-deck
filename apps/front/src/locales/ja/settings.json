@@ -1,5 +1,6 @@
 {
   "title": "設定",
+  "applicationSettings": "アプリケーション設定",
   "applicationInfo": "アプリケーション情報",
   "version": "バージョン",
   "buildDate": "ビルド日",
@@ -12,7 +13,8 @@
     "english": "English"
   },
   "theme": {
-    "title": "テーマ",
+    "title": "ダークモード",
+    "description": "アプリの外観をダークテーマに切り替えます",
     "light": "ライト",
     "dark": "ダーク",
     "system": "システム"
