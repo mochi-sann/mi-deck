@@ -5,6 +5,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import type React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 type NewServerFormType = {
   serverOrigin: string;
@@ -12,6 +13,7 @@ type NewServerFormType = {
 };
 
 export const NewServerForm: React.FC = () => {
+  const { t } = useTranslation("server");
   const { handleSubmit, control } = useForm<NewServerFormType>();
   const auth = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +21,7 @@ export const NewServerForm: React.FC = () => {
 
   const onSubmit = async (data: NewServerFormType) => {
     if (data.serverType !== "Misskey") {
-      setError("現在はMisskeyサーバーのみサポートしています");
+      setError(t("newServerForm.onlyMisskey"));
       return;
     }
 
@@ -34,7 +36,7 @@ export const NewServerForm: React.FC = () => {
     } catch (err) {
       console.log(...[err, "👀 [NewServerForm.tsx:34]: err"].reverse());
       setError(
-        err instanceof Error ? err.message : "サーバー追加に失敗しました",
+        err instanceof Error ? err.message : t("newServerForm.addFailed"),
       );
     } finally {
       setIsLoading(false);
@@ -47,8 +49,8 @@ export const NewServerForm: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <TextFieldSet
-          placeholder="例: misskey.io"
-          label="サーバーのURL"
+          placeholder={t("newServerForm.placeholder")}
+          label={t("newServerForm.serverUrl")}
           type="text"
           control={control}
           name="serverOrigin"
@@ -63,13 +65,13 @@ export const NewServerForm: React.FC = () => {
             { label: "Misskey", value: "Misskey" },
             { label: "Mastodon", value: "Mastodon" },
           ]}
-          label="サーバータイプ"
+          label={t("newServerForm.serverType")}
           control={control}
           validation="Please select a serverType"
           rules={{
             required: "Please select a serverType",
           }}
-          placeholder="サーバーを選んでください"
+          placeholder={t("newServerForm.selectPlaceholder")}
         />
         {error && (
           <div className="rounded bg-red-50 p-3 text-red-600 text-sm">
@@ -83,7 +85,7 @@ export const NewServerForm: React.FC = () => {
           isLoading={isLoading}
           disabled={isLoading}
         >
-          サーバーを追加する
+          {t("newServerForm.addButton")}
         </Button>
       </form>
     </div>

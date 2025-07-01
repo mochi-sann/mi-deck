@@ -4,8 +4,10 @@ import { Separator } from "@/components/ui/separator";
 import { storageManager } from "@/lib/storage";
 import { AlertTriangle, Download, Upload } from "lucide-react";
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export function DataManagement() {
+  const { t } = useTranslation("settings");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
@@ -27,8 +29,8 @@ export function DataManagement() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("データのエクスポートに失敗しました:", error);
-      alert("データのエクスポートに失敗しました");
+      console.error("Data export failed:", error);
+      alert(t("dataManagement.export.error"));
     } finally {
       setIsExporting(false);
     }
@@ -52,9 +54,13 @@ export function DataManagement() {
       // Force refresh to update UI with new data
       window.location.reload();
     } catch (error) {
-      console.error("データのインポートに失敗しました:", error);
+      console.error("Data import failed:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : t("dataManagement.import.unknownError");
       alert(
-        `データのインポートに失敗しました: ${error instanceof Error ? error.message : "不明なエラー"}`,
+        t("dataManagement.import.errorWithMessage", { message: errorMessage }),
       );
     } finally {
       setIsImporting(false);
@@ -66,14 +72,14 @@ export function DataManagement() {
   };
 
   const handleClearData = async () => {
-    if (confirm("すべてのデータを削除しますか？この操作は元に戻せません。")) {
+    if (confirm(t("dataManagement.clear.confirm"))) {
       try {
         await storageManager.clearAllData();
         // Force refresh to update UI
         window.location.reload();
       } catch (error) {
-        console.error("データの削除に失敗しました:", error);
-        alert("データの削除に失敗しました");
+        console.error("Data deletion failed:", error);
+        alert(t("dataManagement.clear.error"));
       }
     }
   };
@@ -81,24 +87,26 @@ export function DataManagement() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>データ管理</CardTitle>
+        <CardTitle>{t("dataManagement.title")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-col gap-4">
           <div>
             <h4 className="mb-2 flex items-center gap-2 font-medium">
               <Download className="h-4 w-4" />
-              データのエクスポート
+              {t("dataManagement.export.title")}
             </h4>
             <p className="mb-3 text-muted-foreground text-sm">
-              サーバー情報、タイムライン設定、認証状態をJSONファイルとしてダウンロードします
+              {t("dataManagement.export.description")}
             </p>
             <Button
               onClick={handleExportData}
               variant="outline"
               disabled={isExporting}
             >
-              {isExporting ? "エクスポート中..." : "データをエクスポート"}
+              {isExporting
+                ? t("dataManagement.export.inProgress")
+                : t("dataManagement.export.button")}
             </Button>
           </div>
 
@@ -107,17 +115,19 @@ export function DataManagement() {
           <div>
             <h4 className="mb-2 flex items-center gap-2 font-medium">
               <Upload className="h-4 w-4" />
-              データのインポート
+              {t("dataManagement.import.title")}
             </h4>
             <p className="mb-3 text-muted-foreground text-sm">
-              以前にエクスポートしたJSONファイルからデータを復元します（既存のデータは上書きされます）
+              {t("dataManagement.import.description")}
             </p>
             <Button
               onClick={handleImportClick}
               variant="outline"
               disabled={isImporting}
             >
-              {isImporting ? "インポート中..." : "データをインポート"}
+              {isImporting
+                ? t("dataManagement.import.inProgress")
+                : t("dataManagement.import.button")}
             </Button>
             <input
               ref={fileInputRef}
@@ -133,13 +143,13 @@ export function DataManagement() {
           <div>
             <h4 className="mb-2 flex items-center gap-2 font-medium text-destructive">
               <AlertTriangle className="h-4 w-4" />
-              データの削除
+              {t("dataManagement.clear.title")}
             </h4>
             <p className="mb-3 text-muted-foreground text-sm">
-              すべてのサーバー情報、タイムライン設定、認証状態を削除します（この操作は元に戻せません）
+              {t("dataManagement.clear.description")}
             </p>
             <Button onClick={handleClearData} variant="destructive">
-              すべてのデータを削除
+              {t("dataManagement.clear.button")}
             </Button>
           </div>
         </div>
