@@ -31,5 +31,24 @@
   "fileUpload": {
     "label": "Select Files",
     "removeImage": "Remove image {{index}}"
+  },
+  "storageError": {
+    "title": "Storage Error",
+    "messages": {
+      "storageNotInitialized": "Storage initialization failed. Please reload the page.",
+      "databaseNotInitialized": "Database initialization failed. Please check if IndexedDB is enabled in your browser settings.",
+      "quotaExceeded": "Storage quota exceeded. Please clear browser data.",
+      "notAllowed": "Storage access not allowed. Please check your browser settings.",
+      "securityError": "Security restrictions prevent storage access. Please ensure you're accessing via HTTPS.",
+      "general": "A storage error occurred. Please wait a moment and try again."
+    },
+    "actions": {
+      "retry": "Retry ({{current}}/{{max}})",
+      "reset": "Reset",
+      "clearStorage": "Clear Storage",
+      "reloadPage": "Reload Page"
+    },
+    "devInfo": "Detailed error information (for development)",
+    "clearStorageAlert": "Please go to Developer Tools > Application > Storage > Clear storage."
   }
 }

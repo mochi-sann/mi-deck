@@ -26,6 +26,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { GripVertical, Plus, Server, Trash2 } from "lucide-react";
 import { APIClient } from "misskey-js/api.js";
 import { Fragment, Suspense, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   SwitchTimeLineType,
   SwitchTimeLineTypeProps,
@@ -40,6 +41,7 @@ function SortableTimeline({
   onDelete: (timelineId: string) => void;
   isDeleting?: boolean;
 }) {
+  const { t } = useTranslation("timeline");
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: timeline.id });
 
@@ -56,7 +58,7 @@ function SortableTimeline({
       <div ref={setNodeRef} style={style}>
         <Card className="flex h-full w-80 flex-[0_0_320px] flex-col gap-0 rounded-none">
           <CardContent className="flex h-full items-center justify-center">
-            <Text>サーバーが見つかりません</Text>
+            <Text>{t("list.serverNotFound")}</Text>
           </CardContent>
         </Card>
       </div>
@@ -86,11 +88,7 @@ function SortableTimeline({
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (
-      window.confirm(
-        `タイムライン「${timeline.name}」を削除しますか？この操作は取り消せません。`,
-      )
-    ) {
+    if (window.confirm(t("list.deleteConfirm", { name: timeline.name }))) {
       onDelete(timeline.id);
     }
   };
@@ -152,7 +150,7 @@ function SortableTimeline({
               size="sm"
               onClick={handleDelete}
               className="h-8 w-8 p-0 text-red-500 hover:bg-red-50 hover:text-red-700"
-              title="タイムラインを削除"
+              title={t("list.deleteTimeline")}
               disabled={isDeleting}
             >
               <Trash2
@@ -173,6 +171,7 @@ function SortableTimeline({
 }
 
 export function ClientTimelineList() {
+  const { t } = useTranslation("timeline");
   const storage = useStorage();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -205,7 +204,7 @@ export function ClientTimelineList() {
         await storage.reorderTimelines(timelineIds);
       } catch (error) {
         console.error("Failed to reorder timelines:", error);
-        alert("タイムラインの並び替えに失敗しました。");
+        alert(t("list.reorderFailed"));
       }
     }
   };
@@ -216,7 +215,7 @@ export function ClientTimelineList() {
       await storage.deleteTimeline(timelineId);
     } catch (error) {
       console.error("Failed to delete timeline:", error);
-      alert("タイムラインの削除に失敗しました。もう一度お試しください。");
+      alert(t("list.deleteFailed"));
     } finally {
       setIsDeleting(false);
     }
@@ -228,10 +227,10 @@ export function ClientTimelineList() {
         <Card className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-2">
             <LoadingSpinner />
-            <Text>タイムラインを読み込み中...</Text>
+            <Text>{t("list.loading")}</Text>
             {storage.retryCount > 0 && (
               <Text className="text-muted-foreground text-sm">
-                再試行中... ({storage.retryCount}/3)
+                {t("list.retrying", { count: storage.retryCount })}
               </Text>
             )}
           </div>
@@ -267,7 +266,7 @@ export function ClientTimelineList() {
               </SortableContext>
             ) : (
               <Card className="flex flex-1 items-center justify-center">
-                <Text>まだタイムラインが作成されていません。</Text>
+                <Text>{t("list.noTimelinesCreated")}</Text>
               </Card>
             )}
             <Card className="flex h-full w-80 flex-[0_0_320px] flex-col items-center justify-center gap-0 rounded-none">
@@ -280,8 +279,8 @@ export function ClientTimelineList() {
                 <Plus className="h-16 w-16 text-gray-400" />
                 <Text className="mt-2 text-gray-500">
                   {storage.servers.length === 0
-                    ? "まずサーバーを追加してください"
-                    : "タイムラインを追加"}
+                    ? t("list.addServerFirst")
+                    : t("list.addTimeline")}
                 </Text>
               </Button>
             </Card>

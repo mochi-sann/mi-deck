@@ -31,5 +31,24 @@
   "fileUpload": {
     "label": "ファイルを選択",
     "removeImage": "画像 {{index}} を削除"
+  },
+  "storageError": {
+    "title": "ストレージエラー",
+    "messages": {
+      "storageNotInitialized": "ストレージの初期化に失敗しました。ページを再読み込みしてください。",
+      "databaseNotInitialized": "データベースの初期化に失敗しました。ブラウザの設定でIndexedDBが有効になっているか確認してください。",
+      "quotaExceeded": "ストレージの容量が不足しています。ブラウザのデータを整理してください。",
+      "notAllowed": "ストレージへのアクセスが許可されていません。ブラウザの設定を確認してください。",
+      "securityError": "セキュリティ制限によりストレージにアクセスできません。HTTPSでアクセスしているか確認してください。",
+      "general": "ストレージでエラーが発生しました。しばらく待ってから再試行してください。"
+    },
+    "actions": {
+      "retry": "再試行 ({{current}}/{{max}})",
+      "reset": "リセット",
+      "clearStorage": "ストレージをクリア",
+      "reloadPage": "ページを再読み込み"
+    },
+    "devInfo": "詳細なエラー情報（開発用）",
+    "clearStorageAlert": "ブラウザの開発者ツールでApplication > Storage > Clear storageを実行してください。"
   }
 }

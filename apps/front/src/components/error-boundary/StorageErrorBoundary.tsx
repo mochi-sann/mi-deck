@@ -1,6 +1,7 @@
 import { AlertCircle, RefreshCw } from "lucide-react";
 import type { ErrorInfo, ReactNode } from "react";
 import { Component } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -100,31 +101,35 @@ export class StorageErrorBoundary extends Component<
     this.props.onReset?.();
   };
 
-  getErrorMessage = (error: Error): string => {
+  getErrorMessage = (error: Error, t: (key: string) => string): string => {
     if (error.message.includes("Storage not initialized")) {
-      return "ストレージの初期化に失敗しました。ページを再読み込みしてください。";
+      return t("storageError.messages.storageNotInitialized");
     }
 
     if (error.message.includes("Database not initialized")) {
-      return "データベースの初期化に失敗しました。ブラウザの設定でIndexedDBが有効になっているか確認してください。";
+      return t("storageError.messages.databaseNotInitialized");
     }
 
     if (error.name === "QuotaExceededError") {
-      return "ストレージの容量が不足しています。ブラウザのデータを整理してください。";
+      return t("storageError.messages.quotaExceeded");
     }
 
     if (error.name === "NotAllowedError") {
-      return "ストレージへのアクセスが許可されていません。ブラウザの設定を確認してください。";
+      return t("storageError.messages.notAllowed");
     }
 
     if (error.name === "SecurityError") {
-      return "セキュリティ制限によりストレージにアクセスできません。HTTPSでアクセスしているか確認してください。";
+      return t("storageError.messages.securityError");
     }
 
-    return "ストレージでエラーが発生しました。しばらく待ってから再試行してください。";
+    return t("storageError.messages.general");
   };
 
-  getRecoveryAction = (error: Error): ReactNode => {
+  getRecoveryAction = (
+    error: Error,
+    // biome-ignore lint/suspicious/noExplicitAny:
+    t: (key: string, options?: any) => string,
+  ): ReactNode => {
     const canRetry = this.state.retryCount < this.maxRetries;
 
     return (
@@ -135,7 +140,10 @@ export class StorageErrorBoundary extends Component<
             className="flex items-center gap-2"
           >
             <RefreshCw className="h-4 w-4" />
-            再試行 ({this.state.retryCount + 1}/{this.maxRetries})
+            {t("storageError.actions.retry", {
+              current: this.state.retryCount + 1,
+              max: this.maxRetries,
+            })}
           </Button>
         )}
 
@@ -145,7 +153,7 @@ export class StorageErrorBoundary extends Component<
           className="flex items-center gap-2"
         >
           <RefreshCw className="h-4 w-4" />
-          リセット
+          {t("storageError.actions.reset")}
         </Button>
 
         {error.name === "QuotaExceededError" && (
@@ -157,16 +165,14 @@ export class StorageErrorBoundary extends Component<
                 try {
                   localStorage.clear();
                   // IndexedDBのクリアは複雑なので、ユーザーに手動での操作を促す
-                  alert(
-                    "ブラウザの開発者ツールでApplication > Storage > Clear storageを実行してください。",
-                  );
+                  alert(t("storageError.clearStorageAlert"));
                 } catch (err) {
                   console.error("Failed to clear storage:", err);
                 }
               }
             }}
           >
-            ストレージをクリア
+            {t("storageError.actions.clearStorage")}
           </Button>
         )}
       </div>
@@ -180,51 +186,91 @@ export class StorageErrorBoundary extends Component<
         return this.props.fallback;
       }
 
-      // デフォルトのエラーUI
+      // StorageErrorBoundaryWithTranslationを使用
       return (
-        <div className="mx-auto max-w-2xl p-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-destructive">
-                <AlertCircle className="h-5 w-5" />
-                ストレージエラー
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>エラーが発生しました</AlertTitle>
-                <AlertDescription>
-                  {this.getErrorMessage(this.state.error)}
-                </AlertDescription>
-              </Alert>
-
-              {process.env.NODE_ENV === "development" && (
-                <details className="text-sm">
-                  <summary className="cursor-pointer text-muted-foreground">
-                    詳細なエラー情報（開発用）
-                  </summary>
-                  <pre className="mt-2 overflow-auto rounded bg-muted p-2 text-xs">
-                    {this.state.error.stack}
-                  </pre>
-                  {this.state.errorInfo && (
-                    <pre className="mt-2 overflow-auto rounded bg-muted p-2 text-xs">
-                      {this.state.errorInfo.componentStack}
-                    </pre>
-                  )}
-                </details>
-              )}
-
-              {this.getRecoveryAction(this.state.error)}
-            </CardContent>
-          </Card>
-        </div>
+        <StorageErrorBoundaryWithTranslation
+          error={this.state.error}
+          errorInfo={this.state.errorInfo}
+          retryCount={this.state.retryCount}
+          maxRetries={this.maxRetries}
+          onRetry={this.handleRetry}
+          onReset={this.handleReset}
+          getErrorMessage={this.getErrorMessage}
+          getRecoveryAction={this.getRecoveryAction}
+        />
       );
     }
 
     return this.props.children;
   }
 }
+
+// StorageErrorBoundaryWithTranslation - i18n対応のコンポーネント
+interface StorageErrorBoundaryWithTranslationProps {
+  error: Error;
+  errorInfo?: ErrorInfo;
+  retryCount: number;
+  maxRetries: number;
+  onRetry: () => void;
+  onReset: () => void;
+  getErrorMessage: (error: Error, t: (key: string) => string) => string;
+  getRecoveryAction: (
+    error: Error,
+    // biome-ignore lint/suspicious/noExplicitAny:
+    t: (key: string, options?: any) => string,
+  ) => ReactNode;
+}
+
+const StorageErrorBoundaryWithTranslation = ({
+  error,
+  errorInfo,
+  retryCount: _retryCount,
+  maxRetries: _maxRetries,
+  onRetry: _onRetry,
+  onReset: _onReset,
+  getErrorMessage,
+  getRecoveryAction,
+}: StorageErrorBoundaryWithTranslationProps) => {
+  const { t } = useTranslation("common");
+
+  return (
+    <div className="mx-auto max-w-2xl p-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-destructive">
+            <AlertCircle className="h-5 w-5" />
+            {t("storageError.title")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>{t("error")}</AlertTitle>
+            <AlertDescription>{getErrorMessage(error, t)}</AlertDescription>
+          </Alert>
+
+          {process.env.NODE_ENV === "development" && (
+            <details className="text-sm">
+              <summary className="cursor-pointer text-muted-foreground">
+                {t("storageError.devInfo")}
+              </summary>
+              <pre className="mt-2 overflow-auto rounded bg-muted p-2 text-xs">
+                {error.stack}
+              </pre>
+              {errorInfo && (
+                <pre className="mt-2 overflow-auto rounded bg-muted p-2 text-xs">
+                  {errorInfo.componentStack}
+                </pre>
+              )}
+            </details>
+          )}
+
+          {getRecoveryAction(error, t)}
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
 
 // エラーバウンダリをReactコンポーネントとして使用するためのラッパー
 interface StorageErrorFallbackProps {
@@ -240,28 +286,30 @@ export const StorageErrorFallback = ({
   retryCount = 0,
   maxRetries = 3,
 }: StorageErrorFallbackProps) => {
+  const { t } = useTranslation("common");
+
   const getErrorMessage = (error: Error): string => {
     if (error.message.includes("Storage not initialized")) {
-      return "ストレージの初期化に失敗しました。ページを再読み込みしてください。";
+      return t("storageError.messages.storageNotInitialized");
     }
 
     if (error.message.includes("Database not initialized")) {
-      return "データベースの初期化に失敗しました。ブラウザの設定でIndexedDBが有効になっているか確認してください。";
+      return t("storageError.messages.databaseNotInitialized");
     }
 
     if (error.name === "QuotaExceededError") {
-      return "ストレージの容量が不足しています。ブラウザのデータを整理してください。";
+      return t("storageError.messages.quotaExceeded");
     }
 
     if (error.name === "NotAllowedError") {
-      return "ストレージへのアクセスが許可されていません。ブラウザの設定を確認してください。";
+      return t("storageError.messages.notAllowed");
     }
 
     if (error.name === "SecurityError") {
-      return "セキュリティ制限によりストレージにアクセスできません。HTTPSでアクセスしているか確認してください。";
+      return t("storageError.messages.securityError");
     }
 
-    return "ストレージでエラーが発生しました。しばらく待ってから再試行してください。";
+    return t("storageError.messages.general");
   };
 
   return (
@@ -270,13 +318,13 @@ export const StorageErrorFallback = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">
             <AlertCircle className="h-5 w-5" />
-            ストレージエラー
+            {t("storageError.title")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
-            <AlertTitle>エラーが発生しました</AlertTitle>
+            <AlertTitle>{t("error")}</AlertTitle>
             <AlertDescription>{getErrorMessage(error)}</AlertDescription>
           </Alert>
 
@@ -287,7 +335,10 @@ export const StorageErrorFallback = ({
                 className="flex items-center gap-2"
               >
                 <RefreshCw className="h-4 w-4" />
-                再試行 ({retryCount + 1}/{maxRetries})
+                {t("storageError.actions.retry", {
+                  current: retryCount + 1,
+                  max: maxRetries,
+                })}
               </Button>
             )}
 
@@ -297,7 +348,7 @@ export const StorageErrorFallback = ({
               className="flex items-center gap-2"
             >
               <RefreshCw className="h-4 w-4" />
-              ページを再読み込み
+              {t("storageError.actions.reloadPage")}
             </Button>
           </div>
         </CardContent>

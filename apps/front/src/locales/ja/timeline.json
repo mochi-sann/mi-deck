@@ -36,5 +36,17 @@
     "loadFailedWithMessage": "タイムラインの読み込みでエラーが発生しました: {{message}}",
     "connectionFailed": "サーバーへの接続に失敗しました",
     "authenticationFailed": "認証に失敗しました"
+  },
+  "list": {
+    "serverNotFound": "サーバーが見つかりません",
+    "deleteConfirm": "タイムライン「{{name}}」を削除しますか？この操作は取り消せません。",
+    "deleteTimeline": "タイムラインを削除",
+    "loading": "タイムラインを読み込み中...",
+    "retrying": "再試行中... ({{count}}/3)",
+    "noTimelinesCreated": "まだタイムラインが作成されていません。",
+    "addServerFirst": "まずサーバーを追加してください",
+    "addTimeline": "タイムラインを追加",
+    "reorderFailed": "タイムラインの並び替えに失敗しました。",
+    "deleteFailed": "タイムラインの削除に失敗しました。もう一度お試しください。"
   }
 }

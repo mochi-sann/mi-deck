@@ -6,7 +6,11 @@
     "selectPlaceholder": "Select a server",
     "addButton": "Add Server",
     "onlyMisskey": "Currently only Misskey servers are supported",
-    "addFailed": "Failed to add server"
+    "addFailed": "Failed to add server",
+    "validation": {
+      "serverOriginRequired": "Please enter a valid server address",
+      "serverTypeRequired": "Please select a server type"
+    }
   },
   "serverList": {
     "selected": "Selected",

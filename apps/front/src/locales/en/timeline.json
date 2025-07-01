@@ -36,5 +36,17 @@
     "loadFailedWithMessage": "An error occurred while loading the timeline: {{message}}",
     "connectionFailed": "Failed to connect to server",
     "authenticationFailed": "Authentication failed"
+  },
+  "list": {
+    "serverNotFound": "Server not found",
+    "deleteConfirm": "Delete timeline \"{{name}}\"? This action cannot be undone.",
+    "deleteTimeline": "Delete Timeline",
+    "loading": "Loading timelines...",
+    "retrying": "Retrying... ({{count}}/3)",
+    "noTimelinesCreated": "No timelines have been created yet.",
+    "addServerFirst": "Please add a server first",
+    "addTimeline": "Add Timeline",
+    "reorderFailed": "Failed to reorder timelines.",
+    "deleteFailed": "Failed to delete timeline. Please try again."
   }
 }

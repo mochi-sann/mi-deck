@@ -54,9 +54,9 @@ export const NewServerForm: React.FC = () => {
           type="text"
           control={control}
           name="serverOrigin"
-          validation="Please enter a valid serverOrigin address"
+          validation={t("newServerForm.validation.serverOriginRequired")}
           rules={{
-            required: "Please enter a valid serverOrigin address",
+            required: t("newServerForm.validation.serverOriginRequired"),
           }}
         />
         <MenuFieldSet
@@ -67,9 +67,9 @@ export const NewServerForm: React.FC = () => {
           ]}
           label={t("newServerForm.serverType")}
           control={control}
-          validation="Please select a serverType"
+          validation={t("newServerForm.validation.serverTypeRequired")}
           rules={{
-            required: "Please select a serverType",
+            required: t("newServerForm.validation.serverTypeRequired"),
           }}
           placeholder={t("newServerForm.selectPlaceholder")}
         />
