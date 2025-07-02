@@ -258,6 +258,9 @@ importers:
       tsx:
         specifier: ^4.19.2
         version: 4.20.3
+      typescript:
+        specifier: ~5.8.0
+        version: 5.8.3
       typescript-eslint:
         specifier: ^8.29.0
         version: 8.35.1(eslint@9.16.0(jiti@2.4.2))(typescript@5.8.3)
@@ -10392,7 +10395,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 24.0.10
+      '@types/node': 22.16.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
     optional: true
