@@ -98,7 +98,7 @@ export class StorageErrorBoundary extends Component<
       }
 
       return (
-        <storageErrorUi
+        <StorageErrorUi
           error={this.state.error}
           errorInfo={this.state.errorInfo}
           retryCount={this.state.retryCount}
@@ -123,7 +123,7 @@ interface StorageErrorUiProps {
   onReset: () => void;
 }
 
-const storageErrorUi = ({
+const StorageErrorUi = ({
   error,
   errorInfo,
   retryCount,
