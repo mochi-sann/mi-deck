@@ -1,12 +1,15 @@
 #!/usr/bin/env tsx
 
 import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 interface TranslationObject {
   [key: string]: string | TranslationObject;
 }
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const LOCALES_DIR = join(__dirname, "../src/locales");
 const SUPPORTED_LOCALES = ["ja", "en"];
 
@@ -151,6 +154,7 @@ function validateTranslations() {
   }
 }
 
-if (require.main === module) {
+// ESModule equivalent of require.main === module
+if (import.meta.url === `file://${process.argv[1]}`) {
   validateTranslations();
 }

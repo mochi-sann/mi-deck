@@ -250,7 +250,6 @@ const storageErrorUi = ({
 interface StorageErrorFallbackProps {
   error: Error;
   onRetry?: () => void;
-  onReset?: () => void;
   retryCount?: number;
   maxRetries?: number;
 }
@@ -258,7 +257,6 @@ interface StorageErrorFallbackProps {
 export const StorageErrorFallback = ({
   error,
   onRetry,
-  onReset,
   retryCount = 0,
   maxRetries = 3,
 }: StorageErrorFallbackProps) => {
