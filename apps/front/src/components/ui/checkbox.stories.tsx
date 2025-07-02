@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { expect, fn, userEvent, within } from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import React from "react";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { Checkbox } from "./checkbox";
 import { Label } from "./label"; // Import Label for context
 

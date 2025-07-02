@@ -1,7 +1,4 @@
 // Authentication feature exports
-export { AuthProvider } from "./components/AuthProvider";
-export { useAuth } from "./hooks/useAuth";
-export { clientAuthManager } from "./api/clientAuth";
 
 // Types
 export type {
@@ -9,3 +6,6 @@ export type {
   MiAuthResult,
   PeendingAuthType,
 } from "./api/clientAuth";
+export { clientAuthManager } from "./api/clientAuth";
+export { AuthProvider } from "./components/AuthProvider";
+export { useAuth } from "./hooks/useAuth";

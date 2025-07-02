@@ -5,6 +5,7 @@ import { useAuth } from "@/features/auth";
 import type React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+
 type NewServerFormType = {
   serverOrigin: string;
   serverType: string;

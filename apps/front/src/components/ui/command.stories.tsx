@@ -1,12 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import {
-  expect,
-  fireEvent,
-  fn,
-  userEvent,
-  waitForElementToBeRemoved,
-  within,
-} from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   Calculator,
   CalendarIcon,
@@ -16,6 +8,14 @@ import {
   User,
 } from "lucide-react";
 import * as React from "react";
+import {
+  expect,
+  fireEvent,
+  fn,
+  userEvent,
+  waitForElementToBeRemoved,
+  within,
+} from "storybook/test";
 import { Button } from "./button"; // For CommandDialog trigger
 import {
   Command,

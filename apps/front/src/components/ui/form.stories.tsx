@@ -1,5 +1,5 @@
 import { valibotResolver } from "@hookform/resolvers/valibot"; // 変更: valibotResolver をインポート
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useForm } from "react-hook-form";
 import * as v from "valibot"; // 変更: valibot をインポート
 import { Button } from "./button";

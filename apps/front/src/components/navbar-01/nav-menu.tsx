@@ -5,6 +5,7 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { NavigationMenuProps } from "@radix-ui/react-navigation-menu";
+
 type NavmenuProps = {
   menuLinks: {
     link: string;
