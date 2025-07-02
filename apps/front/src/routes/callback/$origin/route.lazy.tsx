@@ -1,10 +1,10 @@
-import { Button } from "@/Component/ui/button";
-import Text from "@/Component/ui/text";
+import { Button } from "@/components/ui/button";
+import Text from "@/components/ui/text";
+import { useAuth } from "@/features/auth";
 import {
   PENDING_AUTH_KEY_PREFIX,
   PeendingAuthType,
 } from "@/lib/auth/clientAuth";
-import { useAuth } from "@/lib/auth/context";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 

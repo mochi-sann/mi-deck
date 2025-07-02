@@ -1,7 +1,7 @@
-import { MenuFieldSet } from "@/Component/forms/MenuFieldSet";
-import { TextFieldSet } from "@/Component/forms/TextFieldSet";
-import { Button } from "@/Component/ui/button";
-import { useAuth } from "@/lib/auth/context";
+import { MenuFieldSet } from "@/components/forms/MenuFieldSet";
+import { TextFieldSet } from "@/components/forms/TextFieldSet";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/features/auth";
 import type React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
