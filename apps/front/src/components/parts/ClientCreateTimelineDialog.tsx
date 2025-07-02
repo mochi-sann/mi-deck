@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import { useStorage } from "@/lib/storage/context";
 import { valibotResolver } from "@hookform/resolvers/valibot";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as v from "valibot";
@@ -64,7 +65,7 @@ export function ClientCreateTimelineDialog({
   const { t } = useTranslation("timeline");
   const storage = useStorage();
 
-  const formSchema = createFormSchema(t);
+  const formSchema = useMemo(() => createFormSchema(t), [t]);
   type FormValues = v.InferOutput<typeof formSchema>;
 
   const form = useForm<FormValues>({

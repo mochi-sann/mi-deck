@@ -5,7 +5,7 @@ import { initReactI18next } from "react-i18next";
 import enTranslations from "../../locales/en";
 import jaTranslations from "../../locales/ja";
 
-const resources = {
+export const resources = {
   ja: jaTranslations,
   en: enTranslations,
 } as const;

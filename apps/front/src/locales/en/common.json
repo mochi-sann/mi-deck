@@ -9,6 +9,9 @@
   },
   "loading": "Loading...",
   "error": "An error occurred",
+  "common": {
+    "error": "An error occurred"
+  },
   "retry": "Retry",
   "close": "Close",
   "save": "Save",
