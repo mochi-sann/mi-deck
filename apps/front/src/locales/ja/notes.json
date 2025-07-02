@@ -1,0 +1,27 @@
+{
+  "newNote": {
+    "title": "新しいノートを作成",
+    "description": "ノートの内容を入力してください。",
+    "serverLabel": "投稿先サーバー",
+    "serverLoading": "サーバーを読み込み中...",
+    "serverPlaceholder": "サーバーを選択...",
+    "visibilityLabel": "公開範囲",
+    "visibilityPlaceholder": "公開範囲を選択",
+    "visibility": {
+      "public": "公開",
+      "home": "ホーム",
+      "followers": "フォロワー",
+      "specified": "指定ユーザー"
+    },
+    "localOnlyLabel": "ローカルのみ",
+    "contentLabel": "ノート内容",
+    "contentPlaceholder": "ここにノートの内容を入力...",
+    "postButton": "投稿",
+    "postingButton": "投稿中...",
+    "validation": {
+      "selectServer": "サーバーを選択してください",
+      "selectVisibility": "公開範囲を選択してください",
+      "enterContent": "ノートの内容を入力してください"
+    }
+  }
+}

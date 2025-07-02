@@ -9,19 +9,21 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import { useTranslation } from "react-i18next";
 
 export function TimelineSettings() {
+  const { t } = useTranslation("settings");
   return (
     <Card>
       <CardHeader>
-        <CardTitle>タイムライン設定</CardTitle>
+        <CardTitle>{t("timeline.title")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
-            <Label>自動更新</Label>
+            <Label>{t("timeline.autoUpdate.title")}</Label>
             <p className="text-muted-foreground text-sm">
-              タイムラインを自動的に更新します
+              {t("timeline.autoUpdate.description")}
             </p>
           </div>
           <Switch defaultChecked />
@@ -31,9 +33,9 @@ export function TimelineSettings() {
 
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
-            <Label>画像の自動読み込み</Label>
+            <Label>{t("timeline.autoLoadImages.title")}</Label>
             <p className="text-muted-foreground text-sm">
-              ノートの画像を自動的に読み込みます
+              {t("timeline.autoLoadImages.description")}
             </p>
           </div>
           <Switch defaultChecked />
@@ -42,16 +44,24 @@ export function TimelineSettings() {
         <Separator />
 
         <div className="space-y-2">
-          <Label>更新間隔</Label>
+          <Label>{t("timeline.updateInterval.title")}</Label>
           <Select defaultValue="30">
             <SelectTrigger className="w-48">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="10">10秒</SelectItem>
-              <SelectItem value="30">30秒</SelectItem>
-              <SelectItem value="60">1分</SelectItem>
-              <SelectItem value="300">5分</SelectItem>
+              <SelectItem value="10">
+                {t("timeline.updateInterval.seconds10")}
+              </SelectItem>
+              <SelectItem value="30">
+                {t("timeline.updateInterval.seconds30")}
+              </SelectItem>
+              <SelectItem value="60">
+                {t("timeline.updateInterval.minutes1")}
+              </SelectItem>
+              <SelectItem value="300">
+                {t("timeline.updateInterval.minutes5")}
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>

@@ -1,0 +1,27 @@
+{
+  "newNote": {
+    "title": "Create New Note",
+    "description": "Please enter the content of your note.",
+    "serverLabel": "Target Server",
+    "serverLoading": "Loading servers...",
+    "serverPlaceholder": "Select server...",
+    "visibilityLabel": "Visibility",
+    "visibilityPlaceholder": "Select visibility",
+    "visibility": {
+      "public": "Public",
+      "home": "Home",
+      "followers": "Followers",
+      "specified": "Specified Users"
+    },
+    "localOnlyLabel": "Local Only",
+    "contentLabel": "Note Content",
+    "contentPlaceholder": "Enter your note content here...",
+    "postButton": "Post",
+    "postingButton": "Posting...",
+    "validation": {
+      "selectServer": "Please select a server",
+      "selectVisibility": "Please select visibility",
+      "enterContent": "Please enter note content"
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "navigation": {
+    "title": "ナビゲーション",
+    "home": "ホーム",
+    "settings": "設定",
+    "server": "サーバー",
+    "addNewServer": "新しいサーバーを追加",
+    "noServers": "サーバーがありません"
+  },
+  "loading": "読み込み中...",
+  "error": "エラーが発生しました",
+  "common": {
+    "error": "エラーが発生しました"
+  },
+  "retry": "再試行",
+  "close": "閉じる",
+  "save": "保存",
+  "cancel": "キャンセル",
+  "delete": "削除",
+  "edit": "編集",
+  "add": "追加",
+  "remove": "削除",
+  "confirm": "確認",
+  "back": "戻る",
+  "next": "次へ",
+  "previous": "前へ",
+  "search": "検索",
+  "clear": "クリア",
+  "submit": "送信",
+  "reset": "リセット",
+  "sidebar": {
+    "note": "ノート"
+  },
+  "fileUpload": {
+    "label": "ファイルを選択",
+    "removeImage": "画像 {{index}} を削除"
+  },
+  "storageError": {
+    "title": "ストレージエラー",
+    "messages": {
+      "storageNotInitialized": "ストレージの初期化に失敗しました。ページを再読み込みしてください。",
+      "databaseNotInitialized": "データベースの初期化に失敗しました。ブラウザの設定でIndexedDBが有効になっているか確認してください。",
+      "quotaExceeded": "ストレージの容量が不足しています。ブラウザのデータを整理してください。",
+      "notAllowed": "ストレージへのアクセスが許可されていません。ブラウザの設定を確認してください。",
+      "securityError": "セキュリティ制限によりストレージにアクセスできません。HTTPSでアクセスしているか確認してください。",
+      "general": "ストレージでエラーが発生しました。しばらく待ってから再試行してください。"
+    },
+    "actions": {
+      "retry": "再試行 ({{current}}/{{max}})",
+      "reset": "リセット",
+      "clearStorage": "ストレージをクリア",
+      "reloadPage": "ページを再読み込み"
+    },
+    "devInfo": "詳細なエラー情報（開発用）",
+    "clearStorageAlert": "ブラウザの開発者ツールでApplication > Storage > Clear storageを実行してください。"
+  }
+}

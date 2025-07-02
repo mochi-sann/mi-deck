@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
 import { cn } from "@/lib/utils";
 import type React from "react";
+import { useTranslation } from "react-i18next";
 
 export type ServerListProps = {
   serverInfo: MisskeyServerConnection;
@@ -12,6 +13,7 @@ export type ServerListProps = {
 };
 
 export const ServerInfoBox: React.FC<ServerListProps> = (props) => {
+  const { t } = useTranslation("server");
   const { serverInfo, onRefresh, onRemove, onSelect, isSelected } = props;
 
   return (
@@ -76,7 +78,7 @@ export const ServerInfoBox: React.FC<ServerListProps> = (props) => {
             variant={isSelected ? "default" : "outline"}
             size="sm"
           >
-            {isSelected ? "選択中" : "選択"}
+            {isSelected ? t("serverList.selected") : t("serverList.select")}
           </Button>
         )}
 
@@ -86,7 +88,7 @@ export const ServerInfoBox: React.FC<ServerListProps> = (props) => {
             variant="outline"
             size="sm"
           >
-            更新
+            {t("serverList.update")}
           </Button>
         )}
 
@@ -96,7 +98,7 @@ export const ServerInfoBox: React.FC<ServerListProps> = (props) => {
             variant="destructive"
             size="sm"
           >
-            削除
+            {t("serverList.delete")}
           </Button>
         )}
       </div>

@@ -1,0 +1,77 @@
+{
+  "title": "Settings",
+  "applicationSettings": "Application Settings",
+  "applicationInfo": "Application Information",
+  "version": "Version",
+  "buildDate": "Build Date",
+  "connectedServers": "Connected Servers",
+  "timelineCount": "Timeline Count",
+  "language": {
+    "title": "Language",
+    "description": "Select your preferred language",
+    "japanese": "日本語",
+    "english": "English"
+  },
+  "theme": {
+    "title": "Dark Mode",
+    "description": "Switch the app appearance to dark theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "enabled": "Enable notifications",
+    "sound": "Notification sound"
+  },
+  "timeline": {
+    "title": "Timeline Settings",
+    "autoUpdate": {
+      "title": "Auto Update",
+      "description": "Automatically update the timeline"
+    },
+    "autoLoadImages": {
+      "title": "Auto Load Images",
+      "description": "Automatically load images in notes"
+    },
+    "updateInterval": {
+      "title": "Update Interval",
+      "seconds10": "10 seconds",
+      "seconds30": "30 seconds",
+      "minutes1": "1 minute",
+      "minutes5": "5 minutes"
+    }
+  },
+  "server": {
+    "title": "Connected Servers",
+    "noServers": "No servers registered",
+    "currentServer": "Current Server",
+    "delete": "Delete"
+  },
+  "dataManagement": {
+    "title": "Data Management",
+    "export": {
+      "title": "Export Data",
+      "description": "Download server information, timeline settings, and authentication state as a JSON file",
+      "button": "Export Data",
+      "inProgress": "Exporting...",
+      "error": "Failed to export data"
+    },
+    "import": {
+      "title": "Import Data",
+      "description": "Restore data from a previously exported JSON file (existing data will be overwritten)",
+      "button": "Import Data",
+      "inProgress": "Importing...",
+      "error": "Failed to import data",
+      "errorWithMessage": "Failed to import data: {{message}}",
+      "unknownError": "Unknown error"
+    },
+    "clear": {
+      "title": "Delete Data",
+      "description": "Delete all server information, timeline settings, and authentication state (this operation cannot be undone)",
+      "button": "Delete All Data",
+      "confirm": "Are you sure you want to delete all data? This operation cannot be undone.",
+      "error": "Failed to delete data"
+    }
+  }
+}

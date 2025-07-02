@@ -2,6 +2,20 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { FileUpload } from "./FileUpload";
 
+// Mock react-i18next
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string, options?: Record<string, unknown>) => {
+      // Return specific translations for the test
+      const translations: Record<string, string> = {
+        "fileUpload.label": "ファイルを選択",
+        "fileUpload.removeImage": `画像 ${options?.index || 1} を削除`,
+      };
+      return translations[key] || key;
+    },
+  }),
+}));
+
 // Mock URL.createObjectURL and URL.revokeObjectURL
 const mockCreateObjectUrl = vi.fn();
 const mockRevokeObjectUrl = vi.fn();

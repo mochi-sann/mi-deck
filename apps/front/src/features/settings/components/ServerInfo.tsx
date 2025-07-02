@@ -1,18 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useStorage } from "@/lib/storage/context";
+import { useTranslation } from "react-i18next";
 
 export function ServerInfo() {
   const storage = useStorage();
+  const { t } = useTranslation("settings");
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>接続サーバー</CardTitle>
+        <CardTitle>{t("server.title")}</CardTitle>
       </CardHeader>
       <CardContent>
         {storage.servers.length === 0 ? (
-          <p className="text-muted-foreground">サーバーが登録されていません</p>
+          <p className="text-muted-foreground">{t("server.noServers")}</p>
         ) : (
           <div className="space-y-4">
             {storage.servers.map((server) => (
@@ -40,7 +42,7 @@ export function ServerInfo() {
                 <div className="flex items-center gap-2">
                   {server.id === storage.currentServerId && (
                     <span className="rounded bg-primary px-2 py-1 text-primary-foreground text-xs">
-                      現在のサーバー
+                      {t("server.currentServer")}
                     </span>
                   )}
                   <Button
@@ -48,7 +50,7 @@ export function ServerInfo() {
                     size="sm"
                     onClick={() => storage.deleteServer(server.id)}
                   >
-                    削除
+                    {t("server.delete")}
                   </Button>
                 </div>
               </div>

@@ -3,9 +3,11 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useStorage } from "@/lib/storage/context";
 import { AlertCircle, Server } from "lucide-react";
 import type React from "react";
+import { useTranslation } from "react-i18next";
 import { useTimeline } from "../hooks/useTimeline";
 
 export const Timeline: React.FC = () => {
+  const { t } = useTranslation("timeline");
   const {
     servers,
     currentServerId,
@@ -31,7 +33,7 @@ export const Timeline: React.FC = () => {
         <div className="flex flex-col items-center gap-2">
           <LoadingSpinner />
           <p className="text-muted-foreground text-sm">
-            ストレージを初期化中...
+            {t("initializingStorage")}
           </p>
         </div>
       </div>
@@ -45,11 +47,9 @@ export const Timeline: React.FC = () => {
         <div className="flex flex-col items-center gap-4">
           <Server className="h-16 w-16 text-muted-foreground" />
           <div className="text-center">
-            <h3 className="font-semibold text-lg">
-              サーバーが選択されていません
-            </h3>
+            <h3 className="font-semibold text-lg">{t("noServerSelected")}</h3>
             <p className="text-muted-foreground text-sm">
-              サイドバーからサーバーを選択してください
+              {t("noServerDescription")}
             </p>
           </div>
         </div>
@@ -63,9 +63,7 @@ export const Timeline: React.FC = () => {
       <div className="flex h-full items-center justify-center">
         <div className="flex flex-col items-center gap-2">
           <LoadingSpinner />
-          <p className="text-muted-foreground text-sm">
-            タイムラインを読み込み中...
-          </p>
+          <p className="text-muted-foreground text-sm">{t("loading")}</p>
         </div>
       </div>
     );
@@ -78,7 +76,7 @@ export const Timeline: React.FC = () => {
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            タイムラインの読み込みでエラーが発生しました: {error.message}
+            {t("error.loadFailedWithMessage", { message: error.message })}
           </AlertDescription>
         </Alert>
       </div>
@@ -91,13 +89,13 @@ export const Timeline: React.FC = () => {
         <h3 className="font-semibold text-lg">
           {currentServer.serverInfo?.name || currentServer.origin}
         </h3>
-        <p className="text-muted-foreground text-sm">ホームタイムライン</p>
+        <p className="text-muted-foreground text-sm">{t("homeTimeline")}</p>
       </div>
 
       <div className="space-y-4">
         {notes.length === 0 ? (
           <div className="py-8 text-center">
-            <p className="text-muted-foreground">ノートがありません</p>
+            <p className="text-muted-foreground">{t("noNotes")}</p>
           </div>
         ) : (
           notes.map((note) => (

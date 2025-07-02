@@ -25,7 +25,9 @@ import {
 } from "@/components/ui/select";
 import { useStorage } from "@/lib/storage/context";
 import { valibotResolver } from "@hookform/resolvers/valibot";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import * as v from "valibot";
 
 type ClientCreateTimelineDialogProps = {
@@ -34,28 +36,37 @@ type ClientCreateTimelineDialogProps = {
   onSuccess: () => void;
 };
 
-const formSchema = v.object({
-  serverId: v.pipe(v.string(), v.nonEmpty("サーバーを選択してください")),
-  type: v.union(
-    [
-      v.literal("home"),
-      v.literal("local"),
-      v.literal("social"),
-      v.literal("global"),
-    ],
-    "タイムラインタイプを選択してください",
-  ),
-  name: v.pipe(v.string("タイムライン名を入力してください"), v.minLength(1)),
-});
-
-type FormValues = v.InferOutput<typeof formSchema>;
+const createFormSchema = (t: (key: string) => string) =>
+  v.object({
+    serverId: v.pipe(
+      v.string(),
+      v.nonEmpty(t("createDialog.validation.selectServer")),
+    ),
+    type: v.union(
+      [
+        v.literal("home"),
+        v.literal("local"),
+        v.literal("social"),
+        v.literal("global"),
+      ],
+      t("createDialog.validation.selectType"),
+    ),
+    name: v.pipe(
+      v.string(t("createDialog.validation.enterName")),
+      v.minLength(1),
+    ),
+  });
 
 export function ClientCreateTimelineDialog({
   isOpen,
   onClose,
   onSuccess,
 }: ClientCreateTimelineDialogProps) {
+  const { t } = useTranslation("timeline");
   const storage = useStorage();
+
+  const formSchema = useMemo(() => createFormSchema(t), [t]);
+  type FormValues = v.InferOutput<typeof formSchema>;
 
   const form = useForm<FormValues>({
     resolver: valibotResolver(formSchema),
@@ -88,7 +99,7 @@ export function ClientCreateTimelineDialog({
       form.reset();
     } catch (error) {
       console.error("Failed to create timeline:", error);
-      alert("タイムラインの作成に失敗しました。");
+      alert(t("createDialog.createFailed"));
     }
   };
 
@@ -96,10 +107,8 @@ export function ClientCreateTimelineDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>新しいタイムラインを作成</DialogTitle>
-          <DialogDescription>
-            表示したいタイムラインの設定を行います。
-          </DialogDescription>
+          <DialogTitle>{t("createDialog.title")}</DialogTitle>
+          <DialogDescription>{t("createDialog.description")}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -111,7 +120,7 @@ export function ClientCreateTimelineDialog({
               name="serverId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>サーバー</FormLabel>
+                  <FormLabel>{t("createDialog.serverLabel")}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -119,7 +128,9 @@ export function ClientCreateTimelineDialog({
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="サーバーを選択" />
+                        <SelectValue
+                          placeholder={t("createDialog.serverPlaceholder")}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -141,21 +152,31 @@ export function ClientCreateTimelineDialog({
               name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>タイムラインタイプ</FormLabel>
+                  <FormLabel>{t("createDialog.typeLabel")}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="タイムラインタイプを選択" />
+                        <SelectValue
+                          placeholder={t("createDialog.typePlaceholder")}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="home">ホーム</SelectItem>
-                      <SelectItem value="local">ローカル</SelectItem>
-                      <SelectItem value="social">ソーシャル</SelectItem>
-                      <SelectItem value="global">グローバル</SelectItem>
+                      <SelectItem value="home">
+                        {t("createDialog.types.home")}
+                      </SelectItem>
+                      <SelectItem value="local">
+                        {t("createDialog.types.local")}
+                      </SelectItem>
+                      <SelectItem value="social">
+                        {t("createDialog.types.social")}
+                      </SelectItem>
+                      <SelectItem value="global">
+                        {t("createDialog.types.global")}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -168,10 +189,10 @@ export function ClientCreateTimelineDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>タイムライン名</FormLabel>
+                  <FormLabel>{t("createDialog.nameLabel")}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="例: 私のホームタイムライン"
+                      placeholder={t("createDialog.namePlaceholder")}
                       {...field}
                     />
                   </FormControl>
@@ -182,7 +203,9 @@ export function ClientCreateTimelineDialog({
 
             <DialogFooter>
               <Button type="submit" disabled={storage.isLoading}>
-                {storage.isLoading ? "作成中..." : "作成"}
+                {storage.isLoading
+                  ? t("createDialog.creatingButton")
+                  : t("createDialog.createButton")}
               </Button>
             </DialogFooter>
           </form>

@@ -1,0 +1,21 @@
+{
+  "newServerForm": {
+    "serverUrl": "Server URL",
+    "placeholder": "e.g. misskey.io",
+    "serverType": "Server Type",
+    "selectPlaceholder": "Select a server",
+    "addButton": "Add Server",
+    "onlyMisskey": "Currently only Misskey servers are supported",
+    "addFailed": "Failed to add server",
+    "validation": {
+      "serverOriginRequired": "Please enter a valid server address",
+      "serverTypeRequired": "Please select a server type"
+    }
+  },
+  "serverList": {
+    "selected": "Selected",
+    "select": "Select",
+    "update": "Update",
+    "delete": "Delete"
+  }
+}

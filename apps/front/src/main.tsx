@@ -8,6 +8,7 @@ import { SidebarProvider } from "./components/ui/sidebar";
 import { AuthProvider, useAuth } from "./features/auth";
 import { StorageProvider } from "./lib/storage/context";
 import { routeTree } from "./routeTree.gen";
+import "./lib/i18n";
 
 // Create a new router instance
 const router = createRouter({

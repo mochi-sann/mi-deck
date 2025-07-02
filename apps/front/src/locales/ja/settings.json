@@ -1,0 +1,77 @@
+{
+  "title": "設定",
+  "applicationSettings": "アプリケーション設定",
+  "applicationInfo": "アプリケーション情報",
+  "version": "バージョン",
+  "buildDate": "ビルド日",
+  "connectedServers": "接続サーバー数",
+  "timelineCount": "タイムライン数",
+  "language": {
+    "title": "言語",
+    "description": "表示言語を選択してください",
+    "japanese": "日本語",
+    "english": "English"
+  },
+  "theme": {
+    "title": "ダークモード",
+    "description": "アプリの外観をダークテーマに切り替えます",
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム"
+  },
+  "notifications": {
+    "title": "通知",
+    "enabled": "通知を有効にする",
+    "sound": "通知音"
+  },
+  "timeline": {
+    "title": "タイムライン設定",
+    "autoUpdate": {
+      "title": "自動更新",
+      "description": "タイムラインを自動的に更新します"
+    },
+    "autoLoadImages": {
+      "title": "画像の自動読み込み",
+      "description": "ノートの画像を自動的に読み込みます"
+    },
+    "updateInterval": {
+      "title": "更新間隔",
+      "seconds10": "10秒",
+      "seconds30": "30秒",
+      "minutes1": "1分",
+      "minutes5": "5分"
+    }
+  },
+  "server": {
+    "title": "接続サーバー",
+    "noServers": "サーバーが登録されていません",
+    "currentServer": "現在のサーバー",
+    "delete": "削除"
+  },
+  "dataManagement": {
+    "title": "データ管理",
+    "export": {
+      "title": "データのエクスポート",
+      "description": "サーバー情報、タイムライン設定、認証状態をJSONファイルとしてダウンロードします",
+      "button": "データをエクスポート",
+      "inProgress": "エクスポート中...",
+      "error": "データのエクスポートに失敗しました"
+    },
+    "import": {
+      "title": "データのインポート",
+      "description": "以前にエクスポートしたJSONファイルからデータを復元します（既存のデータは上書きされます）",
+      "button": "データをインポート",
+      "inProgress": "インポート中...",
+      "error": "データのインポートに失敗しました",
+      "errorWithMessage": "データのインポートに失敗しました: {{message}}",
+      "unknownError": "不明なエラー"
+    },
+    "clear": {
+      "title": "データの削除",
+      "description": "すべてのサーバー情報、タイムライン設定、認証状態を削除します（この操作は元に戻せません）",
+      "button": "すべてのデータを削除",
+      "confirm": "すべてのデータを削除しますか？この操作は元に戻せません。",
+      "error": "データの削除に失敗しました"
+    }
+  }
+}

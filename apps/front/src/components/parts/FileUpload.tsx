@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 import React, { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { IconButton } from "../ui/icon-button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -13,6 +14,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   files,
   onFilesChange,
 }) => {
+  const { t } = useTranslation("common");
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   // Generate previews when files change externally or internally
@@ -59,7 +61,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
   return (
     <div className="grid w-full items-center gap-1.5">
-      <Label htmlFor="picture">ファイルを選択</Label>
+      <Label htmlFor="picture">{t("fileUpload.label")}</Label>
       <Input
         id="picture"
         className="w-full"
@@ -84,7 +86,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                 size="sm"
                 className="absolute top-1 right-1 h-6 w-6 cursor-pointer rounded-full p-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
                 onClick={() => handleRemoveImage(index)}
-                aria-label={`Remove image ${index + 1}`}
+                aria-label={t("fileUpload.removeImage", { index: index + 1 })}
               >
                 <X className="h-4 w-4" />
               </IconButton>

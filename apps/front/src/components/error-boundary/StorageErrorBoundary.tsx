@@ -1,15 +1,10 @@
 import { AlertCircle, RefreshCw } from "lucide-react";
 import type { ErrorInfo, ReactNode } from "react";
-import { Component } from "react";
+import { Component, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-
-interface StorageErrorBoundaryProps {
-  children: ReactNode;
-  fallback?: ReactNode;
-  onReset?: () => void;
-}
 
 interface StorageErrorBoundaryState {
   hasError: boolean;
@@ -18,11 +13,18 @@ interface StorageErrorBoundaryState {
   retryCount: number;
 }
 
+interface StorageErrorBoundaryProps {
+  children: ReactNode;
+  fallback?: ReactNode;
+  onReset?: () => void;
+  maxRetries?: number;
+}
+
 export class StorageErrorBoundary extends Component<
   StorageErrorBoundaryProps,
   StorageErrorBoundaryState
 > {
-  private maxRetries = 3;
+  private maxRetries: number;
 
   constructor(props: StorageErrorBoundaryProps) {
     super(props);
@@ -30,48 +32,41 @@ export class StorageErrorBoundary extends Component<
       hasError: false,
       retryCount: 0,
     };
+    this.maxRetries = props.maxRetries ?? 3;
   }
 
   static getDerivedStateFromError(
     error: Error,
   ): Partial<StorageErrorBoundaryState> {
-    // ストレージ関連のエラーかどうかを判定
-    const isStorageError =
-      // Enhanced error detection from storage context
-      error.name === "StorageError" ||
-      (error as unknown as { isStorageError?: boolean }).isStorageError ===
-        true ||
-      // Legacy error detection
-      error.message.includes("Storage not initialized") ||
-      error.message.includes("Database not initialized") ||
-      error.message.includes("Storage Error") ||
-      error.message.includes("Failed to") ||
+    if (
+      error.message.includes("storage") ||
+      error.message.includes("Storage") ||
+      error.message.includes("IndexedDB") ||
+      error.message.includes("Database") ||
       error.name === "QuotaExceededError" ||
       error.name === "NotAllowedError" ||
-      error.name === "SecurityError";
-
-    if (isStorageError) {
-      return {
-        hasError: true,
-        error,
-      };
+      error.name === "SecurityError"
+    ) {
+      return { hasError: true, error };
     }
 
-    return {};
+    // Non-storage errors should be handled by other error boundaries
+    throw error;
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // ストレージエラーのみをキャッチ
-    if (this.state.hasError) {
-      console.error(
-        "Storage Error Boundary caught an error:",
-        error,
-        errorInfo,
-      );
-      this.setState({
-        error,
-        errorInfo,
-      });
+    console.error("Storage Error Boundary caught an error:", error, errorInfo);
+
+    this.setState({
+      error,
+      errorInfo,
+    });
+
+    // Log to monitoring service if available
+    // biome-ignore lint/suspicious/noExplicitAny:
+    if (typeof window !== "undefined" && (window as any).reportError) {
+      // biome-ignore lint/suspicious/noExplicitAny:
+      (window as any).reportError(error);
     }
   }
 
@@ -83,9 +78,6 @@ export class StorageErrorBoundary extends Component<
         errorInfo: undefined,
         retryCount: prevState.retryCount + 1,
       }));
-
-      // 親コンポーネントのリセット処理を呼び出し
-      this.props.onReset?.();
     }
   };
 
@@ -96,129 +88,24 @@ export class StorageErrorBoundary extends Component<
       errorInfo: undefined,
       retryCount: 0,
     });
-
     this.props.onReset?.();
-  };
-
-  getErrorMessage = (error: Error): string => {
-    if (error.message.includes("Storage not initialized")) {
-      return "ストレージの初期化に失敗しました。ページを再読み込みしてください。";
-    }
-
-    if (error.message.includes("Database not initialized")) {
-      return "データベースの初期化に失敗しました。ブラウザの設定でIndexedDBが有効になっているか確認してください。";
-    }
-
-    if (error.name === "QuotaExceededError") {
-      return "ストレージの容量が不足しています。ブラウザのデータを整理してください。";
-    }
-
-    if (error.name === "NotAllowedError") {
-      return "ストレージへのアクセスが許可されていません。ブラウザの設定を確認してください。";
-    }
-
-    if (error.name === "SecurityError") {
-      return "セキュリティ制限によりストレージにアクセスできません。HTTPSでアクセスしているか確認してください。";
-    }
-
-    return "ストレージでエラーが発生しました。しばらく待ってから再試行してください。";
-  };
-
-  getRecoveryAction = (error: Error): ReactNode => {
-    const canRetry = this.state.retryCount < this.maxRetries;
-
-    return (
-      <div className="flex flex-col gap-2">
-        {canRetry && (
-          <Button
-            onClick={this.handleRetry}
-            className="flex items-center gap-2"
-          >
-            <RefreshCw className="h-4 w-4" />
-            再試行 ({this.state.retryCount + 1}/{this.maxRetries})
-          </Button>
-        )}
-
-        <Button
-          variant="outline"
-          onClick={this.handleReset}
-          className="flex items-center gap-2"
-        >
-          <RefreshCw className="h-4 w-4" />
-          リセット
-        </Button>
-
-        {error.name === "QuotaExceededError" && (
-          <Button
-            variant="secondary"
-            onClick={() => {
-              // ローカルストレージとIndexedDBをクリアする
-              if (typeof window !== "undefined") {
-                try {
-                  localStorage.clear();
-                  // IndexedDBのクリアは複雑なので、ユーザーに手動での操作を促す
-                  alert(
-                    "ブラウザの開発者ツールでApplication > Storage > Clear storageを実行してください。",
-                  );
-                } catch (err) {
-                  console.error("Failed to clear storage:", err);
-                }
-              }
-            }}
-          >
-            ストレージをクリア
-          </Button>
-        )}
-      </div>
-    );
   };
 
   render() {
     if (this.state.hasError && this.state.error) {
-      // カスタムフォールバックが提供されている場合はそれを使用
       if (this.props.fallback) {
         return this.props.fallback;
       }
 
-      // デフォルトのエラーUI
       return (
-        <div className="mx-auto max-w-2xl p-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-destructive">
-                <AlertCircle className="h-5 w-5" />
-                ストレージエラー
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>エラーが発生しました</AlertTitle>
-                <AlertDescription>
-                  {this.getErrorMessage(this.state.error)}
-                </AlertDescription>
-              </Alert>
-
-              {process.env.NODE_ENV === "development" && (
-                <details className="text-sm">
-                  <summary className="cursor-pointer text-muted-foreground">
-                    詳細なエラー情報（開発用）
-                  </summary>
-                  <pre className="mt-2 overflow-auto rounded bg-muted p-2 text-xs">
-                    {this.state.error.stack}
-                  </pre>
-                  {this.state.errorInfo && (
-                    <pre className="mt-2 overflow-auto rounded bg-muted p-2 text-xs">
-                      {this.state.errorInfo.componentStack}
-                    </pre>
-                  )}
-                </details>
-              )}
-
-              {this.getRecoveryAction(this.state.error)}
-            </CardContent>
-          </Card>
-        </div>
+        <StorageErrorUi
+          error={this.state.error}
+          errorInfo={this.state.errorInfo}
+          retryCount={this.state.retryCount}
+          maxRetries={this.maxRetries}
+          onRetry={this.handleRetry}
+          onReset={this.handleReset}
+        />
       );
     }
 
@@ -226,42 +113,177 @@ export class StorageErrorBoundary extends Component<
   }
 }
 
-// エラーバウンダリをReactコンポーネントとして使用するためのラッパー
+// StorageErrorUI - Simplified error UI component
+interface StorageErrorUiProps {
+  error: Error;
+  errorInfo?: ErrorInfo;
+  retryCount: number;
+  maxRetries: number;
+  onRetry: () => void;
+  onReset: () => void;
+}
+
+const StorageErrorUi = ({
+  error,
+  errorInfo,
+  retryCount,
+  maxRetries,
+  onRetry,
+  onReset,
+}: StorageErrorUiProps) => {
+  const { t } = useTranslation("common");
+
+  const getErrorMessage = useCallback(
+    (error: Error): string => {
+      if (error.message.includes("Storage not initialized")) {
+        return t("storageError.messages.storageNotInitialized");
+      }
+
+      if (error.message.includes("Database not initialized")) {
+        return t("storageError.messages.databaseNotInitialized");
+      }
+
+      if (error.name === "QuotaExceededError") {
+        return t("storageError.messages.quotaExceeded");
+      }
+
+      if (error.name === "NotAllowedError") {
+        return t("storageError.messages.notAllowed");
+      }
+
+      if (error.name === "SecurityError") {
+        return t("storageError.messages.securityError");
+      }
+
+      return t("storageError.messages.general");
+    },
+    [t],
+  );
+
+  const canRetry = retryCount < maxRetries;
+
+  return (
+    <div className="mx-auto max-w-2xl p-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-destructive">
+            <AlertCircle className="h-5 w-5" />
+            {t("storageError.title")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>{t("common.error")}</AlertTitle>
+            <AlertDescription>{getErrorMessage(error)}</AlertDescription>
+          </Alert>
+
+          {process.env.NODE_ENV === "development" && (
+            <details className="text-sm">
+              <summary className="cursor-pointer text-muted-foreground">
+                {t("storageError.devInfo")}
+              </summary>
+              <pre className="mt-2 overflow-auto rounded bg-muted p-2 text-xs">
+                {error.stack}
+              </pre>
+              {errorInfo && (
+                <pre className="mt-2 overflow-auto rounded bg-muted p-2 text-xs">
+                  {errorInfo.componentStack}
+                </pre>
+              )}
+            </details>
+          )}
+
+          <div className="flex flex-col gap-2 sm:flex-row">
+            {canRetry && (
+              <Button
+                onClick={onRetry}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <RefreshCw className="h-4 w-4" />
+                {t("storageError.actions.retry", {
+                  current: retryCount + 1,
+                  max: maxRetries,
+                })}
+              </Button>
+            )}
+
+            <Button
+              onClick={onReset}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className="h-4 w-4" />
+              {t("storageError.actions.reset")}
+            </Button>
+
+            {error.name === "QuotaExceededError" && (
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  if (
+                    confirm(
+                      "ストレージをクリアします。データが失われますがよろしいですか？",
+                    )
+                  ) {
+                    try {
+                      localStorage.clear();
+                      alert(t("storageError.clearStorageAlert"));
+                    } catch (err) {
+                      console.error("Failed to clear storage:", err);
+                    }
+                  }
+                }}
+              >
+                {t("storageError.actions.clearStorage")}
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+// Component for programmatic error display (compatible with existing usage)
 interface StorageErrorFallbackProps {
   error: Error;
-  resetErrorBoundary: () => void;
+  onRetry?: () => void;
   retryCount?: number;
   maxRetries?: number;
 }
 
 export const StorageErrorFallback = ({
   error,
-  resetErrorBoundary,
+  onRetry,
   retryCount = 0,
   maxRetries = 3,
 }: StorageErrorFallbackProps) => {
+  const { t } = useTranslation("common");
+
   const getErrorMessage = (error: Error): string => {
     if (error.message.includes("Storage not initialized")) {
-      return "ストレージの初期化に失敗しました。ページを再読み込みしてください。";
+      return t("storageError.messages.storageNotInitialized");
     }
 
     if (error.message.includes("Database not initialized")) {
-      return "データベースの初期化に失敗しました。ブラウザの設定でIndexedDBが有効になっているか確認してください。";
+      return t("storageError.messages.databaseNotInitialized");
     }
 
     if (error.name === "QuotaExceededError") {
-      return "ストレージの容量が不足しています。ブラウザのデータを整理してください。";
+      return t("storageError.messages.quotaExceeded");
     }
 
     if (error.name === "NotAllowedError") {
-      return "ストレージへのアクセスが許可されていません。ブラウザの設定を確認してください。";
+      return t("storageError.messages.notAllowed");
     }
 
     if (error.name === "SecurityError") {
-      return "セキュリティ制限によりストレージにアクセスできません。HTTPSでアクセスしているか確認してください。";
+      return t("storageError.messages.securityError");
     }
 
-    return "ストレージでエラーが発生しました。しばらく待ってから再試行してください。";
+    return t("storageError.messages.general");
   };
 
   return (
@@ -270,34 +292,37 @@ export const StorageErrorFallback = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">
             <AlertCircle className="h-5 w-5" />
-            ストレージエラー
+            {t("storageError.title")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
-            <AlertTitle>エラーが発生しました</AlertTitle>
+            <AlertTitle>{t("common.error")}</AlertTitle>
             <AlertDescription>{getErrorMessage(error)}</AlertDescription>
           </Alert>
 
-          <div className="flex flex-col gap-2">
-            {retryCount < maxRetries && (
+          <div className="flex gap-2">
+            {onRetry && retryCount + 1 <= maxRetries && (
               <Button
-                onClick={resetErrorBoundary}
+                onClick={onRetry}
+                variant="outline"
                 className="flex items-center gap-2"
               >
                 <RefreshCw className="h-4 w-4" />
-                再試行 ({retryCount + 1}/{maxRetries})
+                {t("storageError.actions.retry", {
+                  current: retryCount + 1,
+                  max: maxRetries,
+                })}
               </Button>
             )}
 
             <Button
-              variant="outline"
               onClick={() => window.location.reload()}
               className="flex items-center gap-2"
             >
               <RefreshCw className="h-4 w-4" />
-              ページを再読み込み
+              {t("storageError.actions.reloadPage")}
             </Button>
           </div>
         </CardContent>
