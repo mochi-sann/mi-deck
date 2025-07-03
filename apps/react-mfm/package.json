@@ -1,0 +1,45 @@
+{
+  "name": "@mi-deck/react-mfm",
+  "description": "MFM for React",
+  "dependencies": {
+    "@twemoji/api": "15.1.0",
+    "jotai": ">=2.2.0 <3",
+    "katex": "0.16.11",
+    "mfm-js": "0.24.0",
+    "shiki": "1.12.1"
+  },
+  "devDependencies": {
+    "@microsoft/api-extractor": "7.47.5",
+    "@types/katex": "0.16.7",
+    "@types/react": "18.3.3",
+    "tsup": "8.2.4"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "peerDependencies": {
+    "react": ">=17.0.0"
+  },
+  "scripts": {
+    "build": "tsup --minify --experimental-dts",
+    "check": "tsc",
+    "dev": "tsup --watch",
+    "fmt": "prettier -w ."
+  },
+  "tsup": {
+    "entry": [
+      "src"
+    ],
+    "format": "esm",
+    "sourcemap": true,
+    "splitting": false,
+    "clean": true
+  },
+  "type": "module",
+  "types": "./dist/index.d.ts"
+}
