@@ -1,6 +1,7 @@
 import Mfm from "@mi-deck/react-mfm";
 import "@mi-deck/react-mfm/style.css";
 import "katex/dist/katex.min.css"; // to support Formula
+import { Fragment } from "react";
 
 interface MfmTextProps {
   text: string;
@@ -8,8 +9,8 @@ interface MfmTextProps {
 
 export function MfmText({ text }: MfmTextProps) {
   return (
-    <div>
+    <Fragment>
       <Mfm text={text} />
-    </div>
+    </Fragment>
   );
 }

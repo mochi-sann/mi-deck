@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react-vite";
 import { MfmText } from "./MfmText";
 
 const meta = {
@@ -63,19 +63,26 @@ export const WithCode: Story = {
 
 export const All: Story = {
   args: {
-    text: `# こんにちは
+    text: String.raw`
+    <center>MisskeyでFediverseの世界が広がります</center>
 react-mfm [search]
 hi @user@example.org ! #React #MFM
+> MisskeyでFediverseの世界が広がります
+$[font.serif MisskeyでFediverseの世界が広がります]
+$[font.monospace MisskeyでFediverseの世界が広がります]
+$[font.cursive MisskeyでFediverseの世界が広がります]
+$[font.fantasy MisskeyでFediverseの世界が広がります]
+
+$[ruby Misskey ミスキー]
 <center>
-:sorena:
+:misskey:
   **hello, world!**
   $[x2 🐔🍹🍣🍦]
   https://example.com:3000/hoge
 </center>
 \[
   (v\cdot\nabla)v
-\]
-`,
+\]`,
   },
 };
 export const WithMath: Story = {
