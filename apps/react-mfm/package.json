@@ -41,8 +41,9 @@
       "src/keyframes.css"
     ],
     "format": "esm",
+    "minify": "terser",
     "sourcemap": true,
-    "splitting": false,
+    "splitting": true,
     "clean": true
   },
   "type": "module",
