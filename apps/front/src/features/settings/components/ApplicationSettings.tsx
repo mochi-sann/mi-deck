@@ -11,12 +11,18 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import type { SupportedLanguage } from "@/lib/i18n/types";
+import { useTheme } from "@/lib/theme/context";
 
 export function ApplicationSettings() {
   const { t, i18n } = useTranslation("settings");
+  const { theme, setTheme, actualTheme } = useTheme();
 
   const handleLanguageChange = (value: string) => {
     void i18n.changeLanguage(value as SupportedLanguage);
+  };
+
+  const handleThemeChange = (checked: boolean) => {
+    setTheme(checked ? "dark" : "light");
   };
 
   return (
@@ -32,7 +38,11 @@ export function ApplicationSettings() {
               {t("theme.description")}
             </p>
           </div>
-          <Switch id="theme-toggle" />
+          <Switch
+            id="theme-toggle"
+            checked={actualTheme === "dark"}
+            onCheckedChange={handleThemeChange}
+          />
         </div>
 
         <Separator />
