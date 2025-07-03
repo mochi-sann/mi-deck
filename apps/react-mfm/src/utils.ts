@@ -8,9 +8,11 @@ export const intersperse = <T>(a: T[], x: T) => {
 };
 
 export const isServer = typeof window === "undefined";
-// @ts-ignore
+
+// Webpack detection with proper type checking
+declare const __webpackRequire__: unknown;
 export const isWebpack =
-  typeof __webpack_require__ !== "undefined" &&
+  typeof __webpackRequire__ !== "undefined" &&
   process.env.NODE_ENV !== "development";
 
 export const dirname = (path: string) => path.slice(0, path.lastIndexOf("/"));

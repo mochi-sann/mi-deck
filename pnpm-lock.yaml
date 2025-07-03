@@ -50,6 +50,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.0.1
         version: 5.1.1(react-hook-form@7.59.0(react@19.1.0))
+      '@mi-deck/react-mfm':
+        specifier: workspace:*
+        version: link:../react-mfm
       '@radix-ui/react-avatar':
         specifier: ^1.1.4
         version: 1.1.10(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -158,9 +161,6 @@ importers:
       react-i18next:
         specifier: ^15.5.3
         version: 15.5.3(i18next@25.3.0(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
-      react-mfm:
-        specifier: ^0.5.4
-        version: 0.5.4(@types/react@19.1.8)(react@19.1.0)
       tailwind-merge:
         specifier: ^3.2.0
         version: 3.3.1
@@ -4949,11 +4949,6 @@ packages:
 
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
-
-  react-mfm@0.5.4:
-    resolution: {integrity: sha512-iDe+yaY3IRqQ6E/jiZl/JvLhXiimXVaB8rPhyanrGWHqEXMPEikA/JehTvGB137H3llDKuVhGW0EC51mwIVl0Q==}
-    peerDependencies:
-      react: '>=17.0.0'
 
   react-remove-scroll-bar@2.3.8:
     resolution: {integrity: sha512-9r+yi9+mgU33AKcj6IbT9oRCO78WriSj6t/cF8DWBZJ9aOGPOTEDvdUDz1FwKim7QXWwmHqtdHnRJfhAxEG46Q==}
@@ -10291,11 +10286,6 @@ snapshots:
       '@types/react': 18.3.3
       react: 19.1.0
 
-  jotai@2.12.5(@types/react@19.1.8)(react@19.1.0):
-    optionalDependencies:
-      '@types/react': 19.1.8
-      react: 19.1.0
-
   joycon@3.1.1: {}
 
   js-tokens@4.0.0: {}
@@ -10960,17 +10950,6 @@ snapshots:
   react-is@17.0.2: {}
 
   react-is@18.3.1: {}
-
-  react-mfm@0.5.4(@types/react@19.1.8)(react@19.1.0):
-    dependencies:
-      '@twemoji/api': 15.1.0
-      jotai: 2.12.5(@types/react@19.1.8)(react@19.1.0)
-      katex: 0.16.11
-      mfm-js: 0.24.0
-      react: 19.1.0
-      shiki: 1.12.1
-    transitivePeerDependencies:
-      - '@types/react'
 
   react-remove-scroll-bar@2.3.8(@types/react@19.1.8)(react@19.1.0):
     dependencies:

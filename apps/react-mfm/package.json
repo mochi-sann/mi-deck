@@ -26,14 +26,19 @@
     "react": ">=17.0.0"
   },
   "scripts": {
-    "build": "tsup --minify --experimental-dts",
+    "build": "tsup --minify --dts",
     "check": "tsc",
     "dev": "tsup --watch",
     "fmt": "prettier -w ."
   },
   "tsup": {
     "entry": [
-      "src"
+      "src/index.tsx",
+      "src/Node.tsx",
+      "src/utils.ts",
+      "src/components/*.tsx",
+      "src/style.css",
+      "src/keyframes.css"
     ],
     "format": "esm",
     "sourcemap": true,
