@@ -243,7 +243,7 @@ class DatabaseManager {
   }
 
   async updateAppSettings(updates: Partial<AppSettings>): Promise<void> {
-    const _db = this.ensureDb();
+    // const _db = this.ensureDb();
     const currentSettings = await this.getAppSettings();
     const updatedSettings: AppSettings = {
       theme: "system",
