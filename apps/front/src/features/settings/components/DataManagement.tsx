@@ -1,10 +1,10 @@
+import { AlertTriangle, Download, Upload } from "lucide-react";
+import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { storageManager } from "@/lib/storage";
-import { AlertTriangle, Download, Upload } from "lucide-react";
-import { useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
 
 export function DataManagement() {
   const { t } = useTranslation("settings");

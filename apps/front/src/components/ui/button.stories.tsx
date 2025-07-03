@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { expect, fn, userEvent, within } from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { PlusIcon } from "lucide-react"; // Example icon
 import React from "react";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { Button } from "./button";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
@@ -146,7 +146,7 @@ export const AsChild: Story = {
   args: {
     asChild: true,
 
-    // biome-ignore lint/a11y/useValidAnchor:
+    // biome-ignore lint/a11y/useValidAnchor: Demo link for Storybook showcase
     children: <a href="#">Link Button</a>, // Render as an anchor tag
   },
 };

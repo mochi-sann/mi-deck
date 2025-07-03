@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { expect, fn, userEvent, within } from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ChevronsUpDownIcon } from "lucide-react"; // Example icon for trigger
 import * as React from "react"; // Import React for useState in controlled story
+import { expect, fn, userEvent, within } from "storybook/test";
 import { Button } from "./button"; // Use Button as a trigger example
 import {
   Collapsible,

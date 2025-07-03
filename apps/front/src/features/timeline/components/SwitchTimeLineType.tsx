@@ -1,8 +1,8 @@
+import type React from "react";
 import type {
   MisskeyServerConnection,
   TimelineConfig,
 } from "@/lib/storage/types";
-import type React from "react";
 import { HomeTimelineContent } from "./HomeTimelineContent";
 
 export type SwitchTimeLineTypeProps = {

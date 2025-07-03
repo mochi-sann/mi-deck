@@ -25,10 +25,5 @@
       "styled-system/*": ["./styled-system/*"]
     }
   },
-  "include": [
-    "src",
-    "styled-system",
-    "panda.config.ts",
-    "theme",
-  ]
+  "include": ["src", "styled-system", "panda.config.ts", "theme"]
 }

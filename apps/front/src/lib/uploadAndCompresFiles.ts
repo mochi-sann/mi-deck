@@ -1,5 +1,5 @@
 import imageCompression from "browser-image-compression"; // Import the library
-import { DriveFilesCreateResponse } from "misskey-js/entities.js";
+import type { DriveFilesCreateResponse } from "misskey-js/entities.js";
 // Helper function for file compression and upload
 export async function uploadAndCompressFiles(
   files: File[],
@@ -13,7 +13,7 @@ export async function uploadAndCompressFiles(
   console.log("Compressing and uploading files:", files);
 
   const compressionOptions = {
-    // biome-ignore lint/style/useNamingConvention:
+    // biome-ignore lint/style/useNamingConvention: library option property naming
     maxSizeMB: 1, // Adjust max size as needed
     maxWidthOrHeight: 2048, // Adjust max dimensions as needed
     useWebWorker: true,

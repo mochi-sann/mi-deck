@@ -1,13 +1,13 @@
-import Text from "@/components/ui/text";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
-import { Component, ReactNode, Suspense } from "react";
+import { Component, type ReactNode, Suspense } from "react";
 import { describe, expect, it, vi } from "vitest";
+import Text from "@/components/ui/text";
 import { GlobalTimelineContent } from "./GlobalTimelineContetnt";
 
 // Mock the APIClient
 vi.mock("misskey-js/api.js", () => ({
-  // biome-ignore lint/style/useNamingConvention:
+  // biome-ignore lint/style/useNamingConvention: misskey-js API class naming
   APIClient: vi.fn().mockImplementation(() => ({
     request: vi.fn().mockResolvedValue([
       {
@@ -26,8 +26,8 @@ vi.mock("misskey-js/api.js", () => ({
 
 // Mock the TimelineNotes component
 vi.mock("./TimelineNotes", () => ({
-  // biome-ignore lint/suspicious/noExplicitAny:
-  // biome-ignore lint/style/useNamingConvention:
+  // biome-ignore lint/suspicious/noExplicitAny: Test mock data type
+  // biome-ignore lint/style/useNamingConvention: React component naming
   TimelineNotes: ({ notes }: { notes: any[] }) => (
     <div data-testid="timeline-notes">
       {notes?.map((note) => (

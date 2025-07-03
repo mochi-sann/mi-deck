@@ -1,11 +1,11 @@
-import { MenuFieldSet } from "@/components/forms/MenuFieldSet";
-import { TextFieldSet } from "@/components/forms/TextFieldSet";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/features/auth/hooks/useAuth";
 import type React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { MenuFieldSet } from "@/components/forms/MenuFieldSet";
+import { TextFieldSet } from "@/components/forms/TextFieldSet";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 type NewServerFormType = {
   serverOrigin: string;

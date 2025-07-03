@@ -1,6 +1,6 @@
 import { describe } from "node:test";
-import { userEvent } from "@storybook/test";
 import { act, render, screen } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { useForm } from "react-hook-form";
 import { expect, it } from "vitest";
 import { TextFieldSet } from "./TextFieldSet";

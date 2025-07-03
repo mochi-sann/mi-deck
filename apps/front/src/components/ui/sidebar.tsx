@@ -1,8 +1,8 @@
 import { Slot } from "@radix-ui/react-slot";
-import { VariantProps, cva } from "class-variance-authority";
+import { cva, type VariantProps } from "class-variance-authority";
 import { PanelLeftIcon } from "lucide-react";
 import * as React from "react";
-
+import { useLocalStorage } from "usehooks-ts"; // useLocalStorageをインポート
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/tooltip";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import { useLocalStorage } from "usehooks-ts"; // useLocalStorageをインポート
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_WIDTH = "16rem";
@@ -92,10 +91,9 @@ function SidebarProvider({
   );
 
   // Helper to toggle the sidebar.
-  // biome-ignore lint/correctness/useExhaustiveDependencies:
   const toggleSidebar = React.useCallback(() => {
     return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
-  }, [isMobile, setOpen, setOpenMobile]);
+  }, [isMobile, setOpen]);
 
   // Adds a keyboard shortcut to toggle the sidebar.
   React.useEffect(() => {
@@ -117,7 +115,6 @@ function SidebarProvider({
   // This makes it easier to style the sidebar with Tailwind classes.
   const state = open ? "expanded" : "collapsed";
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies:
   const contextValue = React.useMemo<SidebarContextProps>(
     () => ({
       state,
@@ -128,7 +125,7 @@ function SidebarProvider({
       setOpenMobile,
       toggleSidebar,
     }),
-    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
+    [state, open, setOpen, isMobile, openMobile, toggleSidebar],
   );
 
   return (

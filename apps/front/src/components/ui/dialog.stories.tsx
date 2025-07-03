@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import * as React from "react";
 import {
   expect,
   userEvent,
   waitFor,
   waitForElementToBeRemoved,
   within,
-} from "@storybook/test"; // waitFor をインポート
-import * as React from "react";
+} from "storybook/test"; // waitFor をインポート
 import { Button } from "./button"; // For trigger and footer actions
 import {
   Dialog,

@@ -38,7 +38,7 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
         type === "home" ? "notes/timeline" : `notes/${type}-timeline`;
       const params = untilId ? { untilId } : {};
 
-      // biome-ignore lint/suspicious/noExplicitAny:
+      // biome-ignore lint/suspicious/noExplicitAny: Timeline null
       const res = await (client as any).request(endpoint, params);
 
       if (Array.isArray(res)) {
@@ -116,12 +116,13 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
     }
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies:
+  // biome-ignore lint/correctness/useExhaustiveDependencies: fetchNotesを useeffectsにいれるといい感じに動かない
   useEffect(() => {
     fetchNotes();
 
     // Setup WebSocket connection
     const stream = new Stream(origin, { token });
+    // biome-ignore lint/correctness/useHookAtTopLevel: remove
     const channel = stream.useChannel(`${type}Timeline`);
 
     // Handle new notes

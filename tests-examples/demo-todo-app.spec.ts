@@ -1,4 +1,4 @@
-import { type Page, expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("https://demo.playwright.dev/todomvc");
@@ -474,7 +474,7 @@ async function checkNumberOfCompletedTodosInLocalStorage(
   return await page.waitForFunction((e) => {
     return (
       JSON.parse(localStorage["react-todos"]).filter(
-        // biome-ignore lint/suspicious/noExplicitAny:
+        // biome-ignore lint/suspicious/noExplicitAny: localStorage data type unknown
         (todo: any) => todo.completed,
       ).length === e
     );
@@ -485,7 +485,7 @@ async function checkTodosInLocalStorage(page: Page, title: string) {
   return await page.waitForFunction((t) => {
     return (
       JSON.parse(localStorage["react-todos"])
-        // biome-ignore lint/suspicious/noExplicitAny:
+        // biome-ignore lint/suspicious/noExplicitAny: localStorage data type unknown
         .map((todo: any) => todo.title)
         .includes(t)
     );

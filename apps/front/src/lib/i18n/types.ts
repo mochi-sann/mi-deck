@@ -6,7 +6,7 @@ export type SupportedLanguage = "ja" | "en";
 
 declare module "react-i18next" {
   interface CustomTypeOptions {
-    // biome-ignore lint/style/useNamingConvention:
+    // biome-ignore lint/style/useNamingConvention: react-i18next interface property naming
     defaultNS: "common";
     resources: TranslationResources;
   }

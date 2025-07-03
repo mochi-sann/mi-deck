@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import {
@@ -10,7 +11,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import type { SupportedLanguage } from "@/lib/i18n/types";
-import { useTranslation } from "react-i18next";
 
 export function ApplicationSettings() {
   const { t, i18n } = useTranslation("settings");

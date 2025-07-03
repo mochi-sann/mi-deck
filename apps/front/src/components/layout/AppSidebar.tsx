@@ -1,7 +1,7 @@
-import { NewNote } from "@/features/notes";
-import { cn } from "@/lib/utils";
 import { Pen } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { NewNote } from "@/features/notes";
+import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import {

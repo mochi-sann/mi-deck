@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
   "vcs": {
     "enabled": false,
     "clientKind": "git",
@@ -7,33 +7,38 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [
-      "tsconfig.json",
-      "tsconfig.app.json",
-      "tsconfig.node.json",
-      "vscode/**",
-      "apps/server/bin/**",
-      "apps/server/lib/**",
-      "apps/server/dist/**",
-      "apps/front/dist/**",
-      "apps/front/src/routeTree.gen.ts",
-      "apps/front/styled-system/**",
-      "apps/front/src/lib/api/type.ts",
-      "misskey-db",
-      "apps/server/src/generated/prisma/**",
-      ".devbox/**",
-      "/nix",
-      "apps/front/storybook-static/",
-      "apps/front/coverage",
-      "playwright-report/"
+    "includes": [
+      "apps/**/{src}/**",
+      "!**/tsconfig.json",
+      "!**/tsconfig.app.json",
+      "!**/tsconfig.node.json",
+      "!**/vscode/**",
+      "!**/apps/server/bin/**",
+      "!**/apps/server/lib/**",
+      "!**/apps/server/dist/**",
+      "!**/apps/front/dist/**",
+      "!**/apps/front/src/routeTree.gen.ts",
+      "!**/apps/front/styled-system/**",
+      "!**/apps/front/src/lib/api/type.ts",
+      "!**/misskey-db",
+      "!**/apps/server/src/generated/prisma/**",
+      "!**/.devbox/**",
+      "!**//nix",
+      "!**/apps/front/storybook-static/",
+      "!**/apps/front/coverage",
+      "!**/playwright-report/"
     ]
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space"
   },
-  "organizeImports": {
-    "enabled": true
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
   },
   "linter": {
     "enabled": true,
@@ -44,7 +49,16 @@
         "useTemplate": "off",
         "noUselessElse": "off",
         "useImportType": "off",
-        "useNamingConvention": "error"
+        "useNamingConvention": "error",
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error"
       },
       "nursery": {
         "useSortedClasses": "error"

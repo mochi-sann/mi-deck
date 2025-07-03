@@ -1,12 +1,12 @@
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Text from "@/components/ui/text";
 import { useAuth } from "@/features/auth";
 import {
   PENDING_AUTH_KEY_PREFIX,
-  PeendingAuthType,
+  type PeendingAuthType,
 } from "@/lib/auth/clientAuth";
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 
 export const Route = createLazyFileRoute("/callback/$origin")({
   component: AuthCallbackComponent,

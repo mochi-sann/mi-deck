@@ -1,7 +1,7 @@
+import type { Note } from "misskey-js/entities.js";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Text from "@/components/ui/text";
 import { cn } from "@/lib/utils"; // Import cn utility
-import { Note } from "misskey-js/entities.js";
 
 // Component to display a single Misskey note with a Twitter-like design
 export function MisskeyNote({ note }: { note: Note }) {

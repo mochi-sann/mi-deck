@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { InfoIcon } from "lucide-react"; // Example icon
 import { Badge } from "./badge";
 
@@ -67,7 +67,7 @@ export const WithIcon: Story = {
 export const AsChildLink: Story = {
   args: {
     asChild: true,
-    // biome-ignore lint/a11y/useValidAnchor:
+    // biome-ignore lint/a11y/useValidAnchor: Demo link for Storybook showcase
     children: <a href="#">Link Badge</a>, // Render as an anchor tag
     variant: "outline", // Example variant for link
   },

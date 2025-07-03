@@ -1,8 +1,8 @@
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import Text from "@/components/ui/text";
-import { useVirtualizer } from "@tanstack/react-virtual";
-import { useEffect, useRef } from "react";
 import { useTimeline } from "../hooks/useTimeline";
 import { MisskeyNote } from "./MisskeyNote";
 
@@ -33,7 +33,6 @@ export function HomeTimelineContent({
     },
   });
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies:
   useEffect(() => {
     const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse();
     if (!lastItem) return;
@@ -46,7 +45,7 @@ export function HomeTimelineContent({
     ) {
       fetchNotes(notes[notes.length - 1]?.id);
     }
-  }, [rowVirtualizer.getVirtualItems(), hasMore, isLoading, notes]);
+  }, [hasMore, isLoading, notes, fetchNotes, rowVirtualizer]);
 
   if (error) {
     return (

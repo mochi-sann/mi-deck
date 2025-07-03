@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import Text from "@/components/ui/text";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { APIClient } from "misskey-js/api.js";
-import { Note } from "misskey-js/entities.js";
+import type { Note } from "misskey-js/entities.js";
+import { Button } from "@/components/ui/button";
+import Text from "@/components/ui/text";
 import { TimelineNotes } from "./TimelineNotes";
 
 // Component to fetch and display posts for a single timeline

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Heart, Link2, Settings, Share2, Star, Trash2 } from "lucide-react";
 import { IconButton } from "./icon-button";
 
