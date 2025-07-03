@@ -57,15 +57,15 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <StorageProvider>
+      <StorageProvider>
+        <ThemeProvider>
           <AuthProvider>
             <SidebarProvider>
               <InnerApp />
             </SidebarProvider>
           </AuthProvider>
-        </StorageProvider>
-      </ThemeProvider>
+        </ThemeProvider>
+      </StorageProvider>
     </QueryClientProvider>
   </StrictMode>,
 );

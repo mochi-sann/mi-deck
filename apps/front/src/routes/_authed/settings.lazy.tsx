@@ -1,7 +1,7 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { Settings as SettingsIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { ScrollArea } from "@/Component/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   ApplicationInfo,
   ApplicationSettings,

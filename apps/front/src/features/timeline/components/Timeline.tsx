@@ -1,9 +1,9 @@
 import { AlertCircle, Server } from "lucide-react";
 import type React from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollArea } from "@/Component/ui/scroll-area";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useStorage } from "@/lib/storage/context";
 import { useTimeline } from "../hooks/useTimeline";
 

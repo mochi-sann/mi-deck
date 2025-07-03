@@ -1,5 +1,6 @@
 import { type DBSchema, type IDBPDatabase, openDB } from "idb";
 import type {
+  AppSettings,
   ClientAuthState,
   MisskeyServerConnection,
   TimelineConfig,
@@ -19,13 +20,17 @@ interface MiDeckDb extends DBSchema {
     key: "current";
     value: ClientAuthState;
   };
+  settings: {
+    key: "current";
+    value: AppSettings;
+  };
 }
 
 class DatabaseManager {
   private db: IDBPDatabase<MiDeckDb> | null = null;
 
   async initialize(): Promise<void> {
-    this.db = await openDB<MiDeckDb>("mi-deck", 1, {
+    this.db = await openDB<MiDeckDb>("mi-deck", 2, {
       upgrade(db) {
         // Servers store
         if (!db.objectStoreNames.contains("servers")) {
@@ -44,6 +49,11 @@ class DatabaseManager {
         // Auth state store
         if (!db.objectStoreNames.contains("auth")) {
           db.createObjectStore("auth");
+        }
+
+        // App settings store
+        if (!db.objectStoreNames.contains("settings")) {
+          db.createObjectStore("settings");
         }
       },
     });
@@ -208,14 +218,52 @@ class DatabaseManager {
     await db.delete("auth", "current");
   }
 
+  // App settings management
+  async getAppSettings(): Promise<AppSettings | undefined> {
+    const db = this.ensureDb();
+    const settings = await db.get("settings", "current");
+    if (!settings) {
+      // Return default settings if none exist
+      return {
+        theme: "system",
+        language: "ja",
+        lastUpdated: new Date(),
+      };
+    }
+    return settings;
+  }
+
+  async setAppSettings(settings: AppSettings): Promise<void> {
+    const db = this.ensureDb();
+    await db.put(
+      "settings",
+      { ...settings, lastUpdated: new Date() },
+      "current",
+    );
+  }
+
+  async updateAppSettings(updates: Partial<AppSettings>): Promise<void> {
+    const _db = this.ensureDb();
+    const currentSettings = await this.getAppSettings();
+    const updatedSettings: AppSettings = {
+      theme: "system",
+      language: "ja",
+      lastUpdated: new Date(),
+      ...currentSettings,
+      ...updates,
+    };
+    await this.setAppSettings(updatedSettings);
+  }
+
   // Import/Export functionality
   async exportData(): Promise<string> {
     const db = this.ensureDb();
 
-    const [servers, timelines, authState] = await Promise.all([
+    const [servers, timelines, authState, appSettings] = await Promise.all([
       db.getAll("servers"),
       db.getAll("timelines"),
       db.get("auth", "current"),
+      db.get("settings", "current"),
     ]);
 
     const exportData = {
@@ -225,6 +273,7 @@ class DatabaseManager {
         servers,
         timelines,
         authState: authState || null,
+        appSettings: appSettings || null,
       },
     };
 
@@ -241,6 +290,7 @@ class DatabaseManager {
         servers: MisskeyServerConnection[];
         timelines: TimelineConfig[];
         authState: ClientAuthState | null;
+        appSettings?: AppSettings | null;
       };
     };
 
@@ -260,16 +310,20 @@ class DatabaseManager {
       throw new Error("データ構造が無効です");
     }
 
-    const { servers, timelines, authState } = importData.data;
+    const { servers, timelines, authState, appSettings } = importData.data;
 
     // Begin transaction
-    const tx = db.transaction(["servers", "timelines", "auth"], "readwrite");
+    const tx = db.transaction(
+      ["servers", "timelines", "auth", "settings"],
+      "readwrite",
+    );
 
     try {
       // Clear existing data (optional - you might want to make this configurable)
       await tx.objectStore("servers").clear();
       await tx.objectStore("timelines").clear();
       await tx.objectStore("auth").clear();
+      await tx.objectStore("settings").clear();
 
       // Import servers
       if (Array.isArray(servers)) {
@@ -306,6 +360,15 @@ class DatabaseManager {
         await tx.objectStore("auth").put(authStateWithDates, "current");
       }
 
+      // Import app settings
+      if (appSettings) {
+        const settingsWithDates = {
+          ...appSettings,
+          lastUpdated: new Date(appSettings.lastUpdated),
+        };
+        await tx.objectStore("settings").put(settingsWithDates, "current");
+      }
+
       await tx.done;
     } catch (error) {
       tx.abort();
@@ -317,12 +380,16 @@ class DatabaseManager {
 
   async clearAllData(): Promise<void> {
     const db = this.ensureDb();
-    const tx = db.transaction(["servers", "timelines", "auth"], "readwrite");
+    const tx = db.transaction(
+      ["servers", "timelines", "auth", "settings"],
+      "readwrite",
+    );
 
     await Promise.all([
       tx.objectStore("servers").clear(),
       tx.objectStore("timelines").clear(),
       tx.objectStore("auth").clear(),
+      tx.objectStore("settings").clear(),
     ]);
 
     await tx.done;

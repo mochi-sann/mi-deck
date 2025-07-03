@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { useStorage } from "@/lib/storage/context";
 import type { Theme } from "@/lib/storage/types";
 
 interface ThemeContextType {
@@ -22,15 +23,14 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>("system");
+  const { appSettings, updateAppSettings } = useStorage();
   const [actualTheme, setActualTheme] = useState<"light" | "dark">("light");
 
-  useEffect(() => {
-    const storedTheme = localStorage.getItem("theme") as Theme;
-    if (storedTheme) {
-      setTheme(storedTheme);
-    }
-  }, []);
+  const theme = appSettings?.theme || "system";
+
+  const isValidTheme = (value: string): value is Theme => {
+    return ["light", "dark", "system"].includes(value);
+  };
 
   useEffect(() => {
     const getActualTheme = (): "light" | "dark" => {
@@ -63,9 +63,14 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     }
   }, [theme]);
 
-  const handleSetTheme = (newTheme: Theme) => {
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
+  const handleSetTheme = async (newTheme: Theme) => {
+    if (isValidTheme(newTheme)) {
+      try {
+        await updateAppSettings({ theme: newTheme });
+      } catch (error) {
+        console.error("Failed to update theme:", error);
+      }
+    }
   };
 
   return (

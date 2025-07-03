@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-import { ToggleGroup, ToggleGroupItem } from "@/Component/ui/toggle-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import {
@@ -10,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import type { SupportedLanguage } from "@/lib/i18n/types";
 import type { Theme } from "@/lib/storage/types";
 import { useTheme } from "@/lib/theme/context";
@@ -22,9 +22,13 @@ export function ApplicationSettings() {
     void i18n.changeLanguage(value as SupportedLanguage);
   };
 
+  const isValidTheme = (value: string): value is Theme => {
+    return ["light", "dark", "system"].includes(value);
+  };
+
   const handleThemeChange = (value: string) => {
-    if (value) {
-      setTheme(value as Theme);
+    if (value && isValidTheme(value)) {
+      setTheme(value);
     }
   };
 
