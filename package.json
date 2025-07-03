@@ -12,7 +12,7 @@
     "server": "pnpm -F @mi-deck/server",
     "test:e2e:server": "pnpm -F @mi-deck/server run test:e2e",
     "format": "biome format --write ",
-    "check": "biome check --write  ",
+    "check": "biome check --write --unsafe ",
     "test": "turbo run test",
     "lint": "turbo run lint",
     "clean": "turbo run clean"
