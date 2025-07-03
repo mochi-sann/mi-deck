@@ -6,7 +6,7 @@ import {
   type BundledLanguage,
   bundledLanguages,
   createHighlighter,
-} from "shiki";
+} from "shiki/bundle/web";
 
 type CodeProps = {
   code: string;
