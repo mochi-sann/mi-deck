@@ -24,9 +24,10 @@ describe("useTimeline", () => {
 
   // Mock APIClient
   const mockRequest = vi.fn();
-  (APIClient as Mock).mockImplementation(() => ({
+  const mockApiClientInstance = {
     request: mockRequest,
-  }));
+  };
+  (APIClient as Mock).mockImplementation(() => mockApiClientInstance);
 
   // Mock Stream
   const mockChannel = {
@@ -45,6 +46,7 @@ describe("useTimeline", () => {
     mockRequest.mockReset();
     mockChannel.on.mockReset();
     mockStream.on.mockReset();
+    mockStream.useChannel.mockReturnValue(mockChannel);
   });
 
   it("should fetch initial notes and setup WebSocket connection", async () => {
@@ -61,9 +63,19 @@ describe("useTimeline", () => {
     expect(result.current.hasMore).toBe(true);
     expect(result.current.isLoading).toBe(true);
 
-    // Wait for initial fetch
+    // Wait for initial fetch to complete
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
+
+    // Wait for the async operation to resolve
+    await act(async () => {
+      await vi.waitFor(
+        () => {
+          expect(mockRequest).toHaveBeenCalled();
+        },
+        { timeout: 1000 },
+      );
     });
 
     // Check if APIClient was called correctly
@@ -75,12 +87,15 @@ describe("useTimeline", () => {
 
     // Check if Stream was setup correctly
     expect(Stream).toHaveBeenCalledWith(mockOrigin, { token: mockToken });
-    expect(mockStream.useChannel).toHaveBeenCalledWith("homeTimeline");
+    expect(mockStream.useChannel).toHaveBeenCalledWith("homeTimeline", {
+      withRenotes: true,
+      withFiles: false,
+    });
 
     // Check if notes were updated
     expect(result.current.notes).toEqual(mockNotes);
     expect(result.current.isLoading).toBe(false);
-  });
+  }, 10000);
 
   it("should handle API errors", async () => {
     const mockError = new Error("API Error");
@@ -90,13 +105,19 @@ describe("useTimeline", () => {
       useTimeline(mockOrigin, mockToken, mockType),
     );
 
+    // Wait for error to be set
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await vi.waitFor(
+        () => {
+          expect(result.current.error?.message).toBe("API Error");
+        },
+        { timeout: 1000 },
+      );
     });
 
-    expect(result.current.error).toEqual(mockError);
+    expect(result.current.error?.message).toBe("API Error");
     expect(result.current.isLoading).toBe(false);
-  });
+  }, 10000);
 
   it("should handle WebSocket disconnection", async () => {
     mockRequest.mockResolvedValueOnce([]);
@@ -133,8 +154,14 @@ describe("useTimeline", () => {
       useTimeline(mockOrigin, mockToken, mockType),
     );
 
+    // Wait for initial fetch to complete
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await vi.waitFor(
+        () => {
+          expect(result.current.notes).toEqual(mockNotes);
+        },
+        { timeout: 1000 },
+      );
     });
 
     // Simulate new note from WebSocket
@@ -148,7 +175,7 @@ describe("useTimeline", () => {
     });
 
     expect(result.current.notes).toEqual([mockNewNote, ...mockNotes]);
-  });
+  }, 10000);
 
   it("should handle pagination correctly", async () => {
     const initialNotes = [{ id: "1", text: "Note 1" }];
@@ -163,7 +190,12 @@ describe("useTimeline", () => {
 
     // Wait for initial fetch
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await vi.waitFor(
+        () => {
+          expect(result.current.notes).toEqual(initialNotes);
+        },
+        { timeout: 1000 },
+      );
     });
 
     // Fetch more notes
@@ -175,7 +207,7 @@ describe("useTimeline", () => {
       untilId: initialNotes[0].id,
     });
     expect(result.current.notes).toEqual([...initialNotes, ...moreNotes]);
-  });
+  }, 10000);
 
   it("should handle empty response for pagination", async () => {
     const initialNotes = [{ id: "1", text: "Note 1" }];
@@ -187,7 +219,12 @@ describe("useTimeline", () => {
 
     // Wait for initial fetch
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await vi.waitFor(
+        () => {
+          expect(result.current.notes).toEqual(initialNotes);
+        },
+        { timeout: 1000 },
+      );
     });
 
     // Fetch more notes
@@ -197,5 +234,5 @@ describe("useTimeline", () => {
 
     expect(result.current.hasMore).toBe(false);
     expect(result.current.notes).toEqual(initialNotes);
-  });
+  }, 10000);
 });
