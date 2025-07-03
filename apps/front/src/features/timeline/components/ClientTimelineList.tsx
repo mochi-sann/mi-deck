@@ -126,7 +126,7 @@ function SortableTimeline({
 
   return (
     <div ref={setNodeRef} style={style}>
-      <Card className="flex h-full w-80 flex-[0_0_320px] flex-col gap-0 rounded-none">
+      <Card className="flex h-full w-80 flex-[0_0_320px] flex-col gap-0 rounded-none pt-6 pb-0">
         <CardHeader className="flex shrink-0 items-center justify-between border-b pb-2">
           <CardTitle className="flex items-center gap-2 font-bold text-base">
             <Suspense

@@ -2,11 +2,13 @@ import { createLazyFileRoute } from "@tanstack/react-router";
 import { Settings as SettingsIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ScrollArea } from "@/Component/ui/scroll-area";
-import { ApplicationInfo } from "@/features/settings/components/ApplicationInfo";
-import { ApplicationSettings } from "@/features/settings/components/ApplicationSettings";
-import { DataManagement } from "@/features/settings/components/DataManagement";
-import { ServerInfo } from "@/features/settings/components/ServerInfo";
-import { TimelineSettings } from "@/features/settings/components/TimelineSettings";
+import {
+  ApplicationInfo,
+  ApplicationSettings,
+  DataManagement,
+  ServerInfo,
+  TimelineSettings,
+} from "@/features/settings";
 
 export const Route = createLazyFileRoute("/_authed/settings")({
   component: SettingsPage,
@@ -24,7 +26,7 @@ function SettingsPage() {
         </div>
       </div>
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 pb-12">
         <div className="space-y-6 pr-4">
           <ApplicationSettings />
           <TimelineSettings />
