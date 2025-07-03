@@ -1,10 +1,8 @@
-import Mfm from "@mi-deck/react-mfm";
 import type { Note } from "misskey-js/entities.js";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Text from "@/components/ui/text";
+import { MfmText } from "@/features/mfm";
 import { cn } from "@/lib/utils"; // Import cn utility
-import "@mi-deck/react-mfm/style.css";
-import "katex/dist/katex.min.css"; // to support Formula
 
 // Component to display a single Misskey note with a Twitter-like design
 export function MisskeyNote({ note }: { note: Note }) {
@@ -51,7 +49,7 @@ export function MisskeyNote({ note }: { note: Note }) {
             {" "}
             {/* Added whitespace and break-words */}
             {note.text ? (
-              <Mfm text={note.text || ""} />
+              <MfmText text={note.text} />
             ) : (
               <i className="text-muted-foreground">(No Text)</i>
             )}{" "}
