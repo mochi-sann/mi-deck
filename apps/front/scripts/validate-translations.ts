@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -121,7 +121,7 @@ function validateTranslations() {
         if (!allKeys.has(key)) {
           allKeys.set(key, []);
         }
-        allKeys.get(key)!.push(namespace);
+        allKeys.get(key)?.push(namespace);
       }
     }
 

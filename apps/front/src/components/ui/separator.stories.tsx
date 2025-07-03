@@ -62,22 +62,22 @@ export const InNavigation: Story = {
   render: () => (
     <div className="flex h-20 items-center gap-4">
       <nav className="flex items-center gap-4">
-        {/* biome-ignore lint/a11y/useValidAnchor: */}
+        {/* biome-ignore lint/a11y/useValidAnchor: Demo link for Storybook showcase */}
         <a href="#" className="font-medium text-sm">
           Home
         </a>
         <Separator orientation="vertical" />
-        {/* biome-ignore lint/a11y/useValidAnchor: */}
+        {/* biome-ignore lint/a11y/useValidAnchor: Demo link for Storybook showcase */}
         <a href="#" className="font-medium text-sm">
           About
         </a>
         <Separator orientation="vertical" />
-        {/* biome-ignore lint/a11y/useValidAnchor: */}
+        {/* biome-ignore lint/a11y/useValidAnchor: Demo link for Storybook showcase */}
         <a href="#" className="font-medium text-sm">
           Services
         </a>
         <Separator orientation="vertical" />
-        {/* biome-ignore lint/a11y/useValidAnchor: */}
+        {/* biome-ignore lint/a11y/useValidAnchor: Demo link for Storybook showcase */}
         <a href="#" className="font-medium text-sm">
           Contact
         </a>

@@ -1,23 +1,16 @@
-import { ClientCreateTimelineDialog } from "@/components/parts/ClientCreateTimelineDialog";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import Text from "@/components/ui/text";
-import { useStorage } from "@/lib/storage/context";
-import type { TimelineConfig } from "@/lib/storage/types";
 import {
+  closestCenter,
   DndContext,
   type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
-  closestCenter,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import {
-  SortableContext,
   arrayMove,
   horizontalListSortingStrategy,
+  SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
 } from "@dnd-kit/sortable";
@@ -27,9 +20,16 @@ import { GripVertical, Plus, Server, Trash2 } from "lucide-react";
 import { APIClient } from "misskey-js/api.js";
 import { Fragment, Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ClientCreateTimelineDialog } from "@/components/parts/ClientCreateTimelineDialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import Text from "@/components/ui/text";
+import { useStorage } from "@/lib/storage/context";
+import type { TimelineConfig } from "@/lib/storage/types";
 import {
   SwitchTimeLineType,
-  SwitchTimeLineTypeProps,
+  type SwitchTimeLineTypeProps,
 } from "./SwitchTimeLineType";
 
 function SortableTimeline({
@@ -53,27 +53,20 @@ function SortableTimeline({
     transition,
   };
 
-  if (!server) {
-    return (
-      <div ref={setNodeRef} style={style}>
-        <Card className="flex h-full w-80 flex-[0_0_320px] flex-col gap-0 rounded-none">
-          <CardContent className="flex h-full items-center justify-center">
-            <Text>{t("list.serverNotFound")}</Text>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const client = server
+    ? new APIClient({
+        origin: server.origin,
+        credential: server.accessToken || "",
+      })
+    : null;
 
-  const client = new APIClient({
-    origin: server.origin,
-    credential: server.accessToken || "",
-  });
-
-  const queryKey = ["meta", server.origin];
+  const queryKey = ["meta", server?.origin];
   const { data: serverInfo } = useSuspenseQuery({
     queryKey: queryKey,
     queryFn: async () => {
+      if (!client || !server) {
+        throw new Error("Server not found or client not initialized");
+      }
       return await client
         .request("meta", {
           detail: true,
@@ -92,6 +85,18 @@ function SortableTimeline({
       onDelete(timeline.id);
     }
   };
+
+  if (!server) {
+    return (
+      <div ref={setNodeRef} style={style}>
+        <Card className="flex h-full w-80 flex-[0_0_320px] flex-col gap-0 rounded-none">
+          <CardContent className="flex h-full items-center justify-center">
+            <Text>{t("list.serverNotFound")}</Text>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Convert our TimelineConfig to the format expected by SwitchTimeLineType
   const timelineForSwitch: SwitchTimeLineTypeProps["timeline"] = {

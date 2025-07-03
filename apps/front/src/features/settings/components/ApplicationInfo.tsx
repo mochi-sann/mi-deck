@@ -1,6 +1,6 @@
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useStorage } from "@/lib/storage/context";
-import { useTranslation } from "react-i18next";
 
 export function ApplicationInfo() {
   const { t } = useTranslation("settings");

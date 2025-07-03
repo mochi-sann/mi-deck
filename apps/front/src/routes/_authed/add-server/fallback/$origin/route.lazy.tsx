@@ -9,17 +9,19 @@ export const Route = createLazyFileRoute(
 
 function RouteComponent() {
   const navigate = useNavigate();
+  const params = Route.useParams();
+  const search = Route.useSearch();
 
   useEffect(() => {
     // This route is deprecated - redirect to the new auth callback
     navigate({
       to: "/callback/$origin",
-      params: { origin: Route.useParams().origin },
+      params: { origin: params.origin },
       search: {
-        session: Route.useSearch().session || "",
+        session: search.session || "",
       },
     });
-  }, [navigate]);
+  }, [navigate, params.origin, search.session]);
 
   return (
     <div className="flex min-h-screen items-center justify-center">

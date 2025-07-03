@@ -1,19 +1,19 @@
 import { act, renderHook } from "@testing-library/react";
 import { Stream } from "misskey-js";
 import { APIClient } from "misskey-js/api.js";
-import { Mock, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { useTimeline } from "./useTimeline";
 
 // Mock misskey-js modules
 vi.mock("misskey-js", () => ({
-  // biome-ignore lint/style/useNamingConvention:
+  // biome-ignore lint/style/useNamingConvention: misskey-js API class naming
   Stream: vi.fn(),
-  // biome-ignore lint/style/useNamingConvention:
+  // biome-ignore lint/style/useNamingConvention: misskey-js API class naming
   APIClient: vi.fn(),
 }));
 
 vi.mock("misskey-js/api.js", () => ({
-  // biome-ignore lint/style/useNamingConvention:
+  // biome-ignore lint/style/useNamingConvention: misskey-js API class naming
   APIClient: vi.fn(),
 }));
 

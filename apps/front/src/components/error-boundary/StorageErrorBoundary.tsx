@@ -63,9 +63,9 @@ export class StorageErrorBoundary extends Component<
     });
 
     // Log to monitoring service if available
-    // biome-ignore lint/suspicious/noExplicitAny:
+    // biome-ignore lint/suspicious/noExplicitAny: Global error reporting service requires any type
     if (typeof window !== "undefined" && (window as any).reportError) {
-      // biome-ignore lint/suspicious/noExplicitAny:
+      // biome-ignore lint/suspicious/noExplicitAny: Global error reporting service requires any type
       (window as any).reportError(error);
     }
   }

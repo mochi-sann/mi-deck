@@ -1,6 +1,6 @@
 import {
-  type ReactNode,
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -98,6 +98,26 @@ export function StorageProvider({ children }: StorageProviderProps) {
     [],
   );
 
+  const shouldAutoRetry = useCallback((error: unknown): boolean => {
+    if (!(error instanceof Error)) return false;
+
+    // Don't auto-retry for certain types of errors
+    if (
+      error.name === "QuotaExceededError" ||
+      error.name === "NotAllowedError" ||
+      error.name === "SecurityError"
+    ) {
+      return false;
+    }
+
+    // Auto-retry for transient errors
+    return (
+      error.message.includes("Failed to load") ||
+      error.message.includes("network") ||
+      error.message.includes("timeout")
+    );
+  }, []);
+
   const loadData = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -142,27 +162,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [isStorageInitialized, retryCount, createStorageError]);
-
-  const shouldAutoRetry = (error: unknown): boolean => {
-    if (!(error instanceof Error)) return false;
-
-    // Don't auto-retry for certain types of errors
-    if (
-      error.name === "QuotaExceededError" ||
-      error.name === "NotAllowedError" ||
-      error.name === "SecurityError"
-    ) {
-      return false;
-    }
-
-    // Auto-retry for transient errors
-    return (
-      error.message.includes("Failed to load") ||
-      error.message.includes("network") ||
-      error.message.includes("timeout")
-    );
-  };
+  }, [isStorageInitialized, retryCount, createStorageError, shouldAutoRetry]);
 
   const initializeStorage = useCallback(async () => {
     try {

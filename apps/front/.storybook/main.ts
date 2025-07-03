@@ -34,7 +34,7 @@ const config: StorybookConfig = {
 };
 export default config;
 
-// biome-ignore lint/suspicious/noExplicitAny:
+// biome-ignore lint/suspicious/noExplicitAny: Storybook requires any type for getAbsolutePath return
 function getAbsolutePath(value: string): any {
   return dirname(require.resolve(join(value, "package.json")));
 }

@@ -10,7 +10,7 @@ export const resources = {
   en: enTranslations,
 } as const;
 
-// biome-ignore lint/style/useNamingConvention:
+// biome-ignore lint/style/useNamingConvention: i18n library constant naming
 export const defaultNS = "common";
 export const fallbackLng = "ja";
 
@@ -19,7 +19,7 @@ void i18n
   .use(initReactI18next)
   .init({
     resources,
-    defaultNS,
+    defaultNs: defaultNS,
     fallbackLng,
     lng: "ja", // デフォルト言語
 

@@ -1,7 +1,7 @@
+import type { Note } from "misskey-js/entities.js";
+import type React from "react";
 import { Spinner } from "@/components/ui/spinner";
 import Text from "@/components/ui/text";
-import { Note } from "misskey-js/entities.js";
-import type React from "react";
 import { MisskeyNote } from "./MisskeyNote";
 
 export type TimelineNotesProps = {

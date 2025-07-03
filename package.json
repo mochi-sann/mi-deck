@@ -11,8 +11,8 @@
     "front": "pnpm -F @mi-deck/front",
     "server": "pnpm -F @mi-deck/server",
     "test:e2e:server": "pnpm -F @mi-deck/server run test:e2e",
-    "format": "biome format --write .",
-    "check": "biome check --write . --unsafe",
+    "format": "biome format --write ",
+    "check": "biome check --write  ",
     "test": "turbo run test",
     "lint": "turbo run lint",
     "clean": "turbo run clean"
@@ -27,7 +27,7 @@
   "author": "",
   "license": "",
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
+    "@biomejs/biome": "2.0.6",
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.13",
     "dotenv": "^16.4.7",

@@ -1,8 +1,8 @@
+import type React from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
 import { cn } from "@/lib/utils";
-import type React from "react";
-import { useTranslation } from "react-i18next";
 
 export type ServerListProps = {
   serverInfo: MisskeyServerConnection;

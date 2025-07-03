@@ -154,6 +154,6 @@ export function configureAuth<
     useLogin,
     useRegister,
     useLogout,
-    AuthLoader,
+    authLoader: AuthLoader,
   };
 }

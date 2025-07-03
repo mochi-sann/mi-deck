@@ -1,5 +1,5 @@
-import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
-import { Fragment, Suspense, lazy } from "react";
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
+import { Fragment, lazy, Suspense } from "react";
 
 const TanStackRouterDevtools = !import.meta.env.DEV
   ? () => null // Render nothing in production

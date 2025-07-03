@@ -1,5 +1,5 @@
-import { StorageErrorBoundary } from "@/components/error-boundary/StorageErrorBoundary";
 import type { ReactNode } from "react";
+import { StorageErrorBoundary } from "@/components/error-boundary/StorageErrorBoundary";
 import { StorageProvider } from "./context";
 
 interface StorageProviderWithErrorBoundaryProps {

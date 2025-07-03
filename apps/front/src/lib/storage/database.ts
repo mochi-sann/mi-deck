@@ -246,7 +246,7 @@ class DatabaseManager {
 
     try {
       importData = JSON.parse(jsonData);
-    } catch (error) {
+    } catch (_error) {
       throw new Error("無効なJSONデータです");
     }
 

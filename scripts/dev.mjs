@@ -56,7 +56,7 @@ try {
   );
   try {
     await execa("pnpm", ["run", "server", "--", "db:migrate:dev"], {
-      cwd: _dirname + "/../",
+      cwd: `${_dirname}/../`,
       stdio: "inherit", // マイグレーションの出力は直接表示
     });
     console.log(
@@ -77,7 +77,7 @@ try {
 
   // フロントエンドプロセスを起動
   frontProcess = execa("pnpm", ["run", "front", "--", "dev"], {
-    cwd: _dirname + "/../",
+    cwd: `${_dirname}/../`,
     stdio: ["inherit", "pipe", "pipe"],
   });
 
@@ -86,7 +86,7 @@ try {
     `${colors.green}${colors.bright}[SERVER]${colors.reset} Starting back-end dev server...`,
   );
   serverProcess = execa("pnpm", ["run", "server", "--", "dev"], {
-    cwd: _dirname + "/../",
+    cwd: `${_dirname}/../`,
     stdio: ["inherit", "pipe", "pipe"],
   });
 

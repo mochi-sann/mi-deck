@@ -1,12 +1,12 @@
-import { useStorage } from "@/lib/storage/context";
-import type { MisskeyServerConnection } from "@/lib/storage/types";
 import {
-  type ReactNode,
   createContext,
+  type ReactNode,
   useContext,
   useEffect,
   useState,
 } from "react";
+import { useStorage } from "@/lib/storage/context";
+import type { MisskeyServerConnection } from "@/lib/storage/types";
 import { clientAuthManager } from "../api/clientAuth";
 
 interface AuthContextValue {

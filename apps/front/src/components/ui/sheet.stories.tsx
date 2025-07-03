@@ -82,19 +82,19 @@ export const LeftSide: Story = {
           </SheetDescription>
         </SheetHeader>
         <nav className="grid gap-4 py-4">
-          {/* biome-ignore lint/a11y/useValidAnchor: */}
+          {/* biome-ignore lint/a11y/useValidAnchor: Demo link for Storybook showcase */}
           <a href="#" className="font-medium text-sm">
             Dashboard
           </a>
-          {/* biome-ignore lint/a11y/useValidAnchor: */}
+          {/* biome-ignore lint/a11y/useValidAnchor: Demo link for Storybook showcase */}
           <a href="#" className="font-medium text-sm">
             Settings
           </a>
-          {/* biome-ignore lint/a11y/useValidAnchor: */}
+          {/* biome-ignore lint/a11y/useValidAnchor: Demo link for Storybook showcase */}
           <a href="#" className="font-medium text-sm">
             Profile
           </a>
-          {/* biome-ignore lint/a11y/useValidAnchor: */}
+          {/* biome-ignore lint/a11y/useValidAnchor: Demo link for Storybook showcase */}
           <a href="#" className="font-medium text-sm">
             Help
           </a>

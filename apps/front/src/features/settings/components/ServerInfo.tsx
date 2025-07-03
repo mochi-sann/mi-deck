@@ -1,7 +1,7 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useStorage } from "@/lib/storage/context";
-import { useTranslation } from "react-i18next";
 
 export function ServerInfo() {
   const storage = useStorage();

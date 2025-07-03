@@ -1,7 +1,7 @@
+import { Suspense } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import Text from "@/components/ui/text";
 import { useStorage } from "@/lib/storage/context";
-import { Suspense } from "react";
 import { CreateTimelineForm } from "./CreateTimelineForm";
 
 // Define the type based on the API schema, making conditional fields optional initially

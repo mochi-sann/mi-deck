@@ -1,7 +1,7 @@
+import { createLazyFileRoute } from "@tanstack/react-router";
 import { useAuth } from "@/features/auth";
 import { ServerInfoBox } from "@/features/server-management";
 import { useStorage } from "@/lib/storage/context";
-import { createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/_authed/about")({
   component: About,

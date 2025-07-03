@@ -1,3 +1,5 @@
+import { useNavigate } from "@tanstack/react-router";
+import { FilePlus2, Settings, UserRound } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -11,8 +13,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useNavigate } from "@tanstack/react-router";
-import { FilePlus2, Settings, UserRound } from "lucide-react";
 
 export function NavUser() {
   const { isMobile } = useSidebar();

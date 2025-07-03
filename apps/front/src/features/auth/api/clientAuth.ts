@@ -1,7 +1,7 @@
+import * as Misskey from "misskey-js";
+import type { User } from "misskey-js/entities.js";
 import { storageManager } from "@/lib/storage";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
-import * as Misskey from "misskey-js";
-import { User } from "misskey-js/entities.js";
 
 export interface MiAuthOptions {
   appName: string;

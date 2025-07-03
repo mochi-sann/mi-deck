@@ -1,9 +1,9 @@
 import "@testing-library/jest-dom/vitest";
-import { components } from "@/lib/api/type";
-import { Note } from "misskey-js/entities.js";
-import { http, HttpResponse } from "msw";
+import type { Note } from "misskey-js/entities.js";
+import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/node";
 import { afterAll, afterEach, beforeAll } from "vitest";
+import type { components } from "@/lib/api/type";
 
 // Setup fake IndexedDB for testing
 import "fake-indexeddb/auto";

@@ -1,5 +1,5 @@
 import * as Misskey from "misskey-js";
-import { User } from "misskey-js/entities.js";
+import type { User } from "misskey-js/entities.js";
 import { storageManager } from "../storage";
 import type { MisskeyServerConnection } from "../storage/types";
 

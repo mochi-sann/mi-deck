@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Note } from "misskey-js/entities.js";
-import { http, HttpResponse } from "msw";
+import type { Note } from "misskey-js/entities.js";
+import { HttpResponse, http } from "msw";
 import { MisskeyNote } from "./MisskeyNote";
 
 const meta = {

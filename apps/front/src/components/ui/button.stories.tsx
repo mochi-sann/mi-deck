@@ -146,7 +146,7 @@ export const AsChild: Story = {
   args: {
     asChild: true,
 
-    // biome-ignore lint/a11y/useValidAnchor:
+    // biome-ignore lint/a11y/useValidAnchor: Demo link for Storybook showcase
     children: <a href="#">Link Button</a>, // Render as an anchor tag
   },
 };
