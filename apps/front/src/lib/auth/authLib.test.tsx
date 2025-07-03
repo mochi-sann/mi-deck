@@ -45,8 +45,13 @@ const config = {
   registerFn: vi.fn(),
 };
 
-const { AuthLoader, useUser, useLogin, useRegister, useLogout } =
-  configureAuth(config);
+const {
+  authLoader: AuthLoader,
+  useUser,
+  useLogin,
+  useRegister,
+  useLogout,
+} = configureAuth(config);
 
 describe("useUser", () => {
   it("returns the authenticated user", async () => {

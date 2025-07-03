@@ -128,21 +128,21 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
     // Setup WebSocket connection
     const stream = new Stream(origin, { token });
 
-    // Handle stream errors
-    stream.on("error", (error: unknown) => {
-      console.error("Stream error:", error);
-      setError(new Error("Stream connection error"));
-    });
-
     // Connect to timeline channel
-    const timelineChannel = `${type}Timeline`;
-    stream.send("connect", {
-      channel: timelineChannel,
-      id: `timeline-${type}`,
+    const channelMap = {
+      home: "homeTimeline",
+      local: "localTimeline",
+      global: "globalTimeline",
+    } as const;
+    const timelineChannel = channelMap[type];
+    // biome-ignore lint/correctness/useHookAtTopLevel: Hook called conditionally based on timeline type but structure remains consistent
+    const connection = stream.useChannel(timelineChannel, {
+      withRenotes: true,
+      withFiles: false,
     });
 
     // Handle new notes
-    stream.on("note", (note: Note) => {
+    connection.on("note", (note: Note) => {
       setNotes((prevNotes) => [note, ...prevNotes]);
     });
 

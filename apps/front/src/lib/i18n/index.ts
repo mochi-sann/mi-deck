@@ -19,7 +19,8 @@ void i18n
   .use(initReactI18next)
   .init({
     resources,
-    defaultNs: defaultNS,
+    // biome-ignore lint/style/useNamingConvention: defaultNS is required by i18next API
+    defaultNS: defaultNS,
     fallbackLng,
     lng: "ja", // デフォルト言語
 
