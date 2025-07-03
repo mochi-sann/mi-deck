@@ -6,7 +6,7 @@
     "jotai": ">=2.2.0 <3",
     "katex": "0.16.11",
     "mfm-js": "0.24.0",
-    "shiki": "2.5.0"
+    "shiki": "3.7.0"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "7.47.5",
