@@ -1,7 +1,10 @@
 import type { Note } from "misskey-js/entities.js";
+import Mfm from "react-mfm";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Text from "@/components/ui/text";
 import { cn } from "@/lib/utils"; // Import cn utility
+import "react-mfm/style.css";
+// import "katex/dist/katex.min.css"; // to support Formula
 
 // Component to display a single Misskey note with a Twitter-like design
 export function MisskeyNote({ note }: { note: Note }) {
@@ -30,7 +33,6 @@ export function MisskeyNote({ note }: { note: Note }) {
         {/* Header: User Info */}
         <div className="flex flex-wrap items-center gap-1.5">
           <Text className="font-semibold">
-            {" "}
             {/* Added font-semibold for name */}
             {user.name || user.username}{" "}
             {/* Display name or username if name is missing */}
@@ -48,7 +50,11 @@ export function MisskeyNote({ note }: { note: Note }) {
           <Text className="whitespace-pre-wrap break-words">
             {" "}
             {/* Added whitespace and break-words */}
-            {note.text || <i className="text-muted-foreground">(No Text)</i>}{" "}
+            {note.text ? (
+              <Mfm text={note.text || ""} />
+            ) : (
+              <i className="text-muted-foreground">(No Text)</i>
+            )}{" "}
             {/* Style italic text */}
           </Text>
         </div>
