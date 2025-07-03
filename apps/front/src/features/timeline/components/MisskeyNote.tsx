@@ -47,7 +47,7 @@ export function MisskeyNote({ note }: { note: Note }) {
         <div className="mt-1">
           {/* Use whitespace pre-wrap to preserve line breaks */}
           {/* Assuming Text component handles text display or replace with <p> */}
-          <Text className="whitespace-pre-wrap break-words">
+          <div>
             {" "}
             {/* Added whitespace and break-words */}
             {note.text ? (
@@ -56,7 +56,7 @@ export function MisskeyNote({ note }: { note: Note }) {
               <i className="text-muted-foreground">(No Text)</i>
             )}{" "}
             {/* Style italic text */}
-          </Text>
+          </div>
         </div>
         {/* Image attachments */}
         <div className="mt-2">
