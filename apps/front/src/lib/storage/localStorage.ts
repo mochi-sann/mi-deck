@@ -1,4 +1,5 @@
 import type {
+  AppSettings,
   ClientAuthState,
   MisskeyServerConnection,
   TimelineConfig,
@@ -8,6 +9,7 @@ const STORAGE_KEYS = {
   servers: "mi-deck-servers",
   timelines: "mi-deck-timelines",
   authState: "mi-deck-auth-state",
+  appSettings: "mi-deck-app-settings",
 } as const;
 
 class LocalStorageManager {
@@ -233,6 +235,65 @@ class LocalStorageManager {
     }
   }
 
+  // App settings management
+  async getAppSettings(): Promise<AppSettings | undefined> {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.appSettings);
+      if (!data) {
+        // Return default settings if none exist
+        return {
+          theme: "system",
+          language: "ja",
+          lastUpdated: new Date(),
+        };
+      }
+
+      const parsed = JSON.parse(data);
+      // Convert date strings back to Date objects
+      if (parsed.lastUpdated && typeof parsed.lastUpdated === "string") {
+        parsed.lastUpdated = new Date(parsed.lastUpdated);
+      }
+      return parsed;
+    } catch {
+      // Return default settings on error
+      return {
+        theme: "system",
+        language: "ja",
+        lastUpdated: new Date(),
+      };
+    }
+  }
+
+  async setAppSettings(settings: AppSettings): Promise<void> {
+    try {
+      const settingsWithTimestamp = { ...settings, lastUpdated: new Date() };
+      localStorage.setItem(
+        STORAGE_KEYS.appSettings,
+        JSON.stringify(settingsWithTimestamp),
+      );
+    } catch (error) {
+      console.error("Failed to save app settings:", error);
+      throw error;
+    }
+  }
+
+  async updateAppSettings(updates: Partial<AppSettings>): Promise<void> {
+    try {
+      const currentSettings = await this.getAppSettings();
+      const updatedSettings: AppSettings = {
+        theme: "system",
+        language: "ja",
+        lastUpdated: new Date(),
+        ...currentSettings,
+        ...updates,
+      };
+      await this.setAppSettings(updatedSettings);
+    } catch (error) {
+      console.error("Failed to update app settings:", error);
+      throw error;
+    }
+  }
+
   // Import/Export functionality
   async exportData(): Promise<string> {
     const servers = this.getStoredData<MisskeyServerConnection>(
@@ -242,6 +303,7 @@ class LocalStorageManager {
       STORAGE_KEYS.timelines,
     );
     const authState = await this.getAuthState();
+    const appSettings = await this.getAppSettings();
 
     const exportData = {
       version: 1,
@@ -250,6 +312,7 @@ class LocalStorageManager {
         servers,
         timelines,
         authState: authState || null,
+        appSettings: appSettings || null,
       },
     };
 
@@ -264,6 +327,7 @@ class LocalStorageManager {
         servers: MisskeyServerConnection[];
         timelines: TimelineConfig[];
         authState: ClientAuthState | null;
+        appSettings?: AppSettings | null;
       };
     };
 
@@ -283,13 +347,14 @@ class LocalStorageManager {
       throw new Error("データ構造が無効です");
     }
 
-    const { servers, timelines, authState } = importData.data;
+    const { servers, timelines, authState, appSettings } = importData.data;
 
     try {
       // Clear existing data
       this.setStoredData(STORAGE_KEYS.servers, []);
       this.setStoredData(STORAGE_KEYS.timelines, []);
       localStorage.removeItem(STORAGE_KEYS.authState);
+      localStorage.removeItem(STORAGE_KEYS.appSettings);
 
       // Import servers
       if (Array.isArray(servers)) {
@@ -319,6 +384,15 @@ class LocalStorageManager {
         };
         await this.setAuthState(authStateWithDates);
       }
+
+      // Import app settings
+      if (appSettings) {
+        const settingsWithDates = {
+          ...appSettings,
+          lastUpdated: new Date(appSettings.lastUpdated),
+        };
+        await this.setAppSettings(settingsWithDates);
+      }
     } catch (error) {
       throw new Error(
         `データのインポートに失敗しました: ${error instanceof Error ? error.message : "不明なエラー"}`,
@@ -331,6 +405,7 @@ class LocalStorageManager {
       localStorage.removeItem(STORAGE_KEYS.servers);
       localStorage.removeItem(STORAGE_KEYS.timelines);
       localStorage.removeItem(STORAGE_KEYS.authState);
+      localStorage.removeItem(STORAGE_KEYS.appSettings);
     } catch (error) {
       console.error("Failed to clear all data:", error);
       throw new Error("データの削除に失敗しました");

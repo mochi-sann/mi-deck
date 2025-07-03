@@ -35,6 +35,14 @@ export interface TimelineConfig {
   updatedAt: Date;
 }
 
+export type Theme = "light" | "dark" | "system";
+
+export interface AppSettings {
+  theme: Theme;
+  language: string;
+  lastUpdated: Date;
+}
+
 export interface ClientAuthState {
   currentServerId?: string;
   servers: MisskeyServerConnection[];

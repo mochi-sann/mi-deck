@@ -1,12 +1,9 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 
-import { SidebarProvider } from "./components/ui/sidebar";
-import { AuthProvider, useAuth } from "./features/auth";
-import { StorageProvider } from "./lib/storage/context";
+import { useAuth } from "./features/auth";
+import { Providers } from "./providers";
 import { routeTree } from "./routeTree.gen";
 import "./lib/i18n";
 
@@ -46,23 +43,8 @@ declare module "@tanstack/react-router" {
     router: typeof router;
   }
 }
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-    },
-  },
-});
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <StorageProvider>
-        <AuthProvider>
-          <SidebarProvider>
-            <InnerApp />
-          </SidebarProvider>
-        </AuthProvider>
-      </StorageProvider>
-    </QueryClientProvider>
-  </StrictMode>,
+  <Providers>
+    <InnerApp />
+  </Providers>,
 );

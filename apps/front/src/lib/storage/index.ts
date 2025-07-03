@@ -1,6 +1,7 @@
 import { databaseManager } from "./database";
 import { localStorageManager } from "./localStorage";
 import type {
+  AppSettings,
   ClientAuthState,
   MisskeyServerConnection,
   TimelineConfig,
@@ -31,6 +32,10 @@ interface StorageInterface {
   getAuthState(): Promise<ClientAuthState | undefined>;
   setAuthState(state: ClientAuthState): Promise<void>;
   clearAuthState(): Promise<void>;
+
+  getAppSettings(): Promise<AppSettings | undefined>;
+  setAppSettings(settings: AppSettings): Promise<void>;
+  updateAppSettings(updates: Partial<AppSettings>): Promise<void>;
 
   exportData(): Promise<string>;
   importData(jsonData: string): Promise<void>;
@@ -171,6 +176,22 @@ class StorageManager implements StorageInterface {
   async clearAllData(): Promise<void> {
     this.ensureInitialized();
     return this.storage.clearAllData();
+  }
+
+  // App settings management
+  async getAppSettings(): Promise<AppSettings | undefined> {
+    this.ensureInitialized();
+    return this.storage.getAppSettings();
+  }
+
+  async setAppSettings(settings: AppSettings): Promise<void> {
+    this.ensureInitialized();
+    return this.storage.setAppSettings(settings);
+  }
+
+  async updateAppSettings(updates: Partial<AppSettings>): Promise<void> {
+    this.ensureInitialized();
+    return this.storage.updateAppSettings(updates);
   }
 
   /**

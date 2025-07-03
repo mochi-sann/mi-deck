@@ -8,6 +8,7 @@ import {
 } from "react";
 import { storageManager } from "./index";
 import type {
+  AppSettings,
   ClientAuthState,
   MisskeyServerConnection,
   TimelineConfig,
@@ -18,6 +19,7 @@ interface StorageContextValue {
   servers: MisskeyServerConnection[];
   timelines: TimelineConfig[];
   currentServerId?: string;
+  appSettings?: AppSettings;
   isLoading: boolean;
   error?: string;
   retryCount: number;
@@ -44,6 +46,9 @@ interface StorageContextValue {
   deleteTimeline: (id: string) => Promise<void>;
   reorderTimelines: (timelineIds: string[]) => Promise<void>;
 
+  // App settings operations
+  updateAppSettings: (updates: Partial<AppSettings>) => Promise<void>;
+
   // Utility and Error Recovery
   refresh: () => Promise<void>;
   retry: () => Promise<void>;
@@ -61,6 +66,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
   const [servers, setServers] = useState<MisskeyServerConnection[]>([]);
   const [timelines, setTimelines] = useState<TimelineConfig[]>([]);
   const [currentServerId, setCurrentServerId] = useState<string | undefined>();
+  const [appSettings, setAppSettings] = useState<AppSettings | undefined>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | undefined>();
   const [retryCount, setRetryCount] = useState(0);
@@ -131,15 +137,19 @@ export function StorageProvider({ children }: StorageProviderProps) {
         throw initError;
       }
 
-      const [serverData, timelineData, authState] = await Promise.all([
-        storageManager.getAllServers(),
-        storageManager.getAllTimelines(),
-        storageManager.getAuthState(),
-      ]);
+      const [serverData, timelineData, authState, settings] = await Promise.all(
+        [
+          storageManager.getAllServers(),
+          storageManager.getAllTimelines(),
+          storageManager.getAuthState(),
+          storageManager.getAppSettings(),
+        ],
+      );
 
       setServers(serverData);
       setTimelines(timelineData.sort((a, b) => a.order - b.order));
       setCurrentServerId(authState?.currentServerId);
+      setAppSettings(settings);
       setRetryCount(0); // Reset retry count on successful load
     } catch (err) {
       const errorMessage =
@@ -375,10 +385,20 @@ export function StorageProvider({ children }: StorageProviderProps) {
     }, "Failed to refresh data");
   };
 
+  // App settings operations
+  const updateAppSettings = async (updates: Partial<AppSettings>) => {
+    return withErrorHandling(async () => {
+      await storageManager.updateAppSettings(updates);
+      const updatedSettings = await storageManager.getAppSettings();
+      setAppSettings(updatedSettings);
+    }, "Failed to update app settings");
+  };
+
   const value: StorageContextValue = {
     servers,
     timelines,
     currentServerId,
+    appSettings,
     isLoading,
     error,
     retryCount,
@@ -390,6 +410,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
     updateTimeline,
     deleteTimeline,
     reorderTimelines,
+    updateAppSettings,
     refresh,
     retry,
     clearError,
