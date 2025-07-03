@@ -12,6 +12,7 @@ vi.mock("./index", () => ({
     getAllServers: vi.fn(),
     getAllTimelines: vi.fn(),
     getAuthState: vi.fn(),
+    getAppSettings: vi.fn(),
     addServer: vi.fn(),
     updateServer: vi.fn(),
     deleteServer: vi.fn(),
@@ -20,6 +21,7 @@ vi.mock("./index", () => ({
     updateTimeline: vi.fn(),
     deleteTimeline: vi.fn(),
     reorderTimelines: vi.fn(),
+    reset: vi.fn(),
   },
 }));
 
@@ -80,6 +82,7 @@ describe("StorageContext", () => {
         mockTimelines,
       );
       vi.mocked(storageManager.getAuthState).mockResolvedValue(mockAuthState);
+      vi.mocked(storageManager.getAppSettings).mockResolvedValue(undefined);
 
       const { result } = renderHook(() => useStorage(), {
         wrapper: createWrapper(),
@@ -131,6 +134,7 @@ describe("StorageContext", () => {
       vi.mocked(storageManager.getAllServers).mockResolvedValue([]);
       vi.mocked(storageManager.getAllTimelines).mockResolvedValue([]);
       vi.mocked(storageManager.getAuthState).mockResolvedValue(undefined);
+      vi.mocked(storageManager.getAppSettings).mockResolvedValue(undefined);
 
       const { result } = renderHook(() => useStorage(), {
         wrapper: createWrapper(),
@@ -181,6 +185,7 @@ describe("StorageContext", () => {
       vi.mocked(storageManager.getAllServers).mockResolvedValue([]);
       vi.mocked(storageManager.getAllTimelines).mockResolvedValue([]);
       vi.mocked(storageManager.getAuthState).mockResolvedValue(undefined);
+      vi.mocked(storageManager.getAppSettings).mockResolvedValue(undefined);
       vi.mocked(storageManager.setAuthState).mockResolvedValue();
     });
 
@@ -329,6 +334,7 @@ describe("StorageContext", () => {
       vi.mocked(storageManager.getAllServers).mockResolvedValue([]);
       vi.mocked(storageManager.getAllTimelines).mockResolvedValue([]);
       vi.mocked(storageManager.getAuthState).mockResolvedValue(undefined);
+      vi.mocked(storageManager.getAppSettings).mockResolvedValue(undefined);
       vi.mocked(storageManager.setAuthState).mockResolvedValue();
     });
 
@@ -479,6 +485,7 @@ describe("StorageContext", () => {
         .mockResolvedValueOnce(mockServers); // After refresh
       vi.mocked(storageManager.getAllTimelines).mockResolvedValue([]);
       vi.mocked(storageManager.getAuthState).mockResolvedValue(undefined);
+      vi.mocked(storageManager.getAppSettings).mockResolvedValue(undefined);
 
       const { result } = renderHook(() => useStorage(), {
         wrapper: createWrapper(),
