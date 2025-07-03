@@ -61,6 +61,23 @@ export const WithCode: Story = {
   },
 };
 
+export const All: Story = {
+  args: {
+    text: `# こんにちは
+react-mfm [search]
+hi @user@example.org ! #React #MFM
+<center>
+:sorena:
+  **hello, world!**
+  $[x2 🐔🍹🍣🍦]
+  https://example.com:3000/hoge
+</center>
+\[
+  (v\cdot\nabla)v
+\]
+`,
+  },
+};
 export const WithMath: Story = {
   args: {
     text: "Math formula: $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$",
