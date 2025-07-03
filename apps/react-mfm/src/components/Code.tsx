@@ -19,7 +19,10 @@ const langs = [defaultLang];
 const bundledLangs = Object.keys(bundledLanguages);
 
 const highlighterAtom = atom(() =>
-  createHighlighter({ langs, themes: [theme] }),
+  createHighlighter({
+    langs,
+    themes: [theme],
+  }),
 );
 const langsAtom = atom(langs);
 
