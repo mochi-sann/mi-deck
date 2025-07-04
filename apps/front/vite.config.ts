@@ -1,6 +1,6 @@
 import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";
-import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
+import tanstackRouter from "@tanstack/router-plugin/vite";
 import viteReact from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 import { analyzer } from "vite-bundle-analyzer";
@@ -12,7 +12,7 @@ const IsDev = process.env.NODE_ENV === "development";
 export default defineConfig({
   plugins: [
     tsconfigPaths({ root: "./" }),
-    TanStackRouterVite({ autoCodeSplitting: true }),
+    tanstackRouter({ autoCodeSplitting: true }),
     viteReact(),
     tailwindcss(),
     // analyzer がprocess.env.BUNDLE_ANALYZEがある場合にのみ実行される
