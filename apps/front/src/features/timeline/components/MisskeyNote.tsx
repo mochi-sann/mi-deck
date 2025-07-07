@@ -20,7 +20,7 @@ export function MisskeyNote({ note }: { note: Note }) {
         <Avatar className="h-10 w-10 bg-slate-900">
           <AvatarImage src={note.user.avatarUrl || ""} />
           <AvatarFallback className="bg-slate-800">
-            {note.user.username || user.username}
+            <MfmText text={note.user.username || user.username} />
           </AvatarFallback>{" "}
           {/* Fallback with username */}
         </Avatar>
@@ -46,7 +46,6 @@ export function MisskeyNote({ note }: { note: Note }) {
           {/* Use whitespace pre-wrap to preserve line breaks */}
           {/* Assuming Text component handles text display or replace with <p> */}
           <div>
-            {" "}
             {/* Added whitespace and break-words */}
             {note.text ? (
               <MfmText text={note.text} />
