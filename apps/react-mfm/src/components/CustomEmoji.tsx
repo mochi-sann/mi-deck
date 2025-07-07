@@ -1,8 +1,7 @@
-"use client";
-
 import { atom, useAtom, useAtomValue } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import { type MfmEmojiCode } from "mfm-js";
-import { Suspense, use, useEffect } from "react";
+import { createContext, Fragment, Suspense, use, useContext } from "react";
 import { useMfmConfigValue } from "..";
 import { toUrl } from "../utils";
 
@@ -10,68 +9,75 @@ export type CustomEmojiProps = MfmEmojiCode["props"] & {
   host?: string;
 };
 
-const cacheAtom = atom<{ [key: string]: string | undefined }>({});
-const cachedHostAtom = atom<string | undefined>(undefined);
-const promiseAtom = atom<{ [key: string]: Promise<any> }>({});
+const emojiCacheAtom = atomWithStorage<{
+  [host: string]: { [name: string]: string | null };
+}>("minsk::emoji::cache", {});
 
-const EmojiImg = ({ name, url }: { name: string; url?: string }) =>
+const emojiFetchAtom = atom<{ [id: string]: Promise<string | null> }>({});
+
+// Simple foreign API hook for emoji fetching
+function useForeignApi(host: string) {
+  if (!host) return null;
+
+  return {
+    emojiUrl: async (name: string): Promise<string | null> => {
+      try {
+        const response = await fetch(`${toUrl(host)}/api/emoji?name=${name}`);
+        const data = await response.json();
+        return data.url || null;
+      } catch (error) {
+        console.warn("Failed to fetch emoji:", error);
+        return null;
+      }
+    },
+  };
+}
+
+// internal
+
+const EmojiImg = ({ name, url }: { name: string; url?: string | null }) =>
   !url ? `:${name}:` : <img src={url} alt={name} className="mfm-customEmoji" />;
 
-function CustomEmojiInternal({ name, host }: CustomEmojiProps) {
-  const cache = useAtomValue(cacheAtom);
+function FetchEmoji({ name, host }: { name: string; host: string }) {
+  const api = useForeignApi(host);
+  const [cache, setCache] = useAtom(emojiCacheAtom);
+  const [fetches, setFetches] = useAtom(emojiFetchAtom);
+
+  const key = name + "@" + host;
+
+  const Cached = () => <EmojiImg name={name} url={cache[host]?.[name]} />;
+  if (host in cache && name in cache[host]) return <Cached />;
+  if (!api) return <Cached />;
+
+  if (key in fetches) {
+    const url = use(fetches[key]);
+    setCache({ ...cache, [host]: { ...cache[host], [name]: url } });
+    delete fetches[key];
+    setFetches({ ...fetches });
+    return <EmojiImg name={name} url={url} />;
+  }
+
+  const task = api.emojiUrl(name);
+  setFetches({ ...fetches, [key]: task });
+  return <EmojiImg name={name} url={use(task)} />;
+}
+
+// Components
+
+export const CustomEmojiCtx = createContext<{ host: string | null }>({
+  host: null,
+});
+
+function CustomEmojiInternal({ name }: CustomEmojiProps) {
+  const cache = useAtomValue(emojiCacheAtom);
+  const { host } = useContext(CustomEmojiCtx);
+
+  if (!host) return <EmojiImg name={name} />;
   return (
-    <Suspense fallback={<EmojiImg name={name} url={cache[name]} />}>
+    <Suspense fallback={<EmojiImg name={name} url={cache[host]?.[name]} />}>
       <FetchEmoji name={name} host={host} />
     </Suspense>
   );
-}
-
-function FetchEmoji({ name, host }: { name: string; host?: string }) {
-  const [cache, setCache] = useAtom(cacheAtom);
-  const [cachedHost, setCachedHost] = useAtom(cachedHostAtom);
-  const [promises, setPromises] = useAtom(promiseAtom);
-
-  useEffect(() => {
-    if (host !== cachedHost) {
-      setCache({});
-      setCachedHost(host);
-      setPromises({});
-    }
-  }, [host, cachedHost, setCache, setCachedHost, setPromises]);
-
-  if (!host || host !== cachedHost) {
-    return <EmojiImg name={name} />;
-  }
-
-  // Create a cache key for this specific emoji
-  const cacheKey = `${host}:${name}`;
-
-  // If we already have the result cached, return it
-  if (cacheKey in cache) {
-    return <EmojiImg name={name} url={cache[cacheKey]} />;
-  }
-
-  // If we don't have a promise for this emoji yet, create one
-  if (!(cacheKey in promises)) {
-    const promise = fetch(`${toUrl(host)}/api/emoji?name=${name}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setCache((prevCache) => ({ ...prevCache, [cacheKey]: data.url }));
-        return data;
-      })
-      .catch((e) => {
-        console.warn(e);
-        setCache((prevCache) => ({ ...prevCache, [cacheKey]: undefined }));
-        return {};
-      });
-
-    setPromises((prevPromises) => ({ ...prevPromises, [cacheKey]: promise }));
-  }
-
-  // Use the promise
-  const response = use(promises[cacheKey]);
-
-  return <EmojiImg name={name} url={response?.url} />;
 }
 
 export default function CustomEmoji(props: CustomEmojiProps) {
@@ -82,8 +88,23 @@ export default function CustomEmoji(props: CustomEmojiProps) {
   }
 
   if (props.host) {
-    return <CustomEmojiInternal {...props} />;
+    return (
+      <CustomEmojiCtx.Provider value={{ host: props.host }}>
+        <CustomEmojiInternal {...props} />
+      </CustomEmojiCtx.Provider>
+    );
   }
 
-  return `:${props.name}:`;
+  return <CustomEmojiInternal {...props} />;
 }
+
+export const CustomEmojiStr = ({ text }: { text: string }) =>
+  text.split(":").map((s, i) =>
+    i % 2 ? (
+      // biome-ignore lint/suspicious/noArrayIndexKey: mfm-jsの仕様に合わせるため
+      <CustomEmojiInternal name={s} key={i} />
+    ) : (
+      // biome-ignore lint/suspicious/noArrayIndexKey: mfm-jsの仕様に合わせるため
+      <Fragment key={i}>{s}</Fragment>
+    ),
+  );
