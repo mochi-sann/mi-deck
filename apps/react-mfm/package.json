@@ -37,8 +37,7 @@
       "src/Node.tsx",
       "src/utils.ts",
       "src/components/*.tsx",
-      "src/style.css",
-      "src/keyframes.css"
+      "src/style.css"
     ],
     "format": "esm",
     "minify": "terser",

@@ -57,7 +57,7 @@ export const WithFormatting: Story = {
 
 export const WithCode: Story = {
   args: {
-    text: "Here's some inline `code` and a code block:\n```javascript\nconsole.log('Hello, world!');\n```",
+    text: "Here's some inline `code` and a code block:\n```javascript\nconsole.log('Hello, world!');\nconsole.log('hell world');\n```",
   },
 };
 
