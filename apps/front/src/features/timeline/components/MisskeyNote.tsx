@@ -1,7 +1,6 @@
 import type { Note } from "misskey-js/entities.js";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Text from "@/components/ui/text";
-import { useAuth } from "@/features/auth/hooks/useAuth";
 import { MfmText } from "@/features/mfm";
 import { cn } from "@/lib/utils"; // Import cn utility
 
@@ -9,7 +8,6 @@ import { cn } from "@/lib/utils"; // Import cn utility
 export function MisskeyNote({ note }: { note: Note }) {
   const user = note.user;
   const userOrigin = note.user.host;
-  const { currentServer } = useAuth();
   const host = userOrigin || "misskey.mochi33.com";
   console.log(...[host, "👀 [MisskeyNote.tsx:14]: host"].reverse());
 
