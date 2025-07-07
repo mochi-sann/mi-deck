@@ -180,6 +180,7 @@ function composeStyle(
         {
           fontSize: "150%",
           ...(anim && {
+            display: "inline-block",
             animation: `mfm-tada ${speed ?? "1s"} linear infinite both`,
             animationDelay: delay ?? "0s",
           }),
@@ -189,6 +190,7 @@ function composeStyle(
     case "jelly":
       return [
         anim && {
+          display: "inline-block",
           animation: `mfm-jelly ${speed ?? "1s"} linear infinite both`,
           animationDelay: delay ?? "0s",
         },
@@ -197,6 +199,7 @@ function composeStyle(
     case "twitch":
       return [
         anim && {
+          display: "inline-block",
           animation: `mfm-twitch ${speed ?? ".5s"} ease infinite`,
           animationDelay: delay ?? "0s",
         },
@@ -205,6 +208,7 @@ function composeStyle(
     case "shake":
       return [
         anim && {
+          display: "inline-block",
           animation: `mfm-shake ${speed ?? ".5s"} ease infinite`,
           animationDelay: delay ?? "0s",
         },
@@ -214,6 +218,7 @@ function composeStyle(
       const aname = args.x ? "mfm-spin-x" : args.y ? "mfm-spin-y" : "mfm-spin";
       return [
         anim && {
+          display: "inline-block",
           animation: `${aname} ${speed ?? "1.5s"} linear infinite`,
           animationDelay: delay ?? "0s",
           animationDirection: args.left
@@ -228,6 +233,7 @@ function composeStyle(
     case "jump":
       return [
         anim && {
+          display: "inline-block",
           animation: `mfm-jump ${speed ?? ".75s"} linear infinite`,
           animationDelay: delay ?? "0s",
         },
@@ -236,6 +242,7 @@ function composeStyle(
     case "bounce":
       return [
         anim && {
+          display: "inline-block",
           animation: `mfm-bounce ${speed ?? ".75s"} linear infinite`,
           animationDelay: delay ?? "0s",
           transformOrigin: "center bottom",
@@ -245,6 +252,7 @@ function composeStyle(
     case "flip":
       return [
         anim && {
+          display: "inline-block",
           transform:
             args.h && args.v
               ? "scale(-1, -1)"

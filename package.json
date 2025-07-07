@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "turbo run dev",
+    "dev": "turbo run dev storybook",
     "build": "turbo run build",
     "start": "turbo run start",
     "front": "pnpm -F @mi-deck/front",
