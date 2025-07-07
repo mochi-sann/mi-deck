@@ -1,6 +1,5 @@
-"use client";
-
-import { type MfmSearch } from "mfm-js";
+import { Search as SearchIcon } from "lucide-react";
+import { MfmSearch } from "mfm-js";
 import { useRef } from "react";
 
 function search(query: string) {
@@ -25,6 +24,7 @@ export default function Search({ query }: MfmSearch["props"]) {
         type="submit"
         className="mfm-searchButton"
       >
+        <SearchIcon size={18} />
         検索
       </button>
     </div>

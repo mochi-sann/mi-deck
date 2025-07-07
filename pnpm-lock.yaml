@@ -29,6 +29,9 @@ importers:
       lefthook:
         specifier: ^1.11.6
         version: 1.11.16
+      lucide-react:
+        specifier: ^0.513.0
+        version: 0.513.0(react@19.1.0)
       turbo:
         specifier: ^2.5.4
         version: 2.5.4
@@ -316,6 +319,9 @@ importers:
       '@types/react':
         specifier: 18.3.3
         version: 18.3.3
+      lucide-react:
+        specifier: ^0.513.0
+        version: 0.513.0(react@19.1.0)
       tsup:
         specifier: 8.2.4
         version: 8.2.4(@microsoft/api-extractor@7.47.5(@types/node@24.0.10))(@swc/core@1.12.9)(jiti@2.4.2)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)
