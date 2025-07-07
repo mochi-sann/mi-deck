@@ -24,7 +24,7 @@
   ],
   "main": "./dist/index.js",
   "peerDependencies": {
-    "react": ">=17.0.0"
+    "react": ">=19.0.0"
   },
   "scripts": {
     "build": "tsup --minify --dts",

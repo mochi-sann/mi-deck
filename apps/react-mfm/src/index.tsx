@@ -16,6 +16,7 @@ export type MfmBasicProps = {
   plain?: boolean;
   nowrap?: boolean;
   nyaize?: boolean | "respect";
+  host?: string;
 };
 
 const MfmBase =

@@ -17,6 +17,9 @@ importers:
       '@types/node':
         specifier: ^24
         version: 24.0.10
+      '@types/react':
+        specifier: ^19.1.8
+        version: 19.1.8
       dotenv:
         specifier: ^16.4.7
         version: 16.6.1
@@ -304,7 +307,7 @@ importers:
         specifier: 0.24.0
         version: 0.24.0
       react:
-        specifier: '>=17.0.0'
+        specifier: '>=19.0.0'
         version: 19.1.0
       shiki:
         specifier: 3.7.0

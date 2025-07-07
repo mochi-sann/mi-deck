@@ -5,12 +5,13 @@ import { Fragment } from "react";
 
 interface MfmTextProps {
   text: string;
+  host?: string;
 }
 
-export function MfmText({ text }: MfmTextProps) {
+export function MfmText({ text, host }: MfmTextProps) {
   return (
     <Fragment>
-      <Mfm text={text} />
+      <Mfm text={text} host={host} />
     </Fragment>
   );
 }

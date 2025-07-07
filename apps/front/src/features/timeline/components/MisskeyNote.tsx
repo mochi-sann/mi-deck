@@ -1,12 +1,17 @@
 import type { Note } from "misskey-js/entities.js";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Text from "@/components/ui/text";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { MfmText } from "@/features/mfm";
 import { cn } from "@/lib/utils"; // Import cn utility
 
 // Component to display a single Misskey note with a Twitter-like design
 export function MisskeyNote({ note }: { note: Note }) {
   const user = note.user;
+  const userOrigin = note.user.host;
+  const { currentServer } = useAuth();
+  const host = userOrigin || "misskey.mochi33.com";
+  console.log(...[host, "👀 [MisskeyNote.tsx:14]: host"].reverse());
 
   return (
     <article
@@ -20,7 +25,7 @@ export function MisskeyNote({ note }: { note: Note }) {
         <Avatar className="h-10 w-10 bg-slate-900">
           <AvatarImage src={note.user.avatarUrl || ""} />
           <AvatarFallback className="bg-slate-800">
-            <MfmText text={note.user.username || user.username} />
+            <MfmText text={note.user.username || user.username} host={host} />
           </AvatarFallback>{" "}
           {/* Fallback with username */}
         </Avatar>
@@ -48,7 +53,7 @@ export function MisskeyNote({ note }: { note: Note }) {
           <div>
             {/* Added whitespace and break-words */}
             {note.text ? (
-              <MfmText text={note.text} />
+              <MfmText text={note.text} host={host} />
             ) : (
               <i className="text-muted-foreground">(No Text)</i>
             )}{" "}
