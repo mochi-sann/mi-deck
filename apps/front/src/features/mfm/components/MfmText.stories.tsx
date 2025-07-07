@@ -90,6 +90,11 @@ export const WithMath: Story = {
     text: "Math formula: $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$",
   },
 };
+export const Ruby: Story = {
+  args: {
+    text: "$[ruby hoge ほげ] $[ruby Misskey みすきー]",
+  },
+};
 
 export const Complex: Story = {
   args: {

@@ -36,7 +36,8 @@ export default function Fn({
   name,
   args,
   children,
-}: MfmFn["props"] & { children: ReactNode }) {
+  nodeChildren,
+}: MfmFn["props"] & { children: ReactNode; nodeChildren?: any[] }) {
   const config = useAtomValue(mfmConfigAtom);
 
   const advanced = config.advanced ?? true;
@@ -45,8 +46,94 @@ export default function Fn({
 
   switch (name) {
     case "sparkle":
-    case "ruby":
-    case "unixtime":
+      return <span className="mfm-sparkle">{children}</span>;
+
+    case "ruby": {
+      // MFMのrubyは $[ruby base rt] の形式（スペース区切り）
+      // mfm-jsでは単一のtextノードとしてパースされる
+
+      // nodeChildrenから直接テキストを取得
+      if (
+        nodeChildren &&
+        nodeChildren.length === 1 &&
+        nodeChildren[0].type === "text"
+      ) {
+        const text = nodeChildren[0].props.text.trim();
+        const spaceIndex = text.indexOf(" ");
+
+        if (spaceIndex !== -1) {
+          const base = text.substring(0, spaceIndex);
+          const rt = text.substring(spaceIndex + 1);
+
+          return (
+            <ruby>
+              {base}
+              <rt>{rt}</rt>
+            </ruby>
+          );
+        }
+      }
+
+      // 複数の子要素がある場合（HTMLタグなどが含まれる場合）
+      if (Array.isArray(children) && children.length >= 2) {
+        // 最後の要素がrt（読み仮名）、残りがbase（漢字など）
+        const rt = children[children.length - 1];
+        const base = children.slice(0, children.length - 1);
+
+        return (
+          <ruby>
+            {base}
+            <rt>{rt}</rt>
+          </ruby>
+        );
+      }
+
+      // 単一の子要素の場合、スペースで分割を試行（フォールバック）
+      if (typeof children === "string") {
+        const text = children.trim();
+        const spaceIndex = text.indexOf(" ");
+
+        if (spaceIndex !== -1) {
+          const base = text.substring(0, spaceIndex);
+          const rt = text.substring(spaceIndex + 1);
+
+          return (
+            <ruby>
+              {base}
+              <rt>{rt}</rt>
+            </ruby>
+          );
+        }
+
+        // スペースが見つからない場合、カンマで分割を試行
+        const parts = text.split(",");
+        if (parts.length === 2) {
+          return (
+            <ruby>
+              {parts[0].trim()}
+              <rt>{parts[1].trim()}</rt>
+            </ruby>
+          );
+        }
+      }
+
+      // フォールバック: 引数からrtを取得
+      const rt = args.rt || "";
+      return (
+        <ruby>
+          {children}
+          <rt>{rt}</rt>
+        </ruby>
+      );
+    }
+
+    case "unixtime": {
+      const timestamp =
+        numstr(args.timestamp) || Number(children?.toString() || "0");
+      const date = new Date(timestamp * 1000);
+      return <time dateTime={date.toISOString()}>{date.toLocaleString()}</time>;
+    }
+
     case "clickable":
       return (
         <span>

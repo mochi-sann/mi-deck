@@ -132,8 +132,10 @@ function SingleNode({ node, ...props }: MfmBasicProps & { node: MfmNode }) {
       );
 
     case "fn":
+      console.log(...[{ node }, "👀 [Node.tsx:135]: {node}"].reverse());
+
       return (
-        <Fn {...node.props}>
+        <Fn {...node.props} nodeChildren={node.children}>
           <Node nodes={node.children} {...props} />
         </Fn>
       );
