@@ -9,7 +9,6 @@ export function MisskeyNote({ note }: { note: Note }) {
   const user = note.user;
   const userOrigin = note.user.host;
   const host = userOrigin || "misskey.mochi33.com";
-  console.log(...[host, "👀 [MisskeyNote.tsx:14]: host"].reverse());
 
   // Combine note emojis and user emojis
   const allEmojis = { ...note.emojis, ...note.user.emojis };
@@ -29,7 +28,7 @@ export function MisskeyNote({ note }: { note: Note }) {
             <MfmText
               text={note.user.username || user.username}
               host={host}
-              emojis={allEmojis}
+              emojis={note.user.emojis}
             />
           </AvatarFallback>{" "}
           {/* Fallback with username */}
@@ -42,7 +41,11 @@ export function MisskeyNote({ note }: { note: Note }) {
         <div className="flex flex-wrap items-center gap-1.5">
           <Text className="font-semibold">
             {/* Added font-semibold for name */}
-            {user.name || user.username}{" "}
+            <MfmText
+              text={user.name || user.username}
+              host={host}
+              emojis={allEmojis}
+            />
             {/* Display name or username if name is missing */}
           </Text>
           <Text className="text-muted-foreground">@{user.username}</Text>{" "}

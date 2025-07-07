@@ -5,7 +5,9 @@ import { useMfmConfigValue } from "..";
 
 export type LinkProps = HTMLProps<HTMLAnchorElement>;
 
-const SimpleLink = (props: LinkProps) => <a className="mfm-link" {...props} />;
+const SimpleLink = (props: LinkProps) => (
+  <a target="_blank" className="mfm-link" {...props} />
+);
 
 export default function Link(props: LinkProps) {
   const { Link } = useMfmConfigValue();
