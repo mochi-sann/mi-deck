@@ -5,10 +5,9 @@ import { MfmText } from "@/features/mfm";
 import { cn } from "@/lib/utils"; // Import cn utility
 
 // Component to display a single Misskey note with a Twitter-like design
-export function MisskeyNote({ note }: { note: Note }) {
+export function MisskeyNote({ note, origin }: { note: Note; origin: string }) {
   const user = note.user;
-  const userOrigin = note.user.host;
-  const host = userOrigin || "misskey.mochi33.com";
+  const host = origin || "";
 
   // Combine note emojis and user emojis
   const allEmojis = { ...note.emojis, ...note.user.emojis };

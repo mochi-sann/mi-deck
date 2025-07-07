@@ -88,7 +88,7 @@ export function HomeTimelineContent({
               transform: `translateY(${virtualRow.start}px)`,
             }}
           >
-            <MisskeyNote note={notes[virtualRow.index]} />
+            <MisskeyNote origin={origin} note={notes[virtualRow.index]} />
           </div>
         ))}
       </div>

@@ -130,5 +130,5 @@ export function LocalTimelineContent({
   // Assuming the API returns an array of Note objects or similar structure
   const typedNotes = notes as Note[] | undefined;
 
-  return <TimelineNotes notes={typedNotes} />;
+  return <TimelineNotes notes={typedNotes} origin={origin} />;
 }
