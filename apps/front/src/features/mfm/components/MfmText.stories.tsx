@@ -95,6 +95,12 @@ export const Ruby: Story = {
     text: "$[ruby hoge ほげ] $[ruby Misskey みすきー]",
   },
 };
+
+export const Sparkle: Story = {
+  args: {
+    text: "$[sparkle ✨ Hello World! ✨]",
+  },
+};
 export const Many: Story = {
   args: {
     text: "$[ruby $[tada $[jelly $[shake $[spin $[bounce $[x2 $[x3 ほげ]]]]]]] ほげほげ]",

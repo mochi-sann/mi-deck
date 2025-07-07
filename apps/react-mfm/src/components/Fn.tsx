@@ -4,6 +4,7 @@ import { useAtomValue } from "jotai";
 import { type MfmFn } from "mfm-js";
 import { type CSSProperties, type ReactNode } from "react";
 import { mfmConfigAtom } from "..";
+import Sparkle from "./Sparkle";
 
 type Arg = string | true;
 
@@ -46,7 +47,7 @@ export default function Fn({
 
   switch (name) {
     case "sparkle":
-      return <span className="mfm-sparkle">{children}</span>;
+      return anim ? <Sparkle>{children}</Sparkle> : <span>{children}</span>;
 
     case "ruby": {
       // MFMのrubyは $[ruby base rt] の形式（スペース区切り）
