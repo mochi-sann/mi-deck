@@ -61,6 +61,12 @@ export const WithCode: Story = {
   },
 };
 
+export const Color: Story = {
+  args: {
+    text: "$[fg.color=f0f 赤字]\n$[bg.color=ff0 黄背景]",
+  },
+};
+
 export const All: Story = {
   args: {
     text: String.raw`
@@ -135,6 +141,8 @@ $[ruby Misskey ミスキー]
 \[
   (v\cdot\nabla)v
 \]
+$[fg.color=f0f 赤字]
+$[bg.color=ff0 黄背景]
 @ai
 @repo@p1.a9z.dev
 #misskey
