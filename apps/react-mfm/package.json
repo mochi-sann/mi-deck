@@ -40,7 +40,6 @@
       "src/style.css"
     ],
     "format": "esm",
-    "minify": "terser",
     "sourcemap": true,
     "splitting": true,
     "clean": true
