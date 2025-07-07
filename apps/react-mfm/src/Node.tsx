@@ -53,7 +53,9 @@ function SingleNode({ node, ...props }: MfmBasicProps & { node: MfmNode }) {
       return <Emoji {...node.props} />;
 
     case "emojiCode":
-      return <CustomEmoji {...node.props} host={props.host} />;
+      return (
+        <CustomEmoji {...node.props} host={props.host} emojis={props.emojis} />
+      );
 
     case "bold":
       return (

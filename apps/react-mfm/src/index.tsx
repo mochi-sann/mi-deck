@@ -17,6 +17,7 @@ export type MfmBasicProps = {
   nowrap?: boolean;
   nyaize?: boolean | "respect";
   host?: string;
+  emojis?: { [key: string]: string } | undefined;
 };
 
 const MfmBase =

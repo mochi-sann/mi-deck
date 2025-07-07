@@ -7,6 +7,7 @@ import { toUrl } from "../utils";
 
 export type CustomEmojiProps = MfmEmojiCode["props"] & {
   host?: string;
+  emojis?: { [key: string]: string } | undefined;
 };
 
 const emojiCacheAtom = atomWithStorage<{
@@ -64,13 +65,23 @@ function FetchEmoji({ name, host }: { name: string; host: string }) {
 
 // Components
 
-export const CustomEmojiCtx = createContext<{ host: string | null }>({
+export const CustomEmojiCtx = createContext<{
+  host: string | null;
+  emojis?: { [key: string]: string } | undefined;
+}>({
   host: null,
 });
 
 function CustomEmojiInternal({ name }: CustomEmojiProps) {
   const cache = useAtomValue(emojiCacheAtom);
-  const { host } = useContext(CustomEmojiCtx);
+  const { host, emojis } = useContext(CustomEmojiCtx);
+
+  // First check local emoji data
+  const localEmojiUrl = emojis?.[name];
+
+  if (localEmojiUrl) {
+    return <EmojiImg name={name} url={localEmojiUrl} />;
+  }
 
   if (!host) return <EmojiImg name={name} />;
   return (
@@ -87,9 +98,14 @@ export default function CustomEmoji(props: CustomEmojiProps) {
     return CustomEmoji(props);
   }
 
-  if (props.host) {
+  if (props.host || props.emojis) {
     return (
-      <CustomEmojiCtx.Provider value={{ host: props.host }}>
+      <CustomEmojiCtx.Provider
+        value={{
+          host: props.host || null,
+          emojis: props.emojis,
+        }}
+      >
         <CustomEmojiInternal {...props} />
       </CustomEmojiCtx.Provider>
     );
