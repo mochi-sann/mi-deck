@@ -66,6 +66,12 @@ export const Color: Story = {
     text: "$[fg.color=f0f 赤字]\n$[bg.color=ff0 黄背景]",
   },
 };
+export const CustomEmoji: Story = {
+  args: {
+    host: "https://misskey.mochi33.com",
+    text: ":misskey:",
+  },
+};
 
 export const All: Story = {
   args: {

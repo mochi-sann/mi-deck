@@ -16,3 +16,10 @@ export const isWebpack =
   process.env.NODE_ENV !== "development";
 
 export const dirname = (path: string) => path.slice(0, path.lastIndexOf("/"));
+
+export const toUrl = (host: string) => {
+  if (host.startsWith("http://") || host.startsWith("https://")) {
+    return host;
+  }
+  return `https://${host}`;
+};
