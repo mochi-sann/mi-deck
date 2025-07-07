@@ -73,6 +73,7 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^4.0.1",
+    "fake-indexeddb": "^6.0.1",
     "@eslint/js": "^9.23.0",
     "@storybook/addon-docs": "^9.0.15",
     "@storybook/addon-onboarding": "^9.0.15",

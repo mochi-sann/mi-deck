@@ -17,24 +17,15 @@ importers:
       '@types/node':
         specifier: ^24
         version: 24.0.10
-      '@types/react':
-        specifier: ^19.1.8
-        version: 19.1.8
       dotenv:
         specifier: ^16.4.7
         version: 16.6.1
       execa:
         specifier: ^9.3.0
         version: 9.6.0
-      fake-indexeddb:
-        specifier: ^6.0.1
-        version: 6.0.1
       lefthook:
         specifier: ^1.11.6
         version: 1.11.16
-      lucide-react:
-        specifier: ^0.513.0
-        version: 0.513.0(react@19.1.0)
       turbo:
         specifier: ^2.5.4
         version: 2.5.4
@@ -249,6 +240,9 @@ importers:
       concurrently:
         specifier: ^9.1.2
         version: 9.2.0
+      fake-indexeddb:
+        specifier: ^6.0.1
+        version: 6.0.1
       globals:
         specifier: ^15.15.0
         version: 15.15.0
