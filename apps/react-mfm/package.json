@@ -2,11 +2,11 @@
   "name": "@mi-deck/react-mfm",
   "description": "MFM for React",
   "dependencies": {
-    "@twemoji/api": "16.0.1",
-    "jotai": ">=2.2.0 <3",
-    "katex": "0.16.11",
-    "mfm-js": "0.24.0",
-    "shiki": "3.7.0"
+  "@twemoji/api": "16.0.1",
+  "jotai": ">=2.2.0 <3",
+  "katex": "0.16.11",
+  "mfm-js": "0.24.0",
+  "shiki": "3.7.0"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "7.47.5",
