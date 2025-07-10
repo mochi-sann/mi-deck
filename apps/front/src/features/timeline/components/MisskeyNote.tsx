@@ -44,7 +44,7 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
             <MfmText
               text={user.name || user.username}
               host={host}
-              emojis={allEmojis}
+              emojis={note.emojis}
             />
             {/* Display name or username if name is missing */}
           </Text>
