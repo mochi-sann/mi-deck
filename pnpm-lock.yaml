@@ -313,18 +313,45 @@ importers:
       '@microsoft/api-extractor':
         specifier: 7.47.5
         version: 7.47.5(@types/node@24.0.10)
+      '@testing-library/jest-dom':
+        specifier: ^6.4.8
+        version: 6.6.3
+      '@testing-library/react':
+        specifier: ^16.0.0
+        version: 16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@testing-library/user-event':
+        specifier: ^14.6.1
+        version: 14.6.1(@testing-library/dom@10.4.0)
       '@types/katex':
         specifier: 0.16.7
         version: 0.16.7
       '@types/react':
         specifier: ^19.1.0
         version: 19.1.8
+      '@vitejs/plugin-react-swc':
+        specifier: ^3.8.1
+        version: 3.10.2(vite@7.0.1(@types/node@24.0.10)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3))
+      '@vitest/coverage-v8':
+        specifier: 3.1.2
+        version: 3.1.2(@vitest/browser@3.1.2)(vitest@3.2.4)
+      fake-indexeddb:
+        specifier: ^6.0.1
+        version: 6.0.1
+      jsdom:
+        specifier: ^25.0.0
+        version: 25.0.1
       lucide-react:
         specifier: ^0.513.0
         version: 0.513.0(react@19.1.0)
       tsup:
         specifier: 8.2.4
         version: 8.2.4(@microsoft/api-extractor@7.47.5(@types/node@24.0.10))(@swc/core@1.12.9)(jiti@2.4.2)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)
+      vite:
+        specifier: ^7.0.0
+        version: 7.0.1(@types/node@24.0.10)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)
+      vitest:
+        specifier: ^3.0.0
+        version: 3.2.4(@types/node@24.0.10)(@vitest/browser@3.1.2)(@vitest/ui@3.2.4)(jiti@2.4.2)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.10.2(@types/node@24.0.10)(typescript@5.8.3))(terser@5.43.1)(tsx@4.20.3)
 
 packages:
 

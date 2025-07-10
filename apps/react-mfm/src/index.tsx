@@ -22,9 +22,12 @@ export type MfmBasicProps = {
 
 const MfmBase =
   (parser: (input: string) => MfmNode[]) =>
-  ({ text, ...props }: MfmBasicProps & { text: string }) => (
-    <Node nodes={parser(text)} {...props} />
-  );
+  ({ text, plain, ...props }: MfmBasicProps & { text: string }) => {
+    if (plain) {
+      return <span>{text}</span>;
+    }
+    return <Node nodes={parser(text)} {...props} />;
+  };
 
 export const Mfm = MfmBase(parse);
 export const MfmSimple = MfmBase(parseSimple);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useAtomValue } from "jotai";
-import { type MfmFn } from "mfm-js";
+import { type MfmFn, type MfmNode } from "mfm-js";
 import { type CSSProperties, type ReactNode } from "react";
 import { mfmConfigAtom } from "..";
 import Sparkle from "./Sparkle";
@@ -38,7 +38,7 @@ export default function Fn({
   args,
   children,
   nodeChildren,
-}: MfmFn["props"] & { children: ReactNode; nodeChildren?: any[] }) {
+}: MfmFn["props"] & { children: ReactNode; nodeChildren?: MfmNode[] }) {
   const config = useAtomValue(mfmConfigAtom);
 
   const advanced = config.advanced ?? true;

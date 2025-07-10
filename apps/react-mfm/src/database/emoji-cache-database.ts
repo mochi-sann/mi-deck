@@ -37,7 +37,7 @@ export const emojiCacheAtom = atom(
       return sub;
     }
 
-    if (typeof action === "object" && "type" in action) {
+    if (typeof action === "object" && action !== null && "type" in action) {
       const {
         type,
         host,
