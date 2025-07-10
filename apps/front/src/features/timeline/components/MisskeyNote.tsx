@@ -1,11 +1,17 @@
 import type { Note } from "misskey-js/entities.js";
+import { memo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Text from "@/components/ui/text";
+import { MfmText } from "@/features/mfm";
 import { cn } from "@/lib/utils"; // Import cn utility
 
 // Component to display a single Misskey note with a Twitter-like design
-export function MisskeyNote({ note }: { note: Note }) {
+function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
   const user = note.user;
+  const host = origin || "";
+
+  // Combine note emojis and user emojis
+  const allEmojis = { ...note.emojis, ...note.user.emojis };
 
   return (
     <article
@@ -19,7 +25,11 @@ export function MisskeyNote({ note }: { note: Note }) {
         <Avatar className="h-10 w-10 bg-slate-900">
           <AvatarImage src={note.user.avatarUrl || ""} />
           <AvatarFallback className="bg-slate-800">
-            {note.user.username || user.username}
+            <MfmText
+              text={note.user.username || user.username}
+              host={host}
+              emojis={note.user.emojis}
+            />
           </AvatarFallback>{" "}
           {/* Fallback with username */}
         </Avatar>
@@ -30,9 +40,12 @@ export function MisskeyNote({ note }: { note: Note }) {
         {/* Header: User Info */}
         <div className="flex flex-wrap items-center gap-1.5">
           <Text className="font-semibold">
-            {" "}
             {/* Added font-semibold for name */}
-            {user.name || user.username}{" "}
+            <MfmText
+              text={user.name || user.username}
+              host={host}
+              emojis={note.emojis}
+            />
             {/* Display name or username if name is missing */}
           </Text>
           <Text className="text-muted-foreground">@{user.username}</Text>{" "}
@@ -45,12 +58,13 @@ export function MisskeyNote({ note }: { note: Note }) {
         <div className="mt-1">
           {/* Use whitespace pre-wrap to preserve line breaks */}
           {/* Assuming Text component handles text display or replace with <p> */}
-          <Text className="whitespace-pre-wrap break-words">
-            {" "}
+          <div>
             {/* Added whitespace and break-words */}
-            {note.text || <i className="text-muted-foreground">(No Text)</i>}{" "}
+            {note.text && (
+              <MfmText text={note.text} host={host} emojis={allEmojis} />
+            )}
             {/* Style italic text */}
-          </Text>
+          </div>
         </div>
         {/* Image attachments */}
         <div className="mt-2">
@@ -72,3 +86,5 @@ export function MisskeyNote({ note }: { note: Note }) {
     </article>
   );
 }
+const MisskeyNote = memo(MisskeyNoteBase);
+export { MisskeyNote };

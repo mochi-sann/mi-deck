@@ -88,23 +88,27 @@ const mockNotesWithImages = [
 export const Loading: Story = {
   args: {
     notes: undefined,
+    origin: "https://misskey.mochi33.com",
   },
 };
 
 export const Empty: Story = {
   args: {
     notes: [],
+    origin: "https://misskey.mochi33.com",
   },
 };
 
 export const WithNotes: Story = {
   args: {
     notes: mockNotes,
+    origin: "https://misskey.mochi33.com",
   },
 };
 
 export const WithImages: Story = {
   args: {
     notes: mockNotesWithImages,
+    origin: "https://misskey.mochi33.com",
   },
 };

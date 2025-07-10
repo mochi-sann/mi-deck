@@ -6,9 +6,13 @@ import { MisskeyNote } from "./MisskeyNote";
 
 export type TimelineNotesProps = {
   notes: Note[] | undefined;
+  origin: string;
 };
 
-export const TimelineNotes: React.FC<TimelineNotesProps> = ({ notes }) => {
+export const TimelineNotes: React.FC<TimelineNotesProps> = ({
+  notes,
+  origin,
+}) => {
   if (!notes) {
     return <Spinner />;
   }
@@ -21,7 +25,7 @@ export const TimelineNotes: React.FC<TimelineNotesProps> = ({ notes }) => {
     <ul className="flex list-none flex-col p-0">
       {notes.map((note) => (
         <li key={note.id}>
-          <MisskeyNote note={note} />
+          <MisskeyNote note={note} origin={origin} />
         </li>
       ))}
     </ul>
