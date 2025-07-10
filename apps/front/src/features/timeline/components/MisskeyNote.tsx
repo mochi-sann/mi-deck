@@ -1,11 +1,12 @@
 import type { Note } from "misskey-js/entities.js";
+import { memo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Text from "@/components/ui/text";
 import { MfmText } from "@/features/mfm";
 import { cn } from "@/lib/utils"; // Import cn utility
 
 // Component to display a single Misskey note with a Twitter-like design
-export function MisskeyNote({ note, origin }: { note: Note; origin: string }) {
+function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
   const user = note.user;
   const host = origin || "";
 
@@ -87,3 +88,5 @@ export function MisskeyNote({ note, origin }: { note: Note; origin: string }) {
     </article>
   );
 }
+const MisskeyNote = memo(MisskeyNoteBase);
+export { MisskeyNote };
