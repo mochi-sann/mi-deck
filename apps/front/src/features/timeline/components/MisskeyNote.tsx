@@ -60,11 +60,9 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
           {/* Assuming Text component handles text display or replace with <p> */}
           <div>
             {/* Added whitespace and break-words */}
-            {note.text ? (
+            {note.text && (
               <MfmText text={note.text} host={host} emojis={allEmojis} />
-            ) : (
-              <i className="text-muted-foreground">(No Text)</i>
-            )}{" "}
+            )}
             {/* Style italic text */}
           </div>
         </div>
