@@ -1,18 +1,17 @@
 import { atom, useAtom, useAtomValue } from "jotai";
-import { atomWithStorage } from "jotai/utils";
 import { type MfmEmojiCode } from "mfm-js";
 import { createContext, Fragment, Suspense, use, useContext } from "react";
 import { useMfmConfigValue } from "..";
+import {
+  emojiCacheAtom,
+  updateEmojiCacheAtom,
+} from "../database/emoji-cache-database";
 import { toUrl } from "../utils";
 
 export type CustomEmojiProps = MfmEmojiCode["props"] & {
   host?: string;
   emojis?: { [key: string]: string } | undefined;
 };
-
-const emojiCacheAtom = atomWithStorage<{
-  [host: string]: { [name: string]: string | null };
-}>("minsk::emoji::cache", {});
 
 const emojiFetchAtom = atom<{ [id: string]: Promise<string | null> }>({});
 
@@ -41,7 +40,8 @@ const EmojiImg = ({ name, url }: { name: string; url?: string | null }) =>
 
 function FetchEmoji({ name, host }: { name: string; host: string }) {
   const api = useForeignApi(host);
-  const [cache, setCache] = useAtom(emojiCacheAtom);
+  const cache = useAtomValue(emojiCacheAtom);
+  const [, updateCache] = useAtom(updateEmojiCacheAtom);
   const [fetches, setFetches] = useAtom(emojiFetchAtom);
 
   const key = name + "@" + host;
@@ -52,7 +52,7 @@ function FetchEmoji({ name, host }: { name: string; host: string }) {
 
   if (key in fetches) {
     const url = use(fetches[key]);
-    setCache({ ...cache, [host]: { ...cache[host], [name]: url } });
+    updateCache({ host, cache: { [name]: url } });
     delete fetches[key];
     setFetches({ ...fetches });
     return <EmojiImg name={name} url={url} />;
