@@ -125,6 +125,9 @@ importers:
       cmdk:
         specifier: ^1.1.1
         version: 1.1.1(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      dexie:
+        specifier: ^4.0.11
+        version: 4.0.11
       i18next:
         specifier: ^25.3.0
         version: 25.3.0(typescript@5.8.3)
@@ -134,6 +137,9 @@ importers:
       idb:
         specifier: ^8.0.3
         version: 8.0.3
+      jotai:
+        specifier: ^2.12.5
+        version: 2.12.5(@types/react@19.1.8)(react@19.1.0)
       katex:
         specifier: ^0.16.22
         version: 0.16.22
