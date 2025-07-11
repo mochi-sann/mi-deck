@@ -5,14 +5,16 @@ import Text from "@/components/ui/text";
 import { CustomEmojiCtx } from "@/features/emoji";
 import { MfmText } from "@/features/mfm";
 import { cn } from "@/lib/utils";
+import { createProxiedEmojis } from "@/lib/utils/emoji-proxy";
 
 // Component to display a single Misskey note with a Twitter-like design
 function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
   const user = note.user;
   const host = origin || "";
 
-  // Combine note emojis and user emojis
-  const allEmojis = { ...note.emojis, ...note.user.emojis };
+  // Combine note emojis and user emojis, then convert to proxy URLs
+  const combinedEmojis = { ...note.emojis, ...note.user.emojis };
+  const allEmojis = createProxiedEmojis(combinedEmojis, host);
 
   return (
     <CustomEmojiCtx.Provider
@@ -51,7 +53,7 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
               <MfmText
                 text={user.name || user.username}
                 host={host}
-                emojis={note.emojis}
+                emojis={allEmojis}
               />
               {/* Display name or username if name is missing */}
             </Text>
