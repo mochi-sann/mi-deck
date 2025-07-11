@@ -1,117 +1,10 @@
-import { atom, useAtom, useAtomValue } from "jotai";
 import type { Note } from "misskey-js/entities.js";
-import { createContext, Fragment, memo, Suspense, use } from "react";
+import { memo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Text from "@/components/ui/text";
+import { CustomEmojiCtx } from "@/features/emoji";
 import { MfmText } from "@/features/mfm";
-import {
-  emojiCacheAtom,
-  updateEmojiCacheAtom,
-} from "@/lib/database/emoji-cache-database";
-import { cn } from "@/lib/utils"; // Import cn utility
-
-// Emoji fetching utilities
-const toUrl = (host: string) => {
-  if (host.startsWith("http://") || host.startsWith("https://")) {
-    return host;
-  }
-  return `https://${host}`;
-};
-
-// Fetch state management
-const emojiFetchAtom = atom<{ [id: string]: Promise<string | null> }>({});
-
-// Simple foreign API hook for emoji fetching
-function useForeignApi(host: string) {
-  if (!host) return null;
-
-  return {
-    emojiUrl: async (name: string): Promise<string | null> => {
-      try {
-        const response = await fetch(`${toUrl(host)}/api/emoji?name=${name}`);
-        const data = await response.json();
-        return data.url || null;
-      } catch (error) {
-        console.warn("Failed to fetch emoji:", error);
-        return null;
-      }
-    },
-  };
-}
-
-// Context for emoji data
-export const CustomEmojiCtx = createContext<{
-  host: string | null;
-  emojis?: { [key: string]: string } | undefined;
-}>({
-  host: null,
-});
-
-// Emoji image component
-const EmojiImg = ({ name, url }: { name: string; url?: string | null }) =>
-  !url ? (
-    `:${name}:`
-  ) : (
-    <img
-      src={url}
-      alt={name}
-      className="mfm-customEmoji inline h-[1.2em] w-auto"
-    />
-  );
-
-// Fetching emoji component
-function FetchEmoji({ name, host }: { name: string; host: string }) {
-  const api = useForeignApi(host);
-  const cache = useAtomValue(emojiCacheAtom);
-  const [, updateCache] = useAtom(updateEmojiCacheAtom);
-  const [fetches, setFetches] = useAtom(emojiFetchAtom);
-
-  const key = name + "@" + host;
-
-  const Cached = () => <EmojiImg name={name} url={cache[host]?.[name]} />;
-  if (host in cache && name in cache[host]) return <Cached />;
-  if (!api) return <Cached />;
-
-  if (key in fetches) {
-    const url = use(fetches[key]);
-    updateCache({ host, cache: { [name]: url } });
-    const newFetches = { ...fetches };
-    delete newFetches[key];
-    setFetches(newFetches);
-    return <EmojiImg name={name} url={url} />;
-  }
-
-  const task = api.emojiUrl(name);
-  setFetches({ ...fetches, [key]: task });
-  return <EmojiImg name={name} url={use(task)} />;
-}
-
-// Internal custom emoji component
-function CustomEmojiInternal({
-  name,
-  host,
-  emojis,
-}: {
-  name: string;
-  host: string;
-  emojis?: { [key: string]: string };
-}) {
-  const cache = useAtomValue(emojiCacheAtom);
-
-  // First check local emoji data
-  const localEmojiUrl = emojis?.[name];
-
-  if (localEmojiUrl) {
-    return <EmojiImg name={name} url={localEmojiUrl} />;
-  }
-
-  if (!host) return <EmojiImg name={name} />;
-  return (
-    <Suspense fallback={<EmojiImg name={name} url={cache[host]?.[name]} />}>
-      <FetchEmoji name={name} host={host} />
-    </Suspense>
-  );
-}
+import { cn } from "@/lib/utils";
 
 // Component to display a single Misskey note with a Twitter-like design
 function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
@@ -201,52 +94,6 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
     </CustomEmojiCtx.Provider>
   );
 }
-
-// Main CustomEmoji component with fallback support
-export function CustomEmoji({
-  name,
-  host,
-  emojis,
-}: {
-  name: string;
-  host?: string;
-  emojis?: { [key: string]: string };
-}) {
-  if (host || emojis) {
-    return (
-      <CustomEmojiCtx.Provider
-        value={{
-          host: host || null,
-          emojis: emojis,
-        }}
-      >
-        <CustomEmojiInternal name={name} host={host || ""} emojis={emojis} />
-      </CustomEmojiCtx.Provider>
-    );
-  }
-
-  return <CustomEmojiInternal name={name} host="" emojis={emojis} />;
-}
-
-// String processing component for emojis
-export const CustomEmojiStr = ({
-  text,
-  host,
-  emojis,
-}: {
-  text: string;
-  host?: string;
-  emojis?: { [key: string]: string };
-}) =>
-  text.split(":").map((s, i) =>
-    i % 2 ? (
-      // biome-ignore lint/suspicious/noArrayIndexKey: mfm-jsの仕様に合わせるため
-      <CustomEmoji name={s} host={host} emojis={emojis} key={i} />
-    ) : (
-      // biome-ignore lint/suspicious/noArrayIndexKey: mfm-jsの仕様に合わせるため
-      <Fragment key={i}>{s}</Fragment>
-    ),
-  );
 
 const MisskeyNote = memo(MisskeyNoteBase);
 export { MisskeyNote };
