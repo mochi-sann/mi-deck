@@ -116,6 +116,7 @@ describe("createProxiedEmojis", () => {
   });
 
   it("should return original object when emojis is null", () => {
+    // biome-ignore lint/suspicious/noExplicitAny: テストで必須
     const emojis = null as any;
     const host = "misskey.example.com";
 
@@ -125,6 +126,7 @@ describe("createProxiedEmojis", () => {
   });
 
   it("should return original object when emojis is undefined", () => {
+    // biome-ignore lint/suspicious/noExplicitAny: テストで必須
     const emojis = undefined as any;
     const host = "misskey.example.com";
 

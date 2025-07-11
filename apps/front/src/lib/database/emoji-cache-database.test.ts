@@ -119,6 +119,7 @@ describe("emoji-cache-database", () => {
 
   describe("updateEmojiCacheAtom", () => {
     it("should update cache and persist to database", async () => {
+      // biome-ignore lint/correctness/noUnusedVariables: テストで必須
       const { result: cacheResult } = renderHook(() =>
         useAtomValue(emojiCacheAtom),
       );

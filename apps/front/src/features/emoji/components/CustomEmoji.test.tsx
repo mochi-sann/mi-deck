@@ -12,6 +12,7 @@ vi.mock("./CustomEmojiInternal", () => ({
   }: {
     name: string;
     host: string;
+    // biome-ignore lint/suspicious/noExplicitAny: テストで必須
     emojis?: any;
   }) => (
     <div data-testid="custom-emoji-internal">
@@ -31,6 +32,7 @@ vi.mock("../contexts/CustomEmojiContext", () => ({
       value,
     }: {
       children: React.ReactNode;
+      // biome-ignore lint/suspicious/noExplicitAny: テストで必須
       value: any;
     }) => (
       <div data-testid="emoji-context" data-value={JSON.stringify(value)}>

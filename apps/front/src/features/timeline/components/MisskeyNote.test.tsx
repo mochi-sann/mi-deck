@@ -13,6 +13,7 @@ vi.mock("@/features/emoji", () => ({
       value,
     }: {
       children: React.ReactNode;
+      // biome-ignore lint/suspicious/noExplicitAny: テストで必須
       value: any;
     }) => (
       <div data-testid="emoji-context" data-value={JSON.stringify(value)}>
@@ -31,6 +32,7 @@ vi.mock("@/features/mfm", () => ({
   }: {
     text: string;
     host: string;
+    // biome-ignore lint/suspicious/noExplicitAny: テストで必須
     emojis: any;
   }) => (
     <div data-testid="mfm-text">
@@ -42,8 +44,10 @@ vi.mock("@/features/mfm", () => ({
 }));
 
 vi.mock("@/lib/utils/emoji-proxy", () => ({
+  // biome-ignore lint/suspicious/noExplicitAny: テストで必須
   createProxiedEmojis: (emojis: any, host: string) => {
     if (!emojis || !host) return emojis;
+    // biome-ignore lint/suspicious/noExplicitAny: テストで必須
     const proxied: any = {};
     for (const [name, url] of Object.entries(emojis)) {
       proxied[name] =
@@ -68,9 +72,10 @@ vi.mock("@/components/ui/avatar", () => ({
     </div>
   ),
   // biome-ignore lint/style/useNamingConvention: テストで必須
-  AvatarImage: ({ src }: { src: string }) => (
-    <img data-testid="avatar-image" src={src} alt="avatar" />
-  ),
+  AvatarImage: ({ src }: { src: string | null }) => {
+    const imgProps = src ? { src } : {};
+    return <img data-testid="avatar-image" {...imgProps} alt="avatar" />;
+  },
   // biome-ignore lint/style/useNamingConvention: テストで必須
   AvatarFallback: ({
     children,
@@ -335,6 +340,6 @@ describe("MisskeyNote", () => {
     render(<MisskeyNote note={note} origin={origin} />);
 
     const avatarImage = screen.getByTestId("avatar-image");
-    expect(avatarImage).toHaveAttribute("src", "");
+    expect(avatarImage).not.toHaveAttribute("src");
   });
 });
