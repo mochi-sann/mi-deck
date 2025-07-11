@@ -28,7 +28,7 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
             <MfmText
               text={note.user.username || user.username}
               host={host}
-              emojis={note.user.emojis}
+              emojis={allEmojis}
             />
           </AvatarFallback>{" "}
           {/* Fallback with username */}
