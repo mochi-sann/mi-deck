@@ -21,18 +21,17 @@ Object.defineProperty(global, "IDBKeyRange", {
   writable: true,
 });
 
-// Mock Dexie's liveQuery
-const mockSubscription = {
-  unsubscribe: vi.fn(),
-};
-
-const mockLiveQuery = vi.fn(() => ({
-  subscribe: vi.fn((callback) => {
-    // Simulate initial empty cache
-    callback([]);
-    return mockSubscription;
-  }),
-}));
+// Create hoisted mock functions
+const mockLiveQuery = vi.hoisted(() =>
+  vi.fn(() => ({
+    subscribe: vi.fn((callback) => {
+      callback([]);
+      return {
+        unsubscribe: vi.fn(),
+      };
+    }),
+  })),
+);
 
 vi.mock("dexie", () => ({
   default: class MockDexie {
@@ -52,18 +51,12 @@ vi.mock("dexie", () => ({
       bulkPut: vi.fn(() => Promise.resolve()),
     };
   },
-  liveQuery: mockLiveQuery,
+  liveQuery: mockLiveQuery(),
 }));
 
 describe("emoji-cache-database", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockLiveQuery.mockImplementation(() => ({
-      subscribe: vi.fn((callback) => {
-        callback([]);
-        return mockSubscription;
-      }),
-    }));
   });
 
   afterEach(() => {

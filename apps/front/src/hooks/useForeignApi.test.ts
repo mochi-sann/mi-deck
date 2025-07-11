@@ -1,10 +1,9 @@
 import { renderHook } from "@testing-library/react";
+import { HttpResponse, http } from "msw";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+// Get the global server from test setup
+import { server } from "@/test/setup";
 import { useForeignApi } from "./useForeignApi";
-
-// Mock fetch
-const mockFetch = vi.fn();
-global.fetch = mockFetch;
 
 // Mock toUrl function
 vi.mock("@/lib/utils/url", () => ({
@@ -59,71 +58,86 @@ describe("useForeignApi", () => {
 
   describe("emojiUrl method", () => {
     it("should fetch emoji URL successfully", async () => {
-      const mockResponse = {
-        ok: true,
-        json: vi
-          .fn()
-          .mockResolvedValue({ url: "https://example.com/emoji.png" }),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
+      server.use(
+        http.get("https://test-example.com/api/emoji", ({ request }) => {
+          const url = new URL(request.url);
+          const name = url.searchParams.get("name");
 
-      const { result } = renderHook(() => useForeignApi("example.com"));
+          if (name === "smile") {
+            return HttpResponse.json({
+              url: "https://test-example.com/emoji.png",
+            });
+          }
+
+          return HttpResponse.json({ url: null });
+        }),
+      );
+
+      const { result } = renderHook(() => useForeignApi("test-example.com"));
 
       const emojiUrl = await result.current?.emojiUrl("smile");
 
-      expect(emojiUrl).toBe("https://example.com/emoji.png");
-      expect(mockFetch).toHaveBeenCalledWith(
-        "https://example.com/api/emoji?name=smile",
-      );
-      expect(mockResponse.json).toHaveBeenCalled();
+      expect(emojiUrl).toBe("https://test-example.com/emoji.png");
     });
 
     it("should handle host with https prefix", async () => {
-      const mockResponse = {
-        ok: true,
-        json: vi
-          .fn()
-          .mockResolvedValue({ url: "https://example.com/emoji.png" }),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
+      server.use(
+        http.get("https://test-https.com/api/emoji", ({ request }) => {
+          const url = new URL(request.url);
+          const name = url.searchParams.get("name");
 
-      const { result } = renderHook(() => useForeignApi("https://example.com"));
+          if (name === "smile") {
+            return HttpResponse.json({
+              url: "https://test-https.com/emoji.png",
+            });
+          }
 
-      await result.current?.emojiUrl("smile");
-
-      expect(mockFetch).toHaveBeenCalledWith(
-        "https://example.com/api/emoji?name=smile",
+          return HttpResponse.json({ url: null });
+        }),
       );
+
+      const { result } = renderHook(() =>
+        useForeignApi("https://test-https.com"),
+      );
+
+      const emojiUrl = await result.current?.emojiUrl("smile");
+
+      expect(emojiUrl).toBe("https://test-https.com/emoji.png");
     });
 
     it("should handle host with http prefix", async () => {
-      const mockResponse = {
-        ok: true,
-        json: vi
-          .fn()
-          .mockResolvedValue({ url: "http://localhost:3000/emoji.png" }),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
+      server.use(
+        http.get("http://test-http.local:3000/api/emoji", ({ request }) => {
+          const url = new URL(request.url);
+          const name = url.searchParams.get("name");
+
+          if (name === "smile") {
+            return HttpResponse.json({
+              url: "http://test-http.local:3000/emoji.png",
+            });
+          }
+
+          return HttpResponse.json({ url: null });
+        }),
+      );
 
       const { result } = renderHook(() =>
-        useForeignApi("http://localhost:3000"),
+        useForeignApi("http://test-http.local:3000"),
       );
 
-      await result.current?.emojiUrl("smile");
+      const emojiUrl = await result.current?.emojiUrl("smile");
 
-      expect(mockFetch).toHaveBeenCalledWith(
-        "http://localhost:3000/api/emoji?name=smile",
-      );
+      expect(emojiUrl).toBe("http://test-http.local:3000/emoji.png");
     });
 
     it("should return null when API returns no URL", async () => {
-      const mockResponse = {
-        ok: true,
-        json: vi.fn().mockResolvedValue({ url: null }),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
+      server.use(
+        http.get("https://test-null.com/api/emoji", () => {
+          return HttpResponse.json({ url: null });
+        }),
+      );
 
-      const { result } = renderHook(() => useForeignApi("example.com"));
+      const { result } = renderHook(() => useForeignApi("test-null.com"));
 
       const emojiUrl = await result.current?.emojiUrl("smile");
 
@@ -131,13 +145,13 @@ describe("useForeignApi", () => {
     });
 
     it("should return null when API returns empty URL", async () => {
-      const mockResponse = {
-        ok: true,
-        json: vi.fn().mockResolvedValue({ url: "" }),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
+      server.use(
+        http.get("https://test-empty.com/api/emoji", () => {
+          return HttpResponse.json({ url: "" });
+        }),
+      );
 
-      const { result } = renderHook(() => useForeignApi("example.com"));
+      const { result } = renderHook(() => useForeignApi("test-empty.com"));
 
       const emojiUrl = await result.current?.emojiUrl("smile");
 
@@ -145,13 +159,13 @@ describe("useForeignApi", () => {
     });
 
     it("should return null when API returns undefined URL", async () => {
-      const mockResponse = {
-        ok: true,
-        json: vi.fn().mockResolvedValue({ url: undefined }),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
+      server.use(
+        http.get("https://test-undefined.com/api/emoji", () => {
+          return HttpResponse.json({ url: undefined });
+        }),
+      );
 
-      const { result } = renderHook(() => useForeignApi("example.com"));
+      const { result } = renderHook(() => useForeignApi("test-undefined.com"));
 
       const emojiUrl = await result.current?.emojiUrl("smile");
 
@@ -159,13 +173,13 @@ describe("useForeignApi", () => {
     });
 
     it("should return null when API returns no data", async () => {
-      const mockResponse = {
-        ok: true,
-        json: vi.fn().mockResolvedValue({}),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
+      server.use(
+        http.get("https://test-nodata.com/api/emoji", () => {
+          return HttpResponse.json({});
+        }),
+      );
 
-      const { result } = renderHook(() => useForeignApi("example.com"));
+      const { result } = renderHook(() => useForeignApi("test-nodata.com"));
 
       const emojiUrl = await result.current?.emojiUrl("smile");
 
@@ -173,28 +187,34 @@ describe("useForeignApi", () => {
     });
 
     it("should handle network errors gracefully", async () => {
-      const mockError = new Error("Network error");
-      mockFetch.mockRejectedValue(mockError);
+      server.use(
+        http.get("https://test-error.com/api/emoji", () => {
+          return HttpResponse.error();
+        }),
+      );
 
-      const { result } = renderHook(() => useForeignApi("example.com"));
+      const { result } = renderHook(() => useForeignApi("test-error.com"));
 
       const emojiUrl = await result.current?.emojiUrl("smile");
 
       expect(emojiUrl).toBeNull();
       expect(console.warn).toHaveBeenCalledWith(
         "Failed to fetch emoji:",
-        mockError,
+        expect.any(Error),
       );
     });
 
     it("should handle JSON parsing errors", async () => {
-      const mockResponse = {
-        ok: true,
-        json: vi.fn().mockRejectedValue(new Error("Invalid JSON")),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
+      server.use(
+        http.get("https://test-json.com/api/emoji", () => {
+          return new HttpResponse("invalid json", {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          });
+        }),
+      );
 
-      const { result } = renderHook(() => useForeignApi("example.com"));
+      const { result } = renderHook(() => useForeignApi("test-json.com"));
 
       const emojiUrl = await result.current?.emojiUrl("smile");
 
@@ -206,50 +226,59 @@ describe("useForeignApi", () => {
     });
 
     it("should handle special characters in emoji name", async () => {
-      const mockResponse = {
-        ok: true,
-        json: vi
-          .fn()
-          .mockResolvedValue({ url: "https://example.com/emoji.png" }),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
+      server.use(
+        http.get("https://test-special.com/api/emoji", ({ request }) => {
+          const url = new URL(request.url);
+          const name = url.searchParams.get("name");
 
-      const { result } = renderHook(() => useForeignApi("example.com"));
+          if (name === "smile_face") {
+            return HttpResponse.json({
+              url: "https://test-special.com/emoji.png",
+            });
+          }
 
-      await result.current?.emojiUrl("smile_face");
-
-      expect(mockFetch).toHaveBeenCalledWith(
-        "https://example.com/api/emoji?name=smile_face",
+          return HttpResponse.json({ url: null });
+        }),
       );
+
+      const { result } = renderHook(() => useForeignApi("test-special.com"));
+
+      const emojiUrl = await result.current?.emojiUrl("smile_face");
+
+      expect(emojiUrl).toBe("https://test-special.com/emoji.png");
     });
 
     it("should handle empty emoji name", async () => {
-      const mockResponse = {
-        ok: true,
-        json: vi
-          .fn()
-          .mockResolvedValue({ url: "https://example.com/emoji.png" }),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
+      server.use(
+        http.get("https://test-empty-name.com/api/emoji", ({ request }) => {
+          const url = new URL(request.url);
+          const name = url.searchParams.get("name");
 
-      const { result } = renderHook(() => useForeignApi("example.com"));
+          if (name === "") {
+            return HttpResponse.json({
+              url: "https://test-empty-name.com/emoji.png",
+            });
+          }
 
-      await result.current?.emojiUrl("");
-
-      expect(mockFetch).toHaveBeenCalledWith(
-        "https://example.com/api/emoji?name=",
+          return HttpResponse.json({ url: null });
+        }),
       );
+
+      const { result } = renderHook(() => useForeignApi("test-empty-name.com"));
+
+      const emojiUrl = await result.current?.emojiUrl("");
+
+      expect(emojiUrl).toBe("https://test-empty-name.com/emoji.png");
     });
 
     it("should handle non-200 responses", async () => {
-      const mockResponse = {
-        ok: false,
-        status: 404,
-        json: vi.fn().mockRejectedValue(new Error("Not found")),
-      };
-      mockFetch.mockResolvedValue(mockResponse);
+      server.use(
+        http.get("https://test-404.com/api/emoji", () => {
+          return new HttpResponse(null, { status: 404 });
+        }),
+      );
 
-      const { result } = renderHook(() => useForeignApi("example.com"));
+      const { result } = renderHook(() => useForeignApi("test-404.com"));
 
       const emojiUrl = await result.current?.emojiUrl("smile");
 
