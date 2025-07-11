@@ -23,18 +23,23 @@ export const emojiCacheAtom = atom(
     const db = get(emojiCacheDbAtom);
 
     if (action === INIT_EMOJI_CACHE) {
-      const observable = liveQuery(() => db.emojiCache.toArray());
-      const sub = observable.subscribe((entries) => {
-        const cache: EmojiCache = {};
-        for (const entry of entries) {
-          if (!cache[entry.host]) {
-            cache[entry.host] = {};
+      try {
+        const observable = liveQuery(() => db.emojiCache.toArray());
+        const sub = observable.subscribe((entries) => {
+          const cache: EmojiCache = {};
+          for (const entry of entries) {
+            if (!cache[entry.host]) {
+              cache[entry.host] = {};
+            }
+            cache[entry.host][entry.name] = entry.url;
           }
-          cache[entry.host][entry.name] = entry.url;
-        }
-        set(baseEmojiCacheAtom, cache);
-      });
-      return sub;
+          set(baseEmojiCacheAtom, cache);
+        });
+        return sub;
+      } catch (error) {
+        console.error("Failed to subscribe to emoji cache changes:", error);
+        return { unsubscribe: () => {} }; // Return a mock subscription
+      }
     }
 
     if (typeof action === "object" && action !== null && "type" in action) {
@@ -73,8 +78,13 @@ export const emojiCacheAtom = atom(
 );
 
 emojiCacheAtom.onMount = (set) => {
-  const sub = set(INIT_EMOJI_CACHE);
-  return () => sub?.unsubscribe();
+  try {
+    const sub = set(INIT_EMOJI_CACHE);
+    return () => sub?.unsubscribe();
+  } catch (error) {
+    console.error("Failed to initialize emoji cache:", error);
+    return () => {}; // Return a no-op cleanup function
+  }
 };
 
 export const updateEmojiCacheAtom = atom(
