@@ -1,5 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
+// @ts-ignore
 import FdbFactory from "fake-indexeddb/lib/FDBFactory";
+// @ts-ignore
 import FdbKeyRange from "fake-indexeddb/lib/FDBKeyRange";
 import { useAtomValue, useSetAtom } from "jotai";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -34,6 +36,7 @@ const mockLiveQuery = vi.fn(() => ({
 
 vi.mock("dexie", () => ({
   default: class MockDexie {
+    name: string;
     constructor(name: string) {
       this.name = name;
     }
@@ -119,10 +122,6 @@ describe("emoji-cache-database", () => {
 
   describe("updateEmojiCacheAtom", () => {
     it("should update cache and persist to database", async () => {
-      // biome-ignore lint/correctness/noUnusedVariables: テストで必須
-      const { result: cacheResult } = renderHook(() =>
-        useAtomValue(emojiCacheAtom),
-      );
       const { result: updateResult } = renderHook(() =>
         useSetAtom(updateEmojiCacheAtom),
       );
