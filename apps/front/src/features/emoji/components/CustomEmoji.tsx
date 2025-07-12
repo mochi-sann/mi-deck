@@ -1,56 +1,44 @@
-import { type MfmEmojiCode } from "mfm-js";
-import { createContext, Fragment, useContext } from "react";
+import { Fragment } from "react";
+import { CustomEmojiCtx } from "../contexts/CustomEmojiContext";
+import { CustomEmojiInternal } from "./CustomEmojiInternal";
 
-export type CustomEmojiProps = MfmEmojiCode["props"] & {
+interface CustomEmojiProps {
+  name: string;
   host?: string;
-  emojis?: { [key: string]: string } | undefined;
-};
-
-// internal
-
-const EmojiImg = ({ name, url }: { name: string; url?: string | null }) =>
-  !url ? `:${name}:` : <img src={url} alt={name} className="mfm-customEmoji" />;
-
-// Components
-
-export const CustomEmojiCtx = createContext<{
-  emojis?: { [key: string]: string } | undefined;
-}>({
-  emojis: undefined,
-});
-
-function CustomEmojiInternal({ name }: CustomEmojiProps) {
-  const { emojis } = useContext(CustomEmojiCtx);
-
-  // Only use emoji data from context
-  const localEmojiUrl = emojis?.[name];
-
-  return <EmojiImg name={name} url={localEmojiUrl} />;
+  emojis?: { [key: string]: string };
 }
 
-export function CustomEmoji(props: CustomEmojiProps) {
-  if (props.emojis) {
+export function CustomEmoji({ name, host, emojis }: CustomEmojiProps) {
+  if (host || emojis) {
     return (
       <CustomEmojiCtx.Provider
         value={{
-          emojis: props.emojis,
+          host: host || null,
+          emojis: emojis,
         }}
       >
-        <CustomEmojiInternal {...props} />
+        <CustomEmojiInternal name={name} host={host || ""} emojis={emojis} />
       </CustomEmojiCtx.Provider>
     );
   }
 
-  return <CustomEmojiInternal {...props} />;
+  return <CustomEmojiInternal name={name} host="" emojis={emojis} />;
 }
 
-export default CustomEmoji;
-
-export const CustomEmojiStr = ({ text }: { text: string }) =>
+// String processing component for emojis
+export const CustomEmojiStr = ({
+  text,
+  host,
+  emojis,
+}: {
+  text: string;
+  host?: string;
+  emojis?: { [key: string]: string };
+}) =>
   text.split(":").map((s, i) =>
     i % 2 ? (
       // biome-ignore lint/suspicious/noArrayIndexKey: mfm-jsの仕様に合わせるため
-      <CustomEmojiInternal name={s} key={i} />
+      <CustomEmoji name={s} host={host} emojis={emojis} key={i} />
     ) : (
       // biome-ignore lint/suspicious/noArrayIndexKey: mfm-jsの仕様に合わせるため
       <Fragment key={i}>{s}</Fragment>
