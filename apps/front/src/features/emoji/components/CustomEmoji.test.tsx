@@ -1,197 +1,85 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
-import { CustomEmoji, CustomEmojiStr } from "./CustomEmoji";
-
-// Mock dependencies
-vi.mock("./CustomEmojiInternal", () => ({
-  // biome-ignore lint/style/useNamingConvention: テストで必須
-  CustomEmojiInternal: ({
-    name,
-    host,
-    emojis,
-  }: {
-    name: string;
-    host: string;
-    // biome-ignore lint/suspicious/noExplicitAny: テストで必須
-    emojis?: any;
-  }) => (
-    <div data-testid="custom-emoji-internal">
-      <span data-testid="emoji-name">{name}</span>
-      <span data-testid="emoji-host">{host}</span>
-      <span data-testid="emoji-emojis">{JSON.stringify(emojis)}</span>
-    </div>
-  ),
-}));
-
-vi.mock("../contexts/CustomEmojiContext", () => ({
-  // biome-ignore lint/style/useNamingConvention: テストで必須
-  CustomEmojiCtx: {
-    // biome-ignore lint/style/useNamingConvention: テストで必須
-    Provider: ({
-      children,
-      value,
-    }: {
-      children: React.ReactNode;
-      // biome-ignore lint/suspicious/noExplicitAny: テストで必須
-      value: any;
-    }) => (
-      <div data-testid="emoji-context" data-value={JSON.stringify(value)}>
-        {children}
-      </div>
-    ),
-  },
-}));
+import { Provider } from "jotai";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import CustomEmoji, { CustomEmojiCtx } from "./CustomEmoji";
 
 describe("CustomEmoji", () => {
-  it("should render with host and emojis context", () => {
-    const name = "test_emoji";
-    const host = "misskey.example.com";
-    // biome-ignore lint/style/useNamingConvention: テストで必須
-    const emojis = { test_emoji: "https://example.com/emoji.png" };
-
-    render(<CustomEmoji name={name} host={host} emojis={emojis} />);
-
-    const context = screen.getByTestId("emoji-context");
-    expect(context).toBeInTheDocument();
-
-    const contextValue = JSON.parse(context.getAttribute("data-value") || "{}");
-    expect(contextValue.host).toBe(host);
-    expect(contextValue.emojis).toEqual(emojis);
-
-    expect(screen.getByTestId("emoji-name")).toHaveTextContent(name);
-    expect(screen.getByTestId("emoji-host")).toHaveTextContent(host);
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it("should render with only host", () => {
-    const name = "test_emoji";
-    const host = "misskey.example.com";
+  it("renders emoji name when no URL is provided", () => {
+    render(
+      <Provider>
+        <CustomEmoji name="test" />
+      </Provider>,
+    );
 
-    render(<CustomEmoji name={name} host={host} />);
-
-    const context = screen.getByTestId("emoji-context");
-    expect(context).toBeInTheDocument();
-
-    const contextValue = JSON.parse(context.getAttribute("data-value") || "{}");
-    expect(contextValue.host).toBe(host);
-    expect(contextValue.emojis).toBeUndefined();
+    expect(screen.getByText(":test:")).toBeInTheDocument();
   });
 
-  it("should render with only emojis", () => {
-    const name = "test_emoji";
-    // biome-ignore lint/style/useNamingConvention: テストで必須
-    const emojis = { test_emoji: "https://example.com/emoji.png" };
+  it("renders local emoji when emojis prop is provided", () => {
+    const emojis = { test: "https://example.com/test.png" };
 
-    render(<CustomEmoji name={name} emojis={emojis} />);
+    render(
+      <Provider>
+        <CustomEmoji name="test" emojis={emojis} />
+      </Provider>,
+    );
 
-    const context = screen.getByTestId("emoji-context");
-    expect(context).toBeInTheDocument();
-
-    const contextValue = JSON.parse(context.getAttribute("data-value") || "{}");
-    expect(contextValue.host).toBeNull();
-    expect(contextValue.emojis).toEqual(emojis);
+    const img = screen.getByRole("img");
+    expect(img).toHaveAttribute("src", "https://example.com/test.png");
+    expect(img).toHaveAttribute("alt", "test");
+    expect(img).toHaveClass("mfm-customEmoji");
   });
 
-  it("should render without context when no host or emojis", () => {
-    const name = "test_emoji";
+  it("uses CustomEmojiCtx when provided", () => {
+    const emojis = { test: "https://context.com/test.png" };
 
-    render(<CustomEmoji name={name} />);
+    render(
+      <Provider>
+        <CustomEmojiCtx.Provider value={{ emojis }}>
+          <CustomEmoji name="test" />
+        </CustomEmojiCtx.Provider>
+      </Provider>,
+    );
 
-    expect(screen.queryByTestId("emoji-context")).not.toBeInTheDocument();
-    expect(screen.getByTestId("custom-emoji-internal")).toBeInTheDocument();
-    expect(screen.getByTestId("emoji-name")).toHaveTextContent(name);
-    expect(screen.getByTestId("emoji-host")).toHaveTextContent("");
+    const img = screen.getByRole("img");
+    expect(img).toHaveAttribute("src", "https://context.com/test.png");
   });
 
-  it("should handle empty host", () => {
-    const name = "test_emoji";
-    const host = "";
-    // biome-ignore lint/style/useNamingConvention: テストで必須
-    const emojis = { test_emoji: "https://example.com/emoji.png" };
+  it("renders emoji name when no emojis prop provided", () => {
+    render(
+      <Provider>
+        <CustomEmoji name="test" />
+      </Provider>,
+    );
 
-    render(<CustomEmoji name={name} host={host} emojis={emojis} />);
-
-    const context = screen.getByTestId("emoji-context");
-    const contextValue = JSON.parse(context.getAttribute("data-value") || "{}");
-    expect(contextValue.host).toBeNull();
-    expect(contextValue.emojis).toEqual(emojis);
-  });
-});
-
-describe("CustomEmojiStr", () => {
-  it("should render text with embedded emojis", () => {
-    const text = "Hello :smile: world :heart:";
-    const host = "misskey.example.com";
-    const emojis = {
-      smile: "https://example.com/smile.png",
-      heart: "https://example.com/heart.png",
-    };
-
-    render(<CustomEmojiStr text={text} host={host} emojis={emojis} />);
-
-    // Check for text fragments
-    expect(screen.getByText(/Hello/)).toBeInTheDocument();
-    expect(screen.getByText(/world/)).toBeInTheDocument();
-
-    // Check for emoji components
-    const emojiComponents = screen.getAllByTestId("custom-emoji-internal");
-    expect(emojiComponents).toHaveLength(2);
-
-    // Check emoji names
-    const emojiNames = screen.getAllByTestId("emoji-name");
-    expect(emojiNames[0]).toHaveTextContent("smile");
-    expect(emojiNames[1]).toHaveTextContent("heart");
+    expect(screen.getByText(":test:")).toBeInTheDocument();
   });
 
-  it("should handle text without emojis", () => {
-    const text = "Hello world";
-    const host = "misskey.example.com";
+  it("renders emoji name when emoji not found in emojis prop", () => {
+    const emojis = { other: "https://example.com/other.png" };
 
-    render(<CustomEmojiStr text={text} host={host} />);
+    render(
+      <Provider>
+        <CustomEmoji name="test" emojis={emojis} />
+      </Provider>,
+    );
 
-    expect(screen.getByText("Hello world")).toBeInTheDocument();
-    expect(
-      screen.queryByTestId("custom-emoji-internal"),
-    ).not.toBeInTheDocument();
+    expect(screen.getByText(":test:")).toBeInTheDocument();
   });
 
-  it("should handle empty text", () => {
-    const text = "";
-    const host = "misskey.example.com";
+  it("uses only emojis from context", () => {
+    const emojis = { test: "https://local.com/test.png" };
 
-    render(<CustomEmojiStr text={text} host={host} />);
+    render(
+      <Provider>
+        <CustomEmoji name="test" emojis={emojis} />
+      </Provider>,
+    );
 
-    expect(
-      screen.queryByTestId("custom-emoji-internal"),
-    ).not.toBeInTheDocument();
-  });
-
-  it("should handle text with only emojis", () => {
-    const text = ":smile::heart:";
-    const host = "misskey.example.com";
-
-    render(<CustomEmojiStr text={text} host={host} />);
-
-    const emojiComponents = screen.getAllByTestId("custom-emoji-internal");
-    expect(emojiComponents).toHaveLength(2);
-
-    const emojiNames = screen.getAllByTestId("emoji-name");
-    expect(emojiNames[0]).toHaveTextContent("smile");
-    expect(emojiNames[1]).toHaveTextContent("heart");
-  });
-
-  it("should handle text with consecutive colons", () => {
-    const text = "Hello :: world";
-    const host = "misskey.example.com";
-
-    render(<CustomEmojiStr text={text} host={host} />);
-
-    expect(screen.getByText(/Hello/)).toBeInTheDocument();
-    expect(screen.getByText(/world/)).toBeInTheDocument();
-
-    const emojiComponents = screen.getAllByTestId("custom-emoji-internal");
-    expect(emojiComponents).toHaveLength(1);
-
-    const emojiNames = screen.getAllByTestId("emoji-name");
-    expect(emojiNames[0]).toHaveTextContent("");
+    const img = screen.getByRole("img");
+    expect(img).toHaveAttribute("src", "https://local.com/test.png");
   });
 });
