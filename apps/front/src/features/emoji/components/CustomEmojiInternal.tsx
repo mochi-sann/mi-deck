@@ -2,12 +2,13 @@ import { EmojiImg } from "./EmojiImg";
 
 interface CustomEmojiInternalProps {
   name: string;
-  host?: string;
+  host: string;
   emojis?: { [key: string]: string };
 }
 
 export function CustomEmojiInternal({
   name,
+  host,
   emojis,
 }: CustomEmojiInternalProps) {
   // Only use local emoji data
