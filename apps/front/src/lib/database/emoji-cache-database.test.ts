@@ -101,7 +101,6 @@ describe("emoji-cache-database", () => {
         { host: "other.com", name: "star", url: "https://other.com/star.png" },
       ];
 
-      // biome-ignore lint/suspicious/noExplicitAny: テストに必須
       let subscribeCallback: (entries: any[]) => void;
       mockLiveQuery.mockImplementation(() => ({
         subscribe: vi.fn((callback) => {
