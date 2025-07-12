@@ -1,11 +1,16 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { Provider } from "jotai";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import CustomEmoji, { CustomEmojiCtx } from "./CustomEmoji";
 
+// Mock fetch
+const mockFetch = vi.fn();
+global.fetch = mockFetch;
+
 describe("CustomEmoji", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockFetch.mockClear();
   });
 
   it("renders emoji name when no URL is provided", () => {
@@ -38,7 +43,7 @@ describe("CustomEmoji", () => {
 
     render(
       <Provider>
-        <CustomEmojiCtx.Provider value={{ emojis }}>
+        <CustomEmojiCtx.Provider value={{ host: "example.com", emojis }}>
           <CustomEmoji name="test" />
         </CustomEmojiCtx.Provider>
       </Provider>,
@@ -48,38 +53,56 @@ describe("CustomEmoji", () => {
     expect(img).toHaveAttribute("src", "https://context.com/test.png");
   });
 
-  it("renders emoji name when no emojis prop provided", () => {
-    render(
-      <Provider>
-        <CustomEmoji name="test" />
-      </Provider>,
-    );
-
-    expect(screen.getByText(":test:")).toBeInTheDocument();
-  });
-
-  it("renders emoji name when emoji not found in emojis prop", () => {
-    const emojis = { other: "https://example.com/other.png" };
+  it("fetches emoji from host when not cached", async () => {
+    mockFetch.mockResolvedValueOnce({
+      json: async () => ({ url: "https://remote.com/emoji.png" }),
+    });
 
     render(
       <Provider>
-        <CustomEmoji name="test" emojis={emojis} />
+        <CustomEmoji name="test" host="remote.com" />
       </Provider>,
     );
 
-    expect(screen.getByText(":test:")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith(
+        "https://remote.com/api/emoji?name=test",
+      );
+    });
   });
 
-  it("uses only emojis from context", () => {
+  it("handles fetch error gracefully", async () => {
+    mockFetch.mockRejectedValueOnce(new Error("Network error"));
+
+    const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    render(
+      <Provider>
+        <CustomEmoji name="test" host="remote.com" />
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Failed to fetch emoji:",
+        expect.any(Error),
+      );
+    });
+
+    consoleSpy.mockRestore();
+  });
+
+  it("prefers local emojis over host", () => {
     const emojis = { test: "https://local.com/test.png" };
 
     render(
       <Provider>
-        <CustomEmoji name="test" emojis={emojis} />
+        <CustomEmoji name="test" host="remote.com" emojis={emojis} />
       </Provider>,
     );
 
     const img = screen.getByRole("img");
     expect(img).toHaveAttribute("src", "https://local.com/test.png");
+    expect(mockFetch).not.toHaveBeenCalled();
   });
 });
