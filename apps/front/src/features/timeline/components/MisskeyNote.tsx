@@ -1,5 +1,5 @@
 import type { Note } from "misskey-js/entities.js";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Text from "@/components/ui/text";
 import { CustomEmojiCtx } from "@/features/emoji";
@@ -17,22 +17,30 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
     Record<string, string | null>
   >({});
 
-  // Combine note emojis and user emojis, then convert to proxy URLs
-  const combinedEmojis = { ...note.emojis, ...note.user.emojis };
-  const proxiedEmojis = createProxiedEmojis(combinedEmojis, host);
+  // Memoize combined emojis and proxy URLs to prevent unnecessary recalculation
+  const proxiedEmojis = useMemo(() => {
+    const combinedEmojis = { ...note.emojis, ...note.user.emojis };
+    return createProxiedEmojis(combinedEmojis, host);
+  }, [note.emojis, note.user.emojis, host]);
 
-  // Filter out null values from customEmojis
-  const validCustomEmojis = Object.fromEntries(
-    Object.entries(customEmojis).filter(([, url]) => url !== null),
-  ) as Record<string, string>;
+  // Memoize filtered custom emojis
+  const validCustomEmojis = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(customEmojis).filter(([, url]) => url !== null),
+    ) as Record<string, string>;
+  }, [customEmojis]);
 
-  const allEmojis = {
-    ...proxiedEmojis,
-    ...validCustomEmojis,
-  };
+  // Memoize final emoji object
+  const allEmojis = useMemo(
+    () => ({
+      ...proxiedEmojis,
+      ...validCustomEmojis,
+    }),
+    [proxiedEmojis, validCustomEmojis],
+  );
 
-  // Extract custom emoji names from MFM text
-  useEffect(() => {
+  // Extract custom emoji names from MFM text and memoize
+  const extractedEmojiNames = useMemo(() => {
     const extractCustomEmojiNames = (text: string): string[] => {
       const emojiPattern = /:([a-zA-Z0-9_]+):/g;
       const matches = text.match(emojiPattern);
@@ -50,19 +58,27 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
       extractCustomEmojiNames(text).forEach((name) => allEmojiNames.add(name));
     }
 
-    const emojiNames = Array.from(allEmojiNames);
-    if (emojiNames.length > 0) {
-      fetchEmojis(emojiNames).then(setCustomEmojis);
+    return Array.from(allEmojiNames);
+  }, [note.text, user.name, user.username]);
+
+  // Fetch emojis when emoji names change
+  useEffect(() => {
+    if (extractedEmojiNames.length > 0) {
+      fetchEmojis(extractedEmojiNames).then(setCustomEmojis);
     }
-  }, [note.text, user.name, user.username, fetchEmojis]);
+  }, [extractedEmojiNames, fetchEmojis]);
+
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo(
+    () => ({
+      host,
+      emojis: allEmojis,
+    }),
+    [host, allEmojis],
+  );
 
   return (
-    <CustomEmojiCtx.Provider
-      value={{
-        host,
-        emojis: allEmojis,
-      }}
-    >
+    <CustomEmojiCtx.Provider value={contextValue}>
       <article
         key={note.id}
         className={cn(
@@ -137,5 +153,17 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
   );
 }
 
-const MisskeyNote = memo(MisskeyNoteBase);
+const MisskeyNote = memo(MisskeyNoteBase, (prevProps, nextProps) => {
+  // Only re-render if note or origin actually changed
+  return (
+    prevProps.note.id === nextProps.note.id &&
+    prevProps.note.text === nextProps.note.text &&
+    prevProps.note.emojis === nextProps.note.emojis &&
+    prevProps.note.user.emojis === nextProps.note.user.emojis &&
+    prevProps.note.user.name === nextProps.note.user.name &&
+    prevProps.note.user.username === nextProps.note.user.username &&
+    prevProps.origin === nextProps.origin
+  );
+});
+
 export { MisskeyNote };

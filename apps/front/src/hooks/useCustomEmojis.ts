@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from "jotai";
-import { useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { useForeignApi } from "@/hooks/useForeignApi";
 import { emojiFetchAtom } from "@/lib/atoms/emoji-fetch";
 import {
@@ -17,14 +17,24 @@ export function useCustomEmojis(host: string) {
   const [, updateCache] = useAtom(updateEmojiCacheAtom);
   const [fetches, setFetches] = useAtom(emojiFetchAtom);
 
+  // Use refs to maintain stable references for the callback
+  const cacheRef = useRef(cache);
+  const fetchesRef = useRef(fetches);
+  const updateCacheRef = useRef(updateCache);
+  const setFetchesRef = useRef(setFetches);
+
+  // Update refs when values change
+  cacheRef.current = cache;
+  fetchesRef.current = fetches;
+  updateCacheRef.current = updateCache;
+  setFetchesRef.current = setFetches;
+
   /**
    * 指定された絵文字名の配列を並列で取得する
    * キャッシュに存在する場合はキャッシュから、存在しない場合はAPIから取得
    */
-  const fetchEmojis = useMemo(() => {
-    return async (
-      emojiNames: string[],
-    ): Promise<Record<string, string | null>> => {
+  const fetchEmojis = useCallback(
+    async (emojiNames: string[]): Promise<Record<string, string | null>> => {
       if (!api || !host) return {};
 
       const result: Record<string, string | null> = {};
@@ -32,8 +42,8 @@ export function useCustomEmojis(host: string) {
 
       // キャッシュから取得可能な絵文字をチェック
       for (const name of emojiNames) {
-        if (cache[host]?.[name]) {
-          result[name] = cache[host][name];
+        if (cacheRef.current[host]?.[name]) {
+          result[name] = cacheRef.current[host][name];
         } else {
           toFetch.push(name);
         }
@@ -45,18 +55,18 @@ export function useCustomEmojis(host: string) {
           const key = `${name}@${host}`;
 
           // 既に取得中の場合は既存のPromiseを使用
-          if (key in fetches) {
-            return { name, url: await fetches[key] };
+          if (key in fetchesRef.current) {
+            return { name, url: await fetchesRef.current[key] };
           }
 
           // 新しく取得を開始
           const promise = api.emojiUrl(name);
-          setFetches((prev) => ({ ...prev, [key]: promise }));
+          setFetchesRef.current((prev) => ({ ...prev, [key]: promise }));
 
           try {
             const url = await promise;
             // 取得完了後、fetchesから削除
-            setFetches((prev) => {
+            setFetchesRef.current((prev) => {
               const newFetches = { ...prev };
               delete newFetches[key];
               return newFetches;
@@ -64,7 +74,7 @@ export function useCustomEmojis(host: string) {
             return { name, url };
           } catch (error) {
             console.warn(`Failed to fetch emoji ${name}:`, error);
-            setFetches((prev) => {
+            setFetchesRef.current((prev) => {
               const newFetches = { ...prev };
               delete newFetches[key];
               return newFetches;
@@ -83,13 +93,14 @@ export function useCustomEmojis(host: string) {
         }
 
         if (Object.keys(cacheUpdates).length > 0) {
-          updateCache({ host, cache: cacheUpdates });
+          updateCacheRef.current({ host, cache: cacheUpdates });
         }
       }
 
       return result;
-    };
-  }, [api, host, cache, fetches, setFetches, updateCache]);
+    },
+    [api, host],
+  );
 
   /**
    * 単一の絵文字を取得する
@@ -104,16 +115,20 @@ export function useCustomEmojis(host: string) {
   /**
    * キャッシュから絵文字URLを取得する（同期）
    */
-  const getEmojiFromCache = useMemo(() => {
-    return (emojiName: string): string | null => {
-      return cache[host]?.[emojiName] || null;
-    };
-  }, [cache, host]);
+  const getEmojiFromCache = useCallback(
+    (emojiName: string): string | null => {
+      return cacheRef.current[host]?.[emojiName] || null;
+    },
+    [host],
+  );
+
+  // Memoize the cache for this host to prevent unnecessary re-renders
+  const hostCache = useMemo(() => cache[host] || {}, [cache, host]);
 
   return {
     fetchEmojis,
     fetchEmoji,
     getEmojiFromCache,
-    cache: cache[host] || {},
+    cache: hostCache,
   };
 }
