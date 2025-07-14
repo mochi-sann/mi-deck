@@ -90,20 +90,6 @@ vi.mock("@/components/ui/avatar", () => ({
   ),
 }));
 
-vi.mock("@/components/ui/text", () => ({
-  default: ({
-    children,
-    className,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) => (
-    <span data-testid="text" className={className}>
-      {children}
-    </span>
-  ),
-}));
-
 const createMockNote = (overrides: Partial<Note> = {}): Note =>
   ({
     id: "note123",
@@ -153,10 +139,9 @@ describe("MisskeyNote", () => {
     expect(avatarImage).toHaveAttribute("src", note.user.avatarUrl);
 
     // Check username text
-    const textElements = screen.getAllByTestId("text");
-    expect(
-      textElements.some((el) => el.textContent?.includes("@testuser")),
-    ).toBe(true);
+    const usernameElement = screen.getByText("@testuser");
+    expect(usernameElement).toBeInTheDocument();
+    expect(usernameElement).toHaveClass("text-muted-foreground");
   });
 
   it("should combine and proxy emoji URLs", () => {
@@ -207,12 +192,9 @@ describe("MisskeyNote", () => {
     expect(userNameMfm).toBeInTheDocument();
 
     // Check username display
-    const textElements = screen.getAllByTestId("text");
-    const usernameText = textElements.find((el) =>
-      el.textContent?.includes("@customuser"),
-    );
-    expect(usernameText).toBeInTheDocument();
-    expect(usernameText).toHaveClass("text-muted-foreground");
+    const usernameElement = screen.getByText("@customuser");
+    expect(usernameElement).toBeInTheDocument();
+    expect(usernameElement).toHaveClass("text-muted-foreground");
   });
 
   it("should render note text with MfmText", () => {
