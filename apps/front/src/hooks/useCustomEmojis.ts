@@ -6,6 +6,7 @@ import {
   emojiCacheAtom,
   updateEmojiCacheAtom,
 } from "@/lib/database/emoji-cache-database";
+import type { EmojiResult } from "@/types/emoji";
 
 /**
  * カスタム絵文字の取得とキャッシュを管理するフック
@@ -24,8 +25,13 @@ export function useCustomEmojis(host: string) {
   const setFetchesRef = useRef(setFetches);
 
   // Update refs when values change using useEffect to avoid direct mutation
+  // Only update cache ref when cache actually changes (deep comparison for efficiency)
   useEffect(() => {
-    cacheRef.current = cache;
+    const hasChanged =
+      JSON.stringify(cacheRef.current) !== JSON.stringify(cache);
+    if (hasChanged) {
+      cacheRef.current = cache;
+    }
   }, [cache]);
 
   useEffect(() => {
@@ -45,10 +51,10 @@ export function useCustomEmojis(host: string) {
    * キャッシュに存在する場合はキャッシュから、存在しない場合はAPIから取得
    */
   const fetchEmojis = useCallback(
-    async (emojiNames: string[]): Promise<Record<string, string | null>> => {
+    async (emojiNames: string[]): Promise<EmojiResult> => {
       if (!api || !host) return {};
 
-      const result: Record<string, string | null> = {};
+      const result: EmojiResult = {};
       const toFetch: string[] = [];
 
       // キャッシュから取得可能な絵文字をチェック
@@ -97,7 +103,7 @@ export function useCustomEmojis(host: string) {
         const fetchResults = await Promise.all(fetchPromises);
 
         // 取得結果をキャッシュに保存
-        const cacheUpdates: Record<string, string | null> = {};
+        const cacheUpdates: EmojiResult = {};
         for (const { name, url } of fetchResults) {
           result[name] = url;
           cacheUpdates[name] = url;

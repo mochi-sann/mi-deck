@@ -1,8 +1,6 @@
 import { createContext } from "react";
+import type { CustomEmojiContext } from "@/types/emoji";
 
-export const CustomEmojiCtx = createContext<{
-  host: string | null;
-  emojis?: { [key: string]: string } | undefined;
-}>({
+export const CustomEmojiCtx = createContext<CustomEmojiContext>({
   host: null,
 });
