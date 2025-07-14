@@ -402,6 +402,32 @@
   }
 }
 
+@keyframes mfm-tada {
+	from {
+		transform: scale3d(1, 1, 1);
+	}
+
+	10%,
+	20% {
+		transform: scale3d(0.91, 0.91, 0.91) rotate3d(0, 0, 1, -2deg);
+	}
+
+	30%,
+	70% {
+		transform: scale3d(1.09, 1.09, 1.09) rotate3d(0, 0, 1, 2deg);
+	}
+
+	50%,
+	90% {
+		transform: scale3d(1.09, 1.09, 1.09) rotate3d(0, 0, 1, -2deg);
+	}
+
+	to {
+		transform: scale3d(1, 1, 1);
+	}
+}
+
+
 @keyframes mfm-sparkle {
   0% {
     opacity: 0;
