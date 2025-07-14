@@ -24,7 +24,7 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
     <CustomEmojiCtx.Provider value={contextValue}>
       <article
         className={cn(
-          "flex gap-3 border-b p-3 hover:bg-muted/50",
+          "flex flex-col gap-3 border-b p-3 hover:bg-muted/50",
           "transition-colors duration-200",
         )}
       >

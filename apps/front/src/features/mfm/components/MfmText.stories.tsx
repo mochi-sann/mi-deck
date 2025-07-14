@@ -69,7 +69,21 @@ export const Color: Story = {
 export const CustomEmoji: Story = {
   args: {
     host: "https://misskey.mochi33.com",
-    text: ":misskey:",
+    text: "こんにちは:misskey:",
+    emojis: {
+      misskey:
+        "https://misskey.mochi33.com/proxy/image.webp?url=https%3A%2F%2Fmiiiiiiiii.mochi33.com%2F%2F2a211aaf-20b5-4656-8f28-881b24bbc993.png&emoji=1",
+    },
+  },
+};
+export const CustomEmojiAndSclae: Story = {
+  args: {
+    host: "https://misskey.mochi33.com",
+    text: ":misskey: $[x2 :misskey: ]$[x3 :misskey:]$[x4 :misskey:]\n$[x3 misskey]\n $[scale.x=2.5 :misskey:]$[scale.y=0.5  :misskey:]$[scale.x=1.2,y=1.5  :misskey:]",
+    emojis: {
+      misskey:
+        "https://misskey.mochi33.com/proxy/image.webp?url=https%3A%2F%2Fmiiiiiiiii.mochi33.com%2F%2F2a211aaf-20b5-4656-8f28-881b24bbc993.png&emoji=1",
+    },
   },
 };
 

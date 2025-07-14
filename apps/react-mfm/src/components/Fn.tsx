@@ -293,6 +293,7 @@ function composeStyle(
             {
               animation: `mfm-rainbow ${speed ?? "1s"} linear infinite`,
               animationDelay: delay ?? "0s",
+              display: "inline-block",
             },
           ]
         : [undefined, "mfm-rainbowStatic"];
@@ -302,6 +303,7 @@ function composeStyle(
         {
           transform: `rotate(${numstr(args.deg) ?? 90}deg)`,
           transformOrigin: "center",
+          display: "inline-block",
         },
       ];
 
@@ -309,13 +311,16 @@ function composeStyle(
       return [
         advanced && {
           transform: `translateX(${numstr(args.x) ?? 0}em) translateY(${numstr(args.y) ?? 0}em)`,
+          display: "inline-block",
         },
       ];
 
     case "scale": {
       const x = Math.min(numstr(args.x) ?? 1, 5);
       const y = Math.min(numstr(args.y) ?? 1, 5);
-      return [advanced && { transform: `scale(${x}, ${y})` }];
+      return [
+        advanced && { transform: `scale(${x}, ${y})`, display: "inline-block" },
+      ];
     }
 
     case "fg":
