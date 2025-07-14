@@ -63,6 +63,8 @@
   background: var(--mfm-codeBg);
   color: var(--mfm-codeFg);
   border-radius: 0.4rem;
+  max-width: 100%;
+  overflow-x: scroll;
 }
 
 .mfm-center {
