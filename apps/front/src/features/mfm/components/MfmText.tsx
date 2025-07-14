@@ -12,9 +12,9 @@ interface MfmTextProps {
 export function MfmText({ text, host, emojis }: MfmTextProps) {
   return (
     <Fragment>
-      <div className="max-w-full">
+      <span>
         <Mfm text={text} host={host} emojis={emojis} />
-      </div>
+      </span>
     </Fragment>
   );
 }

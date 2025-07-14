@@ -1,6 +1,5 @@
 import type { Note } from "misskey-js/entities.js";
 import { memo } from "react";
-import Text from "@/components/ui/text";
 import { MfmText } from "@/features/mfm";
 import { cn } from "@/lib/utils";
 
@@ -16,15 +15,15 @@ export const MisskeyNoteContent = memo(
     return (
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2">
-            <MfmText
-              text={user.name || user.username}
-              host={origin}
-              emojis={emojis}
-            />
-            <Text variant="p" className="text-muted-foreground text-sm">
-              @{user.username}
-            </Text>
+          <div className="flex items-center gap-2 text-sm">
+            <p>
+              <MfmText
+                text={user.name || user.username}
+                host={origin}
+                emojis={emojis}
+              />
+              <span className="text-muted-foreground">@{user.username}</span>
+            </p>
           </div>
         </div>
         <div className="space-y-2">
