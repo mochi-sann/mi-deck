@@ -1,9 +1,10 @@
 import type { Note } from "misskey-js/entities.js";
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Text from "@/components/ui/text";
 import { CustomEmojiCtx } from "@/features/emoji";
 import { MfmText } from "@/features/mfm";
+import { useCustomEmojis } from "@/hooks/useCustomEmojis";
 import { cn } from "@/lib/utils";
 import { createProxiedEmojis } from "@/lib/utils/emoji-proxy";
 
@@ -11,10 +12,49 @@ import { createProxiedEmojis } from "@/lib/utils/emoji-proxy";
 function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
   const user = note.user;
   const host = origin || "";
+  const { fetchEmojis } = useCustomEmojis(host);
+  const [customEmojis, setCustomEmojis] = useState<
+    Record<string, string | null>
+  >({});
 
   // Combine note emojis and user emojis, then convert to proxy URLs
   const combinedEmojis = { ...note.emojis, ...note.user.emojis };
-  const allEmojis = createProxiedEmojis(combinedEmojis, host);
+  const proxiedEmojis = createProxiedEmojis(combinedEmojis, host);
+
+  // Filter out null values from customEmojis
+  const validCustomEmojis = Object.fromEntries(
+    Object.entries(customEmojis).filter(([, url]) => url !== null),
+  ) as Record<string, string>;
+
+  const allEmojis = {
+    ...proxiedEmojis,
+    ...validCustomEmojis,
+  };
+
+  // Extract custom emoji names from MFM text
+  useEffect(() => {
+    const extractCustomEmojiNames = (text: string): string[] => {
+      const emojiPattern = /:([a-zA-Z0-9_]+):/g;
+      const matches = text.match(emojiPattern);
+      return matches ? matches.map((match) => match.slice(1, -1)) : [];
+    };
+
+    const textsToCheck = [
+      note.text || "",
+      user.name || "",
+      user.username || "",
+    ].filter(Boolean);
+
+    const allEmojiNames = new Set<string>();
+    for (const text of textsToCheck) {
+      extractCustomEmojiNames(text).forEach((name) => allEmojiNames.add(name));
+    }
+
+    const emojiNames = Array.from(allEmojiNames);
+    if (emojiNames.length > 0) {
+      fetchEmojis(emojiNames).then(setCustomEmojis);
+    }
+  }, [note.text, user.name, user.username, fetchEmojis]);
 
   return (
     <CustomEmojiCtx.Provider

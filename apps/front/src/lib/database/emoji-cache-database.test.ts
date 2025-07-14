@@ -22,13 +22,15 @@ Object.defineProperty(global, "IDBKeyRange", {
 });
 
 // Create hoisted mock functions
+const mockSubscription = {
+  unsubscribe: vi.fn(),
+};
+
 const mockLiveQuery = vi.hoisted(() =>
   vi.fn(() => ({
     subscribe: vi.fn((callback) => {
       callback([]);
-      return {
-        unsubscribe: vi.fn(),
-      };
+      return mockSubscription;
     }),
   })),
 );
