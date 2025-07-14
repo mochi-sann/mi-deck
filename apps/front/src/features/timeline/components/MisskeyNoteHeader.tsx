@@ -15,7 +15,10 @@ export const MisskeyNoteHeader = memo(
     return (
       <div className="flex items-center gap-2">
         <Avatar className="h-10 w-10 bg-slate-900">
-          <AvatarImage src={user.avatarUrl} alt={user.name || user.username} />
+          <AvatarImage
+            src={user.avatarUrl || undefined}
+            alt={user.name || user.username}
+          />
           <AvatarFallback className="text-white">
             {(user.name || user.username)?.[0]?.toUpperCase()}
           </AvatarFallback>
