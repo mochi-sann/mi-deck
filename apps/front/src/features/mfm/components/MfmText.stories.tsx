@@ -140,9 +140,12 @@ export const Complex: Story = {
 };
 export const IroIro: Story = {
   args: {
+    emojis: {
+      misskey:
+        "https://misskey.mochi33.com/proxy/image.webp?url=https%3A%2F%2Fmiiiiiiiii.mochi33.com%2F%2F2a211aaf-20b5-4656-8f28-881b24bbc993.png&emoji=1",
+    },
     text: String.raw`
-
-    <center>MisskeyでFediverseの世界が広がります</center>
+<center>MisskeyでFediverseの世界が広がります</center>
 react-mfm [search]
 hi @user@example.org ! #React #MFM
 > MisskeyでFediverseの世界が広がります
@@ -174,7 +177,8 @@ $[bg.color=ff0 黄背景]
 > MisskeyでFediverseの世界が広がります
 <center>MisskeyでFediverseの世界が広がります</center>
 $[ruby Misskey ミスキー]
-$[blur MisskeyでFediverseの世界が広がります]
+$[ruby Misskey :misskey:]
+$[blur MisskeyでFediverse:misskey:の世界が広がります]
 misskey 検索
 $[rotate.deg=30 misskey]
 😏$[position.x=0.8,y=0.5 🍮]😀
