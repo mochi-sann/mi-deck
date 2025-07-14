@@ -14,7 +14,7 @@ export const MisskeyNoteContent = memo(
   ({ note, origin, emojis }: MisskeyNoteContentProps) => {
     const user = note.user;
     return (
-      <div>
+      <div className="flex flex-col gap-1">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2">
             <MfmText
@@ -27,7 +27,7 @@ export const MisskeyNoteContent = memo(
             </Text>
           </div>
         </div>
-        <div className="mt-2 space-y-2">
+        <div className="space-y-2">
           {note.text && (
             <MfmText text={note.text} host={origin} emojis={emojis} />
           )}
