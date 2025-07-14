@@ -9,7 +9,6 @@ const mockSubscription = {
 };
 
 // Mock liveQuery function - create it inline to avoid hoisting issues
-const mockLiveQuery = vi.fn();
 
 // Mock Dexie and liveQuery
 vi.mock("dexie", () => ({
