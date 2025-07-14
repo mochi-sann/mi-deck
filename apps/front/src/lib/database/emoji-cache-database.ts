@@ -1,9 +1,9 @@
 import Dexie, { type EntityTable, liveQuery } from "dexie";
 import { atom } from "jotai";
-import type { EmojiCache, EmojiCacheEntry } from "../models/emoji-cache";
+import type { EmojiCache, EmojiCacheEntry } from "@/types/emoji-cache";
 
 const emojiCacheDbAtom = atom((_get) => {
-  const db = new Dexie("@mideck-react-fmf-emoji-cache") as Dexie & {
+  const db = new Dexie("@mideck-front-emoji-cache") as Dexie & {
     emojiCache: EntityTable<EmojiCacheEntry, "id">;
   };
   db.version(1).stores({

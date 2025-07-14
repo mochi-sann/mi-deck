@@ -1,90 +1,100 @@
 import type { Note } from "misskey-js/entities.js";
-import { memo } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Text from "@/components/ui/text";
-import { MfmText } from "@/features/mfm";
-import { cn } from "@/lib/utils"; // Import cn utility
+import { memo, useMemo } from "react";
+import { CustomEmojiCtx } from "@/features/emoji";
+import { cn } from "@/lib/utils";
+import { useNoteEmojis } from "./hooks/useNoteEmojis";
+import { MisskeyNoteContent } from "./MisskeyNoteContent";
+import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
 
 // Component to display a single Misskey note with a Twitter-like design
 function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
-  const user = note.user;
   const host = origin || "";
+  const { allEmojis } = useNoteEmojis(note, origin);
 
-  // Combine note emojis and user emojis
-  const allEmojis = { ...note.emojis, ...note.user.emojis };
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo(
+    () => ({
+      host,
+      emojis: allEmojis,
+    }),
+    [host, allEmojis],
+  );
 
   return (
-    <article
-      key={note.id}
-      className={cn(
-        "flex gap-3 border-b p-3 hover:bg-muted/50", // Translated styles
-      )}
-    >
-      {/* Avatar Column */}
-      <div className="shrink-0">
-        <Avatar className="h-10 w-10 bg-slate-900">
-          <AvatarImage src={note.user.avatarUrl || ""} />
-          <AvatarFallback className="bg-slate-800">
-            <MfmText
-              text={note.user.username || user.username}
-              host={host}
-              emojis={note.user.emojis}
-            />
-          </AvatarFallback>{" "}
-          {/* Fallback with username */}
-        </Avatar>
-      </div>
-
-      {/* Content Column */}
-      <div className="flex min-w-0 grow flex-col">
-        {/* Header: User Info */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          <Text className="font-semibold">
-            {/* Added font-semibold for name */}
-            <MfmText
-              text={user.name || user.username}
-              host={host}
-              emojis={note.emojis}
-            />
-            {/* Display name or username if name is missing */}
-          </Text>
-          <Text className="text-muted-foreground">@{user.username}</Text>{" "}
-          {/* Use muted-foreground */}
-          {/* Optional: Timestamp - requires date formatting */}
-          {/* <Text className="text-xs text-muted-foreground">· {formatDistanceToNow(new Date(note.createdAt))}</Text> */}
+    <CustomEmojiCtx.Provider value={contextValue}>
+      <article
+        className={cn(
+          "flex flex-row gap-3 border-b p-3 hover:bg-muted/50",
+          "transition-colors duration-200",
+        )}
+      >
+        <div>
+          <MisskeyNoteHeader user={note.user} />
         </div>
-
-        {/* Body: Note Text */}
-        <div className="mt-1">
-          {/* Use whitespace pre-wrap to preserve line breaks */}
-          {/* Assuming Text component handles text display or replace with <p> */}
-          <div>
-            {/* Added whitespace and break-words */}
-            {note.text && (
-              <MfmText text={note.text} host={host} emojis={allEmojis} />
-            )}
-            {/* Style italic text */}
-          </div>
+        <div className="flex-1 space-y-1">
+          <MisskeyNoteContent note={note} origin={origin} emojis={allEmojis} />
         </div>
-        {/* Image attachments */}
-        <div className="mt-2">
-          {" "}
-          {/* Added margin-top for images */}
-          {note.files?.map((file) => (
-            <img
-              key={file.id}
-              src={file.url}
-              alt="Note Attachment"
-              className="mt-2 h-auto max-w-full rounded-md border" // Added Tailwind classes for styling
-            />
-          ))}
-        </div>
-
-        {/* Optional: Actions (Reply, Renote, Like) - Add later if needed */}
-        {/* <div className="mt-2 flex gap-4"> ... </div> */}
-      </div>
-    </article>
+      </article>
+    </CustomEmojiCtx.Provider>
   );
 }
-const MisskeyNote = memo(MisskeyNoteBase);
+
+/**
+ * 絵文字オブジェクトの深い比較を行う関数
+ * オブジェクトが同じ内容で再作成される場合を考慮
+ */
+const areEmojisEqual = (
+  prev: Record<string, string>,
+  next: Record<string, string>,
+): boolean => {
+  const prevKeys = Object.keys(prev);
+  const nextKeys = Object.keys(next);
+
+  if (prevKeys.length !== nextKeys.length) return false;
+
+  return prevKeys.every((key) => prev[key] === next[key]);
+};
+
+/**
+ * MisskeyNoteの比較関数
+ * 不要な再レンダリングを防ぐために各プロパティを詳細に比較
+ */
+const areMisskeyNotePropsEqual = (
+  prevProps: { note: Note; origin: string },
+  nextProps: { note: Note; origin: string },
+): boolean => {
+  // 基本的なプロパティの比較
+  if (
+    prevProps.note.id !== nextProps.note.id ||
+    prevProps.note.text !== nextProps.note.text ||
+    prevProps.origin !== nextProps.origin
+  ) {
+    return false;
+  }
+
+  // ユーザー情報の比較
+  if (
+    prevProps.note.user.name !== nextProps.note.user.name ||
+    prevProps.note.user.username !== nextProps.note.user.username ||
+    prevProps.note.user.avatarUrl !== nextProps.note.user.avatarUrl
+  ) {
+    return false;
+  }
+
+  // 絵文字オブジェクトの深い比較
+  if (
+    !areEmojisEqual(prevProps.note.emojis || {}, nextProps.note.emojis || {}) ||
+    !areEmojisEqual(
+      prevProps.note.user.emojis || {},
+      nextProps.note.user.emojis || {},
+    )
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+const MisskeyNote = memo(MisskeyNoteBase, areMisskeyNotePropsEqual);
+
 export { MisskeyNote };

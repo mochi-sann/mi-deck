@@ -12,7 +12,9 @@ interface MfmTextProps {
 export function MfmText({ text, host, emojis }: MfmTextProps) {
   return (
     <Fragment>
-      <Mfm text={text} host={host} emojis={emojis} />
+      <span>
+        <Mfm text={text} host={host} emojis={emojis} />
+      </span>
     </Fragment>
   );
 }

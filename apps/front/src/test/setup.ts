@@ -158,9 +158,36 @@ const handlers = [
   http.post("https://example2.org/api/notes/local-timeline", () => {
     return HttpResponse.json(mockNotes);
   }),
+  // Emoji API handlers
+  http.get("https://example.com/api/emoji", ({ request }) => {
+    const url = new URL(request.url);
+    const name = url.searchParams.get("name");
+
+    if (name === "smile") {
+      return HttpResponse.json({ url: "https://example.com/emoji.png" });
+    }
+    if (name === "smile_face") {
+      return HttpResponse.json({ url: "https://example.com/emoji_face.png" });
+    }
+    if (name === "") {
+      return HttpResponse.json({ url: "https://example.com/empty.png" });
+    }
+
+    return HttpResponse.json({ url: null });
+  }),
+  http.get("/api/emoji", ({ request }) => {
+    const url = new URL(request.url);
+    const name = url.searchParams.get("name");
+
+    if (name === "smile") {
+      return HttpResponse.json({ url: "https://example.com/emoji.png" });
+    }
+
+    return HttpResponse.json({ url: null });
+  }),
 ];
 
-const server = setupServer(...handlers);
+export const server = setupServer(...handlers);
 
 // Start the server before all tests
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
