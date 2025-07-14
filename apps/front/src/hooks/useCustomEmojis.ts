@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from "jotai";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useForeignApi } from "@/hooks/useForeignApi";
 import { emojiFetchAtom } from "@/lib/atoms/emoji-fetch";
 import {
@@ -23,11 +23,22 @@ export function useCustomEmojis(host: string) {
   const updateCacheRef = useRef(updateCache);
   const setFetchesRef = useRef(setFetches);
 
-  // Update refs when values change
-  cacheRef.current = cache;
-  fetchesRef.current = fetches;
-  updateCacheRef.current = updateCache;
-  setFetchesRef.current = setFetches;
+  // Update refs when values change using useEffect to avoid direct mutation
+  useEffect(() => {
+    cacheRef.current = cache;
+  }, [cache]);
+
+  useEffect(() => {
+    fetchesRef.current = fetches;
+  }, [fetches]);
+
+  useEffect(() => {
+    updateCacheRef.current = updateCache;
+  }, [updateCache]);
+
+  useEffect(() => {
+    setFetchesRef.current = setFetches;
+  }, [setFetches]);
 
   /**
    * 指定された絵文字名の配列を並列で取得する

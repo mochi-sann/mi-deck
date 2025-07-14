@@ -154,14 +154,31 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
 }
 
 const MisskeyNote = memo(MisskeyNoteBase, (prevProps, nextProps) => {
+  // Deep comparison for emojis objects since they can be recreated with same content
+  const emojisEqual = (
+    prev: Record<string, string>,
+    next: Record<string, string>,
+  ) => {
+    const prevKeys = Object.keys(prev);
+    const nextKeys = Object.keys(next);
+
+    if (prevKeys.length !== nextKeys.length) return false;
+
+    return prevKeys.every((key) => prev[key] === next[key]);
+  };
+
   // Only re-render if note or origin actually changed
   return (
     prevProps.note.id === nextProps.note.id &&
     prevProps.note.text === nextProps.note.text &&
-    prevProps.note.emojis === nextProps.note.emojis &&
-    prevProps.note.user.emojis === nextProps.note.user.emojis &&
+    emojisEqual(prevProps.note.emojis || {}, nextProps.note.emojis || {}) &&
+    emojisEqual(
+      prevProps.note.user.emojis || {},
+      nextProps.note.user.emojis || {},
+    ) &&
     prevProps.note.user.name === nextProps.note.user.name &&
     prevProps.note.user.username === nextProps.note.user.username &&
+    prevProps.note.user.avatarUrl === nextProps.note.user.avatarUrl &&
     prevProps.origin === nextProps.origin
   );
 });

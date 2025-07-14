@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useCustomEmojis } from "./useCustomEmojis";
 
 // Mock the useForeignApi hook
-vi.mock("./useForeignApi", () => ({
+vi.mock("@/hooks/useForeignApi", () => ({
   useForeignApi: vi.fn(),
 }));
 
@@ -26,7 +26,7 @@ describe("useCustomEmojis", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    const { useForeignApi } = require("./useForeignApi");
+    const { useForeignApi } = require("@/hooks/useForeignApi");
     useForeignApi.mockReturnValue(mockApi);
   });
 
@@ -38,7 +38,7 @@ describe("useCustomEmojis", () => {
 
   describe("fetchEmojis", () => {
     it("should return empty object when no api or host", async () => {
-      const { useForeignApi } = require("./useForeignApi");
+      const { useForeignApi } = require("@/hooks/useForeignApi");
       useForeignApi.mockReturnValue(null);
 
       const { result } = renderHookWithProvider("");
