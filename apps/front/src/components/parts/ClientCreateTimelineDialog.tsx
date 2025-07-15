@@ -1,6 +1,6 @@
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as v from "valibot";
 import { Button } from "@/components/ui/button";
@@ -37,25 +37,45 @@ type ClientCreateTimelineDialogProps = {
 };
 
 const createFormSchema = (t: (key: string) => string) =>
-  v.object({
-    serverId: v.pipe(
-      v.string(),
-      v.nonEmpty(t("createDialog.validation.selectServer")),
+  v.pipe(
+    v.object({
+      serverId: v.pipe(
+        v.string(),
+        v.nonEmpty(t("createDialog.validation.selectServer")),
+      ),
+      type: v.union(
+        [
+          v.literal("home"),
+          v.literal("local"),
+          v.literal("social"),
+          v.literal("global"),
+          v.literal("user"),
+        ],
+        t("createDialog.validation.selectType"),
+      ),
+      name: v.pipe(
+        v.string(t("createDialog.validation.enterName")),
+        v.minLength(1),
+      ),
+      userId: v.optional(v.string()),
+    }),
+    v.forward(
+      v.partialCheck(
+        [["type"], ["userId"]],
+        (input) => {
+          if (
+            input.type === "user" &&
+            (!input.userId || input.userId.trim() === "")
+          ) {
+            return false;
+          }
+          return true;
+        },
+        t("createDialog.validation.userIdRequired"),
+      ),
+      ["userId"],
     ),
-    type: v.union(
-      [
-        v.literal("home"),
-        v.literal("local"),
-        v.literal("social"),
-        v.literal("global"),
-      ],
-      t("createDialog.validation.selectType"),
-    ),
-    name: v.pipe(
-      v.string(t("createDialog.validation.enterName")),
-      v.minLength(1),
-    ),
-  });
+  );
 
 export function ClientCreateTimelineDialog({
   isOpen,
@@ -74,7 +94,13 @@ export function ClientCreateTimelineDialog({
       serverId: "",
       type: "home",
       name: "",
+      userId: "",
     },
+  });
+
+  const watchedType = useWatch({
+    control: form.control,
+    name: "type",
   });
 
   const onSubmit = async (values: FormValues) => {
@@ -92,6 +118,9 @@ export function ClientCreateTimelineDialog({
           withReplies: false,
           withFiles: false,
           excludeNsfw: false,
+          ...(values.type === "user" && values.userId
+            ? { userId: values.userId }
+            : {}),
         },
       });
 
@@ -177,6 +206,9 @@ export function ClientCreateTimelineDialog({
                       <SelectItem value="global">
                         {t("createDialog.types.global")}
                       </SelectItem>
+                      <SelectItem value="user">
+                        {t("createDialog.types.user")}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -200,6 +232,25 @@ export function ClientCreateTimelineDialog({
                 </FormItem>
               )}
             />
+
+            {watchedType === "user" && (
+              <FormField
+                control={form.control}
+                name="userId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("createDialog.userIdLabel")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t("createDialog.userIdPlaceholder")}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <DialogFooter>
               <Button type="submit" disabled={storage.isLoading}>

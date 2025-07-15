@@ -1,6 +1,6 @@
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import * as v from "valibot";
 import { MenuFieldSet } from "@/components/forms/MenuFieldSet";
 import { TextFieldSet } from "@/components/forms/TextFieldSet";
@@ -12,22 +12,43 @@ import type { MisskeyServerConnection } from "@/lib/storage/types";
 type CreateTimelineFormType = {
   serverId: string;
   name: string;
-  type: "home" | "local" | "social" | "global";
+  type: "home" | "local" | "social" | "global" | "user";
+  userId?: string;
 };
 
-const schema = v.object({
-  serverId: v.pipe(v.string(), v.minLength(1, "Server is required.")),
-  name: v.pipe(v.string(), v.minLength(1, "Timeline name is required.")),
-  type: v.union(
-    [
-      v.literal("home"),
-      v.literal("local"),
-      v.literal("social"),
-      v.literal("global"),
-    ],
-    "Timeline type is required.",
+const schema = v.pipe(
+  v.object({
+    serverId: v.pipe(v.string(), v.minLength(1, "Server is required.")),
+    name: v.pipe(v.string(), v.minLength(1, "Timeline name is required.")),
+    type: v.union(
+      [
+        v.literal("home"),
+        v.literal("local"),
+        v.literal("social"),
+        v.literal("global"),
+        v.literal("user"),
+      ],
+      "Timeline type is required.",
+    ),
+    userId: v.optional(v.string()),
+  }),
+  v.forward(
+    v.partialCheck(
+      [["type"], ["userId"]],
+      (input) => {
+        if (
+          input.type === "user" &&
+          (!input.userId || input.userId.trim() === "")
+        ) {
+          return false;
+        }
+        return true;
+      },
+      "User ID is required for user timeline.",
+    ),
+    ["userId"],
   ),
-});
+);
 
 type CreateTimelineFormProps = {
   servers: MisskeyServerConnection[];
@@ -47,6 +68,7 @@ export function CreateTimelineForm(props: CreateTimelineFormProps) {
       serverId: "",
       name: "",
       type: "home",
+      userId: "",
     },
   });
 
@@ -65,7 +87,14 @@ export function CreateTimelineForm(props: CreateTimelineFormProps) {
     { label: "Local", value: "local" },
     { label: "Social", value: "social" },
     { label: "Global", value: "global" },
+    { label: "User", value: "user" },
   ];
+
+  // Watch the timeline type to conditionally show userId field
+  const watchedType = useWatch({
+    control,
+    name: "type",
+  });
 
   const onSubmit = async (data: CreateTimelineFormType) => {
     setIsLoading(true);
@@ -80,6 +109,10 @@ export function CreateTimelineForm(props: CreateTimelineFormProps) {
         type: data.type,
         order: timelineCount,
         isVisible: true,
+        settings:
+          data.type === "user" && data.userId
+            ? { userId: data.userId }
+            : undefined,
       });
       setSuccess(true);
     } catch (err) {
@@ -118,6 +151,17 @@ export function CreateTimelineForm(props: CreateTimelineFormProps) {
         collection={timelineTypeOptions}
         validation={errors.type?.message ?? ""}
       />
+
+      {watchedType === "user" && (
+        <TextFieldSet
+          control={control}
+          name="userId"
+          label="User ID"
+          placeholder="Enter Misskey user ID (e.g., 9p332xwemp)"
+          type="text"
+          validation={errors.userId?.message ?? ""}
+        />
+      )}
 
       <Button type="submit" isLoading={isLoading} buttonWidth={"full"}>
         Create Timeline

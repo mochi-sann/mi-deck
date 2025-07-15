@@ -4,6 +4,7 @@ import type {
   TimelineConfig,
 } from "@/lib/storage/types";
 import { HomeTimelineContent } from "./HomeTimelineContent";
+import { UserTimelineContent } from "./UserTimelineContent";
 
 export type SwitchTimeLineTypeProps = {
   timeline: TimelineConfig & { server: MisskeyServerConnection };
@@ -50,6 +51,23 @@ export const SwitchTimeLineType: React.FC<SwitchTimeLineTypeProps> = (
           type={"global"}
         />
       );
+
+    case "user":
+      if (!timeline.settings?.userId) {
+        return (
+          <div>
+            <p>ユーザーIDが設定されていません</p>
+          </div>
+        );
+      }
+      return (
+        <UserTimelineContent
+          origin={timeline.server.origin}
+          token={timeline.server.accessToken ?? ""}
+          userId={timeline.settings.userId}
+        />
+      );
+
     default:
       return (
         <div>

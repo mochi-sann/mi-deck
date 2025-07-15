@@ -23,13 +23,14 @@ export interface TimelineConfig {
   id: string;
   name: string;
   serverId: string;
-  type: "home" | "local" | "social" | "global" | "list" | "channel";
+  type: "home" | "local" | "social" | "global" | "list" | "channel" | "user";
   order: number;
   isVisible: boolean;
   settings?: {
     withReplies?: boolean;
     withFiles?: boolean;
     excludeNsfw?: boolean;
+    userId?: string; // ユーザータイムライン用
   };
   createdAt: Date;
   updatedAt: Date;
