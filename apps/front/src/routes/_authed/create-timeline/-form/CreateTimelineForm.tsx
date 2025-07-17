@@ -109,10 +109,7 @@ export function CreateTimelineForm(props: CreateTimelineFormProps) {
         type: data.type,
         order: timelineCount,
         isVisible: true,
-        settings:
-          data.type === "user" && data.userId
-            ? { userId: data.userId }
-            : undefined,
+        settings: data.userId ? { userId: data.userId } : undefined,
       });
       setSuccess(true);
     } catch (err) {

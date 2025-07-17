@@ -18,6 +18,7 @@ export function useNoteEmojis(note: Note, origin: string) {
     const combinedEmojis = { ...note.emojis, ...note.user.emojis };
     return createProxiedEmojis(combinedEmojis, host);
   }, [note.emojis, note.user.emojis, host]);
+  const emojiKeys: string[] = Object.keys(proxiedEmojis);
 
   // Memoize filtered custom emojis
   const validCustomEmojis = useMemo(() => {
@@ -59,9 +60,12 @@ export function useNoteEmojis(note: Note, origin: string) {
   }, [note.text, user.name, user.username]);
 
   // Fetch emojis when emoji names change
+  // biome-ignore lint/correctness/useExhaustiveDependencies:  emojiKeys を依存か除外
   useEffect(() => {
     if (extractedEmojiNames.length > 0) {
-      fetchEmojis(extractedEmojiNames)
+      fetchEmojis(
+        extractedEmojiNames.filter((item) => !emojiKeys.includes(item)),
+      )
         .then(setCustomEmojis)
         .catch((error) => {
           console.error("Failed to fetch emojis:", error);
