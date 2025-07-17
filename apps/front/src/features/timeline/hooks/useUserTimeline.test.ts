@@ -10,17 +10,22 @@ vi.mock("misskey-js/api.js", () => ({
 }));
 
 describe("useUserTimeline", () => {
+  const mockRequest = vi.fn();
   const mockApiClient = {
-    request: vi.fn(),
-  };
+    request: mockRequest,
+    origin: "https://example.com",
+    credential: "token",
+    fetch: vi.fn(),
+  } as unknown as APIClient;
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockRequest.mockClear();
     vi.mocked(APIClient).mockImplementation(() => mockApiClient);
   });
 
   it("should initialize with correct default values", async () => {
-    mockApiClient.request.mockResolvedValueOnce([]);
+    mockRequest.mockResolvedValueOnce([]);
 
     const { result } = renderHook(() =>
       useUserTimeline("https://example.com", "token", "user123"),
@@ -51,7 +56,7 @@ describe("useUserTimeline", () => {
       { id: "2", text: "Test note 2" },
     ];
 
-    mockApiClient.request.mockResolvedValueOnce(mockNotes);
+    mockRequest.mockResolvedValueOnce(mockNotes);
 
     const { result } = renderHook(() =>
       useUserTimeline("https://example.com", "token", "user123"),
@@ -61,7 +66,7 @@ describe("useUserTimeline", () => {
       expect(result.current.notes).toEqual(mockNotes);
     });
 
-    expect(mockApiClient.request).toHaveBeenCalledWith("users/notes", {
+    expect(mockRequest).toHaveBeenCalledWith("users/notes", {
       userId: "user123",
       limit: 20,
     });
@@ -69,7 +74,7 @@ describe("useUserTimeline", () => {
 
   it("should handle API errors gracefully", async () => {
     const errorMessage = "API Error";
-    mockApiClient.request.mockRejectedValueOnce(new Error(errorMessage));
+    mockRequest.mockRejectedValueOnce(new Error(errorMessage));
 
     const { result } = renderHook(() =>
       useUserTimeline("https://example.com", "token", "user123"),
@@ -84,7 +89,7 @@ describe("useUserTimeline", () => {
   it("should handle pagination with untilId", async () => {
     const mockNotes = [{ id: "3", text: "Test note 3" }];
 
-    mockApiClient.request.mockResolvedValueOnce(mockNotes);
+    mockRequest.mockResolvedValueOnce(mockNotes);
 
     const { result } = renderHook(() =>
       useUserTimeline("https://example.com", "token", "user123"),
@@ -105,7 +110,7 @@ describe("useUserTimeline", () => {
     result.current.loadMore();
 
     await waitFor(() => {
-      expect(mockApiClient.request).toHaveBeenCalledWith("users/notes", {
+      expect(mockRequest).toHaveBeenCalledWith("users/notes", {
         userId: "user123",
         limit: 20,
         untilId: "1",
@@ -117,7 +122,7 @@ describe("useUserTimeline", () => {
     const mockNotes = [{ id: "1", text: "Test note 1" }];
 
     // First call fails
-    mockApiClient.request.mockRejectedValueOnce(new Error("Network error"));
+    mockRequest.mockRejectedValueOnce(new Error("Network error"));
 
     const { result } = renderHook(() =>
       useUserTimeline("https://example.com", "token", "user123"),
@@ -128,7 +133,7 @@ describe("useUserTimeline", () => {
     });
 
     // Second call succeeds
-    mockApiClient.request.mockResolvedValueOnce(mockNotes);
+    mockRequest.mockResolvedValueOnce(mockNotes);
 
     result.current.retryFetch();
 

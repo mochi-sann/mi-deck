@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { UserTimelineContent } from "./UserTimelineContent";
 
 // Mock dependencies
@@ -10,8 +10,8 @@ vi.mock("../hooks/useUserTimeline", () => ({
 
 const mockUseVirtualizer = vi.hoisted(() =>
   vi.fn(() => ({
-    getVirtualItems: () => [],
-    getTotalSize: () => 0,
+    getVirtualItems: vi.fn(() => []),
+    getTotalSize: vi.fn(() => 0),
     measureElement: vi.fn(),
   })),
 );
@@ -130,12 +130,15 @@ describe("UserTimelineContent", () => {
     });
 
     // Mock useVirtualizer to return virtual items
+    const mockGetVirtualItems = vi.fn(() => [
+      { index: 0, start: 0, end: 100, size: 100, key: 0 },
+      { index: 1, start: 100, end: 200, size: 100, key: 1 },
+    ]);
+    const mockGetTotalSize = vi.fn(() => 200);
+
     mockUseVirtualizer.mockReturnValue({
-      getVirtualItems: () => [
-        { index: 0, start: 0, end: 100, size: 100 },
-        { index: 1, start: 100, end: 200, size: 100 },
-      ],
-      getTotalSize: () => 200,
+      getVirtualItems: mockGetVirtualItems,
+      getTotalSize: mockGetTotalSize,
       measureElement: vi.fn(),
     });
 

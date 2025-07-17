@@ -35,12 +35,6 @@ export function useUserTimeline(origin: string, token: string, userId: string) {
         credential: token,
       });
 
-      const _params = {
-        userId,
-        ...(untilId && { untilId }),
-        limit: 20, // Default limit for user notes
-      };
-
       // biome-ignore lint/suspicious/noExplicitAny: UserNotes response type
       const res = await client.request("users/notes", {
         userId,
