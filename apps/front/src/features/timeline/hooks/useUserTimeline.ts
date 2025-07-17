@@ -125,12 +125,15 @@ export function useUserTimeline(origin: string, token: string, userId: string) {
   };
 
   // Load user timeline when parameters change
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 除外
   useEffect(() => {
-    // setNotes([]);
-    // // setError(null);
-    // setHasMore(true);
-    // fetchNotes();
-  }, []);
+    if (isValidConfig) {
+      setNotes([]);
+      setError(null);
+      setHasMore(true);
+      fetchNotes();
+    }
+  }, [isValidConfig]);
 
   const retryFetch = () => {
     setError(null);
