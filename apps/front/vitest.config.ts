@@ -11,6 +11,22 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: "./src/test/setup.ts", // React Testing Library の拡張マッチャーなどを設定する場合
     include: ["src/**/*.test.{ts,tsx}"],
+    exclude: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/coverage/**",
+      "**/.next/**",
+      "**/.nuxt/**",
+      "**/out/**",
+      "**/cypress/**",
+      "**/e2e/**",
+      "**/playwright/**",
+      "**/vitest.config.ts", // Vitestの設定ファイルはテスト対象外
+      "**/.storybook/**", // Storybookの設定ディレクトリを除外
+      "**/storybook-static/**", // Storybookのビルド出力を除外
+      "**/*.stories.{ts,tsx,js,jsx}", // Storybookのストーリーファイルを除外
+    ],
     alias: {
       "~": new URL("./src", import.meta.url).pathname,
       "@": new URL("./src", import.meta.url).pathname,
