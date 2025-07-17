@@ -112,6 +112,7 @@ function SortableTimeline({
     server: server,
     serverId: server.id,
     isVisible: timeline.isVisible,
+    settings: timeline.settings,
     // serverSessionId: timeline.serverId,
     // serverSession: {
     //   id: server.id,

@@ -30,6 +30,8 @@ export interface TimelineConfig {
     withReplies?: boolean;
     withFiles?: boolean;
     excludeNsfw?: boolean;
+    listId?: string;
+    channelId?: string;
   };
   createdAt: Date;
   updatedAt: Date;

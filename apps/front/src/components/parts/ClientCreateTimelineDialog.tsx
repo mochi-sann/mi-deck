@@ -1,5 +1,5 @@
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as v from "valibot";
@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useUserLists } from "@/features/timeline/hooks/useUserLists";
 import { useStorage } from "@/lib/storage/context";
 
 type ClientCreateTimelineDialogProps = {
@@ -48,6 +49,7 @@ const createFormSchema = (t: (key: string) => string) =>
         v.literal("local"),
         v.literal("social"),
         v.literal("global"),
+        v.literal("list"),
       ],
       t("createDialog.validation.selectType"),
     ),
@@ -55,6 +57,7 @@ const createFormSchema = (t: (key: string) => string) =>
       v.string(t("createDialog.validation.enterName")),
       v.minLength(1),
     ),
+    listId: v.optional(v.string()),
   });
 
 export function ClientCreateTimelineDialog({
@@ -64,9 +67,24 @@ export function ClientCreateTimelineDialog({
 }: ClientCreateTimelineDialogProps) {
   const { t } = useTranslation("timeline");
   const storage = useStorage();
+  const [selectedServerId, setSelectedServerId] = useState<string>("");
+  // biome-ignore lint/suspicious/noExplicitAny: Server type from storage
+  const [selectedServer, setSelectedServer] = useState<any>(null);
 
   const formSchema = useMemo(() => createFormSchema(t), [t]);
   type FormValues = v.InferOutput<typeof formSchema>;
+
+  const { lists, isLoading: listsLoading } = useUserLists(
+    selectedServer?.origin || "",
+    selectedServer?.accessToken || "",
+  );
+
+  useEffect(() => {
+    if (selectedServerId) {
+      const server = storage.servers.find((s) => s.id === selectedServerId);
+      setSelectedServer(server);
+    }
+  }, [selectedServerId, storage.servers]);
 
   const form = useForm<FormValues>({
     resolver: valibotResolver(formSchema),
@@ -74,11 +92,18 @@ export function ClientCreateTimelineDialog({
       serverId: "",
       type: "home",
       name: "",
+      listId: "",
     },
   });
 
   const onSubmit = async (values: FormValues) => {
     try {
+      // Validate list type requires listId
+      if (values.type === "list" && !values.listId) {
+        alert("リストタイプを選択した場合、リストを選択する必要があります。");
+        return;
+      }
+
       // Get the next order number
       const maxOrder = Math.max(...storage.timelines.map((t) => t.order), -1);
 
@@ -92,6 +117,8 @@ export function ClientCreateTimelineDialog({
           withReplies: false,
           withFiles: false,
           excludeNsfw: false,
+          ...(values.type === "list" &&
+            values.listId && { listId: values.listId }),
         },
       });
 
@@ -122,7 +149,10 @@ export function ClientCreateTimelineDialog({
                 <FormItem>
                   <FormLabel>{t("createDialog.serverLabel")}</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      setSelectedServerId(value);
+                    }}
                     defaultValue={field.value}
                     disabled={storage.isLoading}
                   >
@@ -177,12 +207,49 @@ export function ClientCreateTimelineDialog({
                       <SelectItem value="global">
                         {t("createDialog.types.global")}
                       </SelectItem>
+                      <SelectItem value="list">
+                        {t("createDialog.types.list")}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            {form.watch("type") === "list" && (
+              <FormField
+                control={form.control}
+                name="listId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("createDialog.listLabel")}</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={listsLoading || !selectedServer}
+                      required
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder={t("createDialog.listPlaceholder")}
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {lists.map((list) => (
+                          <SelectItem key={list.id} value={list.id}>
+                            {list.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}

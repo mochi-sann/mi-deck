@@ -4,6 +4,7 @@ import type {
   TimelineConfig,
 } from "@/lib/storage/types";
 import { HomeTimelineContent } from "./HomeTimelineContent";
+import { ListTimelineContent } from "./ListTimelineContent";
 
 export type SwitchTimeLineTypeProps = {
   timeline: TimelineConfig & { server: MisskeyServerConnection };
@@ -50,6 +51,26 @@ export const SwitchTimeLineType: React.FC<SwitchTimeLineTypeProps> = (
           type={"global"}
         />
       );
+
+    case "list":
+      if (!timeline.settings?.listId) {
+        return (
+          <div className="flex flex-col items-center gap-4 p-4">
+            <p className="text-center text-red-500">
+              リストIDが設定されていません。タイムラインを再作成してください。
+            </p>
+          </div>
+        );
+      }
+
+      return (
+        <ListTimelineContent
+          origin={timeline.server.origin}
+          token={timeline.server.accessToken ?? ""}
+          listId={timeline.settings.listId}
+        />
+      );
+
     default:
       return (
         <div>
