@@ -33,6 +33,20 @@ class ClientAuthManager {
     permissions: Misskey.permissions,
   };
 
+  private getProtocolFromOrigin(origin: string): "http" | "https" {
+    const domain = origin.replace(/^https?:\/\//, "");
+    if (domain.startsWith("localhost") || domain.startsWith("127.0.0.1")) {
+      return "http";
+    }
+    return "https";
+  }
+
+  private buildOriginUrl(origin: string): string {
+    const cleanOrigin = origin.replace(/^https?:\/\//, "");
+    const protocol = this.getProtocolFromOrigin(cleanOrigin);
+    return `${protocol}://${cleanOrigin}`;
+  }
+
   private generateMiAuthUrl(
     origin: string,
     options?: Partial<MiAuthOptions>,
@@ -42,7 +56,8 @@ class ClientAuthManager {
     const uuid = crypto.randomUUID();
 
     const callbackUrl = `${currentOrigin}/callback/${encodeURIComponent(origin)}`;
-    const miAuthUrl = `https://${origin}/miauth/${uuid}?name=${encodeURIComponent(authOptions.appName)}&permission=${authOptions.permissions.join(",")}&callback=${encodeURIComponent(callbackUrl)}`;
+    const originUrl = this.buildOriginUrl(origin);
+    const miAuthUrl = `${originUrl}/miauth/${uuid}?name=${encodeURIComponent(authOptions.appName)}&permission=${authOptions.permissions.join(",")}&callback=${encodeURIComponent(callbackUrl)}`;
 
     if (authOptions.appDescription) {
       // MiAuth doesn't support description in URL, but we can store it for later use
@@ -116,7 +131,7 @@ class ClientAuthManager {
         token: string;
         user: User;
       } = await fetch(
-        `https://${pendingAuth.origin}/api/miauth/${sessionToken}/check`,
+        `${this.buildOriginUrl(pendingAuth.origin)}/api/miauth/${sessionToken}/check`,
         {
           method: "POST",
           headers: {
@@ -137,8 +152,9 @@ class ClientAuthManager {
       console.log("Using origin from pending auth:", origin);
 
       // Validate session token and get user info
+      const originUrl = this.buildOriginUrl(origin);
       const misskeyClient = new Misskey.api.APIClient({
-        origin: `https://${origin}`,
+        origin: originUrl,
         credential: fetchMisskey.token,
       });
 
@@ -156,7 +172,7 @@ class ClientAuthManager {
         MisskeyServerConnection,
         "id" | "createdAt" | "updatedAt"
       > = {
-        origin: `https://${origin}`,
+        origin: originUrl,
         accessToken: fetchMisskey.token,
         isActive: true,
         userInfo: {
