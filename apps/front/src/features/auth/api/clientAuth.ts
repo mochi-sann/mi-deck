@@ -34,17 +34,54 @@ class ClientAuthManager {
   };
 
   private getProtocolFromOrigin(origin: string): "http" | "https" {
+    if (!origin || typeof origin !== "string") {
+      return "https"; // フォールバック
+    }
+
     const domain = origin.replace(/^https?:\/\//, "");
-    if (domain.startsWith("localhost") || domain.startsWith("127.0.0.1")) {
+    // ローカルアドレス判定（IPv4、IPv6、localhost）
+    if (
+      domain.startsWith("localhost") ||
+      domain.startsWith("127.0.0.1") ||
+      domain.startsWith("::1") ||
+      domain === "::1" ||
+      domain.startsWith("[::1]") // IPv6ブラケット記法対応
+    ) {
       return "http";
     }
     return "https";
   }
 
   private buildOriginUrl(origin: string): string {
+    if (!origin || typeof origin !== "string") {
+      return "https://"; // フォールバック
+    }
+
     const cleanOrigin = origin.replace(/^https?:\/\//, "");
     const protocol = this.getProtocolFromOrigin(cleanOrigin);
     return `${protocol}://${cleanOrigin}`;
+  }
+
+  /**
+   * ユーザー入力からプロトコルプレフィックスを除去し、クリーンなオリジンを返す
+   * サーバー登録フォームなどで使用
+   */
+  public cleanOriginInput(input: string): string {
+    if (!input || typeof input !== "string") {
+      return "";
+    }
+
+    // 前後の空白を除去
+    const trimmed = input.trim();
+    if (!trimmed) {
+      return "";
+    }
+
+    // プロトコルプレフィックスを除去
+    const cleaned = trimmed.replace(/^https?:\/\//, "");
+
+    // 末尾のスラッシュを除去
+    return cleaned.replace(/\/$/, "");
   }
 
   private generateMiAuthUrl(

@@ -6,7 +6,7 @@ import { useAuth } from "@/features/auth";
 import {
   PENDING_AUTH_KEY_PREFIX,
   type PeendingAuthType,
-} from "@/lib/auth/clientAuth";
+} from "@/features/auth/api/clientAuth";
 
 export const Route = createLazyFileRoute("/callback/$origin")({
   component: AuthCallbackComponent,

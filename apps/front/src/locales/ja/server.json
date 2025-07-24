@@ -1,7 +1,7 @@
 {
   "newServerForm": {
     "serverUrl": "サーバーのURL",
-    "placeholder": "例: misskey.io",
+    "placeholder": "例: misskey.io または https://misskey.io",
     "serverType": "サーバータイプ",
     "selectPlaceholder": "サーバーを選んでください",
     "addButton": "サーバーを追加する",
@@ -9,7 +9,8 @@
     "addFailed": "サーバー追加に失敗しました",
     "validation": {
       "serverOriginRequired": "有効なサーバーアドレスを入力してください",
-      "serverTypeRequired": "サーバータイプを選択してください"
+      "serverTypeRequired": "サーバータイプを選択してください",
+      "invalidServerUrl": "有効なサーバーURLを入力してください"
     }
   },
   "serverList": {

@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { MenuFieldSet } from "@/components/forms/MenuFieldSet";
 import { TextFieldSet } from "@/components/forms/TextFieldSet";
 import { Button } from "@/components/ui/button";
+import { clientAuthManager } from "@/features/auth/api/clientAuth";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
 type NewServerFormType = {
@@ -29,8 +30,13 @@ export const NewServerForm: React.FC = () => {
       setIsLoading(true);
       setError(undefined);
 
-      // Clean up server origin (remove https:// if present)
-      const origin = data.serverOrigin.replace(/^https?:\/\//, "");
+      // Clean up server origin using centralized method
+      const origin = clientAuthManager.cleanOriginInput(data.serverOrigin);
+
+      if (!origin) {
+        setError(t("newServerForm.validation.invalidServerUrl"));
+        return;
+      }
 
       await auth.initiateAuth(origin);
     } catch (err) {
