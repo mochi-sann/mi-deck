@@ -1,0 +1,88 @@
+name: ❓ 質問・サポート
+description: mi-deckの使用方法や技術的な質問をしてください
+title: "[Question] "
+labels: ["question", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        質問をありがとうございます！まずは以下をご確認ください：
+        - [README](https://github.com/mochi-sann/mi-deck/blob/main/readme.md) でセットアップ方法を確認
+        - [Discussions](https://github.com/mochi-sann/mi-deck/discussions) で同様の質問がないか検索
+        
+        上記で解決しない場合は、詳細な情報を教えてください。
+
+  - type: textarea
+    id: question
+    attributes:
+      label: "❓ 質問内容"
+      description: "何について知りたいか、どのような問題で困っているかを具体的に説明してください"
+      placeholder: |
+        例:
+        - mi-deckのセットアップ方法がわからない
+        - 特定のMisskeyサーバーに接続できない
+        - 機能の使い方がわからない
+        - エラーが発生して解決できない
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: "🔍 試したこと"
+      description: "問題解決のために既に試したことがあれば教えてください"
+      placeholder: |
+        例:
+        - READMEの手順に従ってセットアップを試した
+        - ブラウザのキャッシュをクリアした
+        - 別のブラウザで試した
+        - Misskeyサーバーの設定を確認した
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: environment
+    attributes:
+      label: "🖥️ 環境情報"
+      description: "使用している環境を選択してください（複数選択可）"
+      options:
+        - label: "Chrome"
+        - label: "Firefox"
+        - label: "Safari"
+        - label: "Edge"
+        - label: "その他のブラウザ"
+        - label: "Windows"
+        - label: "macOS"
+        - label: "Linux"
+        - label: "Android"
+        - label: "iOS"
+    validations:
+      required: true
+
+  - type: input
+    id: misskey_server
+    attributes:
+      label: "🌐 Misskeyサーバー"
+      description: "接続しようとしているMisskeyサーバーのURL（該当する場合）"
+      placeholder: "例: misskey.io, mstdn.jp, など"
+
+  - type: textarea
+    id: error_logs
+    attributes:
+      label: "📋 エラーメッセージ・ログ"
+      description: "エラーメッセージやブラウザのコンソールログがあれば貼り付けてください（任意）"
+      placeholder: |
+        エラーメッセージをここに貼り付けてください。
+        ブラウザのデベロッパーツール (F12) > Console タブから確認できます。
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: "📝 追加情報"
+      description: "その他、質問に関連する情報があれば記入してください（任意）"
+      placeholder: |
+        例:
+        - 設定ファイルの内容
+        - 特定の操作手順
+        - 関連するスクリーンショット
+        - 使用している他のツールやサービス

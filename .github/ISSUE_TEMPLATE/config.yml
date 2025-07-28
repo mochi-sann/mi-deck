@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 ドキュメント
+    url: https://github.com/mochi-sann/mi-deck/blob/main/readme.md
+    about: プロジェクトの基本情報とセットアップ方法
+  - name: 💬 Discussions
+    url: https://github.com/mochi-sann/mi-deck/discussions
+    about: 一般的な質問や議論はこちら
