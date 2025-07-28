@@ -1,5 +1,6 @@
 import * as Misskey from "misskey-js";
 import type { User } from "misskey-js/entities.js";
+import { EnvironmentConfig } from "@/lib/config/environment";
 import { storageManager } from "@/lib/storage";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
 
@@ -39,16 +40,20 @@ class ClientAuthManager {
     }
 
     const domain = origin.replace(/^https?:\/\//, "");
+
     // ローカルアドレス判定（IPv4、IPv6、localhost）
-    if (
+    const isLocalAddress =
       domain.startsWith("localhost") ||
       domain.startsWith("127.0.0.1") ||
       domain.startsWith("::1") ||
       domain === "::1" ||
-      domain.startsWith("[::1]") // IPv6ブラケット記法対応
-    ) {
+      domain.startsWith("[::1]"); // IPv6ブラケット記法対応
+
+    // 環境変数でローカルHTTPが有効化されている場合のみHTTPを使用
+    if (isLocalAddress && EnvironmentConfig.isLocalHttpEnabled()) {
       return "http";
     }
+
     return "https";
   }
 
