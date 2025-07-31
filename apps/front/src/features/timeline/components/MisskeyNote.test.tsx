@@ -350,4 +350,79 @@ describe("MisskeyNote", () => {
     const avatarImage = screen.getByTestId("avatar-image");
     expect(avatarImage).not.toHaveAttribute("src");
   });
+
+  describe("Long Text Handling", () => {
+    it("should handle very long single line text without horizontal scroll", () => {
+      const longText = "A".repeat(1000);
+      const note = createMockNote({ text: longText });
+      const origin = "misskey.example.com";
+
+      render(<MisskeyNote note={note} origin={origin} />);
+
+      const article = screen.getByRole("article");
+      expect(article).toBeInTheDocument();
+
+      // Check that MfmText is rendered with the long text
+      const mfmTexts = screen.getAllByTestId("mfm-text");
+      const longTextMfm = mfmTexts.find(
+        (el) =>
+          el.querySelector('[data-testid="mfm-text-content"]')?.textContent ===
+          longText,
+      );
+      expect(longTextMfm).toBeInTheDocument();
+    });
+
+    it("should handle long URLs properly", () => {
+      const longUrl = "https://example.com/" + "very-long-path/".repeat(20);
+      const note = createMockNote({ text: longUrl });
+      const origin = "misskey.example.com";
+
+      render(<MisskeyNote note={note} origin={origin} />);
+
+      const mfmTexts = screen.getAllByTestId("mfm-text");
+      const urlTextMfm = mfmTexts.find(
+        (el) =>
+          el.querySelector('[data-testid="mfm-text-content"]')?.textContent ===
+          longUrl,
+      );
+      expect(urlTextMfm).toBeInTheDocument();
+    });
+
+    it("should apply word-break classes to text content", () => {
+      const longText = "VeryLongWordWithoutSpaces".repeat(50);
+      const note = createMockNote({ text: longText });
+      const origin = "misskey.example.com";
+
+      render(<MisskeyNote note={note} origin={origin} />);
+
+      // Find the wrapper div that should have word-break classes
+      const article = screen.getByRole("article");
+      const wrapper = article.querySelector(
+        ".break-words.overflow-wrap-anywhere.break-all",
+      );
+      expect(wrapper).toBeInTheDocument();
+    });
+
+    it("should handle Japanese mixed with long URLs without overflow", () => {
+      const mixedText =
+        "さくらインターネット株式会社https://www.sakura.ad.jp/corporate/information/newsreleases/2025/07/28/1968220370/について";
+      const note = createMockNote({ text: mixedText });
+      const origin = "misskey.example.com";
+
+      render(<MisskeyNote note={note} origin={origin} />);
+
+      const mfmTexts = screen.getAllByTestId("mfm-text");
+      const mixedTextMfm = mfmTexts.find(
+        (el) =>
+          el.querySelector('[data-testid="mfm-text-content"]')?.textContent ===
+          mixedText,
+      );
+      expect(mixedTextMfm).toBeInTheDocument();
+
+      // Check that wrapper has break-all class for aggressive breaking
+      const article = screen.getByRole("article");
+      const wrapper = article.querySelector(".break-all");
+      expect(wrapper).toBeInTheDocument();
+    });
+  });
 });

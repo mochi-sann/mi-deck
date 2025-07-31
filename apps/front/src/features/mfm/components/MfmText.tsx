@@ -12,7 +12,7 @@ interface MfmTextProps {
 export function MfmText({ text, host, emojis }: MfmTextProps) {
   return (
     <Fragment>
-      <span>
+      <span className="overflow-wrap-anywhere inline-block max-w-full break-words break-all">
         <Mfm text={text} host={host} emojis={emojis} />
       </span>
     </Fragment>
