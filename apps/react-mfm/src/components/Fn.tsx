@@ -25,10 +25,26 @@ function numstr(s: Arg) {
   return null;
 }
 
-function ccodestr(s: Arg) {
+export function convertToRgba(colorCode: string): string {
+  // 4桁色コード "RGBA" を展開
+  const r = Number.parseInt(colorCode[0], 16) * 17; // R * 17 で8bitに変換
+  const g = Number.parseInt(colorCode[1], 16) * 17; // G * 17 で8bitに変換
+  const b = Number.parseInt(colorCode[2], 16) * 17; // B * 17 で8bitに変換
+  const a = Number.parseInt(colorCode[3], 16) / 15; // A / 15 で0-1に正規化
+
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+}
+
+export function ccodestr(s: Arg) {
   if (typeof s === "string") {
-    const match = /^([\da-f]{3}|[\da-f]{6})$/i.test(s);
-    if (match) return "#" + s;
+    const match = /^([\da-f]{3}|[\da-f]{4}|[\da-f]{6})$/i.test(s);
+    if (match) {
+      if (s.length === 4) {
+        // 4桁色コードの場合はRGBA変換
+        return convertToRgba(s);
+      }
+      return "#" + s;
+    }
   }
   return null;
 }
@@ -343,6 +359,7 @@ function composeStyle(
       const line = typeof args.style === "string" ? args.style : "solid";
       return [
         {
+          display: "inline-block",
           border: `${numstr(args.width) ?? 1}px ${line} ${ccodestr(args.color) ?? "var(--mfm-border)"}`,
           borderRadius: `${numstr(args.radius) ?? 0}px`,
           ...(!args.noclip && { overflow: "clip" }),
