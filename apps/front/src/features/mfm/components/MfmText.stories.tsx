@@ -182,6 +182,15 @@ $[position.x=1.5 完全に理解した]]
     `,
   },
 };
+export const Flip: Story = {
+  args: {
+    text: `
+    $[flip MisskeyでFediverseの世界が広がります]
+$[flip.v MisskeyでFediverseの世界が広がります]
+$[flip.h,v MisskeyでFediverseの世界が広がります]
+    `,
+  },
+};
 export const FourDigitColorBackground: Story = {
   args: {
     text: `
