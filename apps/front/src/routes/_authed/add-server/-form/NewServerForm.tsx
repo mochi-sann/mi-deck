@@ -5,6 +5,7 @@ import { MenuFieldSet } from "@/components/forms/MenuFieldSet";
 import { TextFieldSet } from "@/components/forms/TextFieldSet";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/features/auth";
+import { clientAuthManager } from "@/features/auth/api/clientAuth";
 
 type NewServerFormType = {
   serverOrigin: string;
@@ -27,8 +28,13 @@ export const NewServerForm: React.FC = () => {
       setIsLoading(true);
       setError(undefined);
 
-      // Clean up server origin (remove https:// if present)
-      const origin = data.serverOrigin.replace(/^https?:\/\//, "");
+      // Clean up server origin using centralized method
+      const origin = clientAuthManager.cleanOriginInput(data.serverOrigin);
+
+      if (!origin) {
+        setError("有効なサーバーURLを入力してください");
+        return;
+      }
 
       await auth.initiateAuth(origin);
     } catch (err) {
@@ -47,7 +53,7 @@ export const NewServerForm: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <TextFieldSet
-          placeholder="例: misskey.io"
+          placeholder="例: misskey.io または https://misskey.io"
           label="サーバーのURL"
           type="text"
           control={control}

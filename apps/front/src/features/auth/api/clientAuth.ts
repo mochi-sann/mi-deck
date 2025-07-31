@@ -1,5 +1,6 @@
 import * as Misskey from "misskey-js";
 import type { User } from "misskey-js/entities.js";
+import { EnvironmentConfig } from "@/lib/config/environment";
 import { storageManager } from "@/lib/storage";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
 
@@ -33,6 +34,61 @@ class ClientAuthManager {
     permissions: Misskey.permissions,
   };
 
+  private getProtocolFromOrigin(origin: string): "http" | "https" {
+    if (!origin || typeof origin !== "string") {
+      return "https"; // フォールバック
+    }
+
+    const domain = origin.replace(/^https?:\/\//, "");
+
+    // ローカルアドレス判定（IPv4、IPv6、localhost）
+    const isLocalAddress =
+      domain.startsWith("localhost") ||
+      domain.startsWith("127.0.0.1") ||
+      domain.startsWith("::1") ||
+      domain === "::1" ||
+      domain.startsWith("[::1]"); // IPv6ブラケット記法対応
+
+    // 環境変数でローカルHTTPが有効化されている場合のみHTTPを使用
+    if (isLocalAddress && EnvironmentConfig.isLocalHttpEnabled()) {
+      return "http";
+    }
+
+    return "https";
+  }
+
+  private buildOriginUrl(origin: string): string {
+    if (!origin || typeof origin !== "string") {
+      return "https://"; // フォールバック
+    }
+
+    const cleanOrigin = origin.replace(/^https?:\/\//, "");
+    const protocol = this.getProtocolFromOrigin(cleanOrigin);
+    return `${protocol}://${cleanOrigin}`;
+  }
+
+  /**
+   * ユーザー入力からプロトコルプレフィックスを除去し、クリーンなオリジンを返す
+   * サーバー登録フォームなどで使用
+   */
+  public cleanOriginInput(input: string): string {
+    if (!input || typeof input !== "string") {
+      return "";
+    }
+
+    // 前後の空白を除去
+    const trimmed = input.trim();
+    if (!trimmed) {
+      return "";
+    }
+
+    // プロトコルプレフィックスを除去
+    const cleaned = trimmed.replace(/^https?:\/\//, "");
+
+    // 末尾のスラッシュを除去
+    return cleaned.replace(/\/$/, "");
+  }
+
   private generateMiAuthUrl(
     origin: string,
     options?: Partial<MiAuthOptions>,
@@ -42,7 +98,8 @@ class ClientAuthManager {
     const uuid = crypto.randomUUID();
 
     const callbackUrl = `${currentOrigin}/callback/${encodeURIComponent(origin)}`;
-    const miAuthUrl = `https://${origin}/miauth/${uuid}?name=${encodeURIComponent(authOptions.appName)}&permission=${authOptions.permissions.join(",")}&callback=${encodeURIComponent(callbackUrl)}`;
+    const originUrl = this.buildOriginUrl(origin);
+    const miAuthUrl = `${originUrl}/miauth/${uuid}?name=${encodeURIComponent(authOptions.appName)}&permission=${authOptions.permissions.join(",")}&callback=${encodeURIComponent(callbackUrl)}`;
 
     if (authOptions.appDescription) {
       // MiAuth doesn't support description in URL, but we can store it for later use
@@ -116,7 +173,7 @@ class ClientAuthManager {
         token: string;
         user: User;
       } = await fetch(
-        `https://${pendingAuth.origin}/api/miauth/${sessionToken}/check`,
+        `${this.buildOriginUrl(pendingAuth.origin)}/api/miauth/${sessionToken}/check`,
         {
           method: "POST",
           headers: {
@@ -137,8 +194,9 @@ class ClientAuthManager {
       console.log("Using origin from pending auth:", origin);
 
       // Validate session token and get user info
+      const originUrl = this.buildOriginUrl(origin);
       const misskeyClient = new Misskey.api.APIClient({
-        origin: `https://${origin}`,
+        origin: originUrl,
         credential: fetchMisskey.token,
       });
 
@@ -156,7 +214,7 @@ class ClientAuthManager {
         MisskeyServerConnection,
         "id" | "createdAt" | "updatedAt"
       > = {
-        origin: `https://${origin}`,
+        origin: originUrl,
         accessToken: fetchMisskey.token,
         isActive: true,
         userInfo: {
