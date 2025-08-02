@@ -24,6 +24,16 @@ export const Basic: Story = {
     text: "Hello, **world**!",
   },
 };
+export const SearchBox: Story = {
+  args: {
+    text: `検索テキスト 検索
+検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト 検索
+`,
+  },
+  parameters: {
+    layout: "fullscreen",
+  },
+};
 
 export const WithEmoji: Story = {
   args: {
