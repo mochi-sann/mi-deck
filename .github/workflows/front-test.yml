@@ -47,6 +47,3 @@ jobs:
 
     - name: Run frontend tests
       run: pnpm test
-
-    - name: Run frontend test coverage
-      run: pnpm --filter front test:coverage
