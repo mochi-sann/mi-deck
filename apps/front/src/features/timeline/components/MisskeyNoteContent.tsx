@@ -28,9 +28,7 @@ export const MisskeyNoteContent = memo(
         </div>
         <div className="space-y-2">
           {note.text && (
-            <div className="overflow-wrap-anywhere break-words break-all">
-              <MfmText text={note.text} host={origin} emojis={emojis} />
-            </div>
+            <MfmText text={note.text} host={origin} emojis={emojis} />
           )}
           {note.files && note.files.length > 0 && (
             <div className="space-y-2">

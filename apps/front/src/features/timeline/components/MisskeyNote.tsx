@@ -22,7 +22,7 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
 
   return (
     <CustomEmojiCtx.Provider value={contextValue}>
-      <div
+      <article
         className={cn(
           "flex gap-3 border-b p-3 transition-colors duration-200 hover:bg-muted/50",
         )}
@@ -31,7 +31,7 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
           <MisskeyNoteHeader user={note.user} />
         </div>
         <MisskeyNoteContent note={note} origin={origin} emojis={allEmojis} />
-      </div>
+      </article>
     </CustomEmojiCtx.Provider>
   );
 }
