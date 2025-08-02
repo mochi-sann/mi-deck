@@ -233,3 +233,17 @@ export const WithoutAvatar: Story = {
     },
   },
 };
+export const SearchText: Story = {
+  args: {
+    note: {
+      ...basicNote,
+      id: "note-4",
+      text: "ほげ 検索",
+    },
+  },
+  parameters: {
+    msw: {
+      handlers,
+    },
+  },
+};
