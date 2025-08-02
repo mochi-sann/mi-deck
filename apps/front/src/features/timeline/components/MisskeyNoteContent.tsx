@@ -13,7 +13,7 @@ export const MisskeyNoteContent = memo(
   ({ note, origin, emojis }: MisskeyNoteContentProps) => {
     const user = note.user;
     return (
-      <div className="flex flex-col gap-1">
+      <div className="flex w-full min-w-0 flex-col gap-1">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2 text-sm">
             <p>

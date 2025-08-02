@@ -24,6 +24,16 @@ export const Basic: Story = {
     text: "Hello, **world**!",
   },
 };
+export const SearchBox: Story = {
+  args: {
+    text: `検索テキスト 検索
+検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト検索テキスト 検索
+`,
+  },
+  parameters: {
+    layout: "fullscreen",
+  },
+};
 
 export const WithEmoji: Story = {
   args: {
@@ -205,6 +215,74 @@ $[bg.color=f008 赤系半透明背景]
     `,
   },
 };
+// Text Wrapping Examples
+export const LongEnglishText: Story = {
+  args: {
+    text:
+      "VeryLongWordWithoutSpaces".repeat(20) +
+      " This text demonstrates English word wrapping behavior without aggressive breaking.",
+  },
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "英語テキストでは break-all を使用せず、自然な単語境界で折り返されます。",
+      },
+    },
+  },
+};
+
+export const LongJapaneseText: Story = {
+  args: {
+    text:
+      "これは日本語の長いテキストです。" +
+      "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん。".repeat(
+        10,
+      ) +
+      "日本語テキストでは積極的な文字分割が行われます。",
+  },
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "日本語テキストでは break-all を使用して積極的に文字分割され、横スクロールを防ぎます。",
+      },
+    },
+  },
+};
+
+export const MixedLanguageWithUrl: Story = {
+  args: {
+    text: "サービスの詳細については、ウェブサイト（https://example.com/very/long/path/that/might/cause/horizontal/scrolling/issues/in/timeline/components/if/not/handled/properly）をご覧ください。Please visit our website at https://example.com/very/long/path/that/might/cause/horizontal/scrolling/issues/in/timeline/components/if/not/handled/properly for more information about our services.",
+  },
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "日本語を含む混合テキスト（長いURLを含む）では、日本語の割合に基づいて適切な折り返し方法が選択されます。",
+      },
+    },
+  },
+};
+
+export const EnglishWithUrl: Story = {
+  args: {
+    text: "Please visit our website at https://example.com/very/long/path/that/might/cause/horizontal/scrolling/issues/in/timeline/components/if/not/handled/properly for more information about our services.",
+  },
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "英語中心のテキスト（長いURLを含む）では、break-all を使用せずに自然な折り返しが行われます。",
+      },
+    },
+  },
+};
+
 export const IroIro: Story = {
   args: {
     emojis: {
@@ -257,7 +335,7 @@ $[x2 $[bounce 🍮] $[bounce.speed=5s 🍮]]
 $[x2 $[shake 🍮] $[shake.speed=5s 🍮]]
 $[x2 $[twitch 🍮] $[twitch.speed=5s 🍮]]
 $[x2 $[sparkle 🍮]]
-<plain>**bold** @mention #hashtag ${"\`hoge\`"} $[x2 🍮]</plain>
+<plain>**bold** @mention #hashtag ${"`hoge`"} $[x2 🍮]</plain>
 @ai
 
 \[

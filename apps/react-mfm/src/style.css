@@ -22,10 +22,13 @@
 .mfm-search {
   display: flex;
   margin: 0.5rem 0;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .mfm-searchInput {
   flex: 1;
+  min-width: 0;
   padding: 0.5rem;
   background: var(--mfm-searchBg);
   border: 1px solid var(--mfm-searchFg);
@@ -34,6 +37,9 @@
   /* うーん */
   outline-offset: -1px;
   z-index: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mfm-searchButton {
@@ -47,6 +53,7 @@
   gap: 0.2rem;
 
   flex-shrink: 0;
+  white-space: nowrap;
 
   &:hover {
     filter: brightness(1.1);
@@ -154,14 +161,16 @@
 }
 
 .mfm-rainbowStatic {
-  background-image: linear-gradient(to right,
-      rgb(255, 0, 0) 0%,
-      rgb(255, 165, 0) 17%,
-      rgb(255, 255, 0) 33%,
-      rgb(0, 255, 0) 50%,
-      rgb(0, 255, 255) 67%,
-      rgb(0, 0, 255) 83%,
-      rgb(255, 0, 255) 100%);
+  background-image: linear-gradient(
+    to right,
+    rgb(255, 0, 0) 0%,
+    rgb(255, 165, 0) 17%,
+    rgb(255, 255, 0) 33%,
+    rgb(0, 255, 0) 50%,
+    rgb(0, 255, 255) 67%,
+    rgb(0, 0, 255) 83%,
+    rgb(255, 0, 255) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
