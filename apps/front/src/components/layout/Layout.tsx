@@ -8,9 +8,8 @@ export type LayoutProps = {
 export const Layout: React.FC<LayoutProps> = (props) => {
   // const [value, setValue, removeValue] = useLocalStorage("isSidebarOpen", true);
   return (
-    <div className="">
+    <div className="m-0 flex h-svh w-dvw overscroll-none p-0 ">
       <AppSidebar />
-
       <div>{props.children}</div>
     </div>
   );
