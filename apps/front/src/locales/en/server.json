@@ -18,5 +18,18 @@
     "select": "Select",
     "update": "Update",
     "delete": "Delete"
+  },
+  "error": {
+    "network": "A network error occurred. Please check your internet connection.",
+    "invalidUrl": "Invalid server URL. Please enter a valid Misskey server URL.",
+    "authFailed": "Authentication failed. Please check your server settings.",
+    "cors": "CORS error occurred while communicating with the server. Please contact the server administrator.",
+    "timeout": "Server response timed out. Please wait and try again.",
+    "unavailable": "Server is unavailable. Please check the server status.",
+    "unknown": "An unknown error occurred.",
+    "networkRetry": "Please retry or check your network connection."
+  },
+  "success": {
+    "added": "Server added successfully."
   }
 }

@@ -1,8 +1,8 @@
 import * as Misskey from "misskey-js";
-import type { User } from "misskey-js/entities.js";
 import { EnvironmentConfig } from "@/lib/config/environment";
 import { storageManager } from "@/lib/storage";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
+import { AuthErrorType, type MisskeyAuthResponse } from "../types";
 
 export interface MiAuthOptions {
   appName: string;
@@ -168,11 +168,7 @@ class ClientAuthManager {
 
       const pendingAuth: PeendingAuthType = JSON.parse(pendingAuthData);
 
-      const fetchMisskey: {
-        ok: boolean;
-        token: string;
-        user: User;
-      } = await fetch(
+      const fetchMisskey: MisskeyAuthResponse = await fetch(
         `${this.buildOriginUrl(pendingAuth.origin)}/api/miauth/${sessionToken}/check`,
         {
           method: "POST",
@@ -184,12 +180,24 @@ class ClientAuthManager {
         .then((res) => res.json())
         .catch((err) => {
           console.error(err);
-          return new Error("can not auth misskey server");
+          const errorInfo = this.classifyError(err);
+          return {
+            ok: false,
+            error: errorInfo.message,
+          } as MisskeyAuthResponse;
         });
 
       if (!fetchMisskey || fetchMisskey.ok === false) {
-        throw new Error("Cannot authenticate with Misskey server");
+        const errorMessage =
+          fetchMisskey?.error || "Cannot authenticate with Misskey server";
+        throw new Error(errorMessage);
       }
+
+      // 型安全性のチェック
+      if (!fetchMisskey.token) {
+        throw new Error("Authentication token not received from server");
+      }
+
       const origin = pendingAuth.origin;
       console.log("Using origin from pending auth:", origin);
 
@@ -340,6 +348,44 @@ class ClientAuthManager {
         }
       }
     }
+  }
+
+  private classifyError(error: Error): {
+    type: AuthErrorType;
+    message: string;
+  } {
+    // ネットワークエラーの判定
+    if (
+      error.message.includes("fetch") ||
+      error.message.includes("Failed to fetch") ||
+      error.message.includes("network")
+    ) {
+      return {
+        type: AuthErrorType.NETWORK_ERROR,
+        message: "Network error occurred",
+      };
+    }
+
+    // CORS エラーの判定
+    if (
+      error.message.includes("cors") ||
+      error.message.includes("cross-origin")
+    ) {
+      return { type: AuthErrorType.CORS_ERROR, message: "CORS error occurred" };
+    }
+
+    // タイムアウトエラーの判定
+    if (error.message.includes("timeout")) {
+      return {
+        type: AuthErrorType.TIMEOUT_ERROR,
+        message: "Request timed out",
+      };
+    }
+
+    return {
+      type: AuthErrorType.UNKNOWN_ERROR,
+      message: "Unknown error occurred",
+    };
   }
 }
 

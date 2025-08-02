@@ -8,6 +8,7 @@ import {
 import { useStorage } from "@/lib/storage/context";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
 import { clientAuthManager } from "../api/clientAuth";
+import type { AuthError } from "../types";
 
 interface AuthContextValue {
   // State
@@ -15,7 +16,7 @@ interface AuthContextValue {
   currentServer?: MisskeyServerConnection;
   servers: MisskeyServerConnection[];
   isLoading: boolean;
-  error?: string;
+  error?: AuthError | string;
 
   // Actions
   initiateAuth: (origin: string) => Promise<string>;
@@ -39,7 +40,7 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const storage = useStorage();
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | undefined>();
+  const [error, setError] = useState<AuthError | string | undefined>();
 
   const currentServer = storage.servers.find(
     (s) => s.id === storage.currentServerId,
