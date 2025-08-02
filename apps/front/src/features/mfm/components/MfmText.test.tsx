@@ -58,7 +58,7 @@ describe("MfmText", () => {
   });
 
   describe("Text Wrapping", () => {
-    it("should apply word-break classes for long text", () => {
+    it("should apply base word-break classes for English text", () => {
       const longText = "VeryLongWordWithoutSpaces".repeat(50);
 
       const { container } = render(<MfmText text={longText} />);
@@ -68,12 +68,12 @@ describe("MfmText", () => {
       expect(spanElement).toBeInTheDocument();
       expect(spanElement).toHaveClass("break-words");
       expect(spanElement).toHaveClass("overflow-wrap-anywhere");
-      expect(spanElement).toHaveClass("break-all");
       expect(spanElement).toHaveClass("max-w-full");
-      expect(spanElement).toHaveClass("inline-block");
+      // English text should NOT have break-all
+      expect(spanElement).not.toHaveClass("break-all");
     });
 
-    it("should apply word-break classes for long URLs", () => {
+    it("should apply base word-break classes for English URLs", () => {
       const longUrl = "https://example.com/" + "very-long-path/".repeat(20);
 
       const { container } = render(<MfmText text={longUrl} />);
@@ -82,21 +82,35 @@ describe("MfmText", () => {
       expect(spanElement).toBeInTheDocument();
       expect(spanElement).toHaveClass("break-words");
       expect(spanElement).toHaveClass("overflow-wrap-anywhere");
-      expect(spanElement).toHaveClass("break-all");
+      // English URLs should NOT have break-all
+      expect(spanElement).not.toHaveClass("break-all");
     });
 
-    it("should handle Japanese mixed with URLs", () => {
+    it("should apply break-all for Japanese mixed with URLs", () => {
       const mixedText =
         "さくらインターネット株式会社https://www.sakura.ad.jp/corporate/information/newsreleases/2025/07/28/1968220370/について";
 
       const { container } = render(<MfmText text={mixedText} />);
 
-      const spanElement = container.querySelector("span.break-all");
+      // Find any span with break-all class
+      const spanElement = container.querySelector("span");
       expect(spanElement).toBeInTheDocument();
       expect(spanElement).toHaveClass("break-all");
+      expect(spanElement).toHaveClass("break-words");
+      expect(spanElement).toHaveClass("overflow-wrap-anywhere");
 
       const textContent = screen.getByTestId("mfm-text-content");
       expect(textContent).toHaveTextContent(mixedText);
+    });
+
+    it("should apply break-all for Japanese text", () => {
+      const japaneseText = "こんにちは世界";
+
+      const { container } = render(<MfmText text={japaneseText} />);
+
+      const spanElement = container.querySelector("span.break-all");
+      expect(spanElement).toBeInTheDocument();
+      expect(spanElement).toHaveClass("break-all");
     });
 
     it("should wrap span in Fragment", () => {

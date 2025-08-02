@@ -19,9 +19,9 @@ export function isJapaneseText(text: string): boolean {
   const significantCharCount =
     text.replace(/[\s\W]/g, "").length + japaneseCharCount;
 
-  // 日本語文字が有意な文字の25%以上を占める場合は日本語テキストと判定
+  // 日本語文字が有意な文字の20%以上を占める場合は日本語テキストと判定
   return (
-    significantCharCount > 0 && japaneseCharCount / significantCharCount >= 0.25
+    significantCharCount > 0 && japaneseCharCount / significantCharCount >= 0.2
   );
 }
 

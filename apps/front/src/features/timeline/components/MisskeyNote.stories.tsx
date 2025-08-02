@@ -247,3 +247,120 @@ export const SearchText: Story = {
     },
   },
 };
+
+// Text Wrapping Examples
+export const LongEnglishText: Story = {
+  args: {
+    note: {
+      ...basicNote,
+      id: "note-long-english",
+      text:
+        "VeryLongWordWithoutSpaces".repeat(15) +
+        " This demonstrates how English text is wrapped without aggressive breaking to maintain readability.",
+    },
+  },
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "英語テキストでは break-all を使用せず、自然な単語境界で折り返されます。読みやすさが保たれます。",
+      },
+    },
+    msw: {
+      handlers,
+    },
+  },
+};
+
+export const LongJapaneseText: Story = {
+  args: {
+    note: {
+      ...basicNote,
+      id: "note-long-japanese",
+      text:
+        "これは日本語の長いテキストの例です。" +
+        "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん。".repeat(
+          8,
+        ) +
+        "日本語では積極的な文字分割により横スクロールを防止します。",
+    },
+  },
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "日本語テキストでは break-all が適用され、積極的に文字分割されて横スクロールを防ぎます。",
+      },
+    },
+    msw: {
+      handlers,
+    },
+  },
+};
+
+export const MixedLanguageWithLongUrl: Story = {
+  args: {
+    note: {
+      ...basicNote,
+      id: "note-mixed-url",
+      text: "さくらインターネット株式会社の最新ニュースリリース https://www.sakura.ad.jp/corporate/information/newsreleases/2025/07/28/1968220370/ についての詳しい情報です。この長いURLを含むテキストでも適切に折り返し処理が行われます。",
+    },
+  },
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "日本語を含む混合テキスト（長いURLを含む）では、日本語の割合に基づいて適切な折り返し方法が選択されます。",
+      },
+    },
+    msw: {
+      handlers,
+    },
+  },
+};
+
+export const EnglishWithLongUrl: Story = {
+  args: {
+    note: {
+      ...basicNote,
+      id: "note-english-url",
+      text: "Please visit our comprehensive documentation website at https://example.com/very/long/documentation/path/that/might/cause/horizontal/scrolling/issues/in/timeline/components/if/not/handled/properly/index.html for detailed information about our platform features and API usage guidelines.",
+    },
+  },
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "英語中心のテキスト（長いURLを含む）では、break-all を使用せずに自然な折り返しが行われ、単語の完全性が保たれます。",
+      },
+    },
+    msw: {
+      handlers,
+    },
+  },
+};
+
+export const TimelineWrappingDemo: Story = {
+  args: {
+    note: {
+      ...basicNote,
+      id: "note-timeline-demo",
+      text: "タイムライン表示での文字折り返しのデモ。非常に長い単語やURLが含まれていても横スクロールが発生しないように最適化されています。 https://example.com/extremely/long/url/path/that/could/potentially/cause/layout/issues ここに日本語テキストが続きます。",
+    },
+  },
+  parameters: {
+    layout: "padded",
+    docs: {
+      description: {
+        story: "実際のタイムライン表示での文字折り返し動作を確認できます。",
+      },
+    },
+    msw: {
+      handlers,
+    },
+  },
+};

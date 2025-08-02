@@ -18,7 +18,7 @@ describe("isJapaneseText", () => {
     expect(isJapaneseText("こんにちは、世界！")).toBe(true);
   });
 
-  it("should return true for Japanese with some English (>25% Japanese)", () => {
+  it("should return true for Japanese with some English (>20% Japanese)", () => {
     expect(isJapaneseText("Hello 世界")).toBe(true);
   });
 
@@ -38,7 +38,7 @@ describe("isJapaneseText", () => {
     expect(isJapaneseText("   ")).toBe(false);
   });
 
-  it("should handle mixed text with Japanese minority (<25%)", () => {
+  it("should handle mixed text with Japanese minority (<20%)", () => {
     expect(
       isJapaneseText("This is a very long English sentence with 日本語"),
     ).toBe(false);
