@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as v from "valibot";
 import { Button } from "@/components/ui/button";
 import Text from "@/components/ui/text";
@@ -25,8 +25,13 @@ function AuthCallbackComponent() {
     "processing",
   );
   const [error, setError] = useState<string | undefined>();
+  const hasExecutedRef = useRef(false);
 
   useEffect(() => {
+    if (hasExecutedRef.current) {
+      return;
+    }
+    hasExecutedRef.current = true;
     const completeAuthentication = async () => {
       try {
         if (search.session === "") {
@@ -61,7 +66,7 @@ function AuthCallbackComponent() {
     };
 
     completeAuthentication();
-  }, [search, auth, navigate]);
+  }, [auth.completeAuth, navigate, search.session]);
 
   const handleRetry = () => {
     window.close(); // Close popup and let user try again
