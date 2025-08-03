@@ -100,6 +100,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const completeAuth = async (uuid: string, sessionToken: string) => {
     try {
+      console.log(
+        ...[
+          { uuid, sessionToken },
+          "👀 [AuthProvider.tsx:103]: {uuid , sessionToken}",
+        ].reverse(),
+      );
       setError(undefined);
       const result = await clientAuthManager.completeAuth(uuid, sessionToken);
 
