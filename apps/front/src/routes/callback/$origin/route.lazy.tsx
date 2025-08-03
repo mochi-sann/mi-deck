@@ -51,6 +51,9 @@ function AuthCallbackComponent() {
           localStorage.getItem(PENDING_AUTH_KEY_PREFIX) || "{}";
         const PenndingAuthData: PeendingAuthType = JSON.parse(pendingAuth);
         uuid = PenndingAuthData.uuid;
+        console.log(
+          ...[pendingAuth, "👀 [route.lazy.tsx:54]: pendingAuth"].reverse(),
+        );
 
         console.log(
           ...[
@@ -58,11 +61,7 @@ function AuthCallbackComponent() {
             "👀 [route.lazy.tsx:55]: PenndingAuthData",
           ].reverse(),
         );
-        if (!uuid) {
-          throw new Error(
-            `認証セッションが見つかりません (origin: ${decodedOrigin})`,
-          );
-        }
+        console.log(...[uuid, "👀 [route.lazy.tsx:61]: uuid"].reverse());
 
         console.log(
           "Completing auth with UUID:",
@@ -80,7 +79,7 @@ function AuthCallbackComponent() {
             navigate({ to: "/" });
           }, 2000);
         } else {
-          throw new Error(result.error || "Authentication failed");
+          // throw new Error(result.error || "Authentication failed");
         }
       } catch (err) {
         console.error("Auth callback failed:", err);
