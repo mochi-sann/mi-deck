@@ -1,14 +1,17 @@
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useStorage } from "@/lib/storage/context";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
+import { AddServerDialog } from "./AddServerDialog";
 import { DeleteServerConfirmDialog } from "./DeleteServerConfirmDialog";
 
 export function ServerInfo() {
   const storage = useStorage();
   const { t } = useTranslation("settings");
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [serverToDelete, setServerToDelete] =
     useState<MisskeyServerConnection | null>(null);
@@ -28,7 +31,17 @@ export function ServerInfo() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("server.title")}</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle>{t("server.title")}</CardTitle>
+          <Button
+            onClick={() => setAddDialogOpen(true)}
+            size="sm"
+            className="gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            {t("server.add.button")}
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         {storage.servers.length === 0 ? (
@@ -75,6 +88,7 @@ export function ServerInfo() {
             ))}
           </div>
         )}
+        <AddServerDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
         <DeleteServerConfirmDialog
           open={deleteDialogOpen}
           onOpenChange={setDeleteDialogOpen}
