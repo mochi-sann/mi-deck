@@ -78,7 +78,7 @@ function AuthCallbackComponent() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center space-y-4 p-6">
-      <div className="space-y-4 text-center">
+      <div className="w-full space-y-4 text-center">
         {status === "processing" && (
           <>
             <Text className="text-lg">認証処理中...</Text>

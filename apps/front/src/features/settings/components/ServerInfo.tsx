@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AddSiberDialog } from "@/features/server-management/components/addSiberDialog";
 import { useStorage } from "@/lib/storage/context";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
 import { AddServerDialog } from "./AddServerDialog";
@@ -33,12 +34,12 @@ export function ServerInfo() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>{t("server.title")}</CardTitle>
-          <Button onClick={() => setAddDialogOpen(true)} size={"default"}>
-            <span>
+          <AddSiberDialog>
+            <Button size={"default"}>
               <Plus className="h-4 w-4" />
-            </span>
-            {t("server.add.button")}
-          </Button>
+              {t("server.add.button")}
+            </Button>
+          </AddSiberDialog>
         </div>
       </CardHeader>
       <CardContent>

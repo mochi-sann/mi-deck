@@ -1,17 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { Home, Plus, Server, Settings } from "lucide-react";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
+import { AddSiberDialog } from "@/features/server-management/components/addSiberDialog";
 import { useStorage } from "@/lib/storage/context";
-import { NewServerForm } from "@/routes/_authed/add-server/-form/NewServerForm";
 import { Button } from "../../ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../../ui/dialog";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -23,7 +16,6 @@ import {
 export function NavContent() {
   const { t } = useTranslation();
   const storage = useStorage();
-  const [isAddServerDialogOpen, setIsAddServerDialogOpen] = useState(false);
 
   return (
     <Fragment>
@@ -53,22 +45,11 @@ export function NavContent() {
         <SidebarGroupLabel>
           <div className="flex w-full items-center justify-between">
             <span>{t("navigation.server")}</span>
-            <Dialog
-              open={isAddServerDialogOpen}
-              onOpenChange={setIsAddServerDialogOpen}
-            >
-              <DialogTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>{t("navigation.addNewServer")}</DialogTitle>
-                </DialogHeader>
-                <NewServerForm />
-              </DialogContent>
-            </Dialog>
+            <AddSiberDialog>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                <Plus className="h-4 w-4" />
+              </Button>
+            </AddSiberDialog>
           </div>
         </SidebarGroupLabel>
         <SidebarMenu>
