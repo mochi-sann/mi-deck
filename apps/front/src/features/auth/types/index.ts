@@ -25,6 +25,7 @@ export interface AuthError {
 export interface MisskeyAuthResponse {
   ok: boolean;
   token?: string;
+  // biome-ignore lint/suspicious/noExplicitAny: わからん
   user?: any;
   error?: string;
 }

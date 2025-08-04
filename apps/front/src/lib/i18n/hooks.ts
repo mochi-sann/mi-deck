@@ -16,11 +16,14 @@ export function useTypedTranslation<T extends TranslationKeys = "common">(
 ) {
   const { t: tOriginal, ...rest } = useTranslationOriginal(ns);
 
+  // biome-ignore lint/suspicious/noExplicitAny: 無視
   function t<K extends ValidTranslationKey<T>>(key: K, options?: any): string {
     const result =
       ns && ns !== "common" && !key.includes(":")
-        ? tOriginal(`${ns}:${key}` as any, options)
-        : tOriginal(key as any, options);
+        ? // biome-ignore lint/suspicious/noExplicitAny: 無視
+          tOriginal(`${ns}:${key}` as any, options)
+        : // biome-ignore lint/suspicious/noExplicitAny: 無視
+          tOriginal(key as any, options);
 
     return typeof result === "string" ? result : String(result);
   }
@@ -37,7 +40,9 @@ type AllTranslationKeys =
 export function useGlobalTranslation() {
   const { t: tOriginal, ...rest } = useTranslationOriginal();
 
+  // biome-ignore lint/suspicious/noExplicitAny: 無視
   function t<K extends AllTranslationKeys>(key: K, options?: any): string {
+    // biome-ignore lint/suspicious/noExplicitAny: 無視
     const result = tOriginal(key as any, options);
     return typeof result === "string" ? result : String(result);
   }

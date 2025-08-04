@@ -28,11 +28,14 @@ type ValidKeys<T extends TranslationKeys> = NestedKeyOf<
 // biome-ignore lint/style/useNamingConvention: 修正
 export type TypedTFunction<T extends TranslationKeys = "common"> =
   T extends "common"
-    ? <K extends ValidKeys<"common">>(key: K, options?: any) => string
-    : <K extends ValidKeys<T>>(key: K, options?: any) => string;
+    ? // biome-ignore lint/suspicious/noExplicitAny: 無視
+      <K extends ValidKeys<"common">>(key: K, options?: any) => string
+    : // biome-ignore lint/suspicious/noExplicitAny: 無視
+      <K extends ValidKeys<T>>(key: K, options?: any) => string;
 
 // biome-ignore lint/style/useNamingConvention: 修正
 export type GlobalTFunction = <K extends AllTranslationKeys>(
   key: K,
+  // biome-ignore lint/suspicious/noExplicitAny: 無視
   options?: any,
 ) => string;
