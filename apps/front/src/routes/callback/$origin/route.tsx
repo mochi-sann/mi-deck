@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import * as v from "valibot";
-import { ErrorState, ProcessingState, SuccessState } from "./components";
-import { useAuthCallback } from "./hooks/useAuthCallback";
+import { ErrorState, ProcessingState, SuccessState } from "./-components";
+import { useAuthCallback } from "./-hooks/useAuthCallback";
 
 export const Route = createFileRoute("/callback/$origin")({
   validateSearch: v.object({
