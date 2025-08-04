@@ -15,7 +15,7 @@ type LabelProps = {
   validation?: string;
   required?: boolean;
 };
-type TextFieldSetProps<T extends FieldValues> = UseControllerProps<T> &
+export type TextFieldSetProps<T extends FieldValues> = UseControllerProps<T> &
   LabelProps;
 export const TextFieldSet = <T extends FieldValues>(
   props: TextFieldSetProps<T>,

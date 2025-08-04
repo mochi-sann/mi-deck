@@ -7,7 +7,8 @@ type TextFieldSetProps = {
   label: string;
   type: string;
   placeholder: string;
-  validation: string;
+  validation?: string;
+  required?: boolean;
 };
 
 const meta = {
@@ -34,6 +35,7 @@ export const Text: Story = {
     type: "text",
     placeholder: "テキストを入力してください",
     validation: "必須項目です",
+    required: true,
   },
   render: (args) => <FormWrapper {...args} />,
 };
@@ -45,6 +47,7 @@ export const Email: Story = {
     type: "email",
     placeholder: "example@example.com",
     validation: "メールアドレスを入力してください",
+    required: true,
   },
   render: (args) => <FormWrapper {...args} />,
 };
@@ -56,6 +59,7 @@ export const Password: Story = {
     type: "password",
     placeholder: "パスワードを入力してください",
     validation: "8文字以上で入力してください",
+    required: true,
   },
   render: (args) => <FormWrapper {...args} />,
 };
@@ -67,6 +71,7 @@ export const NumberInput: Story = {
     type: "number",
     placeholder: "数値を入力してください",
     validation: "数値を入力してください",
+    required: true,
   },
   render: (args) => <FormWrapper {...args} />,
 };
