@@ -77,24 +77,24 @@ function AuthCallbackComponent() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center space-y-4 p-6">
+    <div className="flex min-h-screen w-full flex-col items-center justify-center space-y-4 p-6">
       <div className="w-full space-y-4 text-center">
         {status === "processing" && (
-          <>
+          <div className="w-full">
             <Text className="text-lg">認証処理中...</Text>
             <div className="mx-auto h-8 w-8 animate-spin rounded-full border-blue-600 border-b-2" />
-          </>
+          </div>
         )}
 
         {status === "success" && (
-          <>
+          <div className="flex flex-col items-center space-y-2">
             <Text className="text-green-600 text-lg">認証が完了しました！</Text>
             <Text className="text-gray-600 text-sm">
               サーバー「{decodeURIComponent(origin)}」が追加されました。
               <br />
               まもなくメイン画面に移動します...
             </Text>
-          </>
+          </div>
         )}
 
         {status === "error" && (
@@ -105,7 +105,7 @@ function AuthCallbackComponent() {
                 {error}
               </Text>
             )}
-            <div className="flex space-x-4">
+            <div className="flex justify-center space-x-4">
               <Button onClick={handleRetry} variant="outline">
                 再試行
               </Button>
