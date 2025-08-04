@@ -1,6 +1,5 @@
 // Settings feature exports
 
-export { AddServerDialog } from "./components/AddServerDialog";
 export { ApplicationInfo } from "./components/ApplicationInfo";
 export { ApplicationSettings } from "./components/ApplicationSettings";
 export { DataManagement } from "./components/DataManagement";

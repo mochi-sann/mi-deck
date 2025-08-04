@@ -6,13 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AddSiberDialog } from "@/features/server-management/components/addSiberDialog";
 import { useStorage } from "@/lib/storage/context";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
-import { AddServerDialog } from "./AddServerDialog";
 import { DeleteServerConfirmDialog } from "./DeleteServerConfirmDialog";
 
 export function ServerInfo() {
   const storage = useStorage();
   const { t } = useTranslation("settings");
-  const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [serverToDelete, setServerToDelete] =
     useState<MisskeyServerConnection | null>(null);
@@ -87,7 +85,6 @@ export function ServerInfo() {
             ))}
           </div>
         )}
-        <AddServerDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
         <DeleteServerConfirmDialog
           open={deleteDialogOpen}
           onOpenChange={setDeleteDialogOpen}
