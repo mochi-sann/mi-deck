@@ -1,4 +1,5 @@
 import { valibotResolver } from "@hookform/resolvers/valibot";
+import { TFunction } from "i18next";
 import type React from "react";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -9,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { clientAuthManager } from "@/features/auth/api/clientAuth";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
-const NewServerFormSchema = (t: (key: string) => string) =>
+const NewServerFormSchema = (t: TFunction<"server", undefined>) =>
   v.object({
     serverOrigin: v.pipe(
       v.string(t("newServerForm.validation.serverOriginRequired")),
