@@ -46,7 +46,34 @@
     "title": "接続サーバー",
     "noServers": "サーバーが登録されていません",
     "currentServer": "現在のサーバー",
-    "delete": "削除"
+    "delete": "削除",
+    "add": {
+      "button": "サーバーを追加",
+      "title": "新しいサーバーを追加",
+      "description": "接続したいMisskeyサーバーのURLを入力してください",
+      "urlLabel": "サーバーURL",
+      "add": "追加",
+      "adding": "追加中...",
+      "success": {
+        "title": "サーバーを追加しました",
+        "description": "{{serverName}}を正常に追加しました"
+      },
+      "errors": {
+        "title": "サーバーの追加に失敗しました",
+        "urlRequired": "サーバーURLは必須です",
+        "invalidUrl": "無効なURL形式です",
+        "invalidProtocol": "HTTPまたはHTTPSプロトコルのみサポートされています",
+        "serverExists": "このサーバーは既に登録されています",
+        "connectionFailed": "サーバーへの接続に失敗しました。URLを確認して再試行してください。"
+      }
+    },
+    "deleteConfirm": {
+      "title": "サーバーを削除",
+      "message": "以下のサーバーを削除しますか？",
+      "warning": "この操作は取り消すことができません",
+      "confirm": "削除",
+      "cancel": "キャンセル"
+    }
   },
   "dataManagement": {
     "title": "データ管理",

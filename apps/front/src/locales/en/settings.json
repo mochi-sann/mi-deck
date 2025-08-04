@@ -46,7 +46,34 @@
     "title": "Connected Servers",
     "noServers": "No servers registered",
     "currentServer": "Current Server",
-    "delete": "Delete"
+    "delete": "Delete",
+    "add": {
+      "button": "Add Server",
+      "title": "Add New Server",
+      "description": "Enter the URL of the Misskey server you want to connect to",
+      "urlLabel": "Server URL",
+      "add": "Add",
+      "adding": "Adding...",
+      "success": {
+        "title": "Server Added",
+        "description": "Successfully added {{serverName}}"
+      },
+      "errors": {
+        "title": "Failed to Add Server",
+        "urlRequired": "Server URL is required",
+        "invalidUrl": "Invalid URL format",
+        "invalidProtocol": "Only HTTP and HTTPS protocols are supported",
+        "serverExists": "This server is already registered",
+        "connectionFailed": "Failed to connect to the server. Please check the URL and try again."
+      }
+    },
+    "deleteConfirm": {
+      "title": "Delete Server",
+      "message": "Are you sure you want to delete the following server?",
+      "warning": "This action cannot be undone",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    }
   },
   "dataManagement": {
     "title": "Data Management",
