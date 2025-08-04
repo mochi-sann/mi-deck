@@ -1,11 +1,29 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useStorage } from "@/lib/storage/context";
+import type { MisskeyServerConnection } from "@/lib/storage/types";
+import { DeleteServerConfirmDialog } from "./DeleteServerConfirmDialog";
 
 export function ServerInfo() {
   const storage = useStorage();
   const { t } = useTranslation("settings");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [serverToDelete, setServerToDelete] =
+    useState<MisskeyServerConnection | null>(null);
+
+  const handleDeleteClick = (server: MisskeyServerConnection) => {
+    setServerToDelete(server);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (serverToDelete) {
+      storage.deleteServer(serverToDelete.id);
+      setServerToDelete(null);
+    }
+  };
 
   return (
     <Card>
@@ -46,9 +64,9 @@ export function ServerInfo() {
                     </span>
                   )}
                   <Button
-                    variant="outline"
+                    variant="destructive"
                     size="sm"
-                    onClick={() => storage.deleteServer(server.id)}
+                    onClick={() => handleDeleteClick(server)}
                   >
                     {t("server.delete")}
                   </Button>
@@ -57,6 +75,12 @@ export function ServerInfo() {
             ))}
           </div>
         )}
+        <DeleteServerConfirmDialog
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          server={serverToDelete}
+          onConfirm={handleConfirmDelete}
+        />
       </CardContent>
     </Card>
   );

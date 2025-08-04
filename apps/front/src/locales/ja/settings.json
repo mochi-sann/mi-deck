@@ -46,7 +46,14 @@
     "title": "接続サーバー",
     "noServers": "サーバーが登録されていません",
     "currentServer": "現在のサーバー",
-    "delete": "削除"
+    "delete": "削除",
+    "deleteConfirm": {
+      "title": "サーバーを削除",
+      "message": "以下のサーバーを削除しますか？",
+      "warning": "この操作は取り消すことができません",
+      "confirm": "削除",
+      "cancel": "キャンセル"
+    }
   },
   "dataManagement": {
     "title": "データ管理",
