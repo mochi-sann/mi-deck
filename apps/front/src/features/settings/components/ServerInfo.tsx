@@ -33,12 +33,10 @@ export function ServerInfo() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>{t("server.title")}</CardTitle>
-          <Button
-            onClick={() => setAddDialogOpen(true)}
-            size="sm"
-            className="gap-2"
-          >
-            <Plus className="h-4 w-4" />
+          <Button onClick={() => setAddDialogOpen(true)} size={"default"}>
+            <span>
+              <Plus className="h-4 w-4" />
+            </span>
             {t("server.add.button")}
           </Button>
         </div>
