@@ -18,6 +18,7 @@ type LabelProps = {
   placeholder: string;
   validation: string;
   label: string;
+  required?: boolean;
   collection: Array<
     | { label: string; value: string; disabled?: undefined }
     | { label: string; value: string; disabled: boolean }
@@ -35,6 +36,7 @@ export const MenuFieldSet = <T extends FieldValues>(
     rules,
     collection: propsCollectionList,
     placeholder,
+    required = false,
   } = props;
   const { field, fieldState } = useController<T>({
     name,
@@ -45,7 +47,10 @@ export const MenuFieldSet = <T extends FieldValues>(
   const { error } = fieldState;
   return (
     <FormItem>
-      <Label>{label}</Label>
+      <Label>
+        {label}
+        {required && <span className="ml-1 text-red-500">*</span>}
+      </Label>
       <Select
         onValueChange={(value) => {
           // Only pass the selected value to react-hook-form

@@ -15,7 +15,9 @@ type NewServerFormType = {
 
 export const NewServerForm: React.FC = () => {
   const { t } = useTranslation("server");
-  const { handleSubmit, control } = useForm<NewServerFormType>();
+  const { handleSubmit, control } = useForm<NewServerFormType>({
+    resolver,
+  });
   const auth = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | undefined>();
@@ -55,6 +57,7 @@ export const NewServerForm: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <TextFieldSet
+          required
           placeholder={t("newServerForm.placeholder")}
           label={t("newServerForm.serverUrl")}
           type="text"
@@ -73,6 +76,7 @@ export const NewServerForm: React.FC = () => {
           ]}
           label={t("newServerForm.serverType")}
           control={control}
+          defaultValue="Misskey"
           validation={t("newServerForm.validation.serverTypeRequired")}
           rules={{
             required: t("newServerForm.validation.serverTypeRequired"),

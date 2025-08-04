@@ -12,13 +12,23 @@ type LabelProps = {
   type: string;
   placeholder: string;
   validation: string;
+  required?: boolean;
 };
 type TextFieldSetProps<T extends FieldValues> = UseControllerProps<T> &
   LabelProps;
 export const TextFieldSet = <T extends FieldValues>(
   props: TextFieldSetProps<T>,
 ) => {
-  const { label, validation, name, control, rules, type, placeholder } = props;
+  const {
+    label,
+    validation,
+    name,
+    control,
+    rules,
+    type,
+    placeholder,
+    required = false,
+  } = props;
   const { field, fieldState } = useController<T>({
     name,
     control,
@@ -28,7 +38,10 @@ export const TextFieldSet = <T extends FieldValues>(
   return (
     <FormItem>
       <Label>
-        <span>{label}</span>
+        <span>
+          {label}
+          {required && <span className="ml-1 text-red-500">*</span>}
+        </span>
         <br />
         <span>{validation}</span>
       </Label>
