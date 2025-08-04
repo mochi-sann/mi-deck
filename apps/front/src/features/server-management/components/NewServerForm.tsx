@@ -1,22 +1,48 @@
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import type React from "react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { MenuFieldSet } from "@/components/forms/MenuFieldSet";
+import * as v from "valibot";
 import { TextFieldSet } from "@/components/forms/TextFieldSet";
 import { Button } from "@/components/ui/button";
 import { clientAuthManager } from "@/features/auth/api/clientAuth";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
+const NewServerFormSchema = (t: (key: string) => string) =>
+  v.object({
+    serverOrigin: v.pipe(
+      v.string(t("newServerForm.validation.serverOriginRequired")),
+      v.minLength(1, t("newServerForm.validation.serverOriginRequired")),
+    ),
+    serverType: v.pipe(
+      v.union(
+        [v.literal("Misskey")],
+        t("newServerForm.validation.serverTypeRequired"),
+      ),
+      v.nonEmpty(t("newServerForm.validation.serverTypeRequired")),
+    ),
+  });
 type NewServerFormType = {
   serverOrigin: string;
   serverType: string;
 };
 
-export const NewServerForm: React.FC = () => {
+export type NewServerFormProps = {
+  onSuccess?: () => void;
+};
+
+export const NewServerForm: React.FC<NewServerFormProps> = ({ onSuccess }) => {
   const { t } = useTranslation("server");
-  const { handleSubmit, control } = useForm<NewServerFormType>({
-    resolver,
+  const formSchema = useMemo(() => NewServerFormSchema(t), [t]);
+  type FormValues = v.InferOutput<typeof formSchema>;
+
+  const { handleSubmit, control } = useForm<FormValues>({
+    resolver: valibotResolver(formSchema),
+    defaultValues: {
+      serverOrigin: "",
+      serverType: "Misskey",
+    },
   });
   const auth = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -41,6 +67,7 @@ export const NewServerForm: React.FC = () => {
       }
 
       await auth.initiateAuth(origin);
+      onSuccess?.();
     } catch (err) {
       console.log(...[err, "👀 [NewServerForm.tsx:34]: err"].reverse());
       setError(
@@ -63,25 +90,9 @@ export const NewServerForm: React.FC = () => {
           type="text"
           control={control}
           name="serverOrigin"
-          validation={t("newServerForm.validation.serverOriginRequired")}
           rules={{
             required: t("newServerForm.validation.serverOriginRequired"),
           }}
-        />
-        <MenuFieldSet
-          name="serverType"
-          collection={[
-            { label: "Misskey", value: "Misskey" },
-            { label: "Mastodon", value: "Mastodon" },
-          ]}
-          label={t("newServerForm.serverType")}
-          control={control}
-          defaultValue="Misskey"
-          validation={t("newServerForm.validation.serverTypeRequired")}
-          rules={{
-            required: t("newServerForm.validation.serverTypeRequired"),
-          }}
-          placeholder={t("newServerForm.selectPlaceholder")}
         />
         {error && (
           <div className="rounded bg-red-50 p-3 text-red-600 text-sm">

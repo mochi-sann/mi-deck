@@ -3,15 +3,16 @@ import {
   type UseControllerProps,
   useController,
 } from "react-hook-form";
-import { FormItem, FormMessage } from "../ui/form";
+import { FormItem } from "../ui/form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import Text from "../ui/text";
 
 type LabelProps = {
   label: string;
   type: string;
   placeholder: string;
-  validation: string;
+  validation?: string;
   required?: boolean;
 };
 type TextFieldSetProps<T extends FieldValues> = UseControllerProps<T> &
@@ -46,7 +47,7 @@ export const TextFieldSet = <T extends FieldValues>(
         <span>{validation}</span>
       </Label>
       <Input {...field} type={type} placeholder={placeholder} />
-      {error && <FormMessage>{error.message}</FormMessage>}
+      {error && <Text colorType={"denger"}>{error.message}</Text>}
     </FormItem>
   );
 };

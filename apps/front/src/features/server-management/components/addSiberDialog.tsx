@@ -11,10 +11,17 @@ import { NewServerForm } from "./NewServerForm";
 
 export type AddSiberDialogProps = {
   children: React.ReactNode;
+  onSuccess?: () => void;
 };
 export const AddSiberDialog = (props: AddSiberDialogProps) => {
   const [isAddServerDialogOpen, setIsAddServerDialogOpen] = useState(false);
   const { t } = useTranslation();
+
+  const handleSuccess = () => {
+    setIsAddServerDialogOpen(false);
+    props.onSuccess?.();
+  };
+
   return (
     <Dialog
       open={isAddServerDialogOpen}
@@ -25,7 +32,7 @@ export const AddSiberDialog = (props: AddSiberDialogProps) => {
         <DialogHeader>
           <DialogTitle>{t("navigation.addNewServer")}</DialogTitle>
         </DialogHeader>
-        <NewServerForm />
+        <NewServerForm onSuccess={handleSuccess} />
       </DialogContent>
     </Dialog>
   );
