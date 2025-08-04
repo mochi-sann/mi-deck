@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import * as v from "valibot";
 import { Button } from "@/components/ui/button";
 import Text from "@/components/ui/text";
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/callback/$origin")({
   component: AuthCallbackComponent,
 });
 function AuthCallbackComponent() {
+  const { t } = useTranslation("auth");
   const { origin } = Route.useParams();
   const search = Route.useSearch();
   const navigate = useNavigate();
@@ -35,7 +37,7 @@ function AuthCallbackComponent() {
     const completeAuthentication = async () => {
       try {
         if (search.session === "") {
-          throw new Error("セッショントークンが提供されていません");
+          throw new Error(t("callback.errors.noSessionToken"));
         }
 
         // Find pending auth session from localStorage
@@ -60,13 +62,15 @@ function AuthCallbackComponent() {
         }
       } catch (err) {
         console.error("Auth callback failed:", err);
-        setError(err instanceof Error ? err.message : "認証に失敗しました");
+        setError(
+          err instanceof Error ? err.message : t("callback.errors.authFailed"),
+        );
         setStatus("error");
       }
     };
 
     completeAuthentication();
-  }, [auth.completeAuth, navigate, search.session]);
+  }, [auth.completeAuth, navigate, search.session, t]);
 
   const handleRetry = () => {
     window.close(); // Close popup and let user try again
@@ -81,25 +85,31 @@ function AuthCallbackComponent() {
       <div className="w-full space-y-4 text-center">
         {status === "processing" && (
           <div className="w-full">
-            <Text className="text-lg">認証処理中...</Text>
+            <Text className="text-lg">{t("callback.processing")}</Text>
             <div className="mx-auto h-8 w-8 animate-spin rounded-full border-blue-600 border-b-2" />
           </div>
         )}
 
         {status === "success" && (
           <div className="flex flex-col items-center space-y-2">
-            <Text className="text-green-600 text-lg">認証が完了しました！</Text>
+            <Text className="text-green-600 text-lg">
+              {t("callback.success.title")}
+            </Text>
             <Text className="text-gray-600 text-sm">
-              サーバー「{decodeURIComponent(origin)}」が追加されました。
+              {t("callback.success.serverAdded", {
+                serverName: decodeURIComponent(origin),
+              })}
               <br />
-              まもなくメイン画面に移動します...
+              {t("callback.success.redirecting")}
             </Text>
           </div>
         )}
 
         {status === "error" && (
           <>
-            <Text className="text-lg text-red-600">認証に失敗しました</Text>
+            <Text className="text-lg text-red-600">
+              {t("callback.error.title")}
+            </Text>
             {error && (
               <Text className="rounded bg-red-50 p-3 text-gray-600 text-sm">
                 {error}
@@ -107,9 +117,11 @@ function AuthCallbackComponent() {
             )}
             <div className="flex justify-center space-x-4">
               <Button onClick={handleRetry} variant="outline">
-                再試行
+                {t("callback.actions.retry")}
               </Button>
-              <Button onClick={handleGoHome}>ホームに戻る</Button>
+              <Button onClick={handleGoHome}>
+                {t("callback.actions.goHome")}
+              </Button>
             </div>
           </>
         )}
