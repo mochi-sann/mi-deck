@@ -39,7 +39,9 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
           ? "notes/timeline"
           : type === "social"
             ? "notes/hybrid-timeline"
-            : `notes/${type}-timeline`;
+            : type === "local"
+              ? "notes/local-timeline"
+              : "notes/global-timeline";
       const params = untilId ? { untilId } : {};
 
       // biome-ignore lint/suspicious/noExplicitAny: Timeline null
@@ -127,8 +129,14 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
     // Setup WebSocket connection
     const stream = new Stream(origin, { token });
     const channelName =
-      type === "social" ? "hybridTimeline" : `${type}Timeline`;
-    // biome-ignore lint/correctness/useHookAtTopLevel: remove
+      type === "social"
+        ? "hybridTimeline"
+        : type === "home"
+          ? "homeTimeline"
+          : type === "local"
+            ? "localTimeline"
+            : "globalTimeline";
+    // biome-ignore lint/correctness/useHookAtTopLevel: stream.useChannel is not a React hook
     const channel = stream.useChannel(channelName);
 
     // Handle new notes
