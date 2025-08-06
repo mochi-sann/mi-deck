@@ -1,4 +1,5 @@
 import { valibotResolver } from "@hookform/resolvers/valibot";
+import { TFunction } from "i18next";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -37,7 +38,7 @@ type ClientCreateTimelineDialogProps = {
   onSuccess: () => void;
 };
 
-const createFormSchema = (t: (key: string) => string) =>
+const createFormSchema = (t: TFunction<"timeline", undefined>) =>
   v.object({
     serverId: v.pipe(
       v.string(),

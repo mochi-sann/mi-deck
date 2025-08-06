@@ -32,6 +32,7 @@ const buttonVariants = cva(
       buttonWidth: {
         default: "",
         full: "w-full",
+        icon: "size-9",
       },
     },
     defaultVariants: {
@@ -42,62 +43,17 @@ const buttonVariants = cva(
   },
 );
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
-  isLoading?: boolean;
-}
-
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      className,
-      variant,
-      size,
-      asChild = false,
-      isLoading = false,
-      children,
-      buttonWidth,
-      ...props
-    },
-    ref,
-  ) => {
-    const Comp = asChild ? Slot : "button";
-    return (
-      <Comp
-        className={cn(
-          buttonVariants({ variant, size, className, buttonWidth }),
-          isLoading && "cursor-wait opacity-75", // Add loading styles conditionally
-        )}
-        ref={ref}
-        disabled={isLoading || props.disabled}
-        {...props}
-      >
-        {
-          <Spinner
-            color="var(--primary-foreground)"
-            size={"sm"}
-            strokeWidth={3}
-            className={cn("absolute", isLoading ? "opacity-100 " : "opacity-0")}
-          />
-        }
-        <span className={cn(isLoading && "opacity-0")}>{children}</span>
-      </Comp>
-    );
-  },
-);
-Button.displayName = "Button";
-
-export { Button, buttonVariants };
-/* Previous implementation before ref forwarding and isLoading:
 function Button({
   className,
   variant,
   size,
   asChild = false,
   ...props
-}: ButtonProps) {
+}: React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+    isLoading?: boolean;
+  }) {
   const Comp = asChild ? Slot : "button";
 
   return (
@@ -105,7 +61,21 @@ function Button({
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
-    />
+    >
+      {
+        <Spinner
+          color="var(--primary-foreground)"
+          size={"sm"}
+          strokeWidth={3}
+          className={cn(
+            "absolute",
+            props.isLoading ? "opacity-100" : "opacity-0",
+          )}
+        />
+      }
+      {props.children}
+    </Comp>
   );
 }
-*/
+
+export { Button, buttonVariants };

@@ -46,10 +46,4 @@ jobs:
       run: pnpm install
 
     - name: Run frontend tests
-      run: pnpm --filter front test
-
-    - name: Run frontend test coverage
-      run: pnpm --filter front test:coverage
-
-    - name: Run react-mfm tests
-      run: pnpm --filter react-mfm test
+      run: pnpm test

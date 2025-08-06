@@ -350,4 +350,75 @@ describe("MisskeyNote", () => {
     const avatarImage = screen.getByTestId("avatar-image");
     expect(avatarImage).not.toHaveAttribute("src");
   });
+
+  describe("Long Text Handling", () => {
+    it("should handle very long single line text without horizontal scroll", () => {
+      const longText = "A".repeat(1000);
+      const note = createMockNote({ text: longText });
+      const origin = "misskey.example.com";
+
+      render(<MisskeyNote note={note} origin={origin} />);
+
+      const article = screen.getByRole("article");
+      expect(article).toBeInTheDocument();
+
+      // Check that MfmText is rendered with the long text
+      const mfmTexts = screen.getAllByTestId("mfm-text");
+      const longTextMfm = mfmTexts.find(
+        (el) =>
+          el.querySelector('[data-testid="mfm-text-content"]')?.textContent ===
+          longText,
+      );
+      expect(longTextMfm).toBeInTheDocument();
+    });
+
+    it("should handle long URLs properly", () => {
+      const longUrl = "https://example.com/" + "very-long-path/".repeat(20);
+      const note = createMockNote({ text: longUrl });
+      const origin = "misskey.example.com";
+
+      render(<MisskeyNote note={note} origin={origin} />);
+
+      const mfmTexts = screen.getAllByTestId("mfm-text");
+      const urlTextMfm = mfmTexts.find(
+        (el) =>
+          el.querySelector('[data-testid="mfm-text-content"]')?.textContent ===
+          longUrl,
+      );
+      expect(urlTextMfm).toBeInTheDocument();
+    });
+
+    it("should render text content with appropriate word-break classes", () => {
+      const longText = "VeryLongWordWithoutSpaces".repeat(50);
+      const note = createMockNote({ text: longText });
+      const origin = "misskey.example.com";
+
+      render(<MisskeyNote note={note} origin={origin} />);
+
+      // Verify that the note text is rendered correctly
+      const mfmTexts = screen.getAllByTestId("mfm-text");
+      const noteTextMfm = mfmTexts.find(
+        (el) =>
+          el.querySelector('[data-testid="mfm-text-content"]')?.textContent ===
+          longText,
+      );
+      expect(noteTextMfm).toBeInTheDocument();
+    });
+
+    it("should render Japanese text without horizontal overflow", () => {
+      const mixedText = "こんにちは世界";
+      const note = createMockNote({ text: mixedText });
+      const origin = "misskey.example.com";
+
+      render(<MisskeyNote note={note} origin={origin} />);
+
+      const mfmTexts = screen.getAllByTestId("mfm-text");
+      const mixedTextMfm = mfmTexts.find(
+        (el) =>
+          el.querySelector('[data-testid="mfm-text-content"]')?.textContent ===
+          mixedText,
+      );
+      expect(mixedTextMfm).toBeInTheDocument();
+    });
+  });
 });

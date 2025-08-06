@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "turbo run dev",
+    "dev": "turbo run dev storybook",
     "build": "turbo run build",
     "start": "turbo run start",
     "front": "pnpm -F @mi-deck/front",
@@ -13,6 +13,7 @@
     "test:e2e:server": "pnpm -F @mi-deck/server run test:e2e",
     "format": "biome format --write ",
     "check": "biome check --write --unsafe ",
+    "fix-test-any": "node scripts/fix-test-any.js",
     "test": "turbo run test",
     "lint": "turbo run lint",
     "clean": "turbo run clean"

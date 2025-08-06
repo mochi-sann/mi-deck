@@ -1,6 +1,6 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 import Text from "@/components/ui/text";
-import { NewServerForm } from "./-form/NewServerForm";
+import { NewServerForm } from "@/features/server-management";
 
 export const Route = createLazyFileRoute("/_authed/add-server/")({
   component: RouteComponent,

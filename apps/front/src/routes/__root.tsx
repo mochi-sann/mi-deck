@@ -1,5 +1,6 @@
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { Fragment, lazy, Suspense } from "react";
+import { Toaster } from "@/components/ui/toaster";
 
 const TanStackRouterDevtools = !import.meta.env.DEV
   ? () => null // Render nothing in production
@@ -31,6 +32,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <Fragment>
       <Outlet />
+      <Toaster />
       <Suspense>
         <TanStackRouterDevtools position="bottom-right" />
       </Suspense>

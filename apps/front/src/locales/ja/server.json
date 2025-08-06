@@ -1,7 +1,7 @@
 {
   "newServerForm": {
     "serverUrl": "サーバーのURL",
-    "placeholder": "例: misskey.io",
+    "placeholder": "例: misskey.io または https://misskey.io",
     "serverType": "サーバータイプ",
     "selectPlaceholder": "サーバーを選んでください",
     "addButton": "サーバーを追加する",
@@ -9,7 +9,8 @@
     "addFailed": "サーバー追加に失敗しました",
     "validation": {
       "serverOriginRequired": "有効なサーバーアドレスを入力してください",
-      "serverTypeRequired": "サーバータイプを選択してください"
+      "serverTypeRequired": "サーバータイプを選択してください",
+      "invalidServerUrl": "有効なサーバーURLを入力してください"
     }
   },
   "serverList": {
@@ -17,5 +18,18 @@
     "select": "選択",
     "update": "更新",
     "delete": "削除"
+  },
+  "error": {
+    "network": "ネットワークエラーが発生しました。インターネット接続を確認してください。",
+    "invalidUrl": "無効なサーバーURLです。正しいMisskeyサーバーのURLを入力してください。",
+    "authFailed": "認証に失敗しました。サーバーの設定を確認してください。",
+    "cors": "サーバーとの通信でCORSエラーが発生しました。サーバー管理者にお問い合わせください。",
+    "timeout": "サーバーからの応答がタイムアウトしました。しばらく待ってから再試行してください。",
+    "unavailable": "サーバーが利用できません。サーバーの状態を確認してください。",
+    "unknown": "不明なエラーが発生しました。",
+    "networkRetry": "再試行するか、ネットワーク接続を確認してください。"
+  },
+  "success": {
+    "added": "サーバーが正常に追加されました。"
   }
 }

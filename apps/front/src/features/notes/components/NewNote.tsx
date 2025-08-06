@@ -1,5 +1,6 @@
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { TFunction } from "i18next";
 import { APIClient } from "misskey-js/api.js";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -34,7 +35,7 @@ import { storageManager } from "@/lib/storage";
 import { uploadAndCompressFiles } from "@/lib/uploadAndCompresFiles";
 
 // Define the form schema using Valibot
-const createFormSchema = (t: (key: string) => string) =>
+const createFormSchema = (t: TFunction<"notes", undefined>) =>
   v.object({
     serverSessionId: v.pipe(
       v.string(),

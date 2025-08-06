@@ -1,0 +1,83 @@
+name: ✨ 機能要求
+description: mi-deckの新機能や改善を提案してください
+title: "[Feature] "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        新機能の提案をありがとうございます！あなたのアイデアがmi-deckをより良いアプリケーションにします。
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: "✨ 機能の概要"
+      description: "提案する機能について簡潔に説明してください"
+      placeholder: "例: タイムラインのカスタムテーマ機能"
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: "🎯 動機・目的"
+      description: "なぜこの機能が必要なのか、どのような問題を解決するのかを説明してください"
+      placeholder: |
+        例:
+        - 現在のテーマでは個人の好みに合わない
+        - より視認性の良いデザインにしたい
+        - アクセシビリティを向上させたい
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "💡 提案する解決策"
+      description: "どのような実装や機能を想定しているかを具体的に説明してください"
+      placeholder: |
+        例:
+        - 設定画面にテーマ選択機能を追加
+        - ダークモード、ライトモード、ハイコントラストモードを提供
+        - カスタムCSS読み込み機能
+        - 投稿の文字サイズ調整機能
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "🔄 代替案"
+      description: "他に検討した実装方法や類似機能があれば説明してください（任意）"
+      placeholder: |
+        例:
+        - ブラウザの拡張機能として実装
+        - 既存のテーマライブラリを使用
+        - 段階的な実装（まずはダークモードのみ）
+
+  - type: checkboxes
+    id: feature_type
+    attributes:
+      label: "📋 機能の種類"
+      description: "提案する機能の種類を選択してください（複数選択可）"
+      options:
+        - label: "UI/UX改善"
+        - label: "新しい表示機能"
+        - label: "設定・カスタマイズ"
+        - label: "パフォーマンス改善"
+        - label: "アクセシビリティ"
+        - label: "Misskey機能の対応"
+        - label: "開発者向け機能"
+        - label: "その他"
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: "📝 追加情報"
+      description: "参考になるリンク、類似アプリの例、技術的な詳細など、その他の情報があれば記入してください（任意）"
+      placeholder: |
+        例:
+        - 参考になるアプリやサイト
+        - 技術仕様や実装の詳細
+        - 関連するIssueやPull Request
+        - ユーザーからの要望の声

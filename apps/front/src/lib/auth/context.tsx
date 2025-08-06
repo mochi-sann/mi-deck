@@ -5,9 +5,9 @@ import {
   useEffect,
   useState,
 } from "react";
+import { clientAuthManager } from "@/features/auth/api/clientAuth";
 import { useStorage } from "../storage/context";
 import type { MisskeyServerConnection } from "../storage/types";
-import { clientAuthManager } from "./clientAuth";
 
 interface AuthContextValue {
   // State
