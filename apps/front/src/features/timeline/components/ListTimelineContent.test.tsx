@@ -75,6 +75,8 @@ import { useListTimeline } from "../hooks/useListTimeline";
 
 // Helper function to create mock notes
 const createMockNote = (id: string, text: string, userId = "user1") => ({
+  reactionCount: 0,
+  reactionAndUserPairCache: [],
   id,
   text,
   createdAt: "2023-01-01T00:00:00.000Z",
@@ -100,6 +102,7 @@ const createMockNote = (id: string, text: string, userId = "user1") => ({
   reactions: {},
   reactionEmojis: {},
   emojis: {},
+  myReaction: null,
 });
 
 describe("ListTimelineContent", () => {

@@ -406,13 +406,11 @@ describe("ClientCreateTimelineDialog", () => {
       reorderTimelines: vi.fn(),
       deleteTimeline: vi.fn(),
       updateTimeline: vi.fn(),
-      getAuthState: vi.fn(),
-      setAuthState: vi.fn(),
-      clearAuthState: vi.fn(),
-      exportData: vi.fn(),
-      importData: vi.fn(),
-      clearAllData: vi.fn(),
-      refreshData: vi.fn(),
+      updateAppSettings: vi.fn(),
+      refresh: vi.fn(),
+      retry: vi.fn(),
+      clearError: vi.fn(),
+      reinitializeStorage: vi.fn(),
     });
 
     render(
