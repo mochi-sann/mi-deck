@@ -253,6 +253,9 @@ describe("useListTimeline", () => {
 
   it("should handle retryFetch", async () => {
     const mockNotes = [{ id: "1", text: "Test note" }];
+
+    // First call succeeds, then we retry
+    mockRequest.mockResolvedValueOnce(mockNotes);
     mockRequest.mockResolvedValueOnce(mockNotes);
 
     const { result } = renderHook(() =>
@@ -269,8 +272,13 @@ describe("useListTimeline", () => {
       result.current.retryFetch();
     });
 
+    // Wait for retry fetch to complete
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
     expect(result.current.error).toBeNull();
-    expect(result.current.notes).toEqual([]);
+    expect(result.current.notes).toEqual(mockNotes);
     expect(result.current.hasMore).toBe(true);
   });
 });
