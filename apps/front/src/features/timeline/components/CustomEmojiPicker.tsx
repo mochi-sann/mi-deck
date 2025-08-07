@@ -1,16 +1,16 @@
 import { Search } from "lucide-react";
 import type { EmojiSimple } from "misskey-js/entities.js";
-import { memo, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useCustomEmojis } from "@/hooks/useCustomEmojis";
+import { useForeignApi } from "@/hooks/useForeignApi";
 import { cn } from "@/lib/utils";
-import { useServerEmojis } from "../hooks/useServerEmojis";
 
 interface CustomEmojiPickerProps {
   origin: string;
-  userRoleIds?: string[];
-  onEmojiSelect: (emoji: EmojiSimple) => void;
+  onEmojiSelect: (emojiName: string) => void;
   className?: string;
   reactionEmojis?: Record<string, string>;
   fallbackEmojis?: Record<string, string>;
@@ -20,7 +20,6 @@ const EMOJIS_PER_ROW = 8;
 
 function CustomEmojiPickerBase({
   origin,
-  userRoleIds = [],
   onEmojiSelect,
   className,
   reactionEmojis = {},
@@ -28,44 +27,80 @@ function CustomEmojiPickerBase({
 }: CustomEmojiPickerProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("recent");
+  const [serverEmojis, setServerEmojis] = useState<EmojiSimple[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const {
-    groupedEmojis,
-    categories,
-    searchEmojis,
-    getRecentEmojis,
-    isLoading,
-    error,
-  } = useServerEmojis({ origin, userRoleIds });
+  const api = useForeignApi(origin);
+  const { cache } = useCustomEmojis(origin);
+
+  // サーバーの絵文字一覧を取得
+  useEffect(() => {
+    if (!api) return;
+
+    setIsLoading(true);
+    fetch(`${origin.replace(/\/$/, "")}/api/emojis`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    })
+      .then((res) => res.json())
+      .then((response: { emojis?: EmojiSimple[] } | EmojiSimple[]) => {
+        const list = Array.isArray(response)
+          ? response
+          : (response?.emojis ?? []);
+        setServerEmojis(list);
+        setError(null);
+      })
+      .catch((err: unknown) => {
+        console.error("Failed to fetch server emojis:", err);
+        setError("絵文字の取得に失敗しました");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [api, origin]);
 
   const searchResults = useMemo(() => {
-    return searchQuery.trim() ? searchEmojis(searchQuery) : [];
-  }, [searchQuery, searchEmojis]);
+    if (!searchQuery.trim()) return [];
+    const query = searchQuery.toLowerCase();
+    return serverEmojis.filter(
+      (emoji) =>
+        emoji.name.toLowerCase().includes(query) ||
+        emoji.aliases?.some((alias) => alias.toLowerCase().includes(query)),
+    );
+  }, [searchQuery, serverEmojis]);
 
-  const recentEmojis = useMemo(() => {
-    return getRecentEmojis();
-  }, [getRecentEmojis]);
+  const groupedEmojis = useMemo(() => {
+    const groups: Record<string, EmojiSimple[]> = {};
+    serverEmojis.forEach((emoji) => {
+      const category = emoji.category || "その他";
+      if (!groups[category]) groups[category] = [];
+      groups[category].push(emoji);
+    });
+    return groups;
+  }, [serverEmojis]);
+
+  const categories = useMemo(() => {
+    return Object.keys(groupedEmojis).sort();
+  }, [groupedEmojis]);
 
   const handleEmojiClick = (emoji: EmojiSimple) => {
-    onEmojiSelect(emoji);
+    onEmojiSelect(emoji.name);
   };
 
   const getEmojiUrl = (emoji: EmojiSimple): string => {
     const fullName = `${emoji.name}@${origin.replace(/^https?:\/\//, "")}`;
 
-    if (reactionEmojis[fullName]) {
-      return reactionEmojis[fullName];
-    }
-
-    if (reactionEmojis[`:${emoji.name}:`]) {
+    if (reactionEmojis[fullName]) return reactionEmojis[fullName];
+    if (reactionEmojis[`:${emoji.name}:`])
       return reactionEmojis[`:${emoji.name}:`];
-    }
 
-    if (fallbackEmojis[emoji.name]) {
-      return fallbackEmojis[emoji.name];
-    }
+    if (cache[emoji.name]) return cache[emoji.name];
 
-    return emoji.url;
+    if (fallbackEmojis[emoji.name]) return fallbackEmojis[emoji.name];
+
+    return emoji.url ?? "";
   };
 
   if (isLoading) {
@@ -176,13 +211,9 @@ function CustomEmojiPickerBase({
 
           <ScrollArea className="h-48">
             {activeTab === "recent" ? (
-              recentEmojis.length > 0 ? (
-                <EmojiGrid emojis={recentEmojis} />
-              ) : (
-                <div className="flex h-32 items-center justify-center text-muted-foreground text-sm">
-                  最近使用した絵文字はありません
-                </div>
-              )
+              <div className="flex h-32 items-center justify-center text-muted-foreground text-sm">
+                最近使用した絵文字はありません
+              </div>
             ) : categories.length > 0 ? (
               <div className="space-y-4">
                 {categories.map((category) => (

@@ -10,13 +10,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useNoteReactions } from "../hooks/useNoteReactions";
-import { useServerEmojis } from "../hooks/useServerEmojis";
 import { CustomEmojiPicker } from "./CustomEmojiPicker";
 
 interface ReactionButtonProps {
   note: Note;
   origin: string;
-  userRoleIds?: string[];
   emojis?: Record<string, string>;
 }
 
@@ -25,7 +23,6 @@ const QUICK_REACTIONS = ["❤️", "👍", "👎", "😂", "😢", "😮", "😡
 function ReactionButtonBase({
   note,
   origin,
-  userRoleIds = [],
   emojis = {},
 }: ReactionButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,11 +32,6 @@ function ReactionButtonBase({
       origin,
       note,
     });
-
-  const { addToRecentEmojis } = useServerEmojis({
-    origin,
-    userRoleIds,
-  });
 
   const isLoading = isReacting || isRemoving;
   const hasMyReaction = !!myReaction;
@@ -51,7 +43,6 @@ function ReactionButtonBase({
 
   const handleCustomEmojiSelect = (emoji: EmojiSimple) => {
     toggleReaction(`:${emoji.name}:`);
-    addToRecentEmojis(emoji.name);
     setIsOpen(false);
   };
 
@@ -73,7 +64,6 @@ function ReactionButtonBase({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-2" align="start">
-        {/* クイックリアクション */}
         <div className="mb-2">
           <h3 className="mb-2 font-medium text-sm">クイックリアクション</h3>
           <div className="grid grid-cols-4 gap-1">
@@ -98,13 +88,13 @@ function ReactionButtonBase({
 
         <Separator className="my-2" />
 
-        {/* カスタム絵文字ピッカー */}
         <div className="mb-2">
           <h3 className="mb-2 font-medium text-sm">カスタム絵文字</h3>
           <CustomEmojiPicker
             origin={origin}
-            userRoleIds={userRoleIds}
-            onEmojiSelect={handleCustomEmojiSelect}
+            onEmojiSelect={(name) =>
+              handleCustomEmojiSelect({ name } as EmojiSimple)
+            }
             reactionEmojis={note.reactionEmojis}
             fallbackEmojis={emojis}
           />
