@@ -1,0 +1,100 @@
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import Text from "@/components/ui/text";
+import { useListTimeline } from "../hooks/useListTimeline";
+import { MisskeyNote } from "./MisskeyNote";
+
+export function ListTimelineContent({
+  origin,
+  token: serverToken,
+  listId,
+}: {
+  origin: string;
+  token: string;
+  listId: string;
+}) {
+  const { notes, error, hasMore, isLoading, fetchNotes, retryFetch } =
+    useListTimeline(origin, serverToken, listId);
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const rowVirtualizer = useVirtualizer({
+    count: notes.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 100,
+    overscan: 5,
+    measureElement: (element) => {
+      return element.getBoundingClientRect().height;
+    },
+  });
+
+  useEffect(() => {
+    const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse();
+    if (!lastItem) return;
+
+    if (
+      lastItem.index >= notes.length - 1 &&
+      hasMore &&
+      !isLoading &&
+      lastItem.end >= lastItem.size
+    ) {
+      fetchNotes(notes[notes.length - 1]?.id);
+    }
+  }, [hasMore, isLoading, notes, fetchNotes, rowVirtualizer]);
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center gap-4 p-4">
+        <Text className="text-center text-red-500">
+          Error loading list timeline: {error.message || "Unknown error"}
+        </Text>
+        <Button onClick={retryFetch} variant="outline" size="sm">
+          Retry
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      ref={parentRef}
+      style={{
+        height: "100%",
+        overflow: "auto",
+      }}
+    >
+      <div
+        style={{
+          height: `${rowVirtualizer.getTotalSize()}px`,
+          width: "100%",
+          position: "relative",
+        }}
+      >
+        {rowVirtualizer.getVirtualItems().map((virtualRow) => (
+          <div
+            key={virtualRow.index}
+            data-index={virtualRow.index}
+            ref={rowVirtualizer.measureElement}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              transform: `translateY(${virtualRow.start}px)`,
+            }}
+          >
+            <MisskeyNote origin={origin} note={notes[virtualRow.index]} />
+          </div>
+        ))}
+      </div>
+      {isLoading && (
+        <div style={{ textAlign: "center", padding: "1rem" }}>
+          <Text>
+            <Spinner />
+          </Text>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -3,25 +3,30 @@ import { APIClient } from "misskey-js/api.js";
 import { Note } from "misskey-js/entities.js";
 import { useEffect, useState } from "react";
 
-type TimelineType = "home" | "local" | "global" | "social";
-// Custom hook for timeline functionality
-export function useTimeline(origin: string, token: string, type: TimelineType) {
+export function useListTimeline(origin: string, token: string, listId: string) {
   const [notes, setNotes] = useState<Note[]>([]);
   const [error, setError] = useState<Error | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Validate origin and token
   const isValidConfig =
-    origin && token && origin.trim() !== "" && token.trim() !== "";
+    origin &&
+    token &&
+    listId &&
+    origin.trim() !== "" &&
+    token.trim() !== "" &&
+    listId.trim() !== "";
 
-  // If config is invalid, set error state
   if (!isValidConfig && !error) {
-    setError(
-      new Error(
-        "サーバーまたは認証情報が設定されていません。サーバーを追加してください。",
-      ),
-    );
+    let errorMessage = "設定に問題があります: ";
+    if (!origin || origin.trim() === "") {
+      errorMessage += "サーバー情報が不足しています。";
+    } else if (!token || token.trim() === "") {
+      errorMessage += "認証情報が不足しています。";
+    } else if (!listId || listId.trim() === "") {
+      errorMessage += "リストIDが設定されていません。";
+    }
+    setError(new Error(errorMessage));
   }
 
   const fetchNotes = async (untilId?: string) => {
@@ -34,18 +39,16 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
         credential: token,
       });
 
-      const endpoint =
-        type === "home"
-          ? "notes/timeline"
-          : type === "social"
-            ? "notes/hybrid-timeline"
-            : type === "local"
-              ? "notes/local-timeline"
-              : "notes/global-timeline";
-      const params = untilId ? { untilId } : {};
+      const params = {
+        listId,
+        ...(untilId ? { untilId } : {}),
+      };
 
-      // biome-ignore lint/suspicious/noExplicitAny: Timeline null
-      const res = await (client as any).request(endpoint, params);
+      // biome-ignore lint/suspicious/noExplicitAny: Misskey API client type
+      const res = await (client as any).request(
+        "notes/user-list-timeline",
+        params,
+      );
 
       if (Array.isArray(res)) {
         if (res.length === 0) {
@@ -57,9 +60,9 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
         setError(new Error("Invalid response format"));
       }
     } catch (err) {
-      console.error("Timeline fetch error:", {
+      console.error("List timeline fetch error:", {
         origin,
-        type,
+        listId,
         error: err,
         untilId,
       });
@@ -67,7 +70,6 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
       let errorMessage = "Unknown error occurred";
 
       if (err instanceof Error) {
-        // Handle network errors
         if (
           err.message.includes("fetch") ||
           err.message.includes("NetworkError")
@@ -86,14 +88,13 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
         ) {
           errorMessage = "Access denied. Check your permissions.";
         } else if (err.message.includes("404")) {
-          errorMessage = "Timeline not found or server unreachable.";
+          errorMessage = "List not found or server unreachable.";
         } else if (err.message.includes("500")) {
           errorMessage = "Server error. Please try again later.";
         } else {
           errorMessage = err.message;
         }
       } else if (typeof err === "object" && err !== null && "code" in err) {
-        // Handle Misskey API specific errors
         const misskeyError = err as { code: string; message?: string };
         switch (misskeyError.code) {
           case "RATE_LIMIT_EXCEEDED":
@@ -103,6 +104,9 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
           case "INVALID_TOKEN":
           case "CREDENTIAL_REQUIRED":
             errorMessage = "Invalid token. Please re-authenticate.";
+            break;
+          case "NO_SUCH_LIST":
+            errorMessage = "The specified list does not exist.";
             break;
           case "SUSPENDED":
             errorMessage = "Your account has been suspended.";
@@ -126,25 +130,14 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
   useEffect(() => {
     fetchNotes();
 
-    // Setup WebSocket connection
     const stream = new Stream(origin, { token });
-    const channelName =
-      type === "social"
-        ? "hybridTimeline"
-        : type === "home"
-          ? "homeTimeline"
-          : type === "local"
-            ? "localTimeline"
-            : "globalTimeline";
-    // biome-ignore lint/correctness/useHookAtTopLevel: stream.useChannel is not a React hook
-    const channel = stream.useChannel(channelName);
+    // biome-ignore lint/correctness/useHookAtTopLevel: remove
+    const channel = stream.useChannel("userList", { listId });
 
-    // Handle new notes
     channel.on("note", (note: Note) => {
       setNotes((prevNotes) => [note, ...prevNotes]);
     });
 
-    // Handle disconnection
     stream.on("_disconnected_", () => {
       console.error("Stream disconnected from:", origin);
       setError(
@@ -154,19 +147,16 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
       );
     });
 
-    // Handle connection errors
     stream.on("_connected_", () => {
       console.log("Stream connected to:", origin);
-      // Clear connection errors when reconnected
       setError(null);
     });
 
-    // Cleanup on unmount
     return () => {
       channel.dispose();
       stream.close();
     };
-  }, [origin, token, type]);
+  }, [origin, token, listId]);
 
   const retryFetch = () => {
     setError(null);

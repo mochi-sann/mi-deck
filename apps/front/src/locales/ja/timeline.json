@@ -16,6 +16,8 @@
     "typePlaceholder": "タイムラインタイプを選択",
     "nameLabel": "タイムライン名",
     "namePlaceholder": "例: 私のホームタイムライン",
+    "listLabel": "リスト",
+    "listPlaceholder": "リストを選択",
     "createButton": "作成",
     "creatingButton": "作成中...",
     "createFailed": "タイムラインの作成に失敗しました。",
@@ -23,7 +25,8 @@
       "home": "ホーム",
       "local": "ローカル",
       "social": "ソーシャル",
-      "global": "グローバル"
+      "global": "グローバル",
+      "list": "リスト"
     },
     "validation": {
       "selectServer": "サーバーを選択してください",
