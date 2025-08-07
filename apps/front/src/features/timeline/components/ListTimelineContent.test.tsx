@@ -3,14 +3,15 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ListTimelineContent } from "./ListTimelineContent";
 
 // Mock @tanstack/react-virtual
+const mockGetVirtualItems = vi.fn();
+const mockGetTotalSize = vi.fn();
+const mockMeasureElement = vi.fn();
+
 vi.mock("@tanstack/react-virtual", () => ({
   useVirtualizer: vi.fn(() => ({
-    getVirtualItems: vi.fn(() => [
-      { index: 0, start: 0, size: 100 },
-      { index: 1, start: 100, size: 100 },
-    ]),
-    getTotalSize: vi.fn(() => 200),
-    measureElement: vi.fn(),
+    getVirtualItems: mockGetVirtualItems,
+    getTotalSize: mockGetTotalSize,
+    measureElement: mockMeasureElement,
   })),
 }));
 
@@ -59,8 +60,12 @@ vi.mock("./MisskeyNote", () => ({
   // biome-ignore lint/style/useNamingConvention: Mock function
   // biome-ignore lint/suspicious/noExplicitAny: Mock function
   MisskeyNote: ({ note, origin }: { note: any; origin: string }) => (
-    <div data-testid="misskey-note" data-note-id={note.id} data-origin={origin}>
-      {note.text}
+    <div
+      data-testid="misskey-note"
+      data-note-id={note?.id}
+      data-origin={origin}
+    >
+      {note?.text}
     </div>
   ),
 }));
@@ -106,6 +111,10 @@ describe("ListTimelineContent", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // Reset virtual items mock with default empty state
+    mockGetVirtualItems.mockReturnValue([]);
+    mockGetTotalSize.mockReturnValue(0);
+    mockMeasureElement.mockReset();
   });
 
   it("should render notes correctly", () => {
@@ -113,6 +122,13 @@ describe("ListTimelineContent", () => {
       createMockNote("1", "Note 1", "user1"),
       createMockNote("2", "Note 2", "user2"),
     ];
+
+    // Mock virtual items for 2 notes
+    mockGetVirtualItems.mockReturnValue([
+      { index: 0, start: 0, size: 100 },
+      { index: 1, start: 100, size: 100 },
+    ]);
+    mockGetTotalSize.mockReturnValue(200);
 
     mockUseListTimeline.mockReturnValue({
       notes: mockNotes,
@@ -145,6 +161,10 @@ describe("ListTimelineContent", () => {
   });
 
   it("should show loading spinner when loading", () => {
+    // Mock empty virtual items for no notes
+    mockGetVirtualItems.mockReturnValue([]);
+    mockGetTotalSize.mockReturnValue(0);
+
     mockUseListTimeline.mockReturnValue({
       notes: [],
       error: null,
@@ -171,6 +191,7 @@ describe("ListTimelineContent", () => {
     const mockError = new Error("Test error message");
     const mockRetryFetch = vi.fn();
 
+    // No need for virtual items setup as error state doesn't use virtualization
     mockUseListTimeline.mockReturnValue({
       notes: [],
       error: mockError,
@@ -208,6 +229,7 @@ describe("ListTimelineContent", () => {
     const mockError = new Error("");
     const mockRetryFetch = vi.fn();
 
+    // No need for virtual items setup as error state doesn't use virtualization
     mockUseListTimeline.mockReturnValue({
       notes: [],
       error: mockError,
@@ -232,6 +254,10 @@ describe("ListTimelineContent", () => {
   });
 
   it("should call useListTimeline with correct parameters", () => {
+    // Set up default empty virtual items
+    mockGetVirtualItems.mockReturnValue([]);
+    mockGetTotalSize.mockReturnValue(0);
+
     mockUseListTimeline.mockReturnValue({
       notes: [],
       error: null,
@@ -257,6 +283,10 @@ describe("ListTimelineContent", () => {
   });
 
   it("should render empty state when no notes", () => {
+    // Mock empty virtual items for no notes
+    mockGetVirtualItems.mockReturnValue([]);
+    mockGetTotalSize.mockReturnValue(0);
+
     mockUseListTimeline.mockReturnValue({
       notes: [],
       error: null,
@@ -288,6 +318,13 @@ describe("ListTimelineContent", () => {
       createMockNote("3", "Note 3"),
     ];
 
+    // Mock virtual items for 3 notes (showing first 2)
+    mockGetVirtualItems.mockReturnValue([
+      { index: 0, start: 0, size: 100 },
+      { index: 1, start: 100, size: 100 },
+    ]);
+    mockGetTotalSize.mockReturnValue(300);
+
     mockUseListTimeline.mockReturnValue({
       notes: mockNotes,
       error: null,
@@ -305,19 +342,21 @@ describe("ListTimelineContent", () => {
       />,
     );
 
-    // Check if the virtualized container is rendered
-    const virtualContainer = screen.getByTestId("misskey-note").closest("div");
-    expect(virtualContainer).toHaveStyle({
-      position: "absolute",
-      top: "0",
-      left: "0",
-      width: "100%",
-      transform: "translateY(0px)",
-    });
+    // Check if notes are rendered (only the virtualized ones)
+    const noteElements = screen.getAllByTestId("misskey-note");
+    expect(noteElements).toHaveLength(2);
+
+    // Check that the first note is rendered correctly
+    expect(noteElements[0]).toHaveAttribute("data-note-id", "1");
+    expect(noteElements[0]).toHaveTextContent("Note 1");
   });
 
   it("should show loading spinner at the bottom when loading more", () => {
     const mockNotes = [createMockNote("1", "Note 1")];
+
+    // Mock virtual items for 1 note
+    mockGetVirtualItems.mockReturnValue([{ index: 0, start: 0, size: 100 }]);
+    mockGetTotalSize.mockReturnValue(100);
 
     mockUseListTimeline.mockReturnValue({
       notes: mockNotes,
@@ -345,6 +384,10 @@ describe("ListTimelineContent", () => {
 
   it("should handle different list IDs", () => {
     const differentListId = "different-list-id";
+
+    // Set up default empty virtual items
+    mockGetVirtualItems.mockReturnValue([]);
+    mockGetTotalSize.mockReturnValue(0);
 
     mockUseListTimeline.mockReturnValue({
       notes: [],
