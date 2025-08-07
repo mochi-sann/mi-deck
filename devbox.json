@@ -3,7 +3,7 @@
   "packages": [
     "nodejs@22.14.0",
     "pnpm@10",
-    "direnv@2.36.0",
+    "direnv@2.37.1",
     "chromium",
     "playwright-driver"
   ],
