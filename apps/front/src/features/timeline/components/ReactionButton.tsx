@@ -1,5 +1,5 @@
 import { Heart } from "lucide-react";
-import type { Note } from "misskey-js/entities.js";
+import type { EmojiSimple, Note } from "misskey-js/entities.js";
 import { memo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,17 +7,27 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useNoteReactions } from "../hooks/useNoteReactions";
+import { useServerEmojis } from "../hooks/useServerEmojis";
+import { CustomEmojiPicker } from "./CustomEmojiPicker";
 
 interface ReactionButtonProps {
   note: Note;
   origin: string;
+  userRoleIds?: string[];
+  emojis?: Record<string, string>;
 }
 
 const QUICK_REACTIONS = ["❤️", "👍", "👎", "😂", "😢", "😮", "😡", "👏"];
 
-function ReactionButtonBase({ note, origin }: ReactionButtonProps) {
+function ReactionButtonBase({
+  note,
+  origin,
+  userRoleIds = [],
+  emojis = {},
+}: ReactionButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { myReaction, toggleReaction, isReacting, isRemoving } =
     useNoteReactions({
@@ -26,11 +36,22 @@ function ReactionButtonBase({ note, origin }: ReactionButtonProps) {
       note,
     });
 
+  const { addToRecentEmojis } = useServerEmojis({
+    origin,
+    userRoleIds,
+  });
+
   const isLoading = isReacting || isRemoving;
   const hasMyReaction = !!myReaction;
 
   const handleQuickReaction = (reaction: string) => {
     toggleReaction(reaction);
+    setIsOpen(false);
+  };
+
+  const handleCustomEmojiSelect = (emoji: EmojiSimple) => {
+    toggleReaction(`:${emoji.name}:`);
+    addToRecentEmojis(emoji.name);
     setIsOpen(false);
   };
 
@@ -51,26 +72,47 @@ function ReactionButtonBase({ note, origin }: ReactionButtonProps) {
           <span className="ml-1 text-xs">{note.reactionCount || 0}</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-64 p-2" align="start">
-        <div className="grid grid-cols-4 gap-1">
-          {QUICK_REACTIONS.map((reaction) => (
-            <Button
-              key={reaction}
-              variant={myReaction === reaction ? "default" : "ghost"}
-              size="sm"
-              className={cn(
-                "h-10 w-full text-lg hover:bg-muted",
-                myReaction === reaction && "bg-primary text-primary-foreground",
-              )}
-              onClick={() => handleQuickReaction(reaction)}
-              disabled={isLoading}
-            >
-              {reaction}
-            </Button>
-          ))}
+      <PopoverContent className="w-80 p-2" align="start">
+        {/* クイックリアクション */}
+        <div className="mb-2">
+          <h3 className="mb-2 font-medium text-sm">クイックリアクション</h3>
+          <div className="grid grid-cols-4 gap-1">
+            {QUICK_REACTIONS.map((reaction) => (
+              <Button
+                key={reaction}
+                variant={myReaction === reaction ? "default" : "ghost"}
+                size="sm"
+                className={cn(
+                  "h-10 w-full text-lg hover:bg-muted",
+                  myReaction === reaction &&
+                    "bg-primary text-primary-foreground",
+                )}
+                onClick={() => handleQuickReaction(reaction)}
+                disabled={isLoading}
+              >
+                {reaction}
+              </Button>
+            ))}
+          </div>
         </div>
+
+        <Separator className="my-2" />
+
+        {/* カスタム絵文字ピッカー */}
+        <div className="mb-2">
+          <h3 className="mb-2 font-medium text-sm">カスタム絵文字</h3>
+          <CustomEmojiPicker
+            origin={origin}
+            userRoleIds={userRoleIds}
+            onEmojiSelect={handleCustomEmojiSelect}
+            reactionEmojis={note.reactionEmojis}
+            fallbackEmojis={emojis}
+          />
+        </div>
+
         {hasMyReaction && (
-          <div className="mt-2 border-t pt-2">
+          <>
+            <Separator className="my-2" />
             <Button
               variant="outline"
               size="sm"
@@ -83,7 +125,7 @@ function ReactionButtonBase({ note, origin }: ReactionButtonProps) {
             >
               リアクションを取り消す
             </Button>
-          </div>
+          </>
         )}
       </PopoverContent>
     </Popover>

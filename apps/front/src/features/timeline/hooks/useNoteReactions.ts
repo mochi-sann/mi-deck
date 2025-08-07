@@ -117,7 +117,7 @@ export function useNoteReactions({
   );
 
   const removeReaction = useCallback(() => {
-    removeReactionMutation.mutate({});
+    removeReactionMutation.mutate();
   }, [removeReactionMutation]);
 
   const toggleReaction = useCallback(

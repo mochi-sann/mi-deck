@@ -25,11 +25,21 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
 
   const isLoading = isReacting || isRemoving;
 
+  const getEmojiUrl = (reaction: string): string | null => {
+    if (note.reactionEmojis?.[reaction]) {
+      return note.reactionEmojis[reaction];
+    }
+
+    const cleanName = reaction.replace(/:/g, "");
+    return emojis[cleanName] || null;
+  };
+
   return (
     <div className="flex flex-wrap gap-1 pt-2">
       {reactions.map(({ reaction, count }) => {
         const isMyReaction = myReaction === reaction;
         const isUnicodeEmoji = /^\p{Emoji}+$/u.test(reaction);
+        const emojiUrl = getEmojiUrl(reaction);
 
         return (
           <Button
@@ -48,6 +58,13 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
             <span className="flex items-center gap-1">
               {isUnicodeEmoji ? (
                 <span className="text-sm">{reaction}</span>
+              ) : emojiUrl ? (
+                <img
+                  src={emojiUrl}
+                  alt={reaction}
+                  className="h-4 w-4"
+                  loading="lazy"
+                />
               ) : (
                 <CustomEmoji
                   name={reaction.replace(/:/g, "")}

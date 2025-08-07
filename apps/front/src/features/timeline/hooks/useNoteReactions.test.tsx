@@ -21,7 +21,8 @@ vi.mock("misskey-js", () => ({
   },
 }));
 
-const mockNote: Note = {
+// テスト用のNoteオブジェクト（型チェックエラー回避のため部分的な実装）
+const mockNote = {
   id: "test-note-id",
   text: "Test note",
   user: {
@@ -34,19 +35,8 @@ const mockNote: Note = {
     "❤": 3,
     "😂": 1,
   },
-  createdAt: new Date(),
-  updatedAt: new Date(),
-  visibility: "public",
-  isSensitive: false,
-  isPinned: false,
-  isBookmarked: false,
-  reactionAcceptance: "likeOnly",
-  reactionEmojis: {},
-  renoteCount: 10,
-  repliesCount: 1,
-  userId: "test-user-id",
   reactionCount: 9,
-} as Note;
+} as unknown as Note;
 
 function createWrapper() {
   const queryClient = new QueryClient({

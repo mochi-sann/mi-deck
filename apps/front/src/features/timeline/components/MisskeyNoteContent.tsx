@@ -46,7 +46,7 @@ export const MisskeyNoteContent = memo(
           )}
           <NoteReactions note={note} origin={origin} emojis={emojis} />
           <div className="flex items-center gap-2 pt-1">
-            <ReactionButton note={note} origin={origin} />
+            <ReactionButton note={note} origin={origin} emojis={emojis} />
           </div>
         </div>
       </div>
