@@ -65,14 +65,44 @@ vi.mock("./MisskeyNote", () => ({
   ),
 }));
 
+// Import the hook directly for type checking
+import { useListTimeline } from "../hooks/useListTimeline";
+
+// Helper function to create mock notes
+const createMockNote = (id: string, text: string, userId = "user1") => ({
+  id,
+  text,
+  createdAt: "2023-01-01T00:00:00.000Z",
+  userId,
+  user: {
+    id: userId,
+    name: `User ${userId}`,
+    username: userId,
+    host: null,
+    avatarUrl: `https://example.com/avatar${userId}.png`,
+    avatarBlurhash: null,
+    avatarDecorations: [],
+    isBot: false,
+    isCat: false,
+    emojis: {},
+    onlineStatus: "unknown" as const,
+    badgeRoles: [],
+  },
+  visibility: "public" as const,
+  renoteCount: 0,
+  repliesCount: 0,
+  reactionAcceptance: null,
+  reactions: {},
+  reactionEmojis: {},
+  emojis: {},
+});
+
 describe("ListTimelineContent", () => {
   const mockOrigin = "https://example.com";
   const mockToken = "test-token";
   const mockListId = "test-list-id";
 
-  const mockUseListTimeline = vi.mocked(
-    require("../hooks/useListTimeline").useListTimeline,
-  );
+  const mockUseListTimeline = vi.mocked(useListTimeline);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -80,8 +110,8 @@ describe("ListTimelineContent", () => {
 
   it("should render notes correctly", () => {
     const mockNotes = [
-      { id: "1", text: "Note 1" },
-      { id: "2", text: "Note 2" },
+      createMockNote("1", "Note 1", "user1"),
+      createMockNote("2", "Note 2", "user2"),
     ];
 
     mockUseListTimeline.mockReturnValue({
@@ -253,9 +283,9 @@ describe("ListTimelineContent", () => {
 
   it("should render notes with virtualization", () => {
     const mockNotes = [
-      { id: "1", text: "Note 1" },
-      { id: "2", text: "Note 2" },
-      { id: "3", text: "Note 3" },
+      createMockNote("1", "Note 1"),
+      createMockNote("2", "Note 2"),
+      createMockNote("3", "Note 3"),
     ];
 
     mockUseListTimeline.mockReturnValue({
@@ -287,7 +317,7 @@ describe("ListTimelineContent", () => {
   });
 
   it("should show loading spinner at the bottom when loading more", () => {
-    const mockNotes = [{ id: "1", text: "Note 1" }];
+    const mockNotes = [createMockNote("1", "Note 1")];
 
     mockUseListTimeline.mockReturnValue({
       notes: mockNotes,
