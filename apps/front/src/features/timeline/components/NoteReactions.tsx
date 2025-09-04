@@ -12,6 +12,12 @@ interface NoteReactionsProps {
 }
 
 function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
+  console.log(
+    ...[
+      { note, origin, emojis },
+      "👀 [NoteReactions.tsx:15]: { note, origin, emojis }",
+    ].reverse(),
+  );
   const { reactions, myReaction, toggleReaction, isReacting, isRemoving } =
     useNoteReactions({
       noteId: note.id,
@@ -26,12 +32,13 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
   const isLoading = isReacting || isRemoving;
 
   const getEmojiUrl = (reaction: string): string | null => {
-    if (note.reactionEmojis?.[reaction]) {
-      return note.reactionEmojis[reaction];
-    }
+    if (note.reactionEmojis?.[reaction]) return note.reactionEmojis[reaction];
 
-    const cleanName = reaction.replace(/:/g, "");
-    return emojis[cleanName] || null;
+    const match = reaction.match(/^:([a-zA-Z0-9_]+):$/);
+    const name = match ? match[1] : null;
+    if (name && emojis[name]) return emojis[name];
+
+    return null;
   };
 
   return (
