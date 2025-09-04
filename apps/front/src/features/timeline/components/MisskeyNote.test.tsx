@@ -340,7 +340,7 @@ describe("MisskeyNote", () => {
     const note = createMockNote({
       user: {
         ...createMockNote().user,
-        avatarUrl: null,
+        avatarUrl: "", // avatarUrl is required to be a string
       },
     });
     const origin = "misskey.example.com";

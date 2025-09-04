@@ -96,7 +96,7 @@ function CustomEmojiPickerBase({
     if (reactionEmojis[`:${emoji.name}:`])
       return reactionEmojis[`:${emoji.name}:`];
 
-    if (cache[emoji.name]) return cache[emoji.name];
+    if (cache[emoji.name]) return cache[emoji.name] ?? "";
 
     if (fallbackEmojis[emoji.name]) return fallbackEmojis[emoji.name];
 

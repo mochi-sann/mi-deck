@@ -160,7 +160,7 @@ const noteWithoutAvatar: Note = {
   id: "note-5",
   user: {
     ...basicNote.user,
-    avatarUrl: null,
+    avatarUrl: "", // avatarUrl is required to be a string
   },
 };
 
