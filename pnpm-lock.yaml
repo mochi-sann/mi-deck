@@ -156,8 +156,8 @@ importers:
         specifier: ^0.24.0
         version: 0.24.0
       misskey-js:
-        specifier: 2025.6.3
-        version: 2025.6.3
+        specifier: 2025.9.0
+        version: 2025.9.0
       react:
         specifier: ^19.1.0
         version: 19.1.1
@@ -4561,8 +4561,8 @@ packages:
     resolution: {integrity: sha512-oG62iEk+CYt5Xj2YqI5Xi9xWUeZhDI8jjQmC5oThVH5JGCTgIjr7ciJDzC7MBzYd//WvR1OTmP5Q38Q8ShQtVA==}
     engines: {node: '>= 18'}
 
-  misskey-js@2025.6.3:
-    resolution: {integrity: sha512-yu+JuDgfOVc3JH5PvQmEHt0J3Te9rW+TXxoSe3PvDWFUrO6Y0JU7kdsyNnkt9Aga1nfqQkI0ExWu/D/hSv082Q==}
+  misskey-js@2025.9.0:
+    resolution: {integrity: sha512-/+iTfpSWjKxNTFKodlm6dcvT1lXRr5w42kziaoNb1fH69hSxBEoSL5k3DmqRQQMBt+s/ZUOFwIo2GJ4+3gKzcQ==}
 
   mkdirp@1.0.4:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
@@ -10666,7 +10666,7 @@ snapshots:
     dependencies:
       minipass: 7.1.2
 
-  misskey-js@2025.6.3:
+  misskey-js@2025.9.0:
     dependencies:
       '@simplewebauthn/types': 12.0.0
       eventemitter3: 5.0.1
