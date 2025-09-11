@@ -28,7 +28,7 @@
   "author": "",
   "license": "",
   "devDependencies": {
-    "@biomejs/biome": "2.0.6",
+    "@biomejs/biome": "2.2.4",
     "@playwright/test": "^1.55.0",
     "@types/node": "^24.3.1",
     "dotenv": "^16.6.1",
