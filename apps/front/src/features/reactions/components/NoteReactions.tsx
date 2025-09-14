@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { CustomEmoji } from "@/features/emoji";
 import { cn } from "@/lib/utils";
-import { useNoteEmojis } from "./hooks/useNoteEmojis";
+import { useNoteEmojis } from "../hooks/useNoteEmojis";
 
 interface NoteReactionsProps {
   note: Note;
