@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useCustomEmojis } from "@/hooks/useCustomEmojis";
 import { createProxiedEmojis } from "@/lib/utils/emoji-proxy";
 import type { EmojiResult } from "@/types/emoji";
+import { GetReactionsWithCounts } from "../../hooks/useNoteReactions";
 
 /**
  * ノートとユーザーの絵文字を統合して管理するフック
@@ -44,11 +45,25 @@ export function useNoteEmojis(note: Note, origin: string) {
         : [];
     };
 
+    const reactionsEmojirs = GetReactionsWithCounts(note).map(
+      (value) => value.reaction.match(/:([^@]+)@/) || ["", ""],
+      // value.reaction.match(/[:@]/),
+    );
     const textsToCheck = [
       note.text || "",
       user.name || "",
       user.username || "",
-    ].filter(Boolean);
+      `:${reactionsEmojirs.map((value) => value[1]).join(":")}:` || "",
+    ];
+    console.log(
+      ...[textsToCheck, "👀 [useNoteEmojis.ts:57]: textsToCheck"].reverse(),
+    );
+    console.log(
+      ...[
+        reactionsEmojirs,
+        "👀 [useNoteEmojis.ts:60]: reactionsEmojirs",
+      ].reverse(),
+    );
 
     const allEmojiNames = new Set<string>();
     for (const text of textsToCheck) {
@@ -56,7 +71,7 @@ export function useNoteEmojis(note: Note, origin: string) {
     }
 
     return Array.from(allEmojiNames);
-  }, [note.text, user.name, user.username]);
+  }, [note.text, user.name, user.username, note]);
 
   // Fetch emojis when emoji names change
   useEffect(() => {

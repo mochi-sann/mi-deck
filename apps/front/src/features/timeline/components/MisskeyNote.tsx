@@ -10,6 +10,9 @@ import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
 function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
   const host = origin || "";
   const { allEmojis } = useNoteEmojis(note, origin);
+  console.log(
+    ...[allEmojis, note.text, "👀 [MisskeyNote.tsx:13]: allEmojis "].reverse(),
+  );
 
   // Memoize context value to prevent unnecessary re-renders
   const contextValue = useMemo(

@@ -13,6 +13,17 @@ interface UseNoteReactionsOptions {
 interface ReactToNoteParams {
   reaction: string;
 }
+export const GetReactionsWithCounts = (note: Note) => {
+  if (!note?.reactions) return [];
+
+  return Object.entries(note.reactions)
+    .filter(([, count]) => count > 0)
+    .map(([reaction, count]) => ({
+      reaction,
+      count,
+    }))
+    .sort((a, b) => b.count - a.count);
+};
 
 export function useNoteReactions({
   noteId,
@@ -91,17 +102,7 @@ export function useNoteReactions({
     },
   });
 
-  const reactionsWithCounts = useMemo(() => {
-    if (!note?.reactions) return [];
-
-    return Object.entries(note.reactions)
-      .filter(([, count]) => count > 0)
-      .map(([reaction, count]) => ({
-        reaction,
-        count,
-      }))
-      .sort((a, b) => b.count - a.count);
-  }, [note?.reactions]);
+  const reactionsWithCounts = GetReactionsWithCounts(note);
 
   const myReaction = useMemo(() => {
     if (!reactions || !reactions.length) return null;
