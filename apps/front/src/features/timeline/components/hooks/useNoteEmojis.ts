@@ -47,13 +47,12 @@ export function useNoteEmojis(note: Note, origin: string) {
 
     const reactionsEmojirs = GetReactionsWithCounts(note).map(
       (value) => value.reaction.match(/:([^@]+)@/) || ["", ""],
-      // value.reaction.match(/[:@]/),
     );
     const textsToCheck = [
       note.text || "",
       user.name || "",
       user.username || "",
-      `:${reactionsEmojirs.map((value) => value[1]).join(":")}:` || "",
+      `:${reactionsEmojirs.map((value) => value[1]).join("::")}:` || "",
     ];
     console.log(
       ...[textsToCheck, "👀 [useNoteEmojis.ts:57]: textsToCheck"].reverse(),

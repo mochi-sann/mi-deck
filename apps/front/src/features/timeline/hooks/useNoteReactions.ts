@@ -1,7 +1,7 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as Misskey from "misskey-js";
 import type { Note } from "misskey-js/entities.js";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { storageManager } from "@/lib/storage";
 
 interface UseNoteReactionsOptions {
@@ -47,19 +47,20 @@ export function useNoteReactions({
     });
   }, [origin]);
 
-  const { data: reactions = [], isLoading: reactionsLoading } = useQuery({
-    queryKey: ["note-reactions", noteId, origin],
-    queryFn: async () => {
-      const client = await createMisskeyClient();
-      return client.request("notes/reactions", {
-        noteId,
-        limit: 100,
-      });
-    },
-    enabled: !!noteId && !!origin,
-    staleTime: 1000 * 60,
-    refetchInterval: false,
-  });
+  // const [reactions, setReactions] = useState(note.reactionEmojis);
+  // const { data: reactions = [], isLoading: reactionsLoading } = useQuery({
+  //   queryKey: ["note-reactions", noteId, origin],
+  //   queryFn: async () => {
+  //     const client = await createMisskeyClient();
+  //     return client.request("notes/reactions", {
+  //       noteId,
+  //       limit: 100,
+  //     });
+  //   },
+  //   enabled: !!noteId && !!origin,
+  //   staleTime: 1000 * 60,
+  //   refetchInterval: false,
+  // });
 
   const reactToNoteMutation = useMutation({
     mutationFn: async ({ reaction }: ReactToNoteParams) => {
@@ -102,44 +103,44 @@ export function useNoteReactions({
     },
   });
 
-  const reactionsWithCounts = GetReactionsWithCounts(note);
-
-  const myReaction = useMemo(() => {
-    if (!reactions || !reactions.length) return null;
-
-    return reactions.find((r) => r.user.id === note?.user?.id)?.type || null;
-  }, [reactions, note?.user?.id]);
-
-  const reactToNote = useCallback(
-    (reaction: string) => {
-      reactToNoteMutation.mutate({ reaction });
-    },
-    [reactToNoteMutation],
-  );
-
-  const removeReaction = useCallback(() => {
-    removeReactionMutation.mutate();
-  }, [removeReactionMutation]);
-
-  const toggleReaction = useCallback(
-    (reaction: string) => {
-      if (myReaction === reaction) {
-        removeReaction();
-      } else {
-        reactToNote(reaction);
-      }
-    },
-    [myReaction, reactToNote, removeReaction],
-  );
+  // const reactionsWithCounts = GetReactionsWithCounts(note);
+  //
+  // // const myReaction = useMemo(() => {
+  // //   if (!reactions || !reactions.length) return null;
+  // //
+  // //   return reactions.find((r) => r.user.id === note?.user?.id)?.type || null;
+  // // }, [reactions, note?.user?.id]);
+  //
+  // const reactToNote = useCallback(
+  //   (reaction: string) => {
+  //     reactToNoteMutation.mutate({ reaction });
+  //   },
+  //   [reactToNoteMutation],
+  // );
+  //
+  // const removeReaction = useCallback(() => {
+  //   removeReactionMutation.mutate();
+  // }, [removeReactionMutation]);
+  //
+  // const toggleReaction = useCallback(
+  //   (reaction: string) => {
+  //     if (myReaction === reaction) {
+  //       removeReaction();
+  //     } else {
+  //       reactToNote(reaction);
+  //     }
+  //   },
+  //   [myReaction, reactToNote, removeReaction],
+  // );
 
   return {
-    reactions: reactionsWithCounts,
-    myReaction,
-    reactToNote,
-    removeReaction,
-    toggleReaction,
+    // reactions: reactionsWithCounts,
+    // myReaction,
+    // reactToNote,
+    // removeReaction,
+    // toggleReaction,
     isReacting: reactToNoteMutation.isPending,
     isRemoving: removeReactionMutation.isPending,
-    reactionsLoading,
+    // reactionsLoading,
   };
 }
