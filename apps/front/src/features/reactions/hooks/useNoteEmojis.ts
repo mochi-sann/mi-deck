@@ -3,8 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useCustomEmojis } from "@/hooks/useCustomEmojis";
 import { createProxiedEmojis } from "@/lib/utils/emoji-proxy";
 import type { EmojiResult } from "@/types/emoji";
-import { GetReactionsWithCounts } from "../../hooks/useNoteReactions";
-
+import { GetReactionsWithCounts } from "./useNoteReactions";
 /**
  * ノートとユーザーの絵文字を統合して管理するフック
  */

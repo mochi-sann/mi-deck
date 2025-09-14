@@ -1,8 +1,8 @@
 import type { Note } from "misskey-js/entities.js";
 import { memo, useMemo } from "react";
 import { CustomEmojiCtx } from "@/features/emoji";
+import { useNoteEmojis } from "@/features/reactions/hooks/useNoteEmojis";
 import { cn } from "@/lib/utils";
-import { useNoteEmojis } from "./hooks/useNoteEmojis";
 import { MisskeyNoteContent } from "./MisskeyNoteContent";
 import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
 

@@ -8,9 +8,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
+import { CustomEmojiPicker } from "@/features/timeline/components/CustomEmojiPicker";
 import { cn } from "@/lib/utils";
 import { useNoteReactions } from "../hooks/useNoteReactions";
-import { CustomEmojiPicker } from "./CustomEmojiPicker";
 
 interface ReactionButtonProps {
   note: Note;

@@ -1,9 +1,9 @@
 import type { Note } from "misskey-js/entities.js";
 import { memo } from "react";
 import { MfmText } from "@/features/mfm";
+import { ReactionButton } from "@/features/reactions/components/ReactionButton";
 import { cn } from "@/lib/utils";
 import { NoteReactions } from "../../reactions/components/NoteReactions";
-import { ReactionButton } from "./ReactionButton";
 
 interface MisskeyNoteContentProps {
   note: Note;

@@ -5,6 +5,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { CustomEmoji } from "@/features/emoji";
 import { cn } from "@/lib/utils";
 import { useNoteEmojis } from "../hooks/useNoteEmojis";
+import { useNoteReactions } from "../hooks/useNoteReactions";
 
 interface NoteReactionsProps {
   note: Note;
@@ -21,12 +22,12 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
       "👀 [NoteReactions.tsx:15]: { note, origin, emojis }",
     ].reverse(),
   );
-  // const { reactions, myReaction, toggleReaction, isReacting, isRemoving } =
-  //   useNoteReactions({
-  //     noteId: note.id,
-  //     origin,
-  //     note,
-  //   });
+  const { reactions, myReaction, toggleReaction, isReacting, isRemoving } =
+    useNoteReactions({
+      noteId: note.id,
+      origin,
+      note,
+    });
 
   // if (!reactions || reactions.length === 0) {
   //   return null;
@@ -54,8 +55,8 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
 
   return (
     <div className="flex flex-wrap gap-1 pt-2">
-      {Object.entries(note.reactions).map(([reaction, count]) => {
-        const isMyReaction = reaction === note.myReaction;
+      {reactions.map(([reaction, count]) => {
+        const isMyReaction = reaction === myReaction;
         const isUnicodeEmoji = /^\p{Emoji}+$/u.test(reaction);
         const emojiUrl = getEmojiUrl(reaction);
 
@@ -71,7 +72,7 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
                 : "hover:bg-muted",
               // isLoading && "cursor-not-allowed opacity-50",
             )}
-            // onClick={() =>  toggleReaction(reaction)}
+            onClick={() => toggleReaction(reaction)}
           >
             <span className="flex items-center gap-1">
               {isUnicodeEmoji ? (
