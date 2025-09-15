@@ -22,12 +22,19 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
       "👀 [NoteReactions.tsx:15]: { note, origin, emojis }",
     ].reverse(),
   );
-  const { reactions, myReaction, toggleReaction, isReacting, isRemoving } =
-    useNoteReactions({
-      noteId: note.id,
-      origin,
-      note,
-    });
+  const {
+    reactions,
+    myReaction,
+    toggleReaction,
+    isReacting,
+    isRemoving,
+    buttonRef,
+    isReactionButtonHover,
+  } = useNoteReactions({
+    noteId: note.id,
+    origin,
+    note,
+  });
 
   // if (!reactions || reactions.length === 0) {
   //   return null;
@@ -62,6 +69,7 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
 
         return (
           <Button
+            ref={buttonRef}
             key={reaction}
             variant={isMyReaction ? "default" : "outline"}
             size="sm"
