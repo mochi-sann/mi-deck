@@ -91,7 +91,8 @@ describe("useNoteReactions", () => {
     expect(result.current.myReaction).toBe(null);
     expect(result.current.isReacting).toBe(false);
     expect(result.current.isRemoving).toBe(false);
-    expect(result.current.reactionsLoading).toBe(true);
+    // Query is hover-gated; no fetch until hover -> not loading initially
+    expect(result.current.reactionsLoading).toBe(false);
   });
 
   it("should process reactions with counts correctly", () => {

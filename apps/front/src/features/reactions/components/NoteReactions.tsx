@@ -62,7 +62,7 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
 
   return (
     <div className="flex flex-wrap gap-1 pt-2">
-      {reactions.map(([reaction, count]) => {
+      {reactions.map(({ reaction, count }) => {
         const isMyReaction = reaction === myReaction;
         const isUnicodeEmoji = /^\p{Emoji}+$/u.test(reaction);
         const emojiUrl = getEmojiUrl(reaction);

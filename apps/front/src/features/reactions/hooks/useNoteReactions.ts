@@ -32,9 +32,8 @@ export function useNoteReactions({
   note,
 }: UseNoteReactionsOptions) {
   const queryClient = useQueryClient();
-  const [_reactions, _setReactionsWithEmojis] = useState(
-    Object.entries(note.reactions),
-  );
+  // Aggregated counts from the note object for list display
+  const reactionsWithCounts = GetReactionsWithCounts(note);
 
   const createMisskeyClient = useCallback(async () => {
     await storageManager.initialize();
@@ -61,7 +60,7 @@ export function useNoteReactions({
       "👀 [useNoteReactions.ts:56]: isReactionButtonHover",
     ].reverse(),
   );
-  const { data: reactions = [], isLoading: reactionsLoading } = useQuery({
+  const { data: reactionsRaw = [], isLoading: reactionsLoading } = useQuery({
     queryKey: ["note-reactions", noteId, origin],
     queryFn: async () => {
       const client = await createMisskeyClient();
@@ -69,10 +68,40 @@ export function useNoteReactions({
         noteId,
       });
     },
-    enabled: !!noteId && !!origin,
+    enabled: !!noteId && !!origin && isReactionButtonHover,
     staleTime: 1000 * 60,
     refetchInterval: false,
   });
+
+  // Normalize API response to a safe, display-ready structure
+  type ReactionUser = {
+    id: string;
+    username?: string;
+    name?: string;
+    avatarUrl?: string;
+  };
+  type ReactionDetail = {
+    reaction: string;
+    user: ReactionUser;
+  };
+
+  const reactionDetails: ReactionDetail[] = Array.isArray(reactionsRaw)
+    ? (reactionsRaw as any[])
+        .map((r) => {
+          const user = r?.user ?? {};
+          const id = String(user?.id ?? "");
+          return {
+            reaction: String(r?.reaction ?? ""),
+            user: {
+              id,
+              username: user?.username,
+              name: user?.name,
+              avatarUrl: user?.avatarUrl,
+            },
+          } as ReactionDetail;
+        })
+        .filter((d) => d.user.id && d.reaction)
+    : [];
 
   const reactToNoteMutation = useMutation({
     mutationFn: async ({ reaction }: ReactToNoteParams) => {
@@ -142,7 +171,10 @@ export function useNoteReactions({
   );
 
   return {
-    reactions: reactions,
+    // For list displays (counts per emoji)
+    reactions: reactionsWithCounts,
+    // Detailed entries (who reacted with what)
+    reactionDetails,
     myReaction,
     reactToNote,
     removeReaction,
@@ -151,6 +183,6 @@ export function useNoteReactions({
     isRemoving: removeReactionMutation.isPending,
     buttonRef,
     isReactionButtonHover,
-    // reactionsLoading,
+    reactionsLoading,
   };
 }
