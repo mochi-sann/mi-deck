@@ -1,11 +1,16 @@
 import type { Note } from "misskey-js/entities.js";
-import { memo, Suspense } from "react";
+import { memo } from "react";
 import { Button } from "@/components/ui/button";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { CustomEmoji } from "@/features/emoji";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { cn } from "@/lib/utils";
 import { useNoteEmojis } from "../hooks/useNoteEmojis";
 import { useNoteReactions } from "../hooks/useNoteReactions";
+import { ReactionCount } from "./ReactionCount";
+import { ReactionHoverContent } from "./ReactionHoverContent";
 
 interface NoteReactionsProps {
   note: Note;
@@ -30,6 +35,7 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
     isRemoving,
     buttonRef,
     isReactionButtonHover,
+    reactionsRaw,
   } = useNoteReactions({
     noteId: note.id,
     origin,
@@ -68,41 +74,40 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
         const emojiUrl = getEmojiUrl(reaction);
 
         return (
-          <Button
-            ref={buttonRef}
-            key={reaction}
-            variant={isMyReaction ? "default" : "outline"}
-            size="sm"
-            className={cn(
-              "h-7 px-2 py-1 text-xs transition-all",
-              isMyReaction
-                ? "bg-primary text-primary-foreground"
-                : "hover:bg-muted",
-              // isLoading && "cursor-not-allowed opacity-50",
-            )}
-            onClick={() => toggleReaction(reaction)}
-          >
-            <span className="flex items-center gap-1">
-              {isUnicodeEmoji ? (
-                <span className="text-sm">{reaction}</span>
-              ) : emojiUrl ? (
-                <Suspense fallback={<LoadingSpinner />}>
-                  <img
-                    src={emojiUrl}
-                    alt={reaction}
-                    className="h-4 w-4"
-                    loading="lazy"
-                  />
-                </Suspense>
-              ) : (
-                <CustomEmoji
-                  name={reaction.replace(/:/g, "")}
+          <HoverCard openDelay={100} key={reaction}>
+            <HoverCardTrigger>
+              <Button
+                ref={buttonRef}
+                variant={isMyReaction ? "default" : "outline"}
+                size="sm"
+                className={cn(
+                  "h-7 px-2 py-1 text-xs transition-all",
+                  isMyReaction
+                    ? "bg-primary text-primary-foreground"
+                    : "hover:bg-muted",
+                  // isLoading && "cursor-not-allowed opacity-50",
+                )}
+                onClick={() => toggleReaction(reaction)}
+              >
+                <ReactionCount
+                  reaction={reaction}
+                  count={count}
+                  isUnicodeEmoji={isUnicodeEmoji}
+                  emojiUrl={emojiUrl}
                   emojis={emojis}
                 />
-              )}
-              <span className="font-medium">{count}</span>
-            </span>
-          </Button>
+              </Button>{" "}
+            </HoverCardTrigger>
+            <HoverCardContent className="flex items-center">
+              <ReactionHoverContent
+                reaction={reaction}
+                isUnicodeEmoji={isUnicodeEmoji}
+                emojiUrl={emojiUrl}
+                emojis={emojis}
+                reactionsRaw={reactionsRaw}
+              />
+            </HoverCardContent>
+          </HoverCard>
         );
       })}
     </div>

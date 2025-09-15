@@ -86,7 +86,7 @@ export function useNoteReactions({
   };
 
   const reactionDetails: ReactionDetail[] = Array.isArray(reactionsRaw)
-    ? (reactionsRaw as any[])
+    ? reactionsRaw
         .map((r) => {
           const user = r?.user ?? {};
           const id = String(user?.id ?? "");
@@ -183,6 +183,7 @@ export function useNoteReactions({
     isRemoving: removeReactionMutation.isPending,
     buttonRef,
     isReactionButtonHover,
+    reactionsRaw,
     reactionsLoading,
   };
 }
