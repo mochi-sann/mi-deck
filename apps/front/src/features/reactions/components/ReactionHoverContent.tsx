@@ -1,3 +1,4 @@
+import { useNoteReactions } from "../hooks/useNoteReactions";
 import { ReactionEmoji, ReactionEmojiProps } from "./ReactionCount";
 
 interface ReactionHoverContentProps {
@@ -5,7 +6,7 @@ interface ReactionHoverContentProps {
   isUnicodeEmoji: boolean;
   emojiUrl: string | null;
   emojis: Record<string, string>;
-  reactionsRaw: any[];
+  reactionsRaw: ReturnType<typeof useNoteReactions>["reactionsRaw"];
   emojiSize?: ReactionEmojiProps["size"];
 }
 

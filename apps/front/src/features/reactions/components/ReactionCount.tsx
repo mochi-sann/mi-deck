@@ -1,8 +1,48 @@
+import { cva, type VariantProps } from "class-variance-authority";
 import { Suspense } from "react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { CustomEmoji } from "@/features/emoji";
+import { cn } from "@/lib/utils";
 
-type EmojiSize = "xs" | "sm" | "md" | "lg" | "xl";
+const textSizeBarient = {
+  size: {
+    xs: "text-xs",
+    sm: "text-sm",
+    md: "text-base",
+    lg: "text-lg",
+    xl: "text-xl",
+    "40px": "text-[40px]",
+  },
+};
+const emojiTextVariants = cva("", {
+  variants: {
+    size: textSizeBarient.size,
+  },
+  defaultVariants: { size: "sm" },
+});
+
+const emojiImgVariants = cva("", {
+  variants: {
+    size: {
+      xs: "h-3 w-3",
+      sm: "h-4 w-4",
+      md: "h-5 w-5",
+      lg: "h-6 w-6",
+      xl: "h-7 w-7",
+      "40px": "h-[40px] w-[40px]",
+    },
+  },
+  defaultVariants: { size: "sm" },
+});
+
+const countTextVariants = cva("font-medium", {
+  variants: {
+    size: textSizeBarient.size,
+  },
+  defaultVariants: { size: "sm" },
+});
+
+type EmojiSize = VariantProps<typeof emojiTextVariants>["size"];
 
 export interface ReactionEmojiProps {
   reaction: string;
@@ -19,41 +59,21 @@ export function ReactionEmoji({
   emojis,
   size = "sm",
 }: ReactionEmojiProps) {
-  const textSize =
-    size === "xs"
-      ? "text-xs"
-      : size === "md"
-        ? "text-base"
-        : size === "lg"
-          ? "text-lg"
-          : size === "xl"
-            ? "text-calc(var(--spacing) * 10)"
-            : "text-sm";
-  const imgSize =
-    size === "xs"
-      ? "h-3 w-3"
-      : size === "md"
-        ? "h-5 w-5"
-        : size === "lg"
-          ? "h-6 w-6"
-          : size === "xl"
-            ? "h-10 w-10"
-            : "h-4 w-4";
   return (
     <>
       {isUnicodeEmoji ? (
-        <span className={textSize}>{reaction}</span>
+        <span className={cn(emojiTextVariants({ size }))}>{reaction}</span>
       ) : emojiUrl ? (
         <Suspense fallback={<LoadingSpinner />}>
           <img
             src={emojiUrl}
             alt={reaction}
-            className={imgSize}
+            className={cn(emojiImgVariants({ size }))}
             loading="lazy"
           />
         </Suspense>
       ) : (
-        <span className={textSize}>
+        <span className={cn(emojiTextVariants({ size }))}>
           <CustomEmoji name={reaction.replace(/:/g, "")} emojis={emojis} />
         </span>
       )}
@@ -70,7 +90,9 @@ export function ReactionCount(props: ReactionCountProps) {
   return (
     <span className="flex items-center gap-1">
       <ReactionEmoji {...props} />
-      <span className="font-medium">{count}</span>
+      <span className={cn(countTextVariants({ size: props.size }))}>
+        {count}
+      </span>
     </span>
   );
 }

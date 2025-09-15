@@ -30,7 +30,7 @@ const meta = {
   argTypes: {
     emojiSize: {
       control: { type: "select" },
-      options: ["xs", "sm", "md", "lg", "xl"],
+      options: ["xs", "sm", "md", "lg", "xl", "40px"],
     },
   },
 } satisfies Meta<typeof ReactionHoverContent>;
