@@ -27,6 +27,12 @@ const meta = {
       },
     ],
   },
+  argTypes: {
+    emojiSize: {
+      control: { type: "select" },
+      options: ["xs", "sm", "md", "lg", "xl"],
+    },
+  },
 } satisfies Meta<typeof ReactionHoverContent>;
 
 export default meta;
@@ -37,6 +43,7 @@ export const UnicodeEmoji: Story = {
     reaction: "❤",
     isUnicodeEmoji: true,
     emojiUrl: null,
+    emojiSize: "sm",
   },
 };
 
@@ -46,6 +53,7 @@ export const CustomEmojiWithUrl: Story = {
     isUnicodeEmoji: false,
     emojiUrl:
       "https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f389.svg",
+    emojiSize: "md",
   },
 };
 
@@ -56,7 +64,17 @@ export const CustomEmojiFromMap: Story = {
     emojiUrl: null,
     emojis: {
       // biome-ignore lint/style/useNamingConvention: Story用のダミーURL
-      custom_hello: "https://placehold.co/16x16/png",
+      custom_hello: "https://placehold.co/160x160/png",
     },
+    emojiSize: "lg",
+  },
+};
+
+export const ExtraSmall: Story = {
+  args: {
+    reaction: "👍",
+    isUnicodeEmoji: true,
+    emojiUrl: null,
+    emojiSize: "xs",
   },
 };

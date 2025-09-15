@@ -1,4 +1,4 @@
-import { ReactionEmoji } from "./ReactionCount";
+import { ReactionEmoji, ReactionEmojiProps } from "./ReactionCount";
 
 interface ReactionHoverContentProps {
   reaction: string;
@@ -6,6 +6,7 @@ interface ReactionHoverContentProps {
   emojiUrl: string | null;
   emojis: Record<string, string>;
   reactionsRaw: any[];
+  emojiSize?: ReactionEmojiProps["size"];
 }
 
 export function ReactionHoverContent({
@@ -14,6 +15,7 @@ export function ReactionHoverContent({
   emojiUrl,
   emojis,
   reactionsRaw,
+  emojiSize = "sm",
 }: ReactionHoverContentProps) {
   const filtered = Array.isArray(reactionsRaw)
     ? reactionsRaw.filter((r: any) => r?.type === reaction)
@@ -27,6 +29,7 @@ export function ReactionHoverContent({
           isUnicodeEmoji={isUnicodeEmoji}
           emojiUrl={emojiUrl}
           emojis={emojis}
+          size={emojiSize}
         />
       </div>
       <div className="border-l pl-2">

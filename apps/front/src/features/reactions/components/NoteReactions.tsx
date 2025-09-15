@@ -105,6 +105,7 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
                 emojiUrl={emojiUrl}
                 emojis={emojis}
                 reactionsRaw={reactionsRaw}
+                emojiSize="xl"
               />
             </HoverCardContent>
           </HoverCard>
