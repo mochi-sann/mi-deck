@@ -98,7 +98,7 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
                 />
               </Button>{" "}
             </HoverCardTrigger>
-            <HoverCardContent className="flex items-center">
+            <HoverCardContent className="w-auto">
               <ReactionHoverContent
                 reaction={reaction}
                 isUnicodeEmoji={isUnicodeEmoji}

@@ -1,4 +1,3 @@
-import { Separator } from "@/components/ui/separator";
 import { ReactionEmoji } from "./ReactionCount";
 
 interface ReactionHoverContentProps {
@@ -21,21 +20,22 @@ export function ReactionHoverContent({
     : [];
 
   return (
-    <>
-      <ReactionEmoji
-        reaction={reaction}
-        isUnicodeEmoji={isUnicodeEmoji}
-        emojiUrl={emojiUrl}
-        emojis={emojis}
-      />
-      <Separator orientation="vertical" className="mx-2 h-full" />
-      <pre>
+    <div className="flex items-baseline gap-2">
+      <div className="flex items-baseline">
+        <ReactionEmoji
+          reaction={reaction}
+          isUnicodeEmoji={isUnicodeEmoji}
+          emojiUrl={emojiUrl}
+          emojis={emojis}
+        />
+      </div>
+      <div className="border-l pl-2">
         {filtered.map((value: any) => (
           <div key={value.id} className="border-b p-1 last:border-0">
             {value?.user?.name}
           </div>
         ))}
-      </pre>
-    </>
+      </div>
+    </div>
   );
 }
