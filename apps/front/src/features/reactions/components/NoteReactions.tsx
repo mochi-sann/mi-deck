@@ -71,24 +71,36 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
       {reactions.map(({ reaction, count }) => {
         const isMyReaction = reaction === myReaction;
         const isUnicodeEmoji = /^\p{Emoji}+$/u.test(reaction);
+        const reactionDomain = (reaction.match(/@([^:]+):/) || ["", ""])[1];
+        const isOwnServerCustomEmoji = reactionDomain === ".";
         const emojiUrl = getEmojiUrl(reaction);
 
         return (
           <HoverCard openDelay={100} key={reaction}>
             <HoverCardTrigger>
-              <Button
-                ref={buttonRef}
-                variant={isMyReaction ? "default" : "outline"}
-                size="sm"
-                className={cn(
-                  "h-7 px-2 py-1 text-xs transition-all",
-                  isMyReaction
-                    ? "bg-primary text-primary-foreground"
-                    : "hover:bg-muted",
-                  // isLoading && "cursor-not-allowed opacity-50",
-                )}
-                onClick={() => toggleReaction(reaction)}
-              >
+              {isUnicodeEmoji || isOwnServerCustomEmoji ? (
+                <Button
+                  ref={buttonRef}
+                  variant={isMyReaction ? "default" : "outline"}
+                  size="sm"
+                  className={cn(
+                    "h-7 px-2 py-1 text-xs transition-all",
+                    isMyReaction
+                      ? "bg-primary text-primary-foreground"
+                      : "hover:bg-muted",
+                    // isLoading && "cursor-not-allowed opacity-50",
+                  )}
+                  onClick={() => toggleReaction(reaction)}
+                >
+                  <ReactionCount
+                    reaction={reaction}
+                    count={count}
+                    isUnicodeEmoji={isUnicodeEmoji}
+                    emojiUrl={emojiUrl}
+                    emojis={emojis}
+                  />
+                </Button>
+              ) : (
                 <ReactionCount
                   reaction={reaction}
                   count={count}
@@ -96,7 +108,7 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
                   emojiUrl={emojiUrl}
                   emojis={emojis}
                 />
-              </Button>{" "}
+              )}
             </HoverCardTrigger>
             <HoverCardContent className="w-auto">
               <ReactionHoverContent
