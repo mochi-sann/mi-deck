@@ -45,7 +45,7 @@ export function useServerEmojis({
     queryKey: ["server-emojis", origin],
     queryFn: async () => {
       const client = await createMisskeyClient();
-      const response = await client.request("emojis", {});
+      const response = await client.request("emojis");
       return response.emojis || [];
     },
     enabled: !!origin,
