@@ -1,5 +1,5 @@
 import type { Note } from "misskey-js/entities.js";
-import { memo } from "react";
+import React, { memo } from "react";
 import { Button } from "@/components/ui/button";
 import {
   HoverCard,
@@ -27,20 +27,12 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
       "👀 [NoteReactions.tsx:15]: { note, origin, emojis }",
     ].reverse(),
   );
-  const {
-    reactions,
-    myReaction,
-    toggleReaction,
-    isReacting,
-    isRemoving,
-    buttonRef,
-    isReactionButtonHover,
-    reactionsRaw,
-  } = useNoteReactions({
-    noteId: note.id,
-    origin,
-    note,
-  });
+  const { reactions, myReaction, toggleReaction, buttonRef, reactionsRaw } =
+    useNoteReactions({
+      noteId: note.id,
+      origin,
+      note,
+    });
 
   // if (!reactions || reactions.length === 0) {
   //   return null;
@@ -80,7 +72,7 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
             <HoverCardTrigger>
               {isUnicodeEmoji || isOwnServerCustomEmoji ? (
                 <Button
-                  ref={buttonRef}
+                  ref={buttonRef as React.Ref<HTMLButtonElement>}
                   variant={isMyReaction ? "default" : "outline"}
                   size="sm"
                   className={cn(

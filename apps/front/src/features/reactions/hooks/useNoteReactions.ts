@@ -67,7 +67,7 @@ export function useNoteReactions({
     });
   }, [origin]);
 
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const buttonRef = useRef<HTMLElement>(null as unknown as HTMLElement);
   const isReactionButtonHover = useHover(buttonRef);
   if (isReactionButtonHover) {
   }
@@ -103,8 +103,8 @@ export function useNoteReactions({
   };
 
   const reactionDetails: ReactionDetail[] = Array.isArray(reactionsRaw)
-    ? reactionsRaw
-        .map((r) => {
+    ? (reactionsRaw as any[])
+        .map((r: any) => {
           const user = r?.user ?? {};
           const id = String(user?.id ?? "");
           return {
