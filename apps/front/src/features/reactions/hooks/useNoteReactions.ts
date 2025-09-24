@@ -33,7 +33,9 @@ export function useNoteReactions({
 }: UseNoteReactionsOptions) {
   const queryClient = useQueryClient();
   // Local optimistic state derived from note.reactions and note.myReaction
-  const [myReaction, setMyReaction] = useState(note.myReaction);
+  const [myReaction, setMyReaction] = useState<string | null>(
+    note.myReaction ?? null,
+  );
   const [reactionsMap, setReactionsMap] = useState<Record<string, number>>(
     () => ({ ...(note.reactions || {}) }),
   );
