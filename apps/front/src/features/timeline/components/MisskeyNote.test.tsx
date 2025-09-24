@@ -43,6 +43,16 @@ vi.mock("@/features/mfm", () => ({
   ),
 }));
 
+// Mock reactions components to avoid React Query provider requirement
+vi.mock("@/features/reactions/components/ReactionButton", () => ({
+  // biome-ignore lint/style/useNamingConvention: testing mock
+  ReactionButton: () => <div data-testid="reaction-button" />,
+}));
+vi.mock("@/features/reactions/components/NoteReactions", () => ({
+  // biome-ignore lint/style/useNamingConvention: testing mock
+  NoteReactions: () => <div data-testid="note-reactions" />,
+}));
+
 vi.mock("@/lib/utils/emoji-proxy", () => ({
   // biome-ignore lint/suspicious/noExplicitAny: テストで必須
   createProxiedEmojis: (emojis: any, host: string) => {
