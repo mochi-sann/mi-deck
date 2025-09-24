@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Misskey from "misskey-js";
 import type { Note } from "misskey-js/entities.js";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useHover } from "usehooks-ts";
 import { storageManager } from "@/lib/storage";
 
@@ -32,8 +32,25 @@ export function useNoteReactions({
   note,
 }: UseNoteReactionsOptions) {
   const queryClient = useQueryClient();
-  // Aggregated counts from the note object for list display
-  const reactionsWithCounts = GetReactionsWithCounts(note);
+  // Local optimistic state derived from note.reactions and note.myReaction
+  const [myReaction, setMyReaction] = useState(note.myReaction);
+  const [reactionsMap, setReactionsMap] = useState<Record<string, number>>(
+    () => ({ ...(note.reactions || {}) }),
+  );
+
+  // Aggregated counts for list display (sorted)
+  const reactionsWithCounts = useMemo(() => {
+    return Object.entries(reactionsMap)
+      .filter(([, count]) => count > 0)
+      .map(([reaction, count]) => ({ reaction, count }))
+      .sort((a, b) => b.count - a.count);
+  }, [reactionsMap]);
+
+  // Total count for compact display
+  const totalReactionCount = useMemo(
+    () => Object.values(reactionsMap).reduce((acc, n) => acc + n, 0),
+    [reactionsMap],
+  );
 
   const createMisskeyClient = useCallback(async () => {
     await storageManager.initialize();
@@ -111,6 +128,35 @@ export function useNoteReactions({
         reaction,
       });
     },
+    onMutate: async ({ reaction }) => {
+      // Optimistically update local state
+      const previousState = {
+        myReaction: myReaction ?? null,
+        reactionsMap: { ...reactionsMap },
+      } as const;
+
+      setReactionsMap((prev) => {
+        const next = { ...prev };
+        if (myReaction && myReaction !== reaction) {
+          // Switching reaction: decrement previous
+          if (next[myReaction] && next[myReaction] > 0) next[myReaction] -= 1;
+        }
+        // Increment new reaction
+        next[reaction] = (next[reaction] || 0) + 1;
+        return next;
+      });
+      setMyReaction(reaction);
+
+      return { previousState };
+    },
+    onError: (error, _variables, context) => {
+      console.error("Failed to add reaction:", error);
+      // Revert optimistic update
+      if (context?.previousState) {
+        setMyReaction(context.previousState.myReaction);
+        setReactionsMap(context.previousState.reactionsMap);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["note-reactions", noteId, origin],
@@ -118,9 +164,6 @@ export function useNoteReactions({
       queryClient.invalidateQueries({
         queryKey: ["timeline"],
       });
-    },
-    onError: (error) => {
-      console.error("Failed to add reaction:", error);
     },
   });
 
@@ -131,6 +174,32 @@ export function useNoteReactions({
         noteId,
       });
     },
+    onMutate: async () => {
+      // Optimistically remove current reaction
+      const previousState = {
+        myReaction: myReaction ?? null,
+        reactionsMap: { ...reactionsMap },
+      } as const;
+
+      if (myReaction) {
+        setReactionsMap((prev) => {
+          const next = { ...prev };
+          if (next[myReaction] && next[myReaction] > 0) next[myReaction] -= 1;
+          return next;
+        });
+      }
+      setMyReaction(null);
+
+      return { previousState };
+    },
+    onError: (error, _variables, context) => {
+      console.error("Failed to remove reaction:", error);
+      // Revert optimistic update
+      if (context?.previousState) {
+        setMyReaction(context.previousState.myReaction);
+        setReactionsMap(context.previousState.reactionsMap);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["note-reactions", noteId, origin],
@@ -139,12 +208,8 @@ export function useNoteReactions({
         queryKey: ["timeline"],
       });
     },
-    onError: (error) => {
-      console.error("Failed to remove reaction:", error);
-    },
   });
 
-  const [myReaction, _setMyReaction] = useState(note.myReaction);
   const reactToNote = useCallback(
     (reaction: string) => {
       reactToNoteMutation.mutate({ reaction });
@@ -176,6 +241,7 @@ export function useNoteReactions({
     // Detailed entries (who reacted with what)
     reactionDetails,
     myReaction,
+    totalReactionCount,
     reactToNote,
     removeReaction,
     toggleReaction,

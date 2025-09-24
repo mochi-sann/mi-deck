@@ -26,12 +26,17 @@ function ReactionButtonBase({
   emojis = {},
 }: ReactionButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { myReaction, toggleReaction, isReacting, isRemoving } =
-    useNoteReactions({
-      noteId: note.id,
-      origin,
-      note,
-    });
+  const {
+    myReaction,
+    totalReactionCount,
+    toggleReaction,
+    isReacting,
+    isRemoving,
+  } = useNoteReactions({
+    noteId: note.id,
+    origin,
+    note,
+  });
 
   const isLoading = isReacting || isRemoving;
   const hasMyReaction = !!myReaction;
@@ -60,7 +65,7 @@ function ReactionButtonBase({
           disabled={isLoading}
         >
           <Heart className={cn("h-4 w-4", hasMyReaction && "fill-current")} />
-          <span className="ml-1 text-xs">{note.reactionCount || 0}</span>
+          <span className="ml-1 text-xs">{totalReactionCount || 0}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-2" align="start">
