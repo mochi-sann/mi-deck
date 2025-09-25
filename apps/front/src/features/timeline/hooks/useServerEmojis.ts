@@ -45,7 +45,7 @@ export function useServerEmojis({
     queryKey: ["server-emojis", origin],
     queryFn: async () => {
       const client = await createMisskeyClient();
-      const response = await client.request("emojis");
+      const response = await client.request("emojis", {});
       return response.emojis || [];
     },
     enabled: !!origin,
@@ -56,12 +56,12 @@ export function useServerEmojis({
   const filteredEmojis = useMemo(() => {
     if (!emojis.length) return [];
 
-    return emojis.filter((emoji) => {
+    return emojis.filter((emoji: EmojiSimple) => {
       if (emoji.roleIdsThatCanBeUsedThisEmojiAsReaction) {
         const allowedRoles = emoji.roleIdsThatCanBeUsedThisEmojiAsReaction;
         if (
           allowedRoles.length > 0 &&
-          !allowedRoles.some((roleId) => userRoleIds.includes(roleId))
+          !allowedRoles.some((roleId: string) => userRoleIds.includes(roleId))
         ) {
           return false;
         }
@@ -94,9 +94,9 @@ export function useServerEmojis({
 
       const lowerQuery = query.toLowerCase();
       return filteredEmojis.filter(
-        (emoji) =>
+        (emoji: EmojiSimple) =>
           emoji.name.toLowerCase().includes(lowerQuery) ||
-          emoji.aliases.some((alias) =>
+          emoji.aliases.some((alias: string) =>
             alias.toLowerCase().includes(lowerQuery),
           ),
       );
@@ -116,7 +116,9 @@ export function useServerEmojis({
         .map((item) => item.name);
 
       return recentNames
-        .map((name) => filteredEmojis.find((emoji) => emoji.name === name))
+        .map((name: string) =>
+          filteredEmojis.find((emoji: EmojiSimple) => emoji.name === name),
+        )
         .filter((emoji): emoji is EmojiSimple => emoji !== undefined);
     } catch (error) {
       console.warn("Failed to load recent emojis:", error);

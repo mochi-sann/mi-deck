@@ -42,7 +42,7 @@ export function useCustomEmojis({ origin }: UseCustomEmojisOptions) {
 
       // emojisエンドポイントを使用してカスタム絵文字一覧を取得
       // レスポンス形式: { emojis: EmojiSimple[] }
-      const response = await client.request("emojis");
+      const response = await client.request("emojis", {});
       return response.emojis;
     },
     enabled: !!origin,
