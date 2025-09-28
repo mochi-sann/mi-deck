@@ -111,7 +111,7 @@ describe("useCustomEmojis", () => {
     });
 
     expect(result.current.emojis).toEqual(mockEmojis);
-    expect(mockMisskeyClient.request).toHaveBeenCalledWith("emojis");
+    expect(mockMisskeyClient.request).toHaveBeenCalledWith("emojis", {});
   });
 
   it("絵文字をカテゴリ別にグループ化できる", async () => {
