@@ -1,14 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Misskey from "misskey-js";
 import type { Note } from "misskey-js/entities.js";
-import { useCallback, useMemo, useRef, useState } from "react";
-import { useHover } from "usehooks-ts";
+import { useCallback, useMemo, useState } from "react";
 import { storageManager } from "@/lib/storage";
 
 interface UseNoteReactionsOptions {
   noteId: string;
   origin: string;
   note: Note;
+  shouldLoadDetails?: boolean;
 }
 
 interface ReactToNoteParams {
@@ -30,6 +30,7 @@ export function useNoteReactions({
   noteId,
   origin,
   note,
+  shouldLoadDetails = false,
 }: UseNoteReactionsOptions) {
   const queryClient = useQueryClient();
   // Local optimistic state derived from note.reactions and note.myReaction
@@ -69,16 +70,6 @@ export function useNoteReactions({
     });
   }, [origin]);
 
-  const buttonRef = useRef<HTMLElement>(null as unknown as HTMLElement);
-  const isReactionButtonHover = useHover(buttonRef);
-  if (isReactionButtonHover) {
-  }
-  console.log(
-    ...[
-      isReactionButtonHover,
-      "👀 [useNoteReactions.ts:56]: isReactionButtonHover",
-    ].reverse(),
-  );
   const { data: reactionsRaw = [], isLoading: reactionsLoading } = useQuery({
     queryKey: ["note-reactions", noteId, origin],
     queryFn: async () => {
@@ -87,7 +78,7 @@ export function useNoteReactions({
         noteId,
       });
     },
-    enabled: !!noteId && !!origin && isReactionButtonHover,
+    enabled: !!noteId && !!origin && shouldLoadDetails,
     staleTime: 1000 * 60,
     refetchInterval: false,
   });
@@ -249,8 +240,6 @@ export function useNoteReactions({
     toggleReaction,
     isReacting: reactToNoteMutation.isPending,
     isRemoving: removeReactionMutation.isPending,
-    buttonRef,
-    isReactionButtonHover,
     reactionsRaw,
     reactionsLoading,
   };
