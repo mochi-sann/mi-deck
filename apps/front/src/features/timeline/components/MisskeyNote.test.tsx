@@ -53,6 +53,12 @@ vi.mock("@/features/reactions/components/NoteReactions", () => ({
   NoteReactions: () => <div data-testid="note-reactions" />,
 }));
 
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+  }),
+}));
+
 vi.mock("@/features/notes/components/NoteReplySection", () => ({
   // biome-ignore lint/style/useNamingConvention: testing mock
   NoteReplySection: () => <div data-testid="note-reply-section" />,
@@ -127,6 +133,18 @@ const createMockNote = (overrides: Partial<Note> = {}): Note =>
   }) as Note;
 
 describe("MisskeyNote", () => {
+  it("should show reply badge when note is a reply", () => {
+    const note = createMockNote({
+      replyId: "parent-note",
+    });
+    const origin = "misskey.example.com";
+
+    render(<MisskeyNote note={note} origin={origin} />);
+
+    const link = screen.getByRole("link", { name: "reply.badge" });
+    expect(link).toHaveAttribute("href", "https://misskey.example.com/notes/parent-note");
+  });
+
   it("should render note with basic content", () => {
     const note = createMockNote();
     const origin = "misskey.example.com";

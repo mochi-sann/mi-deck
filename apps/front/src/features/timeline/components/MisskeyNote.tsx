@@ -1,6 +1,7 @@
-import { Repeat2 } from "lucide-react";
+import { CornerUpRight, Repeat2 } from "lucide-react";
 import type { Note } from "misskey-js/entities.js";
 import { memo, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { CustomEmojiCtx } from "@/features/emoji";
 import { useNoteEmojis } from "@/features/reactions/hooks/useNoteEmojis";
 import { cn } from "@/lib/utils";
@@ -9,8 +10,12 @@ import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
 
 // Component to display a single Misskey note with a Twitter-like design
 function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
+  const { t } = useTranslation("timeline");
   const host = origin || "";
   const { allEmojis } = useNoteEmojis(note, origin);
+
+  const replyTarget = note.reply || (note.replyId ? { id: note.replyId } : null);
+  const replyUrl = replyTarget ? resolveNoteUrl(replyTarget as Partial<Note> & { id: string }, origin) : null;
 
   // Memoize context value to prevent unnecessary re-renders
   const contextValue = useMemo(
@@ -36,6 +41,23 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
             <div className="mb-1 flex items-center gap-1 text-muted-foreground text-xs">
               <Repeat2 className="h-3.5 w-3.5" aria-hidden />
               <span>Renote</span>
+            </div>
+          )}
+          {note.replyId && (
+            <div className="mb-1 flex items-center gap-1 text-muted-foreground text-xs">
+              <CornerUpRight className="h-3.5 w-3.5" aria-hidden />
+              {replyUrl ? (
+                <a
+                  href={replyUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline underline-offset-2 hover:text-foreground"
+                >
+                  {t("reply.badge")}
+                </a>
+              ) : (
+                <span>{t("reply.badge")}</span>
+              )}
             </div>
           )}
           <MisskeyNoteContent note={note} origin={origin} emojis={allEmojis} />
@@ -100,6 +122,22 @@ const areMisskeyNotePropsEqual = (
   }
 
   return true;
+};
+
+const resolveNoteUrl = (note: Partial<Note> & { id: string }, origin: string): string => {
+  if ('url' in note && note.url) return note.url as string;
+  if ('uri' in note && note.uri) return note.uri as string;
+
+  const hasProtocol = /^https?:\/\//.test(origin);
+  const normalizedOrigin = origin
+    ? (hasProtocol ? origin : `https://${origin}`).replace(/\/$/, '')
+    : '';
+
+  if (!normalizedOrigin) {
+    return `/notes/${note.id}`;
+  }
+
+  return `${normalizedOrigin}/notes/${note.id}`;
 };
 
 const MisskeyNote = memo(MisskeyNoteBase, areMisskeyNotePropsEqual);
