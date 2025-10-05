@@ -198,4 +198,19 @@ describe("useTimeline", () => {
     expect(result.current.hasMore).toBe(false);
     expect(result.current.notes).toEqual(initialNotes);
   });
+
+  it("should surface configuration errors when connection info is missing", async () => {
+    const { result } = renderHook(() => useTimeline("", mockToken, mockType));
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(result.current.error?.message).toBe(
+      "サーバーまたは認証情報が設定されていません。サーバーを追加してください。",
+    );
+    expect(result.current.isLoading).toBe(false);
+    expect(APIClient).not.toHaveBeenCalled();
+    expect(Stream).not.toHaveBeenCalled();
+  });
 });
