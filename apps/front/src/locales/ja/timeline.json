@@ -51,5 +51,21 @@
     "addTimeline": "タイムラインを追加",
     "reorderFailed": "タイムラインの並び替えに失敗しました。",
     "deleteFailed": "タイムラインの削除に失敗しました。もう一度お試しください。"
+  },
+  "reply": {
+    "button": "返信する",
+    "serverLabel": "サーバーを選択",
+    "serverPlaceholder": "利用するサーバー",
+    "placeholder": "返信内容を入力してください",
+    "submit": "送信",
+    "submitting": "送信中...",
+    "cancel": "キャンセル",
+    "success": "返信を送信しました",
+    "error": {
+      "missingServer": "サーバー情報が見つかりません",
+      "empty": "返信内容を入力してください",
+      "generic": "返信の送信に失敗しました",
+      "noServer": "利用可能なサーバーがありません"
+    }
   }
 }

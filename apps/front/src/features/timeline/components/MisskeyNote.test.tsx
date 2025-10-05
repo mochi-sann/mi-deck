@@ -53,6 +53,10 @@ vi.mock("@/features/reactions/components/NoteReactions", () => ({
   NoteReactions: () => <div data-testid="note-reactions" />,
 }));
 
+vi.mock("@/features/notes/components/NoteReplySection", () => ({
+  // biome-ignore lint/style/useNamingConvention: testing mock
+  NoteReplySection: () => <div data-testid="note-reply-section" />,
+}));
 vi.mock("@/lib/utils/emoji-proxy", () => ({
   // biome-ignore lint/suspicious/noExplicitAny: テストで必須
   createProxiedEmojis: (emojis: any, host: string) => {

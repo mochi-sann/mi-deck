@@ -1,0 +1,126 @@
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import type { Note } from "misskey-js/entities.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { NoteReplySection } from "./NoteReplySection";
+
+const mockRequest = vi.fn();
+const mockUseStorage = vi.fn();
+
+vi.mock("@/lib/storage/context", () => ({
+  useStorage: () => mockUseStorage(),
+}));
+
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+  }),
+}));
+
+vi.mock("misskey-js/api.js", () => ({
+  // biome-ignore lint/style/useNamingConvention: misskey js
+  APIClient: vi.fn().mockImplementation(() => ({
+    request: mockRequest,
+  })),
+}));
+
+const createMockNote = (overrides: Partial<Note> = {}): Note =>
+  ({
+    id: "note-1",
+    text: "Original note",
+    createdAt: "2023-01-01T00:00:00.000Z",
+    user: {
+      id: "user-1",
+      username: "tester",
+      name: "Tester",
+      avatarUrl: "https://example.com/avatar.png",
+      emojis: {},
+    },
+    emojis: {},
+    files: [],
+    ...overrides,
+  }) as Note;
+
+describe("NoteReplySection", () => {
+  beforeEach(() => {
+    mockRequest.mockReset();
+    mockUseStorage.mockReturnValue({
+      servers: [
+        {
+          id: "server-1",
+          origin: "https://misskey.example",
+          accessToken: "token-1",
+          isActive: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      currentServerId: "server-1",
+      isLoading: false,
+    });
+  });
+
+  it("should open form when reply button is clicked", async () => {
+    render(
+      <NoteReplySection
+        note={createMockNote()}
+        origin="https://misskey.example"
+      />,
+    );
+
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("button", { name: "reply.button" }));
+
+    expect(screen.getByRole("textbox")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "reply.submit" }),
+    ).toBeInTheDocument();
+  });
+
+  it("should send reply with replyId and close form on success", async () => {
+    mockRequest.mockResolvedValue({});
+    render(
+      <NoteReplySection
+        note={createMockNote()}
+        origin="https://misskey.example"
+      />,
+    );
+
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole("button", { name: "reply.button" }));
+    await user.type(screen.getByRole("textbox"), "Hello");
+    await user.click(screen.getByRole("button", { name: "reply.submit" }));
+
+    await waitFor(() => {
+      expect(mockRequest).toHaveBeenCalledWith("notes/create", {
+        text: "Hello",
+        replyId: "note-1",
+        visibility: "public",
+      });
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByText("reply.success")).toBeInTheDocument();
+  });
+
+  it("should show validation error when submitting empty reply", async () => {
+    render(
+      <NoteReplySection
+        note={createMockNote()}
+        origin="https://misskey.example"
+      />,
+    );
+
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole("button", { name: "reply.button" }));
+    await user.click(screen.getByRole("button", { name: "reply.submit" }));
+
+    expect(screen.getByText("reply.error.empty")).toBeInTheDocument();
+    expect(mockRequest).not.toHaveBeenCalled();
+  });
+});

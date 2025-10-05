@@ -51,5 +51,21 @@
     "addTimeline": "Add Timeline",
     "reorderFailed": "Failed to reorder timelines.",
     "deleteFailed": "Failed to delete timeline. Please try again."
+  },
+  "reply": {
+    "button": "Reply",
+    "serverLabel": "Select server",
+    "serverPlaceholder": "Choose a server",
+    "placeholder": "Type your reply",
+    "submit": "Send",
+    "submitting": "Sending...",
+    "cancel": "Cancel",
+    "success": "Reply sent",
+    "error": {
+      "missingServer": "Server information is unavailable",
+      "empty": "Please enter a reply",
+      "generic": "Failed to send reply",
+      "noServer": "No available server connections"
+    }
   }
 }
