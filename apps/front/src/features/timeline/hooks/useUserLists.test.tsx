@@ -1,10 +1,10 @@
 import { act, renderHook } from "@testing-library/react";
-import { APIClient } from "misskey-js/built/api";
+import { APIClient } from "misskey-js/api.js";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { useUserLists } from "./useUserLists";
 
 // Mock misskey-js modules
-vi.mock("misskey-js/built/api", () => ({
+vi.mock("misskey-js/api.js", () => ({
   // biome-ignore lint/style/useNamingConvention: misskey-js API class naming
   APIClient: vi.fn(),
 }));
