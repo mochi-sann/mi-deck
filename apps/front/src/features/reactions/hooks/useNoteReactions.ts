@@ -44,7 +44,7 @@ export function useNoteReactions({
   useEffect(() => {
     setMyReaction(note.myReaction ?? null);
     setReactionsMap({ ...(note.reactions || {}) });
-  }, [note.id, note.myReaction, note.reactions]);
+  }, [note.myReaction, note.reactions]);
 
   // Aggregated counts for list display (sorted)
   const reactionsWithCounts = useMemo(() => {

@@ -84,7 +84,7 @@ function RenotePreview({ renote, origin }: { renote: Note; origin: string }) {
   return (
     <CustomEmojiCtx.Provider value={contextValue}>
       <div className="mt-2 rounded-md border bg-muted/40 p-3">
-        <div className="flex gap-3">
+        <div className="flex items-start transition-colors duration-200 ">
           <MisskeyNoteHeader user={renote.user} />
           <MisskeyNoteContent
             note={renote}
