@@ -1,3 +1,4 @@
+import { Repeat2 } from "lucide-react";
 import type { Note } from "misskey-js/entities.js";
 import { memo, useMemo } from "react";
 import { CustomEmojiCtx } from "@/features/emoji";
@@ -27,13 +28,21 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
     <CustomEmojiCtx.Provider value={contextValue}>
       <article
         className={cn(
-          "flex gap-3 border-b p-3 transition-colors duration-200 hover:bg-muted/50",
+          "flex items-start gap-3 border-b p-3 transition-colors duration-200 hover:bg-muted/50",
         )}
       >
         <div>
           <MisskeyNoteHeader user={note.user} />
         </div>
-        <MisskeyNoteContent note={note} origin={origin} emojis={allEmojis} />
+        <div className="min-w-0 flex-1">
+          {note.renote && (
+            <div className="mb-1 flex items-center gap-1 text-muted-foreground text-xs">
+              <Repeat2 className="h-3.5 w-3.5" aria-hidden />
+              <span>Renote</span>
+            </div>
+          )}
+          <MisskeyNoteContent note={note} origin={origin} emojis={allEmojis} />
+        </div>
       </article>
     </CustomEmojiCtx.Provider>
   );
@@ -67,7 +76,8 @@ const areMisskeyNotePropsEqual = (
   if (
     prevProps.note.id !== nextProps.note.id ||
     prevProps.note.text !== nextProps.note.text ||
-    prevProps.origin !== nextProps.origin
+    prevProps.origin !== nextProps.origin ||
+    prevProps.note.renote?.id !== nextProps.note.renote?.id
   ) {
     return false;
   }

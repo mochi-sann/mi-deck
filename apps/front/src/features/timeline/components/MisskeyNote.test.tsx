@@ -207,6 +207,42 @@ describe("MisskeyNote", () => {
     expect(usernameElement).toHaveClass("text-muted-foreground");
   });
 
+  it("should show a link for nested renotes instead of rendering deeper previews", () => {
+    const origin = "misskey.example.com";
+    const originalNote = createMockNote({
+      id: "original-note",
+      text: "Original nested note",
+    });
+    const firstRenote = createMockNote({
+      id: "first-renote",
+      text: "First renote text",
+      renote: originalNote,
+    });
+    const doubleRenote = createMockNote({
+      id: "double-renote",
+      text: "Double renote text",
+      renote: firstRenote,
+    });
+
+    render(<MisskeyNote note={doubleRenote} origin={origin} />);
+
+    const renoteLink = screen.getByRole("link", {
+      name: "@testuserのノートを見る",
+    });
+
+    expect(renoteLink).toHaveAttribute(
+      "href",
+      "https://misskey.example.com/notes/original-note",
+    );
+
+    const textContents = screen
+      .getAllByTestId("mfm-text-content")
+      .map((element) => element?.textContent);
+
+    expect(textContents).toContain("First renote text");
+    expect(textContents).not.toContain("Original nested note");
+  });
+
   it("should render note text with MfmText", () => {
     const note = createMockNote({
       text: "Hello world :smile: test",
