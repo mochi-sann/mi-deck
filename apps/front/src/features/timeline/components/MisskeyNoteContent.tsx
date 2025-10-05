@@ -12,12 +12,32 @@ interface MisskeyNoteContentProps {
   note: Note;
   origin: string;
   emojis: Record<string, string>;
+  depth?: number;
 }
+
+const MAX_RENOTE_PREVIEW_DEPTH = 1;
+
+const resolveNoteUrl = (note: Note, origin: string): string => {
+  if (note.url) return note.url;
+  if (note.uri) return note.uri;
+
+  const hasProtocol = /^https?:\/\//.test(origin);
+  const normalizedOrigin = origin
+    ? (hasProtocol ? origin : `https://${origin}`).replace(/\/$/, "")
+    : "";
+
+  if (!normalizedOrigin) {
+    return `/notes/${note.id}`;
+  }
+
+  return `${normalizedOrigin}/notes/${note.id}`;
+};
 
 function MisskeyNoteContentBase({
   note,
   origin,
   emojis,
+  depth = 0,
 }: MisskeyNoteContentProps) {
   const user = note.user;
   return (
@@ -51,7 +71,11 @@ function MisskeyNoteContentBase({
           </div>
         )}
         {note.renote ? (
-          <RenotePreview renote={note.renote} origin={origin} />
+          <RenotePreview
+            renote={note.renote}
+            origin={origin}
+            depth={depth + 1}
+          />
         ) : null}
         <NoteReactions
           note={note}
@@ -70,7 +94,15 @@ export const MisskeyNoteContent = memo(MisskeyNoteContentBase);
 
 MisskeyNoteContent.displayName = "MisskeyNoteContent";
 
-function RenotePreview({ renote, origin }: { renote: Note; origin: string }) {
+function RenotePreview({
+  renote,
+  origin,
+  depth,
+}: {
+  renote: Note;
+  origin: string;
+  depth: number;
+}) {
   const host = origin || "";
   const { allEmojis } = useNoteEmojis(renote, origin);
   const contextValue = useMemo(
@@ -81,15 +113,34 @@ function RenotePreview({ renote, origin }: { renote: Note; origin: string }) {
     [host, allEmojis],
   );
 
+  if (depth > MAX_RENOTE_PREVIEW_DEPTH) {
+    const noteUrl = resolveNoteUrl(renote, origin);
+    const username = renote.user.username;
+
+    return (
+      <div className="mt-2 rounded-md border bg-muted/40 p-3 text-sm">
+        <a
+          href={noteUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="text-primary underline underline-offset-2"
+        >
+          @{username}のノートを見る
+        </a>
+      </div>
+    );
+  }
+
   return (
     <CustomEmojiCtx.Provider value={contextValue}>
       <div className="mt-2 rounded-md border bg-muted/40 p-3">
-        <div className="flex items-start transition-colors duration-200 ">
+        <div className="flex gap-3">
           <MisskeyNoteHeader user={renote.user} />
           <MisskeyNoteContent
             note={renote}
             origin={origin}
             emojis={allEmojis}
+            depth={depth}
           />
         </div>
       </div>
