@@ -70,7 +70,11 @@ export function useNoteReactions({
     });
   }, [origin]);
 
-  const { data: reactionsRaw = [], isLoading: reactionsLoading } = useQuery({
+  const {
+    data: reactionsRaw = [],
+    isLoading: reactionsLoading,
+    refetch: refetchReactions,
+  } = useQuery({
     queryKey: ["note-reactions", noteId, origin],
     queryFn: async () => {
       const client = await createMisskeyClient();
@@ -150,13 +154,14 @@ export function useNoteReactions({
         setReactionsMap(context.previousState.reactionsMap);
       }
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({
         queryKey: ["note-reactions", noteId, origin],
       });
       queryClient.invalidateQueries({
         queryKey: ["timeline"],
       });
+      if (shouldLoadDetails) await refetchReactions();
     },
   });
 
@@ -193,13 +198,14 @@ export function useNoteReactions({
         setReactionsMap(context.previousState.reactionsMap);
       }
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({
         queryKey: ["note-reactions", noteId, origin],
       });
       queryClient.invalidateQueries({
         queryKey: ["timeline"],
       });
+      if (shouldLoadDetails) await refetchReactions();
     },
   });
 
@@ -242,5 +248,6 @@ export function useNoteReactions({
     isRemoving: removeReactionMutation.isPending,
     reactionsRaw,
     reactionsLoading,
+    refetchReactions,
   };
 }
