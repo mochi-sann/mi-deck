@@ -15,14 +15,29 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
   const isValidConfig =
     origin && token && origin.trim() !== "" && token.trim() !== "";
 
-  // If config is invalid, set error state
-  if (!isValidConfig && !error) {
-    setError(
-      new Error(
-        "サーバーまたは認証情報が設定されていません。サーバーを追加してください。",
-      ),
-    );
-  }
+  useEffect(() => {
+    const message =
+      "サーバーまたは認証情報が設定されていません。サーバーを追加してください。";
+
+    if (!isValidConfig) {
+      setError((prev) => {
+        if (prev?.message === message) {
+          return prev;
+        }
+
+        return new Error(message);
+      });
+      return;
+    }
+
+    setError((prev) => {
+      if (prev?.message === message) {
+        return null;
+      }
+
+      return prev;
+    });
+  }, [isValidConfig]);
 
   const fetchNotes = async (untilId?: string) => {
     if (isLoading || !hasMore || !isValidConfig) return;
@@ -124,6 +139,10 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: fetchNotesを useeffectsにいれるといい感じに動かない
   useEffect(() => {
+    if (!isValidConfig) {
+      return;
+    }
+
     fetchNotes();
 
     // Setup WebSocket connection
