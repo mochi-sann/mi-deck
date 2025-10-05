@@ -94,7 +94,9 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
                       : "hover:bg-muted",
                     // isLoading && "cursor-not-allowed opacity-50",
                   )}
-                  onClick={() => toggleReaction(reaction)}
+                  onClick={() => {
+                    void toggleReaction(reaction);
+                  }}
                 >
                   <ReactionCount
                     reaction={reaction}

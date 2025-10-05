@@ -32,6 +32,7 @@ function ReactionButtonBase({
     toggleReaction,
     isReacting,
     isRemoving,
+    refetchReactions,
   } = useNoteReactions({
     noteId: note.id,
     origin,
@@ -41,13 +42,15 @@ function ReactionButtonBase({
   const isLoading = isReacting || isRemoving;
   const hasMyReaction = !!myReaction;
 
-  const handleQuickReaction = (reaction: string) => {
-    toggleReaction(reaction);
+  const handleQuickReaction = async (reaction: string) => {
+    await toggleReaction(reaction);
+    await refetchReactions();
     setIsOpen(false);
   };
 
-  const handleCustomEmojiSelect = (emoji: EmojiSimple) => {
-    toggleReaction(`:${emoji.name}:`);
+  const handleCustomEmojiSelect = async (emoji: EmojiSimple) => {
+    await toggleReaction(`:${emoji.name}:`);
+    await refetchReactions();
     setIsOpen(false);
   };
 
@@ -82,7 +85,9 @@ function ReactionButtonBase({
                   myReaction === reaction &&
                     "bg-primary text-primary-foreground",
                 )}
-                onClick={() => handleQuickReaction(reaction)}
+                onClick={() => {
+                  void handleQuickReaction(reaction);
+                }}
                 disabled={isLoading}
               >
                 {reaction}
@@ -97,9 +102,9 @@ function ReactionButtonBase({
           <h3 className="mb-2 font-medium text-sm">カスタム絵文字</h3>
           <CustomEmojiPicker
             origin={origin}
-            onEmojiSelect={(name) =>
-              handleCustomEmojiSelect({ name } as EmojiSimple)
-            }
+            onEmojiSelect={(name) => {
+              void handleCustomEmojiSelect({ name } as EmojiSimple);
+            }}
             reactionEmojis={note.reactionEmojis}
             fallbackEmojis={emojis}
           />
@@ -113,8 +118,11 @@ function ReactionButtonBase({
               size="sm"
               className="w-full text-xs"
               onClick={() => {
-                toggleReaction(myReaction!);
-                setIsOpen(false);
+                void (async () => {
+                  await toggleReaction(myReaction!);
+                  await refetchReactions();
+                  setIsOpen(false);
+                })();
               }}
               disabled={isLoading}
             >

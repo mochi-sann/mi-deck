@@ -161,7 +161,7 @@ export function useNoteReactions({
       queryClient.invalidateQueries({
         queryKey: ["timeline"],
       });
-      if (shouldLoadDetails) await refetchReactions();
+      await refetchReactions();
     },
   });
 
@@ -205,30 +205,30 @@ export function useNoteReactions({
       queryClient.invalidateQueries({
         queryKey: ["timeline"],
       });
-      if (shouldLoadDetails) await refetchReactions();
+      await refetchReactions();
     },
   });
 
   const reactToNote = useCallback(
-    (reaction: string) => {
-      reactToNoteMutation.mutate({ reaction });
+    async (reaction: string) => {
+      await reactToNoteMutation.mutateAsync({ reaction });
     },
     [reactToNoteMutation],
   );
 
-  const removeReaction = useCallback(() => {
-    removeReactionMutation.mutate();
+  const removeReaction = useCallback(async () => {
+    await removeReactionMutation.mutateAsync();
   }, [removeReactionMutation]);
 
   const toggleReaction = useCallback(
-    (reaction: string) => {
+    async (reaction: string) => {
       console.log(
         ...[reaction, "👀 [useNoteReactions.ts:124]: reaction"].reverse(),
       );
       if (myReaction === reaction) {
-        removeReaction();
+        await removeReaction();
       } else {
-        reactToNote(reaction);
+        await reactToNote(reaction);
       }
     },
     [myReaction, reactToNote, removeReaction],
