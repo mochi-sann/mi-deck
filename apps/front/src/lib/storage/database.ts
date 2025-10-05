@@ -228,6 +228,7 @@ class DatabaseManager {
         theme: "system",
         language: "ja",
         lastUpdated: new Date(),
+        customTheme: undefined,
       };
     }
     return settings;
@@ -249,6 +250,7 @@ class DatabaseManager {
       theme: "system",
       language: "ja",
       lastUpdated: new Date(),
+      customTheme: undefined,
       ...currentSettings,
       ...updates,
     };
