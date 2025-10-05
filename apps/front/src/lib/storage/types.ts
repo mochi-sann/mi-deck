@@ -37,12 +37,21 @@ export interface TimelineConfig {
   updatedAt: Date;
 }
 
-export type Theme = "light" | "dark" | "system";
+export type Theme = "light" | "dark" | "system" | "custom";
+
+export interface MisskeyThemeSetting {
+  name: string;
+  base: "light" | "dark";
+  props: Record<string, string>;
+  author?: string;
+  description?: string;
+}
 
 export interface AppSettings {
   theme: Theme;
   language: string;
   lastUpdated: Date;
+  customTheme?: MisskeyThemeSetting;
 }
 
 export interface ClientAuthState {

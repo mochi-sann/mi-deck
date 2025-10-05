@@ -13,11 +13,41 @@
     "english": "English"
   },
   "theme": {
-    "title": "Dark Mode",
-    "description": "Switch the app appearance to dark theme",
+    "title": "Theme",
+    "description": "Switch the application's color theme and mode",
     "light": "Light",
     "dark": "Dark",
-    "system": "System"
+    "system": "System",
+    "custom": "Custom",
+    "import": {
+      "title": "Import Misskey Theme",
+      "description": "Use a Misskey theme JSON to recolor the entire app.",
+      "placeholder": "Paste the Misskey theme JSON here",
+      "button": "Apply JSON",
+      "processing": "Applying...",
+      "upload": "Choose theme file",
+      "clearButton": "Reset custom theme",
+      "clearTitle": "Custom theme cleared",
+      "clearDescription": "Reverted to the default theme settings.",
+      "successTitle": "Theme applied",
+      "successDescription": "Applied {{name}}.",
+      "errorTitle": "Failed to load theme",
+      "current": "Current custom theme: {{name}} ({{base}})",
+      "noTheme": "No custom theme has been applied yet.",
+      "base": {
+        "light": "Light",
+        "dark": "Dark"
+      },
+      "errors": {
+        "required": "Please provide the theme JSON.",
+        "invalidJson": "The JSON format is invalid.",
+        "invalidData": "The theme structure is invalid.",
+        "invalidBase": "The theme \"base\" must be either \"light\" or \"dark\".",
+        "invalidProps": "The theme does not include valid color settings.",
+        "emptyProps": "No usable color values were found in the theme.",
+        "unknown": "An unexpected error occurred while applying the theme."
+      }
+    }
   },
   "notifications": {
     "title": "Notifications",
