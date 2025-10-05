@@ -15,6 +15,7 @@ export default defineConfig({
       "~": new URL("./src", import.meta.url).pathname,
       "@": new URL("./src", import.meta.url).pathname,
       "@test": new URL("./test", import.meta.url).pathname,
+      // Ensure misskey-js resolves in tests without depending on package exports
     },
     // reporters: ["default", "html"], // オプション: テストレポートをHTMLで出力する場合
     // coverage: { // オプション: カバレッジを取得する場合

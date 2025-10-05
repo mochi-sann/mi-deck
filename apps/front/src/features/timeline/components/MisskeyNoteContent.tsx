@@ -1,7 +1,9 @@
 import type { Note } from "misskey-js/entities.js";
 import { memo } from "react";
 import { MfmText } from "@/features/mfm";
+import { ReactionButton } from "@/features/reactions/components/ReactionButton";
 import { cn } from "@/lib/utils";
+import { NoteReactions } from "../../reactions/components/NoteReactions";
 
 interface MisskeyNoteContentProps {
   note: Note;
@@ -42,6 +44,14 @@ export const MisskeyNoteContent = memo(
               ))}
             </div>
           )}
+          <NoteReactions
+            note={note}
+            origin={origin}
+            emojis={note.reactionEmojis}
+          />
+          <div className="flex items-center gap-2 pt-1">
+            <ReactionButton note={note} origin={origin} emojis={emojis} />
+          </div>
         </div>
       </div>
     );

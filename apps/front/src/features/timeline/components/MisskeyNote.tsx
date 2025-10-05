@@ -1,8 +1,8 @@
 import type { Note } from "misskey-js/entities.js";
 import { memo, useMemo } from "react";
 import { CustomEmojiCtx } from "@/features/emoji";
+import { useNoteEmojis } from "@/features/reactions/hooks/useNoteEmojis";
 import { cn } from "@/lib/utils";
-import { useNoteEmojis } from "./hooks/useNoteEmojis";
 import { MisskeyNoteContent } from "./MisskeyNoteContent";
 import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
 
@@ -10,6 +10,9 @@ import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
 function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
   const host = origin || "";
   const { allEmojis } = useNoteEmojis(note, origin);
+  console.log(
+    ...[allEmojis, note.text, "👀 [MisskeyNote.tsx:13]: allEmojis "].reverse(),
+  );
 
   // Memoize context value to prevent unnecessary re-renders
   const contextValue = useMemo(

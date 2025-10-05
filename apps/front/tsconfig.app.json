@@ -25,5 +25,12 @@
       "styled-system/*": ["./styled-system/*"]
     }
   },
-  "include": ["src", "styled-system", "panda.config.ts", "theme"]
+  "include": ["src", "styled-system", "panda.config.ts", "theme"],
+  "exclude": [
+    "src/**/*.stories.tsx",
+    "src/**/*.stories.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.test.ts",
+    "src/**/__tests__/**"
+  ]
 }
