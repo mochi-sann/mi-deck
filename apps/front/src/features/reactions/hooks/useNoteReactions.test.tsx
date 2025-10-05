@@ -189,4 +189,56 @@ describe("useNoteReactions", () => {
       expect(result.current.reactionsLoading).toBe(false);
     });
   });
+
+  it("should resync state when note prop changes", async () => {
+    vi.mocked(storageManager.getAllServers).mockResolvedValue([
+      {
+        id: "server-1",
+        origin: "https://test.example.com",
+        accessToken: "test-token",
+        isActive: true,
+        userInfo: {
+          id: "user-id",
+          username: "testuser",
+          name: "Test User",
+        },
+        serverInfo: {
+          name: "Test Server",
+          version: "1.0.0",
+        },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]);
+
+    const updatedNote = {
+      ...mockNote,
+      myReaction: "👍",
+      reactions: {
+        ...mockNote.reactions,
+        "👍": 6,
+      },
+    } as unknown as Note;
+
+    const { result, rerender } = renderHook(
+      (props: { note: Note }) =>
+        useNoteReactions({
+          noteId: props.note.id,
+          origin: "https://test.example.com",
+          note: props.note,
+        }),
+      { wrapper: createWrapper(), initialProps: { note: mockNote } },
+    );
+
+    rerender({ note: updatedNote });
+
+    await waitFor(() => {
+      expect(result.current.myReaction).toBe("👍");
+      expect(result.current.reactions).toEqual([
+        { reaction: "👍", count: 6 },
+        { reaction: "❤", count: 3 },
+        { reaction: "😂", count: 1 },
+      ]);
+    });
+  });
 });

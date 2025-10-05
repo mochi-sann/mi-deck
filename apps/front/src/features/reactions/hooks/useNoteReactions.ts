@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Misskey from "misskey-js";
 import type { Note } from "misskey-js/entities.js";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { storageManager } from "@/lib/storage";
 
 interface UseNoteReactionsOptions {
@@ -40,6 +40,11 @@ export function useNoteReactions({
   const [reactionsMap, setReactionsMap] = useState<Record<string, number>>(
     () => ({ ...(note.reactions || {}) }),
   );
+
+  useEffect(() => {
+    setMyReaction(note.myReaction ?? null);
+    setReactionsMap({ ...(note.reactions || {}) });
+  }, [note.id, note.myReaction, note.reactions]);
 
   // Aggregated counts for list display (sorted)
   const reactionsWithCounts = useMemo(() => {
