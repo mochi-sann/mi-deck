@@ -14,8 +14,11 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
   const host = origin || "";
   const { allEmojis } = useNoteEmojis(note, origin);
 
-  const replyTarget = note.reply || (note.replyId ? { id: note.replyId } : null);
-  const replyUrl = replyTarget ? resolveNoteUrl(replyTarget as Partial<Note> & { id: string }, origin) : null;
+  const replyTarget =
+    note.reply || (note.replyId ? { id: note.replyId } : null);
+  const replyUrl = replyTarget
+    ? resolveNoteUrl(replyTarget as Partial<Note> & { id: string }, origin)
+    : null;
 
   // Memoize context value to prevent unnecessary re-renders
   const contextValue = useMemo(
@@ -124,14 +127,17 @@ const areMisskeyNotePropsEqual = (
   return true;
 };
 
-const resolveNoteUrl = (note: Partial<Note> & { id: string }, origin: string): string => {
-  if ('url' in note && note.url) return note.url as string;
-  if ('uri' in note && note.uri) return note.uri as string;
+const resolveNoteUrl = (
+  note: Partial<Note> & { id: string },
+  origin: string,
+): string => {
+  if ("url" in note && note.url) return note.url as string;
+  if ("uri" in note && note.uri) return note.uri as string;
 
   const hasProtocol = /^https?:\/\//.test(origin);
   const normalizedOrigin = origin
-    ? (hasProtocol ? origin : `https://${origin}`).replace(/\/$/, '')
-    : '';
+    ? (hasProtocol ? origin : `https://${origin}`).replace(/\/$/, "")
+    : "";
 
   if (!normalizedOrigin) {
     return `/notes/${note.id}`;

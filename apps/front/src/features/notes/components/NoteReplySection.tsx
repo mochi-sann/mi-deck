@@ -59,8 +59,12 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
     return serversWithToken[0]?.id;
   }, [noteOrigin, serversWithToken, currentServerId]);
 
+  if (isPureRenote) {
+    return null;
+  }
+
   const hasAvailableServer = serversWithToken.length > 0;
-  const isReplyDisabled = isLoading || !hasAvailableServer || isPureRenote;
+  const isReplyDisabled = isLoading || !hasAvailableServer;
 
   const baseButtonClass = cn(
     "h-8 px-3 text-muted-foreground hover:text-foreground",
@@ -107,12 +111,6 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
       {successMessage && (
         <Text affects="small" className="text-muted-foreground">
           {successMessage}
-        </Text>
-      )}
-
-      {isPureRenote && (
-        <Text affects="small" className="text-muted-foreground">
-          {t("reply.error.pureRenote")}
         </Text>
       )}
     </div>

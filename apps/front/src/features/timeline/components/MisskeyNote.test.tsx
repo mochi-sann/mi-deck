@@ -142,7 +142,10 @@ describe("MisskeyNote", () => {
     render(<MisskeyNote note={note} origin={origin} />);
 
     const link = screen.getByRole("link", { name: "reply.badge" });
-    expect(link).toHaveAttribute("href", "https://misskey.example.com/notes/parent-note");
+    expect(link).toHaveAttribute(
+      "href",
+      "https://misskey.example.com/notes/parent-note",
+    );
   });
 
   it("should render note with basic content", () => {

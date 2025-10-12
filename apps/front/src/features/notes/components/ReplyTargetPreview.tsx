@@ -60,9 +60,8 @@ export function ReplyTargetPreview({ note, origin }: ReplyTargetPreviewProps) {
           <Text affects="small" className="font-semibold">
             {displayName}
           </Text>
-          <Text affects="xsmall" className="text-muted-foreground">
+          <Text affects="small" className="text-muted-foreground">
             {identity}
-            {createdAt ? ` · ${createdAt}` : ""}
           </Text>
         </div>
       </div>

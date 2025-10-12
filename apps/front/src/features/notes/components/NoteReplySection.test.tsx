@@ -150,7 +150,7 @@ describe("NoteReplySection", () => {
     expect(mockRequest).not.toHaveBeenCalled();
   });
 
-  it("should disable reply for pure renotes", () => {
+  it("should not render reply section for pure renotes", () => {
     const renotedNote = createMockNote({
       id: "renoted-note",
       text: "Renoted content",
@@ -166,9 +166,9 @@ describe("NoteReplySection", () => {
       <NoteReplySection note={pureRenote} origin="https://misskey.example" />,
     );
 
-    const button = screen.getByRole("button", { name: "reply.button" });
-    expect(button).toBeDisabled();
-    expect(screen.getByText("reply.error.pureRenote")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "reply.button" }),
+    ).not.toBeInTheDocument();
   });
 
   it("should render reply target preview inside modal", async () => {
