@@ -6,6 +6,7 @@
   "buildDate": "ビルド日",
   "connectedServers": "接続サーバー数",
   "timelineCount": "タイムライン数",
+  "viewLicenses": "利用ライブラリのライセンス一覧",
   "language": {
     "title": "言語",
     "description": "表示言語を選択してください",

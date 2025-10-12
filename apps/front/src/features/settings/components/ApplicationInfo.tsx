@@ -1,4 +1,6 @@
+import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useStorage } from "@/lib/storage/context";
 
@@ -30,6 +32,9 @@ export function ApplicationInfo() {
             <span>{storage.timelines.length}</span>
           </div>
         </div>
+        <Button asChild variant="outline" className="mt-4 w-full sm:w-auto">
+          <Link to="/licenses">{t("viewLicenses")}</Link>
+        </Button>
       </CardContent>
     </Card>
   );
