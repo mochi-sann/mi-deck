@@ -1,4 +1,50 @@
 {
+  "compose": {
+    "title": {
+      "create": "Create New Note",
+      "reply": "Reply to Note"
+    },
+    "description": {
+      "create": "Please enter the content of your note.",
+      "reply": "Confirm the target note and write your reply."
+    },
+    "serverLabel": "Target Server",
+    "serverLoading": "Loading servers...",
+    "serverPlaceholder": "Select server...",
+    "visibilityLabel": "Visibility",
+    "visibilityPlaceholder": "Select visibility",
+    "visibility": {
+      "public": "Public",
+      "home": "Home",
+      "followers": "Followers",
+      "specified": "Specified Users"
+    },
+    "localOnlyLabel": "Local Only",
+    "localOnlyDescription": "Post the note only to the connected instance.",
+    "contentLabel": "Note Content",
+    "contentPlaceholder": "Enter your note content here...",
+    "cancel": "Cancel",
+    "submit": {
+      "create": "Post",
+      "reply": "Reply"
+    },
+    "success": {
+      "create": "Note posted successfully",
+      "reply": "Reply sent successfully"
+    },
+    "error": {
+      "missingServer": "Server information is unavailable",
+      "empty": "Please enter content or attach a file",
+      "generic": "Failed to send note",
+      "noServer": "No available server connections"
+    },
+    "trigger": {
+      "create": "New Note"
+    },
+    "replyTarget": {
+      "noText": "No text content in the original note."
+    }
+  },
   "newNote": {
     "title": "Create New Note",
     "description": "Please enter the content of your note.",

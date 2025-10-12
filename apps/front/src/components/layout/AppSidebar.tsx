@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { NewNote } from "@/features/notes";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import {
   Sidebar,
   SidebarContent,
@@ -33,8 +32,8 @@ export const AppSidebarPresenter = () => {
         <NavContent />
       </SidebarContent>
       <SidebarFooter>
-        <Dialog>
-          <DialogTrigger asChild>
+        <NewNote
+          trigger={
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground "
@@ -50,11 +49,8 @@ export const AppSidebarPresenter = () => {
                 </span>
               </div>
             </SidebarMenuButton>
-          </DialogTrigger>
-          <DialogContent>
-            <NewNote />
-          </DialogContent>
-        </Dialog>
+          }
+        />
         {/* NavUser removed - no longer requires server-based authentication */}
       </SidebarFooter>
     </Sidebar>

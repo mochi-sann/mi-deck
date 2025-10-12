@@ -1,11 +1,12 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { Note } from "misskey-js/entities.js";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { NoteReplySection } from "./NoteReplySection";
 
 const mockRequest = vi.fn();
 const mockUseStorage = vi.fn();
+const mockUploadAndCompressFiles = vi.fn();
 
 vi.mock("@/lib/storage/context", () => ({
   useStorage: () => mockUseStorage(),
@@ -23,6 +24,21 @@ vi.mock("misskey-js/api.js", () => ({
     request: mockRequest,
   })),
 }));
+
+vi.mock("@/lib/uploadAndCompresFiles", () => ({
+  uploadAndCompressFiles: (...args: unknown[]) =>
+    mockUploadAndCompressFiles(...args),
+}));
+
+const ResizeObserverMock = class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
+beforeAll(() => {
+  vi.stubGlobal("ResizeObserver", ResizeObserverMock);
+});
 
 const createMockNote = (overrides: Partial<Note> = {}): Note =>
   ({
@@ -44,6 +60,8 @@ const createMockNote = (overrides: Partial<Note> = {}): Note =>
 describe("NoteReplySection", () => {
   beforeEach(() => {
     mockRequest.mockReset();
+    mockUploadAndCompressFiles.mockReset();
+    mockUploadAndCompressFiles.mockResolvedValue([]);
     mockUseStorage.mockReturnValue({
       servers: [
         {
@@ -73,7 +91,7 @@ describe("NoteReplySection", () => {
 
     expect(screen.getByRole("textbox")).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "reply.submit" }),
+      screen.getByRole("button", { name: "compose.submit.reply" }),
     ).toBeInTheDocument();
   });
 
@@ -90,14 +108,20 @@ describe("NoteReplySection", () => {
 
     await user.click(screen.getByRole("button", { name: "reply.button" }));
     await user.type(screen.getByRole("textbox"), "Hello");
-    await user.click(screen.getByRole("button", { name: "reply.submit" }));
+    await user.click(
+      screen.getByRole("button", { name: "compose.submit.reply" }),
+    );
 
     await waitFor(() => {
-      expect(mockRequest).toHaveBeenCalledWith("notes/create", {
-        text: "Hello",
-        replyId: "note-1",
-        visibility: "public",
-      });
+      expect(mockRequest).toHaveBeenCalledWith(
+        "notes/create",
+        expect.objectContaining({
+          text: "Hello",
+          replyId: "note-1",
+          visibility: "public",
+          localOnly: false,
+        }),
+      );
     });
 
     await waitFor(() => {
@@ -118,9 +142,11 @@ describe("NoteReplySection", () => {
     const user = userEvent.setup();
 
     await user.click(screen.getByRole("button", { name: "reply.button" }));
-    await user.click(screen.getByRole("button", { name: "reply.submit" }));
+    await user.click(
+      screen.getByRole("button", { name: "compose.submit.reply" }),
+    );
 
-    expect(screen.getByText("reply.error.empty")).toBeInTheDocument();
+    expect(screen.getByText("compose.error.empty")).toBeInTheDocument();
     expect(mockRequest).not.toHaveBeenCalled();
   });
 
@@ -143,5 +169,19 @@ describe("NoteReplySection", () => {
     const button = screen.getByRole("button", { name: "reply.button" });
     expect(button).toBeDisabled();
     expect(screen.getByText("reply.error.pureRenote")).toBeInTheDocument();
+  });
+
+  it("should render reply target preview inside modal", async () => {
+    render(
+      <NoteReplySection
+        note={createMockNote({ text: "Preview note content" })}
+        origin="https://misskey.example"
+      />,
+    );
+
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("button", { name: "reply.button" }));
+
+    expect(screen.getByText("Preview note content")).toBeInTheDocument();
   });
 });
