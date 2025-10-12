@@ -5,6 +5,15 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -58,6 +67,16 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
   const { servers, currentServerId, isLoading } = useStorage();
 
   const noteOrigin = normalizeOrigin(origin);
+  const isPureRenote = useMemo(() => {
+    const hasRenote = Boolean(note.renoteId || note.renote);
+    const hasText = Boolean(note.text && note.text.trim().length > 0);
+    const hasFiles = Boolean(note.files && note.files.length > 0);
+    const hasPoll = Boolean(
+      (note as { poll?: unknown; fileIds?: string[] }).poll,
+    );
+    const hasAttachments = hasFiles || hasPoll;
+    return hasRenote && !hasText && !hasAttachments;
+  }, [note]);
   const serversWithToken = useMemo(
     () => servers.filter((server) => Boolean(server.accessToken)),
     [servers],
@@ -82,7 +101,7 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
     return serversWithToken[0]?.id;
   }, [noteOrigin, serversWithToken, currentServerId]);
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [serverId, setServerId] = useState<string | undefined>(initialServerId);
   const [content, setContent] = useState("");
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -94,8 +113,8 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
     [serverId, serversWithToken],
   );
 
-  const toggleOpen = () => {
-    setIsOpen((prev) => !prev);
+  const handleOpenChange = (open: boolean) => {
+    setIsDialogOpen(open);
     setSubmitError(null);
   };
 
@@ -132,7 +151,7 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
 
       setSuccessMessage(t("reply.success"));
       setContent("");
-      setIsOpen(false);
+      setIsDialogOpen(false);
     } catch (error) {
       const message = formatError(error);
       setSubmitError(message || t("reply.error.generic"));
@@ -142,23 +161,27 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
   };
 
   const hasAvailableServer = serversWithToken.length > 0;
+  const isReplyDisabled = isLoading || !hasAvailableServer || isPureRenote;
 
   return (
-    <div className="">
+    <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
       <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={toggleOpen}
-          disabled={isLoading || !hasAvailableServer}
-          className={cn(
-            "h-8 px-3 text-muted-foreground hover:text-foreground",
-            isLoading && "cursor-not-allowed opacity-50",
-          )}
-        >
-          <MessageCircle className="mr-2 h-4 w-4" aria-hidden />
-          {/* {t("reply.button")} */}
-        </Button>
+        {!isReplyDisabled && (
+          <DialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={cn(
+                "h-8 px-3 text-muted-foreground hover:text-foreground",
+                isLoading && "cursor-not-allowed opacity-50",
+              )}
+              aria-label={t("reply.button")}
+            >
+              <MessageCircle className="mr-2 h-4 w-4" aria-hidden />
+              <span className="sr-only">{t("reply.button")}</span>
+            </Button>
+          </DialogTrigger>
+        )}
         {!hasAvailableServer && (
           <Text affects="small" className="text-muted-foreground">
             {t("reply.error.noServer")}
@@ -166,14 +189,19 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
         )}
       </div>
 
-      {successMessage && !isOpen && (
+      {successMessage && !isDialogOpen && (
         <Text affects="small" className="text-muted-foreground">
           {successMessage}
         </Text>
       )}
 
-      {isOpen && (
-        <div className="space-y-3 rounded-md border bg-muted/40 p-3">
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t("reply.button")}</DialogTitle>
+          <DialogDescription>{t("reply.placeholder")}</DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-3">
           <div className="space-y-2">
             <Text affects="small" className="font-medium">
               {t("reply.serverLabel")}
@@ -213,36 +241,36 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
               {submitError}
             </Text>
           ) : null}
-
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={handleSubmit}
-              disabled={isSubmitting || !selectedServer}
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden />
-                  {t("reply.submitting")}
-                </>
-              ) : (
-                t("reply.submit")
-              )}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setIsOpen(false);
-                setSubmitError(null);
-                if (!content) {
-                  setSuccessMessage(null);
-                }
-              }}
-            >
-              {t("reply.cancel")}
-            </Button>
-          </div>
         </div>
-      )}
-    </div>
+
+        <DialogFooter>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setIsDialogOpen(false);
+              setSubmitError(null);
+              if (!content) {
+                setSuccessMessage(null);
+              }
+            }}
+          >
+            {t("reply.cancel")}
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            disabled={isSubmitting || !selectedServer}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden />
+                {t("reply.submitting")}
+              </>
+            ) : (
+              t("reply.submit")
+            )}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

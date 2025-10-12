@@ -65,7 +65,8 @@
       "missingServer": "Server information is unavailable",
       "empty": "Please enter a reply",
       "generic": "Failed to send reply",
-      "noServer": "No available server connections"
+      "noServer": "No available server connections",
+      "pureRenote": "Cannot reply to pure renotes"
     },
     "badge": "Reply",
     "replyingTo": "Replying to {{user}}",

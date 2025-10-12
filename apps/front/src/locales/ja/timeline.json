@@ -65,7 +65,8 @@
       "missingServer": "サーバー情報が見つかりません",
       "empty": "返信内容を入力してください",
       "generic": "返信の送信に失敗しました",
-      "noServer": "利用可能なサーバーがありません"
+      "noServer": "利用可能なサーバーがありません",
+      "pureRenote": "純粋なリノートには返信できません"
     },
     "badge": "返信",
     "replyingTo": "返信先: {{user}}",

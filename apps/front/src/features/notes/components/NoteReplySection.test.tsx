@@ -123,4 +123,25 @@ describe("NoteReplySection", () => {
     expect(screen.getByText("reply.error.empty")).toBeInTheDocument();
     expect(mockRequest).not.toHaveBeenCalled();
   });
+
+  it("should disable reply for pure renotes", () => {
+    const renotedNote = createMockNote({
+      id: "renoted-note",
+      text: "Renoted content",
+    });
+    const pureRenote = createMockNote({
+      id: "pure-renote",
+      text: "",
+      renoteId: renotedNote.id,
+      renote: renotedNote,
+    });
+
+    render(
+      <NoteReplySection note={pureRenote} origin="https://misskey.example" />,
+    );
+
+    const button = screen.getByRole("button", { name: "reply.button" });
+    expect(button).toBeDisabled();
+    expect(screen.getByText("reply.error.pureRenote")).toBeInTheDocument();
+  });
 });
