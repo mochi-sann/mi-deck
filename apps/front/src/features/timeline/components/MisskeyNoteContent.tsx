@@ -1,12 +1,12 @@
 import type { Note } from "misskey-js/entities.js";
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import { CustomEmojiCtx } from "@/features/emoji";
 import { MfmText } from "@/features/mfm";
 import { NoteReplySection } from "@/features/notes/components/NoteReplySection";
 import { ReactionButton } from "@/features/reactions/components/ReactionButton";
 import { cn } from "@/lib/utils";
 import { NoteReactions } from "../../reactions/components/NoteReactions";
-import { useNoteEmojis } from "../../reactions/hooks/useNoteEmojis";
+import { useMisskeyNoteEmojis } from "../hooks/useMisskeyNoteEmojis";
 import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
 
 interface MisskeyNoteContentProps {
@@ -105,15 +105,7 @@ function RenotePreview({
   origin: string;
   depth: number;
 }) {
-  const host = origin || "";
-  const { allEmojis } = useNoteEmojis(renote, origin);
-  const contextValue = useMemo(
-    () => ({
-      host,
-      emojis: allEmojis,
-    }),
-    [host, allEmojis],
-  );
+  const { emojis, contextValue } = useMisskeyNoteEmojis(renote, origin);
 
   if (depth > MAX_RENOTE_PREVIEW_DEPTH) {
     const noteUrl = resolveNoteUrl(renote, origin);
@@ -141,7 +133,7 @@ function RenotePreview({
           <MisskeyNoteContent
             note={renote}
             origin={origin}
-            emojis={allEmojis}
+            emojis={emojis}
             depth={depth}
           />
         </div>

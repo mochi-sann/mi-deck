@@ -1,33 +1,23 @@
 import { CornerUpRight, Repeat2 } from "lucide-react";
 import type { Note } from "misskey-js/entities.js";
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { CustomEmojiCtx } from "@/features/emoji";
-import { useNoteEmojis } from "@/features/reactions/hooks/useNoteEmojis";
 import { cn } from "@/lib/utils";
+import { useMisskeyNoteEmojis } from "../hooks/useMisskeyNoteEmojis";
 import { MisskeyNoteContent } from "./MisskeyNoteContent";
 import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
 
 // Component to display a single Misskey note with a Twitter-like design
 function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
   const { t } = useTranslation("timeline");
-  const host = origin || "";
-  const { allEmojis } = useNoteEmojis(note, origin);
+  const { emojis, contextValue } = useMisskeyNoteEmojis(note, origin);
 
   const replyTarget =
     note.reply || (note.replyId ? { id: note.replyId } : null);
   const replyUrl = replyTarget
     ? resolveNoteUrl(replyTarget as Partial<Note> & { id: string }, origin)
     : null;
-
-  // Memoize context value to prevent unnecessary re-renders
-  const contextValue = useMemo(
-    () => ({
-      host,
-      emojis: allEmojis,
-    }),
-    [host, allEmojis],
-  );
 
   return (
     <CustomEmojiCtx.Provider value={contextValue}>
@@ -63,7 +53,7 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
               )}
             </div>
           )}
-          <MisskeyNoteContent note={note} origin={origin} emojis={allEmojis} />
+          <MisskeyNoteContent note={note} origin={origin} emojis={emojis} />
         </div>
       </article>
     </CustomEmojiCtx.Provider>
