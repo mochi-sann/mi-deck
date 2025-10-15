@@ -1,5 +1,4 @@
 import type { Note } from "misskey-js/entities.js";
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Text from "@/components/ui/text";
@@ -25,20 +24,9 @@ export function ReplyTargetPreview({ note, origin }: ReplyTargetPreviewProps) {
   const { t } = useTranslation("notes");
   const displayName = note.user.name || note.user.username;
   const username = note.user.username;
-  const createdAt = useMemo(() => {
-    if (!note.createdAt) return "";
-    try {
-      return new Intl.DateTimeFormat(undefined, {
-        dateStyle: "medium",
-        timeStyle: "short",
-      }).format(new Date(note.createdAt));
-    } catch {
-      return note.createdAt;
-    }
-  }, [note.createdAt]);
 
   const attachments = note.files?.slice(0, 4) ?? [];
-  const normalizedOrigin = normalizeOrigin(origin ?? note.origin);
+  const normalizedOrigin = normalizeOrigin(origin);
   const host = note.user.host
     ? note.user.host.replace(/^https?:\/\//, "")
     : normalizedOrigin.replace(/^https?:\/\//, "");
@@ -69,7 +57,7 @@ export function ReplyTargetPreview({ note, origin }: ReplyTargetPreviewProps) {
       {note.text ? (
         <MfmText
           text={note.text}
-          host={origin ?? note.origin ?? ""}
+          host={origin ?? ""}
           emojis={note.emojis ?? {}}
         />
       ) : (
