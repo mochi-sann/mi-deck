@@ -32,9 +32,11 @@ export function ApplicationInfo() {
             <span>{storage.timelines.length}</span>
           </div>
         </div>
-        <Button asChild variant="outline" className="mt-4 w-full sm:w-auto">
-          <Link to="/licenses">{t("viewLicenses")}</Link>
-        </Button>
+        <div>
+          <Button variant="outline" className="mt-4 w-full sm:w-auto">
+            <Link to="/licenses">{t("viewLicenses")}</Link>
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
