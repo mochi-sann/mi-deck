@@ -2,6 +2,7 @@ import type { Note } from "misskey-js/entities.js";
 import { memo, useMemo } from "react";
 import { CustomEmojiCtx } from "@/features/emoji";
 import { MfmText } from "@/features/mfm";
+import { NoteReplySection } from "@/features/notes/components/NoteReplySection";
 import { ReactionButton } from "@/features/reactions/components/ReactionButton";
 import { cn } from "@/lib/utils";
 import { NoteReactions } from "../../reactions/components/NoteReactions";
@@ -84,6 +85,7 @@ function MisskeyNoteContentBase({
         />
         <div className="flex items-center gap-2 pt-1">
           <ReactionButton note={note} origin={origin} emojis={emojis} />
+          <NoteReplySection note={note} origin={origin} />
         </div>
       </div>
     </div>
