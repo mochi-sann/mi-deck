@@ -15,6 +15,7 @@ type NoteComposerMode = "create" | "reply";
 interface UseNoteComposerOptions {
   mode: NoteComposerMode;
   replyTarget?: Note;
+  replyOrigin?: string;
   initialServerId?: string;
   onSuccess?: () => void;
   onError?: (error: unknown) => void;
@@ -42,7 +43,7 @@ interface UseNoteComposerReturn {
 
 let lastSelectedServerId: string | undefined;
 
-const normalizeOrigin = (origin: string | undefined): string => {
+const normalizeOrigin = (origin: string | null | undefined): string => {
   if (!origin) return "";
   const hasProtocol = /^https?:\/\//.test(origin);
   const normalized = (hasProtocol ? origin : `https://${origin}`).replace(
@@ -98,6 +99,7 @@ const createFormSchema = (
 export function useNoteComposer({
   mode,
   replyTarget,
+  replyOrigin,
   initialServerId,
   onSuccess,
   onError,
@@ -126,12 +128,16 @@ export function useNoteComposer({
   });
 
   const resolveInitialServerId = useCallback((): string | undefined => {
-    if (mode === "reply" && replyTarget) {
-      const targetOrigin = normalizeOrigin(replyTarget.origin);
-      const originMatch = serversWithToken.find(
-        (server) => normalizeOrigin(server.origin) === targetOrigin,
+    if (mode === "reply") {
+      const targetOrigin = normalizeOrigin(
+        replyOrigin ?? replyTarget?.user.host,
       );
-      if (originMatch) return originMatch.id;
+      if (targetOrigin) {
+        const originMatch = serversWithToken.find(
+          (server) => normalizeOrigin(server.origin) === targetOrigin,
+        );
+        if (originMatch) return originMatch.id;
+      }
     }
 
     if (initialServerId) {
@@ -156,7 +162,14 @@ export function useNoteComposer({
     }
 
     return serversWithToken[0]?.id;
-  }, [currentServerId, initialServerId, mode, replyTarget, serversWithToken]);
+  }, [
+    currentServerId,
+    initialServerId,
+    mode,
+    replyOrigin,
+    replyTarget,
+    serversWithToken,
+  ]);
 
   useEffect(() => {
     if (serversWithToken.length === 0) return;

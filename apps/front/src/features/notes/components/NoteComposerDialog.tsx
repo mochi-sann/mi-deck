@@ -1,5 +1,5 @@
 import type { Note } from "misskey-js/entities.js";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { cloneElement, isValidElement, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FileUpload } from "@/components/parts/FileUpload";
@@ -79,6 +79,7 @@ export function NoteComposerDialog({
   } = useNoteComposer({
     mode,
     replyTarget,
+    replyOrigin: origin,
     initialServerId,
     onSuccess: () => {
       setOpen(false);
@@ -114,8 +115,9 @@ export function NoteComposerDialog({
 
   const triggerNode = useMemo(() => {
     if (!isValidElement(trigger)) return trigger;
-    return cloneElement(trigger, {
-      disabled: disabled ?? trigger.props.disabled,
+    const triggerElement = trigger as ReactElement<{ disabled?: boolean }>;
+    return cloneElement(triggerElement, {
+      disabled: disabled ?? triggerElement.props.disabled,
     });
   }, [disabled, trigger]);
 
@@ -239,7 +241,7 @@ export function NoteComposerDialog({
                     </FormControl>
                     <div className="space-y-0.5">
                       <FormLabel>{t("compose.localOnlyLabel")}</FormLabel>
-                      <Text affects="xsmall" className="text-muted-foreground">
+                      <Text affects="muted" className="text-muted-foreground">
                         {t("compose.localOnlyDescription")}
                       </Text>
                     </div>
