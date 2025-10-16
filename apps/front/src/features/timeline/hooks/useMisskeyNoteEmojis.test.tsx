@@ -3,8 +3,9 @@ import type { Note } from "misskey-js/entities.js";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { useMisskeyNoteEmojis } from "./useMisskeyNoteEmojis";
 
-const mockUseNoteEmojis = vi.fn();
-
+const { mockUseNoteEmojis } = vi.hoisted(() => ({
+  mockUseNoteEmojis: vi.fn() as Mock,
+}));
 vi.mock("@/features/reactions/hooks/useNoteEmojis", () => ({
   useNoteEmojis: mockUseNoteEmojis,
 }));
@@ -37,7 +38,7 @@ describe("useMisskeyNoteEmojis", () => {
     const origin = "misskey.example.com";
     const allEmojis = { wave: "https://example.com/wave.png" };
 
-    (mockUseNoteEmojis as Mock).mockReturnValue({ allEmojis });
+    mockUseNoteEmojis.mockReturnValue({ allEmojis });
 
     const { result } = renderHook(() => useMisskeyNoteEmojis(note, origin));
 
@@ -55,7 +56,7 @@ describe("useMisskeyNoteEmojis", () => {
     const origin = "";
     const allEmojis = {};
 
-    (mockUseNoteEmojis as Mock).mockReturnValue({ allEmojis });
+    mockUseNoteEmojis.mockReturnValue({ allEmojis });
 
     const { result } = renderHook(() => useMisskeyNoteEmojis(note, origin));
 
@@ -69,7 +70,7 @@ describe("useMisskeyNoteEmojis", () => {
     const origin = "misskey.example.com";
     const allEmojis = { sparkle: "https://example.com/sparkle.png" };
 
-    (mockUseNoteEmojis as Mock).mockReturnValue({ allEmojis });
+    mockUseNoteEmojis.mockReturnValue({ allEmojis });
 
     const { result, rerender } = renderHook(
       ({ target }) => useMisskeyNoteEmojis(target.note, target.origin),
