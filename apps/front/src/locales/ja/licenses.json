@@ -1,0 +1,8 @@
+{
+  "title": "利用ライブラリのライセンス",
+  "description": "このアプリケーションで利用しているオープンソースライブラリの一覧です。",
+  "licenseCount": "{{count}}件のライブラリ",
+  "version": "バージョン: {{version}}",
+  "author": "作者: {{author}}",
+  "homepage": "ホームページ"
+}

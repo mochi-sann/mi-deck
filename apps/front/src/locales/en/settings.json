@@ -6,6 +6,7 @@
   "buildDate": "Build Date",
   "connectedServers": "Connected Servers",
   "timelineCount": "Timeline Count",
+  "viewLicenses": "View third-party licenses",
   "language": {
     "title": "Language",
     "description": "Select your preferred language",
