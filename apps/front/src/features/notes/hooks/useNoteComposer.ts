@@ -10,12 +10,14 @@ import { useStorage } from "@/lib/storage/context";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
 import { uploadAndCompressFiles } from "@/lib/uploadAndCompresFiles";
 
-type NoteComposerMode = "create" | "reply";
+type NoteComposerMode = "create" | "reply" | "quote";
 
 interface UseNoteComposerOptions {
   mode: NoteComposerMode;
   replyTarget?: Note;
   replyOrigin?: string;
+  quoteTarget?: Note;
+  quoteOrigin?: string;
   initialServerId?: string;
   onSuccess?: () => void;
   onError?: (error: unknown) => void;
@@ -83,12 +85,12 @@ const createFormSchema = (
       v.nonEmpty(t("newNote.validation.selectServer")),
     ),
     noteContent:
-      mode === "reply"
-        ? v.string()
-        : v.pipe(
+      mode === "create"
+        ? v.pipe(
             v.string(),
             v.minLength(1, t("newNote.validation.enterContent")),
-          ),
+          )
+        : v.string(),
     isLocalOnly: v.boolean(),
     visibility: v.picklist(
       ["public", "home", "followers", "specified"] as const,
@@ -100,6 +102,8 @@ export function useNoteComposer({
   mode,
   replyTarget,
   replyOrigin,
+  quoteTarget,
+  quoteOrigin,
   initialServerId,
   onSuccess,
   onError,
@@ -128,9 +132,10 @@ export function useNoteComposer({
   });
 
   const resolveInitialServerId = useCallback((): string | undefined => {
-    if (mode === "reply") {
+    if (mode === "reply" || mode === "quote") {
       const targetOrigin = normalizeOrigin(
-        replyOrigin ?? replyTarget?.user.host,
+        (mode === "quote" ? quoteOrigin : replyOrigin) ??
+          (mode === "quote" ? quoteTarget?.user.host : replyTarget?.user.host),
       );
       if (targetOrigin) {
         const originMatch = serversWithToken.find(
@@ -166,6 +171,8 @@ export function useNoteComposer({
     currentServerId,
     initialServerId,
     mode,
+    quoteOrigin,
+    quoteTarget,
     replyOrigin,
     replyTarget,
     serversWithToken,
@@ -200,7 +207,7 @@ export function useNoteComposer({
       }
 
       const trimmed = values.noteContent.trim();
-      if (!trimmed && files.length === 0) {
+      if (!trimmed && files.length === 0 && mode !== "quote") {
         setSubmitError(t("compose.error.empty"));
         return;
       }
@@ -226,6 +233,8 @@ export function useNoteComposer({
           localOnly: values.isLocalOnly,
           fileIds: uploadedFileIds.length > 0 ? uploadedFileIds : undefined,
           replyId: mode === "reply" ? replyTarget?.id : undefined,
+          renoteId:
+            mode === "quote" ? (quoteTarget ?? replyTarget)?.id : undefined,
         });
 
         lastSelectedServerId = values.serverSessionId;

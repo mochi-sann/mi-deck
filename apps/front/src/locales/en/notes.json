@@ -2,11 +2,13 @@
   "compose": {
     "title": {
       "create": "Create New Note",
-      "reply": "Reply to Note"
+      "reply": "Reply to Note",
+      "quote": "Create Quote Renote"
     },
     "description": {
       "create": "Please enter the content of your note.",
-      "reply": "Confirm the target note and write your reply."
+      "reply": "Confirm the target note and write your reply.",
+      "quote": "Add an optional comment and choose the server to quote from."
     },
     "serverLabel": "Target Server",
     "serverLoading": "Loading servers...",
@@ -26,11 +28,13 @@
     "cancel": "Cancel",
     "submit": {
       "create": "Post",
-      "reply": "Reply"
+      "reply": "Reply",
+      "quote": "Quote Renote"
     },
     "success": {
       "create": "Note posted successfully",
-      "reply": "Reply sent successfully"
+      "reply": "Reply sent successfully",
+      "quote": "Quote renote posted successfully"
     },
     "error": {
       "missingServer": "Server information is unavailable",

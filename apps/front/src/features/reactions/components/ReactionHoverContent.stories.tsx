@@ -9,18 +9,21 @@ const meta = {
     reactionsRaw: [
       {
         id: "r1",
+        reaction: "❤",
         type: "❤",
         user: { id: "u1", name: "Alice", username: "alice" },
         createdAt: new Date().toISOString(),
       },
       {
         id: "r2",
+        reaction: "❤",
         type: "❤",
         user: { id: "u2", name: "Bob", username: "bob" },
         createdAt: new Date().toISOString(),
       },
       {
         id: "r3",
+        reaction: ":custom_hello:",
         type: ":custom_hello:",
         user: { id: "u3", name: "Carol", username: "carol" },
         createdAt: new Date().toISOString(),

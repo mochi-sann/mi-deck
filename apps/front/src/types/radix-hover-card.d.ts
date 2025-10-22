@@ -1,7 +1,12 @@
 declare module "@radix-ui/react-hover-card" {
   import * as React from "react";
-  export const Root: React.FC<any>;
-  export const Trigger: React.ForwardRefExoticComponent<any>;
-  export const Content: React.ForwardRefExoticComponent<any>;
-  export const Portal: React.FC<any>;
+  type GenericProps = Record<string, unknown>;
+  type ForwardRefComponent = React.ForwardRefExoticComponent<
+    React.PropsWithoutRef<GenericProps> & React.RefAttributes<HTMLElement>
+  >;
+
+  export const Root: React.FC<GenericProps>;
+  export const Trigger: ForwardRefComponent;
+  export const Content: ForwardRefComponent;
+  export const Portal: React.FC<GenericProps>;
 }

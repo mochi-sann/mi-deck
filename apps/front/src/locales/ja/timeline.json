@@ -71,5 +71,37 @@
     "badge": "返信",
     "replyingTo": "返信先: {{user}}",
     "noContent": "テキストのないノート"
+  },
+  "renote": {
+    "button": {
+      "default": "リノート",
+      "active": "リノート済み",
+      "unavailable": "リノートできません"
+    },
+    "menu": {
+      "renote": "リノート",
+      "undoRenote": "リノートを取り消す",
+      "quote": "引用リノート"
+    },
+    "unavailable": "利用できるサーバーがありません",
+    "error": {
+      "title": "リノートエラー",
+      "generic": "リノートに失敗しました",
+      "noServer": "リノート可能なサーバーが見つかりません",
+      "renoteFailed": "リノートの作成に失敗しました",
+      "unrenoteFailed": "リノートの取り消しに失敗しました"
+    },
+    "dialog": {
+      "title": "リノートを実行",
+      "titleUndo": "リノートを取り消す",
+      "description": "リノートに使用するサーバーを選択してください。",
+      "descriptionUndo": "リノートを取り消すサーバーを選択してください。",
+      "serverLabel": "サーバー",
+      "serverLoading": "サーバーを読み込み中...",
+      "serverPlaceholder": "サーバーを選択",
+      "cancel": "キャンセル",
+      "action": "リノートする",
+      "actionUndo": "取り消す"
+    }
   }
 }

@@ -48,7 +48,9 @@ function Button({
   variant,
   size,
   asChild = false,
-  ...props
+  isLoading = false,
+  children,
+  ...rest
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
@@ -60,20 +62,18 @@ function Button({
     <Comp
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
-      {...props}
+      {...rest}
     >
-      {
-        <Spinner
-          color="var(--primary-foreground)"
-          size={"sm"}
-          strokeWidth={3}
-          className={cn(
-            "absolute",
-            props.isLoading ? "opacity-100" : "opacity-0",
-          )}
-        />
-      }
-      {props.children}
+      <Spinner
+        color="var(--primary-foreground)"
+        size={"sm"}
+        strokeWidth={3}
+        className={cn(
+          "absolute transition-opacity",
+          isLoading ? "opacity-100" : "opacity-0",
+        )}
+      />
+      {children}
     </Comp>
   );
 }

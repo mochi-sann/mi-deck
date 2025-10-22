@@ -71,5 +71,37 @@
     "badge": "Reply",
     "replyingTo": "Replying to {{user}}",
     "noContent": "No text in this note"
+  },
+  "renote": {
+    "button": {
+      "default": "Renote",
+      "active": "Renoted",
+      "unavailable": "Renote unavailable"
+    },
+    "menu": {
+      "renote": "Renote",
+      "undoRenote": "Undo renote",
+      "quote": "Quote renote"
+    },
+    "unavailable": "No available servers to renote",
+    "error": {
+      "title": "Renote Error",
+      "generic": "Failed to renote.",
+      "noServer": "No server with credentials available for renote.",
+      "renoteFailed": "Unable to create renote.",
+      "unrenoteFailed": "Unable to undo renote."
+    },
+    "dialog": {
+      "title": "Create renote",
+      "titleUndo": "Undo renote",
+      "description": "Select the server you want to use for renoting.",
+      "descriptionUndo": "Select the server whose renote you want to remove.",
+      "serverLabel": "Server",
+      "serverLoading": "Loading servers...",
+      "serverPlaceholder": "Select a server",
+      "cancel": "Cancel",
+      "action": "Renote",
+      "actionUndo": "Undo"
+    }
   }
 }

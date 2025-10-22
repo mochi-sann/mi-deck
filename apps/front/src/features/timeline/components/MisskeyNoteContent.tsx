@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { NoteReactions } from "../../reactions/components/NoteReactions";
 import { useMisskeyNoteEmojis } from "../hooks/useMisskeyNoteEmojis";
 import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
+import { RenoteMenu } from "./RenoteMenu";
 
 interface MisskeyNoteContentProps {
   note: Note;
@@ -85,6 +86,7 @@ function MisskeyNoteContentBase({
         />
         <div className="flex items-center gap-2 pt-1">
           <ReactionButton note={note} origin={origin} emojis={emojis} />
+          <RenoteMenu note={note} origin={origin} />
           <NoteReplySection note={note} origin={origin} />
         </div>
       </div>
