@@ -131,12 +131,33 @@ export function useNoteComposer({
     },
   });
 
+  const targetHost = useMemo(() => {
+    if (mode === "quote") {
+      return (
+        quoteOrigin ??
+        quoteTarget?.user?.host ??
+        replyOrigin ??
+        replyTarget?.user?.host ??
+        null
+      );
+    }
+
+    if (mode === "reply") {
+      return replyOrigin ?? replyTarget?.user?.host ?? null;
+    }
+
+    return null;
+  }, [
+    mode,
+    quoteOrigin,
+    quoteTarget?.user?.host,
+    replyOrigin,
+    replyTarget?.user?.host,
+  ]);
+
   const resolveInitialServerId = useCallback((): string | undefined => {
     if (mode === "reply" || mode === "quote") {
-      const targetOrigin = normalizeOrigin(
-        (mode === "quote" ? quoteOrigin : replyOrigin) ??
-          (mode === "quote" ? quoteTarget?.user.host : replyTarget?.user.host),
-      );
+      const targetOrigin = normalizeOrigin(targetHost);
       if (targetOrigin) {
         const originMatch = serversWithToken.find(
           (server) => normalizeOrigin(server.origin) === targetOrigin,
@@ -167,21 +188,13 @@ export function useNoteComposer({
     }
 
     return serversWithToken[0]?.id;
-  }, [
-    currentServerId,
-    initialServerId,
-    mode,
-    quoteOrigin,
-    quoteTarget,
-    replyOrigin,
-    replyTarget,
-    serversWithToken,
-  ]);
+  }, [currentServerId, initialServerId, mode, serversWithToken, targetHost]);
 
   useEffect(() => {
     if (serversWithToken.length === 0) return;
     const resolved = resolveInitialServerId();
-    if (resolved) {
+    const currentValue = form.getValues("serverSessionId");
+    if (resolved && resolved !== currentValue) {
       form.setValue("serverSessionId", resolved, { shouldValidate: false });
     }
   }, [form, resolveInitialServerId, serversWithToken]);
@@ -256,18 +269,22 @@ export function useNoteComposer({
     },
   );
 
-  const clearSubmitError = () => setSubmitError(null);
+  const clearSubmitError = useCallback(() => {
+    setSubmitError(null);
+  }, []);
 
-  const resetState = () => {
+  const resetState = useCallback(() => {
     setFiles([]);
-    clearSubmitError();
+    setSubmitError(null);
+    const currentServerId = form.getValues("serverSessionId");
+    const currentVisibility = form.getValues("visibility") ?? "public";
     form.reset({
-      serverSessionId: form.getValues("serverSessionId"),
+      serverSessionId: currentServerId,
       noteContent: "",
       isLocalOnly: false,
-      visibility: form.getValues("visibility") ?? "public",
+      visibility: currentVisibility,
     });
-  };
+  }, [form]);
 
   return {
     form,
