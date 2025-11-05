@@ -1,4 +1,5 @@
 import "@testing-library/jest-dom/vitest";
+import "./polyfills/local-storage";
 import type { Note } from "misskey-js/entities.js";
 import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/node";
