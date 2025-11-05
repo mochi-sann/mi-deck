@@ -14,3 +14,4 @@ onlyBuiltDependencies:
   - lefthook
   - msw
   - prisma
+  - unrs-resolver
