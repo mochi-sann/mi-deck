@@ -1,17 +1,17 @@
 
 services:
-  postgres:
-    container_name: new-db 
-    image: postgres:latest
-    ports:
-      - "5432:5432"
-    env_file:
-      - .env
-    volumes:
-      - postgres-db:/docker-entrypoint-initdb.d
-    environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
+  # postgres:
+  #   container_name: new-db 
+  #   image: postgres:latest
+  #   ports:
+  #     - "5432:5432"
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - postgres-db:/docker-entrypoint-initdb.d
+  #   environment:
+  #     POSTGRES_USER: "postgres"
+  #     POSTGRES_PASSWORD: "postgres"
 
   # https-portal:
   #   image: steveltn/https-portal:1
@@ -48,7 +48,7 @@ services:
   #     - app-network
   misskey-web:
     # build: .
-    image : misskey/misskey:2025.10.0
+    image : misskey/misskey:2025.10.2
     # restart: always
     links:
       - misskey-db
