@@ -20,13 +20,6 @@ interface NoteReactionsProps {
 
 function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
   const { allEmojis } = useNoteEmojis(note, origin);
-  console.log(
-    ...[
-      { note, origin, emojis },
-      note.text,
-      "👀 [NoteReactions.tsx:15]: { note, origin, emojis }",
-    ].reverse(),
-  );
   const [activeReaction, setActiveReaction] = useState<string | null>(null);
   const shouldLoadDetails = activeReaction !== null;
   const { reactions, myReaction, toggleReaction, reactionsRaw } =
@@ -49,7 +42,6 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
     const parts = reaction.split(/[:@]/);
     // 配列から必要な部分を取り出す
     const emojiName = parts[1];
-    console.log(...[emojiName, "👀 [NoteReactions.tsx:38]: match"].reverse());
     // const name = match ? match[1] : null;
     // if (name && emojis[name]) return emojis[name];
     // if (domain === ".") {
@@ -59,7 +51,6 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
 
     return null;
   };
-  console.log(...[note, "👀 [NoteReactions.tsx:54]: note"].reverse());
 
   return (
     <div className="flex flex-wrap gap-1 pt-2">
