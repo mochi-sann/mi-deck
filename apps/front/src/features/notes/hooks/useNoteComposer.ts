@@ -2,7 +2,7 @@ import { valibotResolver } from "@hookform/resolvers/valibot";
 import { APIClient } from "misskey-js/api.js";
 import type { Note } from "misskey-js/entities.js";
 import type { BaseSyntheticEvent } from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as v from "valibot";
@@ -155,9 +155,14 @@ export function useNoteComposer({
     replyTarget?.user?.host,
   ]);
 
+  const normalizedTargetOrigin = useMemo(
+    () => normalizeOrigin(targetHost),
+    [targetHost],
+  );
+
   const resolveInitialServerId = useCallback((): string | undefined => {
     if (mode === "reply" || mode === "quote") {
-      const targetOrigin = normalizeOrigin(targetHost);
+      const targetOrigin = normalizedTargetOrigin;
       if (targetOrigin) {
         const originMatch = serversWithToken.find(
           (server) => normalizeOrigin(server.origin) === targetOrigin,
@@ -188,15 +193,40 @@ export function useNoteComposer({
     }
 
     return serversWithToken[0]?.id;
-  }, [currentServerId, initialServerId, mode, serversWithToken, targetHost]);
+  }, [
+    currentServerId,
+    initialServerId,
+    mode,
+    normalizedTargetOrigin,
+    serversWithToken,
+  ]);
+
+  const initializationKey = useMemo(
+    () => `${mode}|${normalizedTargetOrigin}|${initialServerId ?? ""}`,
+    [initialServerId, mode, normalizedTargetOrigin],
+  );
+  const serverInitializationKeyRef = useRef<string | null>(initializationKey);
+  const hasInitializedServerRef = useRef(false);
+
+  useEffect(() => {
+    if (serverInitializationKeyRef.current !== initializationKey) {
+      serverInitializationKeyRef.current = initializationKey;
+      hasInitializedServerRef.current = false;
+    }
+  }, [initializationKey]);
 
   useEffect(() => {
     if (serversWithToken.length === 0) return;
+    if (hasInitializedServerRef.current) return;
+
     const resolved = resolveInitialServerId();
+    if (!resolved) return;
+
     const currentValue = form.getValues("serverSessionId");
-    if (resolved && resolved !== currentValue) {
+    if (resolved !== currentValue) {
       form.setValue("serverSessionId", resolved, { shouldValidate: false });
     }
+    hasInitializedServerRef.current = true;
   }, [form, resolveInitialServerId, serversWithToken]);
 
   useEffect(() => {

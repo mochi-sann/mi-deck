@@ -53,6 +53,11 @@ vi.mock("@/features/reactions/components/NoteReactions", () => ({
   NoteReactions: () => <div data-testid="note-reactions" />,
 }));
 
+vi.mock("./RenoteMenu", () => ({
+  // biome-ignore lint/style/useNamingConvention: テストで必須
+  RenoteMenu: () => <div data-testid="renote-menu" />,
+}));
+
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string) => key,
@@ -62,6 +67,18 @@ vi.mock("react-i18next", () => ({
 vi.mock("@/features/notes/components/NoteReplySection", () => ({
   // biome-ignore lint/style/useNamingConvention: testing mock
   NoteReplySection: () => <div data-testid="note-reply-section" />,
+}));
+vi.mock("@/features/notes/actions/useRenoteAction", () => ({
+  useRenoteAction: () => ({
+    renoteCount: 0,
+    isRenoted: false,
+    isProcessing: false,
+    canRenote: false,
+    isStorageLoading: false,
+    serversWithToken: [],
+    determineInitialServerId: () => undefined,
+    toggleRenote: vi.fn(),
+  }),
 }));
 vi.mock("@/lib/utils/emoji-proxy", () => ({
   // biome-ignore lint/suspicious/noExplicitAny: テストで必須

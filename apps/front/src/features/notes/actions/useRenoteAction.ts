@@ -1,6 +1,6 @@
 import { APIClient } from "misskey-js/api.js";
 import type { Note } from "misskey-js/entities.js";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "@/hooks/use-toast";
 import { useStorage } from "@/lib/storage/context";
@@ -82,19 +82,51 @@ export function useRenoteAction({
     [servers],
   );
 
+  const baseRenoteCount = useMemo(
+    () => (typeof note.renoteCount === "number" ? note.renoteCount : 0),
+    [note.renoteCount],
+  );
   const initialRenoteId = useMemo(() => extractMyRenoteId(note), [note]);
 
-  const [renoteCount, setRenoteCount] = useState<number>(
-    typeof note.renoteCount === "number" ? note.renoteCount : 0,
-  );
+  const [renoteCount, setRenoteCount] = useState<number>(baseRenoteCount);
   const [currentRenoteId, setCurrentRenoteId] = useState<string | null>(
     initialRenoteId,
   );
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const lastSyncedStateRef = useRef({
+    noteId: note.id,
+    renoteCount: baseRenoteCount,
+    myRenoteId: initialRenoteId,
+  });
+
   useEffect(() => {
-    setRenoteCount(typeof note.renoteCount === "number" ? note.renoteCount : 0);
-    setCurrentRenoteId(extractMyRenoteId(note));
+    const nextRenoteCount =
+      typeof note.renoteCount === "number" ? note.renoteCount : 0;
+    const nextMyRenoteId = extractMyRenoteId(note);
+
+    const shouldSyncRenoteCount =
+      lastSyncedStateRef.current.noteId !== note.id ||
+      lastSyncedStateRef.current.renoteCount !== nextRenoteCount;
+    const shouldSyncMyRenoteId =
+      lastSyncedStateRef.current.noteId !== note.id ||
+      lastSyncedStateRef.current.myRenoteId !== nextMyRenoteId;
+
+    if (shouldSyncRenoteCount) {
+      setRenoteCount(nextRenoteCount);
+    }
+
+    if (shouldSyncMyRenoteId) {
+      setCurrentRenoteId(nextMyRenoteId);
+    }
+
+    if (shouldSyncRenoteCount || shouldSyncMyRenoteId) {
+      lastSyncedStateRef.current = {
+        noteId: note.id,
+        renoteCount: nextRenoteCount,
+        myRenoteId: nextMyRenoteId,
+      };
+    }
   }, [note]);
 
   const determineInitialServerId = useCallback((): string | undefined => {
