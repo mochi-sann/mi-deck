@@ -27,7 +27,7 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
         )}
       >
         <div>
-          <MisskeyNoteHeader user={note.user} />
+          <MisskeyNoteHeader user={note.user} note={note} />
         </div>
         <div className="min-w-0 flex-1">
           {note.renote && (
