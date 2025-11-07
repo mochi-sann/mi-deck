@@ -49,7 +49,12 @@ export function ReplyTargetPreview({ note, origin }: ReplyTargetPreviewProps) {
         </div>
 
         {note.text ? (
-          <MfmText text={note.text} host={origin ?? ""} emojis={emojis} />
+          <MfmText
+            text={note.text}
+            host={origin ?? ""}
+            emojis={emojis}
+            isCat={note.user.isCat}
+          />
         ) : (
           <Text affects="small" className="text-muted-foreground">
             {t("compose.replyTarget.noText")}

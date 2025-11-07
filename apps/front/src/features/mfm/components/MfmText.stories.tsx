@@ -13,6 +13,9 @@ const meta = {
       control: "text",
       description: "MFM text to render",
     },
+    isCat: {
+      control: "boolean",
+    },
   },
 } satisfies Meta<typeof MfmText>;
 
@@ -343,5 +346,11 @@ $[x2 $[sparkle 🍮]]
 \]
 
 `,
+  },
+};
+export const Nyaize: Story = {
+  args: {
+    isCat: true,
+    text: "あああななななにゃ",
   },
 };

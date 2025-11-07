@@ -1,4 +1,5 @@
 import { type MfmNode } from "mfm-js";
+import * as Misskey from "misskey-js";
 import { Fragment, type ReactNode } from "react";
 import { type MfmBasicProps } from ".";
 import Code from "./components/Code";
@@ -151,7 +152,7 @@ function SingleNode({ node, ...props }: MfmBasicProps & { node: MfmNode }) {
 
     case "text": {
       const orig = node.props.text.replace(/\r\n?/g, "\n");
-      const text = props.nyaize ? orig : orig; // todo: nyaize
+      const text = props.nyaize ? Misskey.nyaize(orig) : orig;
 
       if (props.plain) return text.replace(/\n/g, " ");
       return (
