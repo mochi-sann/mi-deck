@@ -185,7 +185,7 @@ describe("MisskeyNote", () => {
     // Check avatar
     const avatar = screen.getByTestId("avatar");
     expect(avatar).toBeInTheDocument();
-    expect(avatar).toHaveClass("size-10", "bg-slate-900");
+    expect(avatar).toHaveClass("size-10", "bg-slate-500");
 
     const avatarImage = screen.getByTestId("avatar-image");
     expect(avatarImage).toHaveAttribute("src", note.user.avatarUrl);
@@ -194,6 +194,30 @@ describe("MisskeyNote", () => {
     const usernameElement = screen.getByText("@testuser");
     expect(usernameElement).toBeInTheDocument();
     expect(usernameElement).toHaveClass("text-muted-foreground");
+  });
+
+  it("should render smaller avatar for pure renotes", () => {
+    const renoteTarget = createMockNote({
+      id: "origin-note",
+      text: "Original note text",
+    });
+    const note = createMockNote({
+      text: null,
+      renoteId: renoteTarget.id,
+      renote: renoteTarget,
+      replyId: null,
+      cw: null,
+      fileIds: [],
+      poll: null,
+    });
+    const origin = "misskey.example.com";
+
+    render(<MisskeyNote note={note} origin={origin} />);
+
+    const avatars = screen.getAllByTestId("avatar");
+    expect(avatars[0]).toHaveClass("size-5");
+    expect(avatars[0]).not.toHaveClass("size-10");
+    expect(avatars[1]).toHaveClass("size-10");
   });
 
   it("should combine and proxy emoji URLs", () => {
