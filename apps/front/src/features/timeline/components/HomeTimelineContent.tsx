@@ -62,7 +62,7 @@ export function HomeTimelineContent({
   }
 
   return (
-    <ScrollArea className="h-full" viewportRef={parentRef}>
+    <ScrollArea className="h-full overflow-auto" viewportRef={parentRef}>
       <div
         style={{
           height: `${rowVirtualizer.getTotalSize()}px`,
