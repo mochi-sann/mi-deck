@@ -25,9 +25,9 @@ export function NavUser() {
           <DropdownMenuTrigger className="w-full">
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground "
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg ">
+              <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage alt={"ユーザーアイコン"} />
                 <AvatarFallback className="rounded-lg">
                   <UserRound />
