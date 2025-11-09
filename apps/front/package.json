@@ -83,7 +83,7 @@
     "@storybook/addon-onboarding": "^9.1.5",
     "@storybook/addon-vitest": "9.1.1",
     "@storybook/react-vite": "^9.1.5",
-    "@storybook/test-runner": "^0.23.0",
+    "@storybook/test-runner": "^0.24.0",
     "@tanstack/react-query-devtools": "^5.87.4",
     "@tanstack/router-cli": "^1.131.37",
     "@tanstack/router-devtools": "^1.131.37",
