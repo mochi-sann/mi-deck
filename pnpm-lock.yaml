@@ -159,8 +159,8 @@ importers:
         specifier: ^0.25.0
         version: 0.25.0
       misskey-js:
-        specifier: 2025.9.0
-        version: 2025.9.0
+        specifier: 2025.10.2
+        version: 2025.10.2
       react:
         specifier: ^19.1.1
         version: 19.1.1
@@ -358,6 +358,9 @@ importers:
       lucide-react:
         specifier: ^0.513.0
         version: 0.513.0(react@19.1.1)
+      misskey-js:
+        specifier: 2025.10.2
+        version: 2025.10.2
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.47.5(@types/node@24.3.1))(@swc/core@1.13.3)(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.5)(typescript@5.9.2)
@@ -3353,6 +3356,7 @@ packages:
 
   expect-playwright@0.8.0:
     resolution: {integrity: sha512-+kn8561vHAY+dt+0gMqqj1oY+g5xWrsuGMk4QGxotT2WS545nVqqjs37z6hrYfIuucwqthzwJfCJUEYqixyljg==}
+    deprecated: ⚠️ The 'expect-playwright' package is deprecated. The Playwright core assertions (via @playwright/test) now cover the same functionality. Please migrate to built-in expect. See https://playwright.dev/docs/test-assertions for migration.
 
   expect-type@1.2.2:
     resolution: {integrity: sha512-JhFGDVJ7tmDJItKhYgJCGLOWjuK9vPxiXoUFLwLDc99NlmklilbiQJwoctZtt13+xMw91MCk/REan6MWHqDjyA==}
@@ -3958,6 +3962,7 @@ packages:
 
   jest-playwright-preset@4.0.0:
     resolution: {integrity: sha512-+dGZ1X2KqtwXaabVjTGxy0a3VzYfvYsWaRcuO8vMhyclHSOpGSI1+5cmlqzzCwQ3+fv0EjkTc7I5aV9lo08dYw==}
+    deprecated: ⚠️ The 'jest-playwright-preset' package is deprecated. Please migrate to Playwright's built-in test runner (@playwright/test) which now includes full Jest-style features and parallel testing. See https://playwright.dev/docs/intro for details.
     peerDependencies:
       jest: ^29.3.1
       jest-circus: ^29.3.1
@@ -3975,6 +3980,7 @@ packages:
 
   jest-process-manager@0.4.0:
     resolution: {integrity: sha512-80Y6snDyb0p8GG83pDxGI/kQzwVTkCxc7ep5FPe/F6JYdvRDhwr6RzRmPSP7SEwuLhxo80lBS/NqOdUIbHIfhw==}
+    deprecated: ⚠️ The 'jest-process-manager' package is deprecated. Please migrate to Playwright's built-in test runner (@playwright/test) which now includes full Jest-style features and parallel testing. See https://playwright.dev/docs/intro for details.
 
   jest-regex-util@29.6.3:
     resolution: {integrity: sha512-KJJBsRCyyLNWCNBOvZyRDnAIfUiRJ8v+hOBQYGn8gDyF3UegwiP4gwRR3/SDa42g1YbVycTidUF3rKjyLFDWbg==}
@@ -4442,8 +4448,8 @@ packages:
     resolution: {integrity: sha512-oG62iEk+CYt5Xj2YqI5Xi9xWUeZhDI8jjQmC5oThVH5JGCTgIjr7ciJDzC7MBzYd//WvR1OTmP5Q38Q8ShQtVA==}
     engines: {node: '>= 18'}
 
-  misskey-js@2025.9.0:
-    resolution: {integrity: sha512-/+iTfpSWjKxNTFKodlm6dcvT1lXRr5w42kziaoNb1fH69hSxBEoSL5k3DmqRQQMBt+s/ZUOFwIo2GJ4+3gKzcQ==}
+  misskey-js@2025.10.2:
+    resolution: {integrity: sha512-OsrFBzd+RF6u2tUdXDu4ux/xv4WuckrucEtH21PBFk6J0a9O1oG7KMQ5zwUzjD7lkWsB1/Cc6/wY1C5qcQtu6w==}
 
   mkdirp@1.0.4:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
@@ -10515,7 +10521,7 @@ snapshots:
     dependencies:
       minipass: 7.1.2
 
-  misskey-js@2025.9.0:
+  misskey-js@2025.10.2:
     dependencies:
       '@simplewebauthn/types': 12.0.0
       eventemitter3: 5.0.1

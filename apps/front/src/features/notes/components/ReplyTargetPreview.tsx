@@ -5,22 +5,12 @@ import Text from "@/components/ui/text";
 import { CustomEmojiCtx } from "@/features/emoji";
 import { MfmText } from "@/features/mfm";
 import { useMisskeyNoteEmojis } from "@/features/timeline/hooks/useMisskeyNoteEmojis";
-import { cn } from "@/lib/utils";
+import { cn, normalizeOrigin } from "@/lib/utils";
 
 interface ReplyTargetPreviewProps {
   note: Note;
   origin?: string;
 }
-
-const normalizeOrigin = (origin: string | undefined): string => {
-  if (!origin) return "";
-  const hasProtocol = /^https?:\/\//.test(origin);
-  const normalized = (hasProtocol ? origin : `https://${origin}`).replace(
-    /\/$/,
-    "",
-  );
-  return normalized;
-};
 
 export function ReplyTargetPreview({ note, origin }: ReplyTargetPreviewProps) {
   const { t } = useTranslation("notes");
@@ -59,7 +49,12 @@ export function ReplyTargetPreview({ note, origin }: ReplyTargetPreviewProps) {
         </div>
 
         {note.text ? (
-          <MfmText text={note.text} host={origin ?? ""} emojis={emojis} />
+          <MfmText
+            text={note.text}
+            host={origin ?? ""}
+            emojis={emojis}
+            isCat={note.user.isCat}
+          />
         ) : (
           <Text affects="small" className="text-muted-foreground">
             {t("compose.replyTarget.noText")}

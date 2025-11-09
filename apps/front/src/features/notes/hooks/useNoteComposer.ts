@@ -2,7 +2,7 @@ import { valibotResolver } from "@hookform/resolvers/valibot";
 import { APIClient } from "misskey-js/api.js";
 import type { Note } from "misskey-js/entities.js";
 import type { BaseSyntheticEvent } from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as v from "valibot";
@@ -10,12 +10,14 @@ import { useStorage } from "@/lib/storage/context";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
 import { uploadAndCompressFiles } from "@/lib/uploadAndCompresFiles";
 
-type NoteComposerMode = "create" | "reply";
+type NoteComposerMode = "create" | "reply" | "quote";
 
 interface UseNoteComposerOptions {
   mode: NoteComposerMode;
   replyTarget?: Note;
   replyOrigin?: string;
+  quoteTarget?: Note;
+  quoteOrigin?: string;
   initialServerId?: string;
   onSuccess?: () => void;
   onError?: (error: unknown) => void;
@@ -83,12 +85,12 @@ const createFormSchema = (
       v.nonEmpty(t("newNote.validation.selectServer")),
     ),
     noteContent:
-      mode === "reply"
-        ? v.string()
-        : v.pipe(
+      mode === "create"
+        ? v.pipe(
             v.string(),
             v.minLength(1, t("newNote.validation.enterContent")),
-          ),
+          )
+        : v.string(),
     isLocalOnly: v.boolean(),
     visibility: v.picklist(
       ["public", "home", "followers", "specified"] as const,
@@ -100,6 +102,8 @@ export function useNoteComposer({
   mode,
   replyTarget,
   replyOrigin,
+  quoteTarget,
+  quoteOrigin,
   initialServerId,
   onSuccess,
   onError,
@@ -127,11 +131,38 @@ export function useNoteComposer({
     },
   });
 
-  const resolveInitialServerId = useCallback((): string | undefined => {
-    if (mode === "reply") {
-      const targetOrigin = normalizeOrigin(
-        replyOrigin ?? replyTarget?.user.host,
+  const targetHost = useMemo(() => {
+    if (mode === "quote") {
+      return (
+        quoteOrigin ??
+        quoteTarget?.user?.host ??
+        replyOrigin ??
+        replyTarget?.user?.host ??
+        null
       );
+    }
+
+    if (mode === "reply") {
+      return replyOrigin ?? replyTarget?.user?.host ?? null;
+    }
+
+    return null;
+  }, [
+    mode,
+    quoteOrigin,
+    quoteTarget?.user?.host,
+    replyOrigin,
+    replyTarget?.user?.host,
+  ]);
+
+  const normalizedTargetOrigin = useMemo(
+    () => normalizeOrigin(targetHost),
+    [targetHost],
+  );
+
+  const resolveInitialServerId = useCallback((): string | undefined => {
+    if (mode === "reply" || mode === "quote") {
+      const targetOrigin = normalizedTargetOrigin;
       if (targetOrigin) {
         const originMatch = serversWithToken.find(
           (server) => normalizeOrigin(server.origin) === targetOrigin,
@@ -166,17 +197,36 @@ export function useNoteComposer({
     currentServerId,
     initialServerId,
     mode,
-    replyOrigin,
-    replyTarget,
+    normalizedTargetOrigin,
     serversWithToken,
   ]);
 
+  const initializationKey = useMemo(
+    () => `${mode}|${normalizedTargetOrigin}|${initialServerId ?? ""}`,
+    [initialServerId, mode, normalizedTargetOrigin],
+  );
+  const serverInitializationKeyRef = useRef<string | null>(initializationKey);
+  const hasInitializedServerRef = useRef(false);
+
+  useEffect(() => {
+    if (serverInitializationKeyRef.current !== initializationKey) {
+      serverInitializationKeyRef.current = initializationKey;
+      hasInitializedServerRef.current = false;
+    }
+  }, [initializationKey]);
+
   useEffect(() => {
     if (serversWithToken.length === 0) return;
+    if (hasInitializedServerRef.current) return;
+
     const resolved = resolveInitialServerId();
-    if (resolved) {
+    if (!resolved) return;
+
+    const currentValue = form.getValues("serverSessionId");
+    if (resolved !== currentValue) {
       form.setValue("serverSessionId", resolved, { shouldValidate: false });
     }
+    hasInitializedServerRef.current = true;
   }, [form, resolveInitialServerId, serversWithToken]);
 
   useEffect(() => {
@@ -200,7 +250,7 @@ export function useNoteComposer({
       }
 
       const trimmed = values.noteContent.trim();
-      if (!trimmed && files.length === 0) {
+      if (!trimmed && files.length === 0 && mode !== "quote") {
         setSubmitError(t("compose.error.empty"));
         return;
       }
@@ -226,6 +276,8 @@ export function useNoteComposer({
           localOnly: values.isLocalOnly,
           fileIds: uploadedFileIds.length > 0 ? uploadedFileIds : undefined,
           replyId: mode === "reply" ? replyTarget?.id : undefined,
+          renoteId:
+            mode === "quote" ? (quoteTarget ?? replyTarget)?.id : undefined,
         });
 
         lastSelectedServerId = values.serverSessionId;
@@ -247,18 +299,22 @@ export function useNoteComposer({
     },
   );
 
-  const clearSubmitError = () => setSubmitError(null);
+  const clearSubmitError = useCallback(() => {
+    setSubmitError(null);
+  }, []);
 
-  const resetState = () => {
+  const resetState = useCallback(() => {
     setFiles([]);
-    clearSubmitError();
+    setSubmitError(null);
+    const currentServerId = form.getValues("serverSessionId");
+    const currentVisibility = form.getValues("visibility") ?? "public";
     form.reset({
-      serverSessionId: form.getValues("serverSessionId"),
+      serverSessionId: currentServerId,
       noteContent: "",
       isLocalOnly: false,
-      visibility: form.getValues("visibility") ?? "public",
+      visibility: currentVisibility,
     });
-  };
+  }, [form]);
 
   return {
     form,

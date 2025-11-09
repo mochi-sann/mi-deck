@@ -14,6 +14,86 @@ interface UseNoteReactionsOptions {
 interface ReactToNoteParams {
   reaction: string;
 }
+
+export type ReactionUser = {
+  id: string;
+  username?: string;
+  name?: string;
+  avatarUrl?: string;
+};
+
+export type NoteReactionEntry = {
+  id: string;
+  reaction: string;
+  createdAt?: string;
+  user: ReactionUser | null;
+};
+
+const parseNoteReactionUser = (input: unknown): ReactionUser | null => {
+  if (typeof input !== "object" || input === null) {
+    return null;
+  }
+
+  const candidate = input as Record<string, unknown>;
+  const id = candidate.id;
+
+  if (id === undefined || id === null) {
+    return null;
+  }
+
+  const username =
+    typeof candidate.username === "string" ? candidate.username : undefined;
+  const name = typeof candidate.name === "string" ? candidate.name : undefined;
+  const avatarUrl =
+    typeof candidate.avatarUrl === "string" ? candidate.avatarUrl : undefined;
+
+  return {
+    id: String(id),
+    username,
+    name,
+    avatarUrl,
+  };
+};
+
+const parseNoteReactionEntry = (input: unknown): NoteReactionEntry | null => {
+  if (typeof input !== "object" || input === null) {
+    return null;
+  }
+
+  const candidate = input as Record<string, unknown>;
+  const idValue = candidate.id;
+  const reactionCandidate =
+    typeof candidate.reaction === "string" && candidate.reaction.length > 0
+      ? candidate.reaction
+      : typeof candidate.type === "string"
+        ? candidate.type
+        : null;
+
+  if (idValue === undefined || idValue === null || !reactionCandidate) {
+    return null;
+  }
+
+  const createdAt =
+    typeof candidate.createdAt === "string" ? candidate.createdAt : undefined;
+  const user = parseNoteReactionUser(candidate.user);
+
+  return {
+    id: String(idValue),
+    reaction: reactionCandidate,
+    createdAt,
+    user,
+  };
+};
+
+const parseReactionsResponse = (value: unknown): NoteReactionEntry[] => {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map((entry) => parseNoteReactionEntry(entry))
+    .filter((entry): entry is NoteReactionEntry => entry !== null);
+};
 export const GetReactionsWithCounts = (note: Note) => {
   if (!note?.reactions) return [];
 
@@ -79,13 +159,14 @@ export function useNoteReactions({
     data: reactionsRaw = [],
     isLoading: reactionsLoading,
     refetch: refetchReactions,
-  } = useQuery({
+  } = useQuery<NoteReactionEntry[]>({
     queryKey: ["note-reactions", noteId, origin],
     queryFn: async () => {
       const client = await createMisskeyClient();
-      return client.request("notes/reactions", {
+      const response = await client.request("notes/reactions", {
         noteId,
       });
+      return parseReactionsResponse(response);
     },
     enabled: !!noteId && !!origin && shouldLoadDetails,
     staleTime: 1000 * 60,
@@ -93,34 +174,22 @@ export function useNoteReactions({
   });
 
   // Normalize API response to a safe, display-ready structure
-  type ReactionUser = {
-    id: string;
-    username?: string;
-    name?: string;
-    avatarUrl?: string;
-  };
   type ReactionDetail = {
     reaction: string;
     user: ReactionUser;
   };
 
-  const reactionDetails: ReactionDetail[] = Array.isArray(reactionsRaw)
-    ? (reactionsRaw as any[])
-        .map((r: any) => {
-          const user = r?.user ?? {};
-          const id = String(user?.id ?? "");
-          return {
-            reaction: String(r?.reaction ?? ""),
-            user: {
-              id,
-              username: user?.username,
-              name: user?.name,
-              avatarUrl: user?.avatarUrl,
-            },
-          } as ReactionDetail;
-        })
-        .filter((d) => d.user.id && d.reaction)
-    : [];
+  const reactionDetails: ReactionDetail[] = reactionsRaw
+    .map((entry) => {
+      if (!entry.user) {
+        return null;
+      }
+      return {
+        reaction: entry.reaction,
+        user: entry.user,
+      };
+    })
+    .filter((detail): detail is ReactionDetail => detail !== null);
 
   const reactToNoteMutation = useMutation({
     mutationFn: async ({ reaction }: ReactToNoteParams) => {

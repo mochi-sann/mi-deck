@@ -4,14 +4,30 @@ import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { CustomEmojiCtx } from "@/features/emoji";
 import { cn } from "@/lib/utils";
+import type { CustomEmojiContext } from "@/types/emoji";
 import { useMisskeyNoteEmojis } from "../hooks/useMisskeyNoteEmojis";
 import { MisskeyNoteContent } from "./MisskeyNoteContent";
 import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
 
+type MisskeyNoteDisplayProps = {
+  note: Note;
+  origin: string;
+  emojis: Record<string, string>;
+  contextValue?: CustomEmojiContext;
+};
+
 // Component to display a single Misskey note with a Twitter-like design
-function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
+function MisskeyNoteBase({
+  note,
+  origin,
+  emojis,
+  contextValue,
+}: MisskeyNoteDisplayProps) {
   const { t } = useTranslation("timeline");
-  const { emojis, contextValue } = useMisskeyNoteEmojis(note, origin);
+  const providerValue = contextValue ?? {
+    host: origin || null,
+    emojis,
+  };
 
   const replyTarget =
     note.reply || (note.replyId ? { id: note.replyId } : null);
@@ -20,14 +36,14 @@ function MisskeyNoteBase({ note, origin }: { note: Note; origin: string }) {
     : null;
 
   return (
-    <CustomEmojiCtx.Provider value={contextValue}>
+    <CustomEmojiCtx.Provider value={providerValue}>
       <article
         className={cn(
           "flex items-start gap-3 border-b p-3 transition-colors duration-200 hover:bg-muted/50",
         )}
       >
         <div>
-          <MisskeyNoteHeader user={note.user} />
+          <MisskeyNoteHeader user={note.user} note={note} />
         </div>
         <div className="min-w-0 flex-1">
           {note.renote && (
@@ -136,6 +152,27 @@ const resolveNoteUrl = (
   return `${normalizedOrigin}/notes/${note.id}`;
 };
 
-const MisskeyNote = memo(MisskeyNoteBase, areMisskeyNotePropsEqual);
+const MisskeyNoteDisplay = memo(MisskeyNoteBase);
 
-export { MisskeyNote };
+function MisskeyNoteWithFetch({
+  note,
+  origin,
+}: {
+  note: Note;
+  origin: string;
+}) {
+  const { emojis, contextValue } = useMisskeyNoteEmojis(note, origin);
+
+  return (
+    <MisskeyNoteDisplay
+      note={note}
+      origin={origin}
+      emojis={emojis}
+      contextValue={contextValue}
+    />
+  );
+}
+
+const MisskeyNote = memo(MisskeyNoteWithFetch, areMisskeyNotePropsEqual);
+
+export { MisskeyNote, MisskeyNoteDisplay };

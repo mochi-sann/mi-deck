@@ -101,11 +101,6 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
           }}
           showSuccessMessage={false}
         />
-        {!hasAvailableServer && (
-          <Text affects="small" className="text-muted-foreground">
-            {t("reply.error.noServer")}
-          </Text>
-        )}
       </div>
 
       {successMessage && (
