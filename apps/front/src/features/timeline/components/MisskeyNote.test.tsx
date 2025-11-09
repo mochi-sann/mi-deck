@@ -185,7 +185,7 @@ describe("MisskeyNote", () => {
     // Check avatar
     const avatar = screen.getByTestId("avatar");
     expect(avatar).toBeInTheDocument();
-    expect(avatar).toHaveClass("h-10", "w-10", "bg-slate-900");
+    expect(avatar).toHaveClass("size-10", "bg-slate-900");
 
     const avatarImage = screen.getByTestId("avatar-image");
     expect(avatarImage).toHaveAttribute("src", note.user.avatarUrl);

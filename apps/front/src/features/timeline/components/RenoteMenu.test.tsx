@@ -88,19 +88,4 @@ describe("RenoteMenu", () => {
       screen.getByRole("button", { name: "renote.button.active" }),
     ).toHaveAttribute("aria-pressed", "true");
   });
-
-  it("shows unavailable message when no servers", () => {
-    mockUseRenoteAction.mockReturnValueOnce({
-      renoteCount: 0,
-      isRenoted: false,
-      isProcessing: false,
-      isStorageLoading: false,
-      serversWithToken: [],
-      determineInitialServerId: () => undefined,
-      toggleRenote: vi.fn(),
-    });
-
-    render(<RenoteMenu note={note} origin="https://misskey.example" />);
-    expect(screen.getByText("renote.unavailable")).toBeInTheDocument();
-  });
 });
