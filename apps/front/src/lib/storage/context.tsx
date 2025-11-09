@@ -14,7 +14,7 @@ import type {
   TimelineConfig,
 } from "./types";
 
-interface StorageContextValue {
+export interface StorageContextValue {
   // State
   servers: MisskeyServerConnection[];
   timelines: TimelineConfig[];
@@ -56,7 +56,7 @@ interface StorageContextValue {
   reinitializeStorage: () => Promise<void>;
 }
 
-const StorageContext = createContext<StorageContextValue | null>(null);
+export const StorageContext = createContext<StorageContextValue | null>(null);
 
 interface StorageProviderProps {
   children: ReactNode;

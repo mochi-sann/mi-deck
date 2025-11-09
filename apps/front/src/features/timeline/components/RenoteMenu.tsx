@@ -9,7 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Text from "@/components/ui/text";
 import {
   Tooltip,
   TooltipContent,
@@ -140,12 +139,6 @@ export function RenoteMenu({ note, origin }: RenoteMenuProps) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      {!hasServers ? (
-        <Text affects="small" className="text-muted-foreground">
-          {t("renote.unavailable")}
-        </Text>
-      ) : null}
 
       <NoteComposerDialog
         mode="renote"
