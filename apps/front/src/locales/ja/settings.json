@@ -13,11 +13,41 @@
     "english": "English"
   },
   "theme": {
-    "title": "ダークモード",
-    "description": "アプリの外観をダークテーマに切り替えます",
+    "title": "テーマ",
+    "description": "アプリ全体の配色とモードを切り替えます",
     "light": "ライト",
     "dark": "ダーク",
-    "system": "システム"
+    "system": "システム",
+    "custom": "カスタム",
+    "import": {
+      "title": "Misskeyテーマをインポート",
+      "description": "MisskeyのテーマJSONを読み込んでアプリ全体の配色を変更します。",
+      "placeholder": "MisskeyテーマのJSONをここに貼り付けてください",
+      "button": "JSONを適用",
+      "processing": "適用中...",
+      "upload": "テーマファイルを選択",
+      "clearButton": "カスタムテーマをリセット",
+      "clearTitle": "カスタムテーマをリセットしました",
+      "clearDescription": "標準のテーマ設定に戻りました。",
+      "successTitle": "テーマを適用しました",
+      "successDescription": "{{name}} を適用しました。",
+      "errorTitle": "テーマの読み込みに失敗しました",
+      "current": "現在のカスタムテーマ: {{name}}（{{base}}）",
+      "noTheme": "カスタムテーマは設定されていません。",
+      "base": {
+        "light": "ライト",
+        "dark": "ダーク"
+      },
+      "errors": {
+        "required": "テーマJSONを入力してください。",
+        "invalidJson": "JSONの形式が正しくありません。",
+        "invalidData": "テーマの構造が正しくありません。",
+        "invalidBase": "テーマの\"base\"は\"light\"または\"dark\"である必要があります。",
+        "invalidProps": "テーマに有効な色設定が含まれていません。",
+        "emptyProps": "テーマに有効な色設定が含まれていません。",
+        "unknown": "テーマの適用中に不明なエラーが発生しました。"
+      }
+    }
   },
   "notifications": {
     "title": "通知",

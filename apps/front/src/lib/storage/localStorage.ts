@@ -245,6 +245,7 @@ class LocalStorageManager {
           theme: "system",
           language: "ja",
           lastUpdated: new Date(),
+          customTheme: undefined,
         };
       }
 
@@ -260,6 +261,7 @@ class LocalStorageManager {
         theme: "system",
         language: "ja",
         lastUpdated: new Date(),
+        customTheme: undefined,
       };
     }
   }
@@ -284,6 +286,7 @@ class LocalStorageManager {
         theme: "system",
         language: "ja",
         lastUpdated: new Date(),
+        customTheme: undefined,
         ...currentSettings,
         ...updates,
       };
