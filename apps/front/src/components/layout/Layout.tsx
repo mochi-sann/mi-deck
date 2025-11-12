@@ -19,7 +19,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   // CSS変数を inline style で設定（Tailwind はクラスだけ読めればOK）
   const rootStyle = {
-    ["--sidebar-w" as any]: sidebarValue,
+    "--sidebar-w": sidebarValue,
   } as React.CSSProperties;
 
   return (
