@@ -1,7 +1,6 @@
 import { Pen } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { NewNote } from "@/features/notes";
-import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import {
   Sidebar,
@@ -18,20 +17,12 @@ export const AppSidebarPresenter = () => {
   const { state } = useSidebar(); // useSidebarからstateを取得
 
   return (
-    <Sidebar collapsible="icon" side="left">
-      <SidebarTrigger
-        className={cn(
-          "-translate-y-1/2 absolute top-[calc(var(--sidebar-width-icon)-1.5rem)] z-50 transition-all duration-200 ease-linear",
-          state === "expanded"
-            ? "left-[calc(var(--sidebar-width)-2.5rem)]"
-            : "left-[calc(var(--sidebar-width-icon)-2.5rem)]",
-        )}
-      />
-      <div className="h-12" />
+    <Sidebar collapsible="icon">
       <SidebarContent>
         <NavContent />
       </SidebarContent>
       <SidebarFooter>
+        <SidebarTrigger />
         <NewNote
           trigger={
             <SidebarMenuButton
