@@ -85,24 +85,11 @@ export function SortableTimeline({
   const timelineForSwitch: SwitchTimeLineTypeProps["timeline"] = {
     id: timeline.id,
     name: timeline.name,
-    type: timeline.type.toLowerCase() as
-      | "home"
-      | "local"
-      | "global"
-      | "list"
-      | "list"
-      | "channel",
+    type: timeline.type.toLowerCase() as TimelineConfig["type"],
     server: server,
     serverId: server.id,
     isVisible: timeline.isVisible,
     settings: timeline.settings,
-    // serverSessionId: timeline.serverId,
-    // serverSession: {
-    //   id: server.id,
-    //   origin: server.origin,
-    //   serverToken: server.accessToken || "",
-    //   serverType: "Misskey" as const,
-    // },
     order: timeline.order,
     createdAt: timeline.createdAt,
     updatedAt: timeline.updatedAt,
