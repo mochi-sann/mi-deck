@@ -1,6 +1,7 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import Text from "@/components/ui/text";
 import { useTimeline } from "../hooks/useTimeline";
@@ -61,13 +62,7 @@ export function HomeTimelineContent({
   }
 
   return (
-    <div
-      ref={parentRef}
-      style={{
-        height: "100%",
-        overflow: "auto",
-      }}
-    >
+    <ScrollArea className="h-full overflow-auto" viewportRef={parentRef}>
       <div
         style={{
           height: `${rowVirtualizer.getTotalSize()}px`,
@@ -99,6 +94,6 @@ export function HomeTimelineContent({
           </Text>
         </div>
       )}
-    </div>
+    </ScrollArea>
   );
 }

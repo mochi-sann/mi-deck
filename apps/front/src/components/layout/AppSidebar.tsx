@@ -15,19 +15,19 @@ import { NavContent } from "./Sidebar/nav-content";
 
 export const AppSidebarPresenter = () => {
   const { t } = useTranslation("common");
-  const { state } = useSidebar(); // useSidebarからstateを取得
+  const { state } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon" side="left">
+    <Sidebar collapsible="icon">
       <SidebarTrigger
         className={cn(
           "-translate-y-1/2 absolute top-[calc(var(--sidebar-width-icon)-1.5rem)] z-50 transition-all duration-200 ease-linear",
           state === "expanded"
             ? "left-[calc(var(--sidebar-width)-2.5rem)]"
-            : " left-[calc(var(--sidebar-width-icon)-2.5rem)]",
+            : "left-[calc(var(--sidebar-width-icon)-2.5rem)]",
         )}
       />
-      <div className="h-12 " />
+      <div className="h-8" />
       <SidebarContent>
         <NavContent />
       </SidebarContent>
@@ -36,9 +36,9 @@ export const AppSidebarPresenter = () => {
           trigger={
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground "
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg ">
+              <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarFallback className="rounded-lg">
                   <Pen />
                 </AvatarFallback>
