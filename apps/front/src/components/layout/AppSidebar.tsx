@@ -8,13 +8,11 @@ import {
   SidebarFooter,
   SidebarMenuButton,
   SidebarTrigger,
-  useSidebar,
 } from "../ui/sidebar";
 import { NavContent } from "./Sidebar/nav-content";
 
 export const AppSidebarPresenter = () => {
   const { t } = useTranslation("common");
-  const { state } = useSidebar(); // useSidebarからstateを取得
 
   return (
     <Sidebar collapsible="icon">
