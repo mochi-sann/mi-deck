@@ -1,0 +1,9 @@
+{
+  "title": "Third-Party Licenses",
+  "description": "This application uses the following open-source libraries.",
+  "licenseCount_one": "{{count}} package",
+  "licenseCount_other": "{{count}} packages",
+  "version": "Version: {{version}}",
+  "author": "Author: {{author}}",
+  "homepage": "Homepage"
+}
