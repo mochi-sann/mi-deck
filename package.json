@@ -23,7 +23,7 @@
     "node":">=25",
     "npm": "please_use_pnpm_instead"
   },
-  "packageManager": "pnpm@10.9.0",
+  "packageManager": "pnpm@10.20.0",
   "keywords": [],
   "author": "",
   "license": "",
