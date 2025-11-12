@@ -81,8 +81,9 @@ describe("useRegister", () => {
       result.current.mutate(registerCredentials);
     });
 
-    await waitFor(() =>
-      expect(config.registerFn).toHaveBeenCalledWith(registerCredentials),
+    await waitFor(() => expect(config.registerFn).toHaveBeenCalled());
+    expect(config.registerFn.mock.calls.at(0)?.at(0)).toEqual(
+      registerCredentials,
     );
     expect(result.current.data).toEqual(user);
   });
@@ -103,9 +104,8 @@ describe("useLogin", () => {
       result.current.mutate(loginCredentials);
     });
 
-    await waitFor(() =>
-      expect(config.loginFn).toHaveBeenCalledWith(loginCredentials),
-    );
+    await waitFor(() => expect(config.loginFn).toHaveBeenCalled());
+    expect(config.loginFn.mock.calls.at(0)?.at(0)).toEqual(loginCredentials);
     expect(result.current.data).toEqual(user);
   });
 });
