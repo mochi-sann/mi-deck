@@ -16,7 +16,7 @@ const Navbar01Page = () => {
 
   return (
     <div className="">
-      <nav className=" border-b bg-background">
+      <nav className="border-b bg-background">
         <div className="mx-auto flex items-center justify-between px-2 py-1">
           <Button variant={"outline"} size={"icon-sm"} onClick={clicked}>
             <Menu />

@@ -1,296 +1,161 @@
 # @mi-deck/react-mfm
 
-A React component library for rendering MFM (Markup For Misskey) text with TypeScript support.
+Misskey Flavored Markdown (MFM) を React で描画するためのコンポーネント群です。`mfm-js` をベースに、コードブロックや数式のハイライト、カスタム絵文字の描画、MFM 関数のアニメーションなど Misskey で一般的な表現をそのまま再現できます。
 
-This is a fork of [react-mfm](https://github.com/yamader/react-mfm) enhanced with additional features for mi-deck.
+## 特徴
 
-## Features
+- MFM の通常構文と `$[...]` 関数構文を `mfm-js` で解釈して React コンポーネントに変換
+- Shiki と KaTeX を動的読み込みし、コードブロックと数式を即時にレンダリング
+- `CustomEmoji` / `Link` / `Mention` / `Hashtag` を Jotai ベースの設定で差し替え可能
+- `@mi-deck/react-mfm/style.css` で提供するスタイルと CSS カスタムプロパティを用いたテーマ調整
+- React 19 以降のクライアントコンポーネントとしてそのまま利用可能な ESM パッケージ
 
-- 🚀 **ESM Support**: Built as ESM module with TypeScript definitions
-- 🎨 **Rich MFM Rendering**: Support for all MFM syntax including animations, formatting, and functions
-- 🔧 **Configurable Components**: Customize rendering with your own components
-- 💾 **Emoji Caching**: Built-in IndexedDB caching for custom emojis
-- 🧪 **Well Tested**: Comprehensive test suite with Vitest
-- ⚡ **Performance**: Optimized with code splitting and tree shaking
-- 🎯 **Type Safe**: Full TypeScript support with strict typing
-
-## Installation
+## インストール
 
 ```bash
-npm install @mi-deck/react-mfm
-# or
 pnpm add @mi-deck/react-mfm
-# or
-yarn add @mi-deck/react-mfm
 ```
 
-## Usage
+必要に応じて KaTeX のスタイルシートも一度だけ読み込んでください。
 
-### Basic Usage
-
-```tsx
-import { Provider } from 'jotai';
-import Mfm from '@mi-deck/react-mfm';
-import '@mi-deck/react-mfm/style.css';
-import 'katex/dist/katex.min.css'; // Required for math formulas
-
-const text = `
-<center>
-  **Hello, world!** 🌍
-  
-  $[spin 回転するテキスト]
-  
-  \`\`\`javascript
-  console.log('Code block support');
-  \`\`\`
-</center>
-`.trim();
-
-export default function App() {
-  return (
-    <Provider>
-      <Mfm text={text} />
-    </Provider>
-  );
-}
+```ts
+import "katex/dist/katex.min.css";
 ```
 
-### With Custom Emojis
+## クイックスタート
 
 ```tsx
-import Mfm from '@mi-deck/react-mfm';
+import { Provider } from "jotai";
+import { Mfm } from "@mi-deck/react-mfm";
+import "@mi-deck/react-mfm/style.css";
 
-const emojis = {
-  custom_emoji: 'https://example.com/emoji.png'
-};
-
-export default function Example() {
+export function App() {
   return (
     <Provider>
-      <Mfm 
-        text="Hello :custom_emoji: world!" 
-        emojis={emojis}
-        host="example.com"
+      <Mfm
+        text="$[tada **こんにちは**] 🎉"
+        emojis={{ party: "https://example.com/party.webp" }}
       />
     </Provider>
   );
 }
 ```
 
-### Plain Mode
+Jotai `Provider` を利用しない場合でもデフォルトストアで動作しますが、アプリ全体で設定を共有する場合は `Provider` でラップしてください。
+
+## コンポーネント
+
+### `<Mfm />`
+
+| プロパティ | 型 | 既定値 | 説明 |
+| --- | --- | --- | --- |
+| `text` | `string` | 必須 | 解析対象となる MFM 文字列 |
+| `plain` | `boolean` | `false` | `true` の場合は解析せずテキストをそのまま描画 |
+| `host` | `string` | `undefined` | カスタム絵文字取得時のホスト情報 (カスタム実装向け) |
+| `emojis` | `Record<string, string>` | `undefined` | 絵文字名と画像 URL のマップ |
+
+> `nowrap` / `nyaize` プロパティは将来の機能追加に向けたプレースホルダーです。現時点では限定的な動作のみ提供されます。
+
+### `<MfmSimple />`
+
+`Mfm` と同じ API で `parseSimple` を使用する軽量版です。Misskey クライアントの「シンプル表示」と同じ挙動を再現したい場合に利用してください。
+
+## Provider 設定
+
+`@mi-deck/react-mfm` は内部で Jotai を用いて構成を共有します。`Provider` をルートに置くことで、ツリー全体で同じ設定を参照できます。
 
 ```tsx
-import Mfm from '@mi-deck/react-mfm';
-
-// Renders as plain text without MFM parsing
-export default function PlainExample() {
-  return (
-    <Provider>
-      <Mfm text="**This won't be bold**" plain />
-    </Provider>
-  );
-}
-```
-
-### Simple MFM
-
-```tsx
-import { MfmSimple } from '@mi-deck/react-mfm';
-
-// Uses parseSimple for basic formatting only
-export default function SimpleExample() {
-  return (
-    <Provider>
-      <MfmSimple text="Simple MFM rendering" />
-    </Provider>
-  );
-}
-```
-
-## Configuration
-
-### Custom Components
-
-You can customize how MFM elements are rendered:
-
-```tsx
-import { Provider } from 'jotai';
-import Mfm, { mfmConfigAtom } from '@mi-deck/react-mfm';
-
-const CustomHashtag = ({ hashtag }: { hashtag: string }) => (
-  <a href={`/tags/${hashtag}`} className="custom-hashtag">
-    #{hashtag}
-  </a>
-);
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { Provider, createStore } from "jotai";
+import {
+  Mfm,
+  mfmConfigAtom,
+} from "@mi-deck/react-mfm";
 
 const store = createStore();
 store.set(mfmConfigAtom, {
-  Hashtag: CustomHashtag,
-  advanced: true,
-  animation: true
+  animation: false,
 });
 
-export default function CustomExample() {
-  return (
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
     <Provider store={store}>
-      <Mfm text="#customized hashtag rendering" />
+      <Mfm text="$[tada **設定済み**]" />
     </Provider>
-  );
-}
+  </StrictMode>,
+);
 ```
 
-### Available Configuration Options
+- `Provider` を省略した場合は内部でデフォルトストアが生成され、単一コンポーネントでの利用には十分です。
+- カスタムストアを使うと、`mfmConfigAtom` に初期値を設定したり、他の Jotai アトムと組み合わせて状態を同期できます。
 
-```typescript
-export type MfmConfig = Partial<{
-  // MFM features
-  advanced: boolean;     // Enable advanced features (default: true)
-  animation: boolean;    // Enable animations (default: true)
+## 設定 (MfmConfig)
 
-  // Custom components
-  CustomEmoji: FC<CustomEmojiProps>;
-  Hashtag: FC<HashtagProps>;
-  Link: FC<LinkProps>;
-  Mention: FC<MentionProps>;
-}>;
-```
-
-## API Reference
-
-### Main Components
-
-#### `Mfm`
-
-The main MFM rendering component with full feature support.
-
-```typescript
-interface MfmProps {
-  text: string;                                    // MFM text to render
-  plain?: boolean;                                // Render as plain text
-  nowrap?: boolean;                              // Disable line wrapping
-  nyaize?: boolean | "respect";                  // Enable nyaize transformation
-  host?: string;                                 // Host for emoji resolution
-  emojis?: { [key: string]: string };           // Custom emoji mapping
-}
-```
-
-#### `MfmSimple`
-
-Simplified MFM rendering for basic formatting only.
-
-```typescript
-// Same props as Mfm but uses parseSimple internally
-```
-
-### Hooks
-
-#### `useMfmConfig()` / `useMfmConfigValue()`
-
-Access and modify MFM configuration:
+`useMfmConfig` / `useMfmConfigValue` で描画設定とカスタムコンポーネントをアプリから注入できます。
 
 ```tsx
-import { useMfmConfig, useMfmConfigValue } from '@mi-deck/react-mfm';
+import { useEffect } from "react";
+import { useMfmConfig, Mfm } from "@mi-deck/react-mfm";
 
-function MyComponent() {
-  const [config, setConfig] = useMfmConfig();
-  const configValue = useMfmConfigValue();
-  
-  // Update configuration
-  setConfig({ animation: false });
+const ExternalLink = (props: React.ComponentProps<"a">) => (
+  <a {...props} className="underline decoration-dotted" target="_blank" />
+);
+
+export function TimelineItem({ body }: { body: string }) {
+  const [, setConfig] = useMfmConfig();
+
+  useEffect(() => {
+    setConfig((config) => ({
+      ...config,
+      animation: false,
+      Link: ExternalLink,
+    }));
+  }, [setConfig]);
+
+  return <Mfm text={body} />;
 }
 ```
 
-## Development
+設定で利用できる主なキーは次の通りです。
 
-### Scripts
+| キー | 型 | 既定値 | 用途 |
+| --- | --- | --- | --- |
+| `advanced` | `boolean` | `true` | `$[position]` など高度な MFM 関数を有効化 |
+| `animation` | `boolean` | `true` | スピンやレインボーなどアニメーション効果の有効／無効 |
+| `CustomEmoji` | `FC<CustomEmojiProps>` | 内蔵実装 | カスタム絵文字描画の差し替え |
+| `Hashtag` | `FC<HashtagProps>` | 内蔵実装 | ハッシュタグリンクの差し替え |
+| `Link` | `FC<LinkProps>` | 内蔵実装 | URL / `$[link]` の描画差し替え |
+| `Mention` | `FC<MentionProps>` | 内蔵実装 | メンションリンクの差し替え |
 
-```bash
-# Development
-pnpm dev          # Watch mode compilation
-pnpm build        # Production build
-pnpm check        # TypeScript type checking
+カスタム絵文字実装では `CustomEmojiCtx` を利用することで `host` や `emojis` の情報を参照できます。
 
-# Testing
-pnpm test         # Run tests
-pnpm test:watch   # Watch mode testing
-pnpm test:coverage # Test with coverage report
+## スタイルとテーマ
+
+`@mi-deck/react-mfm/style.css` は MFM 向けの最低限のスタイルとアニメーションを提供します。アプリ固有のデザインに合わせたい場合は CSS カスタムプロパティを上書きしてください。
+
+```css
+:root {
+  --mfm-link: var(--color-primary);
+  --mfm-codeBg: #1b1b1d;
+  --mfm-codeFg: #f3f4f6;
+  --mfm-border: color-mix(in srgb, var(--color-primary) 30%, black);
+}
 ```
 
-### Project Structure
+Shiki と KaTeX が動的に HTML を生成するため、適切な CSS リセットやダークモード対応を行いたい場合はラッパー要素ごとにクラスを付与して制御すると安全です。
 
-```
-src/
-├── components/          # MFM element components
-│   ├── Code.tsx        # Code block rendering
-│   ├── CustomEmoji.tsx # Custom emoji handling
-│   ├── Emoji.tsx       # Unicode emoji (Twemoji)
-│   ├── Fn.tsx          # MFM functions ($[...])
-│   ├── Formula.tsx     # Math formulas (KaTeX)
-│   ├── Hashtag.tsx     # Hashtag links
-│   ├── Link.tsx        # URL links
-│   ├── Mention.tsx     # User mentions
-│   ├── Search.tsx      # Search syntax
-│   └── Sparkle.tsx     # Sparkle animation
-├── database/           # Emoji caching
-├── models/            # TypeScript types
-├── test/             # Test setup
-├── types/           # Type declarations
-├── index.tsx       # Main exports
-├── Node.tsx       # MFM node renderer
-├── style.css     # Component styles
-└── utils.ts     # Utility functions
-```
+## 開発・テスト
 
-## Dependencies
+ワークスペース直下で次のコマンドを利用できます。
 
-### Runtime Dependencies
+- `pnpm -F @mi-deck/react-mfm build` — ライブラリのビルド (tsup)
+- `pnpm -F @mi-deck/react-mfm test` — Vitest による単体テスト
+- `pnpm -F @mi-deck/react-mfm dev` — tsup のウォッチモード
 
-- `@twemoji/api` - Twemoji emoji rendering
-- `dexie` - IndexedDB wrapper for emoji caching
-- `jotai` - State management
-- `katex` - Math formula rendering
-- `mfm-js` - MFM parsing library
-- `shiki` - Syntax highlighting
+## 制限事項
 
-### Peer Dependencies
+- すべてのコンポーネントはクライアントサイド専用 (`"use client"`) です。SSR 環境では `next/dynamic` 等でクライアントレンダリングに切り替えてください。
+- `nyaize` 機能はまだ実装途上です。
 
-- `react` >= 19.0.0
-
-## Requirements
-
-- React 19.0.0 or later
-- Node.js 18+ for development
-- Modern browser with ES2022 support
-
-## License
-
-This project maintains the same license as the original react-mfm.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes with tests
-4. Run `pnpm test` and `pnpm check`
-5. Submit a pull request
-
-## Notes
-
-- This package is built as ESM only
-- Requires Jotai Provider for state management
-- Custom emoji caching uses IndexedDB
-- Math formulas require KaTeX CSS to be imported
-- Some animations may require CSS support for transforms
-
-## Migration from react-mfm
-
-This package includes several enhancements:
-
-- ✅ ESM-first architecture
-- ✅ Enhanced TypeScript support
-- ✅ Built-in emoji caching
-- ✅ Improved test coverage
-- ✅ Better component configurability
-- ✅ Modern build tooling (tsup)
-
-Most APIs remain compatible with the original react-mfm.
+フィードバックや改善案があれば Issue / PR でお知らせください。

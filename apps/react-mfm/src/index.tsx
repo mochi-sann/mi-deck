@@ -15,7 +15,7 @@ import Node from "./Node";
 export type MfmBasicProps = {
   plain?: boolean;
   nowrap?: boolean;
-  nyaize?: boolean | "respect";
+  nyaize?: boolean;
   host?: string;
   emojis?: { [key: string]: string } | undefined;
 };

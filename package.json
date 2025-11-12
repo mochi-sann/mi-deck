@@ -20,24 +20,21 @@
   },
   "engines": {
     "pnpm": "10",
-    "node": ">=22",
+    "node": ">=25",
     "npm": "please_use_pnpm_instead"
   },
-  "packageManager": "pnpm@10.9.0",
+  "packageManager": "pnpm@10.20.0",
   "keywords": [],
   "author": "",
   "license": "",
   "devDependencies": {
-    "@biomejs/biome": "2.0.6",
-    "@playwright/test": "^1.55.0",
-    "@types/node": "^24.3.1",
+    "@biomejs/biome": "2.3.5",
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^24.10.1",
     "dotenv": "^16.6.1",
     "execa": "^9.6.0",
-    "lefthook": "^1.12.4",
-    "turbo": "^2.5.6",
-    "typescript": "^5.9.2"
-  },
-  "volta": {
-    "node": "22.15.0"
+    "lefthook": "^1.13.6",
+    "turbo": "^2.6.1",
+    "typescript": "^5.9.3"
   }
 }

@@ -1,4 +1,5 @@
 import "@testing-library/jest-dom/vitest";
+import "./polyfills/local-storage";
 import type { Note } from "misskey-js/entities.js";
 import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/node";
@@ -7,6 +8,45 @@ import type { components } from "@/lib/api/type";
 
 // Setup fake IndexedDB for testing
 import "fake-indexeddb/auto";
+
+// Polyfill localStorage/sessionStorage for Node test environment
+const createStorage = () => {
+  const store = new Map<string, string>();
+  return {
+    getItem(key: string) {
+      return store.has(key) ? (store.get(key) ?? null) : null;
+    },
+    setItem(key: string, value: string) {
+      store.set(key, value);
+    },
+    removeItem(key: string) {
+      store.delete(key);
+    },
+    clear() {
+      store.clear();
+    },
+    key(index: number) {
+      return Array.from(store.keys())[index] ?? null;
+    },
+    get length() {
+      return store.size;
+    },
+  };
+};
+
+if (typeof globalThis.localStorage === "undefined") {
+  Object.defineProperty(globalThis, "localStorage", {
+    value: createStorage(),
+    configurable: true,
+  });
+}
+
+if (typeof globalThis.sessionStorage === "undefined") {
+  Object.defineProperty(globalThis, "sessionStorage", {
+    value: createStorage(),
+    configurable: true,
+  });
+}
 
 // Define mock data type based on your schema
 type TimelineEntityType =

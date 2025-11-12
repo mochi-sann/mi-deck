@@ -18,9 +18,9 @@ export function ReactionHoverContent({
   reactionsRaw,
   emojiSize = "sm",
 }: ReactionHoverContentProps) {
-  const filtered = Array.isArray(reactionsRaw)
-    ? reactionsRaw.filter((r: any) => r?.type === reaction)
-    : [];
+  const filtered = reactionsRaw.filter((reactionEntry) => {
+    return reactionEntry.reaction === reaction;
+  });
 
   return (
     <div className="flex items-baseline gap-2">
@@ -34,11 +34,18 @@ export function ReactionHoverContent({
         />
       </div>
       <div className="border-l pl-2">
-        {filtered.map((value: any) => (
-          <div key={value.id} className="border-b p-1 last:border-0">
-            {value?.user?.name}
-          </div>
-        ))}
+        {filtered.map((value) => {
+          const displayName =
+            value.user?.name ??
+            value.user?.username ??
+            value.user?.id ??
+            value.id;
+          return (
+            <div key={value.id} className="border-b p-1 last:border-0">
+              {displayName}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

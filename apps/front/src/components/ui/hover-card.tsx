@@ -3,6 +3,12 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+type HoverCardContentProps = React.ComponentProps<
+  typeof HoverCardPrimitive.Content
+> & {
+  className?: string;
+};
+
 function HoverCard({
   ...props
 }: React.ComponentProps<typeof HoverCardPrimitive.Root>) {
@@ -22,7 +28,7 @@ function HoverCardContent({
   align = "center",
   sideOffset = 4,
   ...props
-}: React.ComponentProps<typeof HoverCardPrimitive.Content>) {
+}: HoverCardContentProps) {
   return (
     <HoverCardPrimitive.Portal data-slot="hover-card-portal">
       <HoverCardPrimitive.Content

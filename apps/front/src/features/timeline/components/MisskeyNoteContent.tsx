@@ -1,12 +1,15 @@
 import type { Note } from "misskey-js/entities.js";
-import { memo, useMemo } from "react";
+import { isPureRenote } from "misskey-js/note.js";
+import { memo } from "react";
 import { CustomEmojiCtx } from "@/features/emoji";
 import { MfmText } from "@/features/mfm";
+import { NoteReplySection } from "@/features/notes/components/NoteReplySection";
 import { ReactionButton } from "@/features/reactions/components/ReactionButton";
 import { cn } from "@/lib/utils";
 import { NoteReactions } from "../../reactions/components/NoteReactions";
-import { useNoteEmojis } from "../../reactions/hooks/useNoteEmojis";
+import { useMisskeyNoteEmojis } from "../hooks/useMisskeyNoteEmojis";
 import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
+import { RenoteMenu } from "./RenoteMenu";
 
 interface MisskeyNoteContentProps {
   note: Note;
@@ -40,6 +43,7 @@ function MisskeyNoteContentBase({
   depth = 0,
 }: MisskeyNoteContentProps) {
   const user = note.user;
+  const isRenote = isPureRenote(note);
   return (
     <div className="flex w-full min-w-0 flex-col gap-1">
       <div className="flex items-center gap-2">
@@ -82,9 +86,13 @@ function MisskeyNoteContentBase({
           origin={origin}
           emojis={note.reactionEmojis}
         />
-        <div className="flex items-center gap-2 pt-1">
-          <ReactionButton note={note} origin={origin} emojis={emojis} />
-        </div>
+        {isRenote ? null : (
+          <div className="flex items-center gap-2 pt-1">
+            <ReactionButton note={note} origin={origin} emojis={emojis} />
+            <RenoteMenu note={note} origin={origin} />
+            <NoteReplySection note={note} origin={origin} />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -103,15 +111,7 @@ function RenotePreview({
   origin: string;
   depth: number;
 }) {
-  const host = origin || "";
-  const { allEmojis } = useNoteEmojis(renote, origin);
-  const contextValue = useMemo(
-    () => ({
-      host,
-      emojis: allEmojis,
-    }),
-    [host, allEmojis],
-  );
+  const { emojis, contextValue } = useMisskeyNoteEmojis(renote, origin);
 
   if (depth > MAX_RENOTE_PREVIEW_DEPTH) {
     const noteUrl = resolveNoteUrl(renote, origin);
@@ -135,11 +135,11 @@ function RenotePreview({
     <CustomEmojiCtx.Provider value={contextValue}>
       <div className="mt-2 rounded-md border bg-muted/40 p-3">
         <div className="flex items-start gap-2">
-          <MisskeyNoteHeader user={renote.user} />
+          <MisskeyNoteHeader user={renote.user} note={renote} />
           <MisskeyNoteContent
             note={renote}
             origin={origin}
-            emojis={allEmojis}
+            emojis={emojis}
             depth={depth}
           />
         </div>

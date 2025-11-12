@@ -1,19 +1,46 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import type { Note } from "misskey-js/entities.js";
+import { Note } from "misskey-js/built/entities";
 import { HttpResponse, http } from "msw";
-import { MisskeyNote } from "./MisskeyNote";
+import type { CustomEmojiContext } from "@/types/emoji";
+import { MisskeyNoteDisplay } from "./MisskeyNote";
 
 const meta = {
   title: "Parts/MisskeyNote",
-  component: MisskeyNote,
+  component: MisskeyNoteDisplay,
   parameters: {
     layout: "padded",
   },
   tags: ["autodocs"],
-} satisfies Meta<typeof MisskeyNote>;
+  // decorators: [withStoryProviders],
+} satisfies Meta<typeof MisskeyNoteDisplay>;
 
 export default meta;
-type Story = StoryObj<typeof MisskeyNote>;
+type Story = StoryObj<typeof MisskeyNoteDisplay>;
+
+const storyOrigin = "local-misskey.local";
+
+const buildEmojiArgs = (note: Note, origin = storyOrigin) => {
+  const mergedEmojis: Record<string, string> = {
+    ...(note.emojis ?? {}),
+    ...(note.user?.emojis ?? {}),
+  };
+
+  const contextValue: CustomEmojiContext = {
+    host: origin,
+    emojis: mergedEmojis,
+  };
+
+  return {
+    origin,
+    emojis: mergedEmojis,
+    contextValue,
+  };
+};
+
+const buildStoryArgs = (note: Note, origin = storyOrigin) => ({
+  note,
+  ...buildEmojiArgs(note, origin),
+});
 
 // 基本的なノート
 const basicNote: Note = {
@@ -164,6 +191,56 @@ const noteWithoutAvatar: Note = {
   },
 };
 
+const renoteSample: Note = {
+  ...basicNote,
+  id: "note-renote",
+  text: null,
+  renoteId: "note-original-renote",
+  renote: {
+    ...basicNote,
+    id: "note-original-renote",
+    text: "こちらがリノート元の投稿です。画像や詳細もここに入ります。",
+    user: {
+      ...basicNote.user,
+      id: "user-2",
+      username: "sourceuser",
+      name: "元ノート投稿者",
+    },
+    files: noteWithImage.files,
+  },
+  user: {
+    ...basicNote.user,
+    id: "user-3",
+    username: "renoter",
+    name: "リノートした人",
+  },
+};
+// リノート例
+const quateRenoteSample: Note = {
+  ...basicNote,
+  id: "note-renote",
+  text: "引用元への短いコメントと一緒にリノートしました。",
+  renoteId: "note-original-renote",
+  renote: {
+    ...basicNote,
+    id: "note-original-renote",
+    text: "こちらがリノート元の投稿です。画像や詳細もここに入ります。",
+    user: {
+      ...basicNote.user,
+      id: "user-2",
+      username: "sourceuser",
+      name: "元ノート投稿者",
+    },
+    files: noteWithImage.files,
+  },
+  user: {
+    ...basicNote.user,
+    id: "user-3",
+    username: "renoter",
+    name: "リノートした人",
+  },
+};
+
 // MSWのハンドラーを設定
 const handlers = [
   http.get("https://example.com/api/notes/:id", ({ params }) => {
@@ -174,15 +251,14 @@ const handlers = [
       "note-3": noteWithMultipleImages,
       "note-4": longNote,
       "note-5": noteWithoutAvatar,
+      "note-renote": quateRenoteSample,
     };
     return HttpResponse.json(notes[id as keyof typeof notes]);
   }),
 ];
 
 export const Basic: Story = {
-  args: {
-    note: basicNote,
-  },
+  args: buildStoryArgs(basicNote),
   parameters: {
     msw: {
       handlers,
@@ -191,9 +267,7 @@ export const Basic: Story = {
 };
 
 export const WithImage: Story = {
-  args: {
-    note: noteWithImage,
-  },
+  args: buildStoryArgs(noteWithImage),
   parameters: {
     msw: {
       handlers,
@@ -202,9 +276,7 @@ export const WithImage: Story = {
 };
 
 export const WithMultipleImages: Story = {
-  args: {
-    note: noteWithMultipleImages,
-  },
+  args: buildStoryArgs(noteWithMultipleImages),
   parameters: {
     msw: {
       handlers,
@@ -213,9 +285,7 @@ export const WithMultipleImages: Story = {
 };
 
 export const LongText: Story = {
-  args: {
-    note: longNote,
-  },
+  args: buildStoryArgs(longNote),
   parameters: {
     msw: {
       handlers,
@@ -224,9 +294,24 @@ export const LongText: Story = {
 };
 
 export const WithoutAvatar: Story = {
-  args: {
-    note: noteWithoutAvatar,
+  args: buildStoryArgs(noteWithoutAvatar),
+  parameters: {
+    msw: {
+      handlers,
+    },
   },
+};
+
+export const Renote: Story = {
+  args: buildStoryArgs(renoteSample),
+  parameters: {
+    msw: {
+      handlers,
+    },
+  },
+};
+export const QueteRenote: Story = {
+  args: buildStoryArgs(quateRenoteSample),
   parameters: {
     msw: {
       handlers,
@@ -234,13 +319,11 @@ export const WithoutAvatar: Story = {
   },
 };
 export const SearchText: Story = {
-  args: {
-    note: {
-      ...basicNote,
-      id: "note-4",
-      text: "ほげ 検索",
-    },
-  },
+  args: buildStoryArgs({
+    ...basicNote,
+    id: "note-4",
+    text: "ほげ 検索",
+  }),
   parameters: {
     msw: {
       handlers,
@@ -250,15 +333,13 @@ export const SearchText: Story = {
 
 // Text Wrapping Examples
 export const LongEnglishText: Story = {
-  args: {
-    note: {
-      ...basicNote,
-      id: "note-long-english",
-      text:
-        "VeryLongWordWithoutSpaces".repeat(15) +
-        " This demonstrates how English text is wrapped without aggressive breaking to maintain readability.",
-    },
-  },
+  args: buildStoryArgs({
+    ...basicNote,
+    id: "note-long-english",
+    text:
+      "VeryLongWordWithoutSpaces".repeat(15) +
+      " This demonstrates how English text is wrapped without aggressive breaking to maintain readability.",
+  }),
   parameters: {
     layout: "fullscreen",
     docs: {
@@ -274,18 +355,16 @@ export const LongEnglishText: Story = {
 };
 
 export const LongJapaneseText: Story = {
-  args: {
-    note: {
-      ...basicNote,
-      id: "note-long-japanese",
-      text:
-        "これは日本語の長いテキストの例です。" +
-        "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん。".repeat(
-          8,
-        ) +
-        "日本語では積極的な文字分割により横スクロールを防止します。",
-    },
-  },
+  args: buildStoryArgs({
+    ...basicNote,
+    id: "note-long-japanese",
+    text:
+      "これは日本語の長いテキストの例です。" +
+      "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん。".repeat(
+        8,
+      ) +
+      "日本語では積極的な文字分割により横スクロールを防止します。",
+  }),
   parameters: {
     layout: "fullscreen",
     docs: {
@@ -301,13 +380,11 @@ export const LongJapaneseText: Story = {
 };
 
 export const MixedLanguageWithLongUrl: Story = {
-  args: {
-    note: {
-      ...basicNote,
-      id: "note-mixed-url",
-      text: "さくらインターネット株式会社の最新ニュースリリース https://www.sakura.ad.jp/corporate/information/newsreleases/2025/07/28/1968220370/ についての詳しい情報です。この長いURLを含むテキストでも適切に折り返し処理が行われます。",
-    },
-  },
+  args: buildStoryArgs({
+    ...basicNote,
+    id: "note-mixed-url",
+    text: "さくらインターネット株式会社の最新ニュースリリース https://www.sakura.ad.jp/corporate/information/newsreleases/2025/07/28/1968220370/ についての詳しい情報です。この長いURLを含むテキストでも適切に折り返し処理が行われます。",
+  }),
   parameters: {
     layout: "fullscreen",
     docs: {
@@ -323,13 +400,11 @@ export const MixedLanguageWithLongUrl: Story = {
 };
 
 export const EnglishWithLongUrl: Story = {
-  args: {
-    note: {
-      ...basicNote,
-      id: "note-english-url",
-      text: "Please visit our comprehensive documentation website at https://example.com/very/long/documentation/path/that/might/cause/horizontal/scrolling/issues/in/timeline/components/if/not/handled/properly/index.html for detailed information about our platform features and API usage guidelines.",
-    },
-  },
+  args: buildStoryArgs({
+    ...basicNote,
+    id: "note-english-url",
+    text: "Please visit our comprehensive documentation website at https://example.com/very/long/documentation/path/that/might/cause/horizontal/scrolling/issues/in/timeline/components/if/not/handled/properly/index.html for detailed information about our platform features and API usage guidelines.",
+  }),
   parameters: {
     layout: "fullscreen",
     docs: {
@@ -345,13 +420,11 @@ export const EnglishWithLongUrl: Story = {
 };
 
 export const TimelineWrappingDemo: Story = {
-  args: {
-    note: {
-      ...basicNote,
-      id: "note-timeline-demo",
-      text: "タイムライン表示での文字折り返しのデモ。非常に長い単語やURLが含まれていても横スクロールが発生しないように最適化されています。 https://example.com/extremely/long/url/path/that/could/potentially/cause/layout/issues ここに日本語テキストが続きます。",
-    },
-  },
+  args: buildStoryArgs({
+    ...basicNote,
+    id: "note-timeline-demo",
+    text: "タイムライン表示での文字折り返しのデモ。非常に長い単語やURLが含まれていても横スクロールが発生しないように最適化されています。 https://example.com/extremely/long/url/path/that/could/potentially/cause/layout/issues ここに日本語テキストが続きます。",
+  }),
   parameters: {
     layout: "padded",
     docs: {

@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [22]
+        node-version: [25]
     permissions:
       contents: read
     steps:
@@ -19,9 +19,9 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10.9.0
+          version: 10.20.0
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: "pnpm"
@@ -30,7 +30,7 @@ jobs:
       - name: Build
         run: pnpm run build --filter=@mi-deck/front
       - name: Upload stats.json
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: head-stats
           path: ./apps/front/dist/stats.json
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [22]
+        node-version: [25]
     permissions:
       contents: read
     steps:
@@ -50,9 +50,9 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10.9.0
+          version: 10.20.0
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: "pnpm"
@@ -61,7 +61,7 @@ jobs:
       - name: Build
         run: pnpm run build --filter=@mi-deck/front
       - name: Upload stats.json
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: base-stats
           path: ./apps/front/dist/stats.json

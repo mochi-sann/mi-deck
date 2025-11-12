@@ -53,6 +53,33 @@ vi.mock("@/features/reactions/components/NoteReactions", () => ({
   NoteReactions: () => <div data-testid="note-reactions" />,
 }));
 
+vi.mock("./RenoteMenu", () => ({
+  // biome-ignore lint/style/useNamingConvention: テストで必須
+  RenoteMenu: () => <div data-testid="renote-menu" />,
+}));
+
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+  }),
+}));
+
+vi.mock("@/features/notes/components/NoteReplySection", () => ({
+  // biome-ignore lint/style/useNamingConvention: testing mock
+  NoteReplySection: () => <div data-testid="note-reply-section" />,
+}));
+vi.mock("@/features/notes/actions/useRenoteAction", () => ({
+  useRenoteAction: () => ({
+    renoteCount: 0,
+    isRenoted: false,
+    isProcessing: false,
+    canRenote: false,
+    isStorageLoading: false,
+    serversWithToken: [],
+    determineInitialServerId: () => undefined,
+    toggleRenote: vi.fn(),
+  }),
+}));
 vi.mock("@/lib/utils/emoji-proxy", () => ({
   // biome-ignore lint/suspicious/noExplicitAny: テストで必須
   createProxiedEmojis: (emojis: any, host: string) => {
@@ -123,6 +150,21 @@ const createMockNote = (overrides: Partial<Note> = {}): Note =>
   }) as Note;
 
 describe("MisskeyNote", () => {
+  it("should show reply badge when note is a reply", () => {
+    const note = createMockNote({
+      replyId: "parent-note",
+    });
+    const origin = "misskey.example.com";
+
+    render(<MisskeyNote note={note} origin={origin} />);
+
+    const link = screen.getByRole("link", { name: "reply.badge" });
+    expect(link).toHaveAttribute(
+      "href",
+      "https://misskey.example.com/notes/parent-note",
+    );
+  });
+
   it("should render note with basic content", () => {
     const note = createMockNote();
     const origin = "misskey.example.com";
@@ -143,7 +185,7 @@ describe("MisskeyNote", () => {
     // Check avatar
     const avatar = screen.getByTestId("avatar");
     expect(avatar).toBeInTheDocument();
-    expect(avatar).toHaveClass("h-10", "w-10", "bg-slate-900");
+    expect(avatar).toHaveClass("size-10", "bg-slate-500");
 
     const avatarImage = screen.getByTestId("avatar-image");
     expect(avatarImage).toHaveAttribute("src", note.user.avatarUrl);
@@ -152,6 +194,30 @@ describe("MisskeyNote", () => {
     const usernameElement = screen.getByText("@testuser");
     expect(usernameElement).toBeInTheDocument();
     expect(usernameElement).toHaveClass("text-muted-foreground");
+  });
+
+  it("should render smaller avatar for pure renotes", () => {
+    const renoteTarget = createMockNote({
+      id: "origin-note",
+      text: "Original note text",
+    });
+    const note = createMockNote({
+      text: null,
+      renoteId: renoteTarget.id,
+      renote: renoteTarget,
+      replyId: null,
+      cw: null,
+      fileIds: [],
+      poll: null,
+    });
+    const origin = "misskey.example.com";
+
+    render(<MisskeyNote note={note} origin={origin} />);
+
+    const avatars = screen.getAllByTestId("avatar");
+    expect(avatars[0]).toHaveClass("size-5");
+    expect(avatars[0]).not.toHaveClass("size-10");
+    expect(avatars[1]).toHaveClass("size-10");
   });
 
   it("should combine and proxy emoji URLs", () => {

@@ -53,15 +53,6 @@ export function useNoteEmojis(note: Note, origin: string) {
       user.username || "",
       `:${reactionsEmojirs.map((value) => value[1]).join("::")}:` || "",
     ];
-    console.log(
-      ...[textsToCheck, "👀 [useNoteEmojis.ts:57]: textsToCheck"].reverse(),
-    );
-    console.log(
-      ...[
-        reactionsEmojirs,
-        "👀 [useNoteEmojis.ts:60]: reactionsEmojirs",
-      ].reverse(),
-    );
 
     const allEmojiNames = new Set<string>();
     for (const text of textsToCheck) {
