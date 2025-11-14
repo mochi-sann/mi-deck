@@ -26,6 +26,7 @@ vi.mock("@/lib/uploadAndCompresFiles", () => ({
 }));
 
 vi.mock("@/features/timeline/components/CustomEmojiPicker", () => ({
+  // biome-ignore lint/style/useNamingConvention: erro
   CustomEmojiPicker: ({
     onEmojiSelect,
   }: {
@@ -184,7 +185,11 @@ describe("NoteComposerDialog", () => {
 
   it("opens server selector via icon button", async () => {
     render(
-      <NoteComposerDialog mode="create" open origin="https://misskey.example" />,
+      <NoteComposerDialog
+        mode="create"
+        open
+        origin="https://misskey.example"
+      />,
     );
 
     const user = userEvent.setup();
@@ -198,7 +203,7 @@ describe("NoteComposerDialog", () => {
   });
 
   it("renders input groups for composer fields", async () => {
-    const { container } = render(
+    const _ = render(
       <NoteComposerDialog mode="create" open origin="https://example.com" />,
     );
 

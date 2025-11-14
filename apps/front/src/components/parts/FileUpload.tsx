@@ -2,10 +2,10 @@ import { X } from "lucide-react";
 import type React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
 import { IconButton } from "../ui/icon-button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { cn } from "@/lib/utils";
 
 interface FileUploadProps {
   files: File[];

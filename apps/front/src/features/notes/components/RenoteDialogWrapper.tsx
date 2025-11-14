@@ -28,7 +28,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Text from "@/components/ui/text";
-import type { NoteComposerDialogProps, RenoteDialogContext } from "@/features/compose-dialog/lib/note-composer-types";
+import type {
+  NoteComposerDialogProps,
+  RenoteDialogContext,
+} from "@/features/compose-dialog/lib/note-composer-types";
 import { ReplyTargetPreview } from "./ReplyTargetPreview";
 
 export function RenoteDialogWrapper({

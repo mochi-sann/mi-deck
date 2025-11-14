@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { InputGroup, InputGroupAddon } from "@/components/ui/input-group";
-import Text from "@/components/ui/text";
 import { Label } from "@/components/ui/label";
+import Text from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 
 interface ComposerFieldGroupProps {
@@ -40,18 +40,23 @@ export function ComposerFieldGroup({
       data-disabled={disabled}
       className={cn("flex-col items-stretch", className)}
     >
-      <InputGroupAddon align="block-start" className="w-full flex-col items-start gap-2">
+      <InputGroupAddon
+        align="block-start"
+        className="w-full flex-col items-start gap-2"
+      >
         <div className="flex w-full flex-wrap items-center justify-between gap-2">
-          <Label htmlFor={labelFor} className="text-sm font-medium">
+          <Label htmlFor={labelFor} className="font-medium text-sm">
             {label}
           </Label>
-          {actions ? <div className="flex items-center gap-1">{actions}</div> : null}
+          {actions ? (
+            <div className="flex items-center gap-1">{actions}</div>
+          ) : null}
         </div>
         {description ? (
           <Text
             affects="muted"
             id={descriptionId}
-            className="text-xs text-muted-foreground"
+            className="text-muted-foreground text-xs"
           >
             {description}
           </Text>
@@ -61,21 +66,20 @@ export function ComposerFieldGroup({
       <div className="flex w-full flex-col gap-2 px-3 py-2">{children}</div>
 
       {(status || error) && (
-        <InputGroupAddon align="block-end" className="w-full flex-col items-start gap-1 border-t">
+        <InputGroupAddon
+          align="block-end"
+          className="w-full flex-col items-start gap-1 border-t"
+        >
           {status ? (
             <div
               id={statusId}
-              className={cn("text-xs text-muted-foreground", statusClassName)}
+              className={cn("text-muted-foreground text-xs", statusClassName)}
             >
               {status}
             </div>
           ) : null}
           {error ? (
-            <Text
-              affects="small"
-              id={errorId}
-              className="text-destructive"
-            >
+            <Text affects="small" id={errorId} className="text-destructive">
               {error}
             </Text>
           ) : null}

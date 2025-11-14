@@ -1,5 +1,5 @@
-import { Check, Globe, ImagePlus, Server, Smile } from "lucide-react";
 import type { TFunction } from "i18next";
+import { Check, Globe, ImagePlus, Server, Smile } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { InputGroupButton } from "@/components/ui/input-group";
 import {
@@ -30,7 +30,9 @@ interface ComposerFieldActionsProps {
   emojiOrigin: string;
   canUseEmoji: boolean;
   onServerSelect: (serverId: string) => void;
-  onVisibilitySelect: (visibility: NoteComposerFormValues["visibility"]) => void;
+  onVisibilitySelect: (
+    visibility: NoteComposerFormValues["visibility"],
+  ) => void;
   onEmojiSelect: (emojiName: string) => void;
   onOpenFileSelector: () => void;
   getServerDisplayName: (server: MisskeyServerConnection) => string;
@@ -81,7 +83,7 @@ export function ComposerFieldActions({
         </PopoverTrigger>
         <PopoverContent className="w-72 p-0" align="end">
           {serversWithToken.length === 0 ? (
-            <div className="p-4 text-sm text-muted-foreground">
+            <div className="p-4 text-muted-foreground text-sm">
               {t("compose.error.noServer")}
             </div>
           ) : (
@@ -114,7 +116,7 @@ export function ComposerFieldActions({
                     </Avatar>
                     <div className="flex flex-col text-left">
                       <span className="font-medium">{serverName}</span>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-muted-foreground text-xs">
                         {subtitle}
                       </span>
                     </div>
@@ -147,18 +149,18 @@ export function ComposerFieldActions({
         </PopoverTrigger>
         <PopoverContent className="w-48 p-0" align="end">
           <div className="p-1">
-              {visibilityOptions.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors ${option.value === currentVisibility ? "bg-muted" : "hover:bg-muted/80"}`}
-                  onClick={() => {
-                    onVisibilitySelect(
-                      option.value as NoteComposerFormValues["visibility"],
-                    );
-                    onVisibilityPopoverChange(false);
-                  }}
-                >
+            {visibilityOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors ${option.value === currentVisibility ? "bg-muted" : "hover:bg-muted/80"}`}
+                onClick={() => {
+                  onVisibilitySelect(
+                    option.value as NoteComposerFormValues["visibility"],
+                  );
+                  onVisibilityPopoverChange(false);
+                }}
+              >
                 <span>{option.label}</span>
                 <Check
                   className={`ml-auto size-4 text-primary ${option.value === currentVisibility ? "opacity-100" : "opacity-0"}`}
@@ -192,7 +194,7 @@ export function ComposerFieldActions({
               }}
             />
           ) : (
-            <div className="p-4 text-sm text-muted-foreground">
+            <div className="p-4 text-muted-foreground text-sm">
               {t("compose.emojiPickerPlaceholder")}
             </div>
           )}

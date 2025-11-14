@@ -4,12 +4,11 @@ import {
   isValidElement,
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
-  useId,
 } from "react";
-import { Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,15 +23,18 @@ import {
 import { Form, FormControl, FormField } from "@/components/ui/form";
 import { InputGroupTextarea } from "@/components/ui/input-group";
 import Text from "@/components/ui/text";
-import { cn } from "@/lib/utils";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
-import type { NoteComposerDialogProps } from "../lib/note-composer-types";
-import { useNoteComposer, type NoteComposerFormValues } from "../hooks/useNoteComposer";
+import { cn } from "@/lib/utils";
 import { ReplyTargetPreview } from "../../notes/components/ReplyTargetPreview";
+import {
+  type NoteComposerFormValues,
+  useNoteComposer,
+} from "../hooks/useNoteComposer";
+import type { NoteComposerDialogProps } from "../lib/note-composer-types";
 import { ComposerFieldGroup } from "./ComposerFieldGroup";
+import { ComposerAttachmentsField } from "./standard/ComposerAttachmentsField";
 import { ComposerFieldActions } from "./standard/ComposerFieldActions";
 import { ComposerLocalOnlyField } from "./standard/ComposerLocalOnlyField";
-import { ComposerAttachmentsField } from "./standard/ComposerAttachmentsField";
 import { createComposerFieldIds } from "./standard/types";
 
 const MAX_NOTE_LENGTH = 3000;
@@ -145,8 +147,7 @@ export function StandardNoteComposerDialog({
   const noteContentValue = form.watch("noteContent") ?? "";
 
   const selectedServer = useMemo(
-    () =>
-      serversWithToken.find((server) => server.id === serverSessionIdValue),
+    () => serversWithToken.find((server) => server.id === serverSessionIdValue),
     [serverSessionIdValue, serversWithToken],
   );
   const selectedVisibility = useMemo(
@@ -191,9 +192,7 @@ export function StandardNoteComposerDialog({
         const start = textarea.selectionStart ?? currentValue.length;
         const end = textarea.selectionEnd ?? currentValue.length;
         const nextValue =
-          currentValue.slice(0, start) +
-          emojiText +
-          currentValue.slice(end);
+          currentValue.slice(0, start) + emojiText + currentValue.slice(end);
         form.setValue("noteContent", nextValue, { shouldDirty: true });
         requestAnimationFrame(() => {
           const position = start + emojiText.length;
@@ -239,7 +238,10 @@ export function StandardNoteComposerDialog({
     [form],
   );
 
-  const fieldIds = useMemo(() => createComposerFieldIds(baseFieldId), [baseFieldId]);
+  const fieldIds = useMemo(
+    () => createComposerFieldIds(baseFieldId),
+    [baseFieldId],
+  );
 
   useEffect(() => {
     if (!open) {
@@ -249,14 +251,7 @@ export function StandardNoteComposerDialog({
       setIsServerPopoverOpen(false);
       setIsVisibilityPopoverOpen(false);
     }
-  }, [
-    open,
-    resetState,
-    clearSubmitError,
-    setIsEmojiPickerOpen,
-    setIsServerPopoverOpen,
-    setIsVisibilityPopoverOpen,
-  ]);
+  }, [open, resetState, clearSubmitError]);
 
   const handleDialogChange = (nextOpen: boolean) => {
     if (disabled && nextOpen) return;
@@ -328,15 +323,16 @@ export function StandardNoteComposerDialog({
                 control={form.control}
                 name="noteContent"
                 render={({ field, fieldState }) => {
-                  const describedBy = [
-                    fieldIds.content.description,
-                    fieldIds.content.status,
-                    fieldState.error ? fieldIds.content.error : undefined,
-                  ]
-                    .filter(Boolean)
-                    .join(" ")
-                    .trim()
-                    .replace(/\s+/g, " ") || undefined;
+                  const describedBy =
+                    [
+                      fieldIds.content.description,
+                      fieldIds.content.status,
+                      fieldState.error ? fieldIds.content.error : undefined,
+                    ]
+                      .filter(Boolean)
+                      .join(" ")
+                      .trim()
+                      .replace(/\s+/g, " ") || undefined;
 
                   return (
                     <ComposerFieldGroup
@@ -352,18 +348,18 @@ export function StandardNoteComposerDialog({
                               max: MAX_NOTE_LENGTH,
                             })}
                           </span>
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-muted-foreground text-xs">
                             {t("compose.characterRemaining", {
                               count: Math.max(0, remainingCharacters),
                             })}
                           </span>
                           {serverError ? (
-                            <span className="text-xs text-destructive">
+                            <span className="text-destructive text-xs">
                               {serverError}
                             </span>
                           ) : null}
                           {visibilityError ? (
-                            <span className="text-xs text-destructive">
+                            <span className="text-destructive text-xs">
                               {visibilityError}
                             </span>
                           ) : null}

@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import type { Note } from "misskey-js/entities.js";
+import { JSX } from "react/jsx-runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { RenoteMenu } from "./RenoteMenu";
-import { JSX } from "react/jsx-runtime";
 
 const mockUseRenoteAction = vi.fn();
 

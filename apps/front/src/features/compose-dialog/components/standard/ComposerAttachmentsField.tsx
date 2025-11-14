@@ -1,8 +1,8 @@
-import { ImagePlus } from "lucide-react";
 import type { TFunction } from "i18next";
+import { ImagePlus } from "lucide-react";
+import { FileUpload } from "@/components/parts/FileUpload";
 import { Badge } from "@/components/ui/badge";
 import { FormControl } from "@/components/ui/form";
-import { FileUpload } from "@/components/parts/FileUpload";
 import { ComposerFieldGroup } from "../ComposerFieldGroup";
 import type { ComposerFieldIds } from "./types";
 
@@ -54,12 +54,10 @@ export function ComposerAttachmentsField({
           disabled={disabled}
           inputRef={registerFileInput}
           inputProps={{
-            "aria-describedby": [
-              fieldIds.attachments.description,
-              fieldIds.attachments.status,
-            ]
-              .filter(Boolean)
-              .join(" ") || undefined,
+            "aria-describedby":
+              [fieldIds.attachments.description, fieldIds.attachments.status]
+                .filter(Boolean)
+                .join(" ") || undefined,
           }}
         />
       </FormControl>

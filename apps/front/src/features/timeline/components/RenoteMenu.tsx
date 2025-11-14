@@ -14,8 +14,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useRenoteAction } from "@/features/notes/actions/useRenoteAction";
 import { NoteComposerDialog } from "@/features/compose-dialog/components/NoteComposerDialog";
+import { useRenoteAction } from "@/features/notes/actions/useRenoteAction";
 import { cn } from "@/lib/utils";
 
 interface RenoteMenuProps {

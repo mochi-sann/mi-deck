@@ -1,7 +1,12 @@
 import type { TFunction } from "i18next";
-import { Checkbox } from "@/components/ui/checkbox";
-import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import type { UseFormReturn } from "react-hook-form";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 import type { NoteComposerFormValues } from "../../hooks/useNoteComposer";
 import type { ComposerFieldIds } from "./types";
 
@@ -25,7 +30,7 @@ export function ComposerLocalOnlyField({
       render={({ field }) => (
         <FormItem className="flex flex-row items-center gap-2">
           <FormControl>
-          <Checkbox
+            <Checkbox
               id={fieldIds.localOnly.control}
               checked={field.value}
               onCheckedChange={field.onChange}
@@ -34,7 +39,7 @@ export function ComposerLocalOnlyField({
           </FormControl>
           <FormLabel
             htmlFor={fieldIds.localOnly.control}
-            className="text-sm text-muted-foreground"
+            className="text-muted-foreground text-sm"
           >
             {t("compose.localOnlyDescription")}
           </FormLabel>
