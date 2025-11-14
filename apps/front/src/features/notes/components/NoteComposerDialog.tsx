@@ -1,6 +1,6 @@
 import type { NoteComposerDialogProps } from "./note-composer-types";
 import { RenoteDialogWrapper } from "./RenoteDialogWrapper";
-import { StandardNoteComposerDialog } from "./StandardNoteComposerDialog";
+import { StandardNoteComposerDialog } from "./compose-dialog/StandardNoteComposerDialog";
 
 export function NoteComposerDialog(props: NoteComposerDialogProps) {
   if (props.mode === "renote") {
