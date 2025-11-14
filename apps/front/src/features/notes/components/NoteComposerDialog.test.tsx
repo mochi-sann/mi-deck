@@ -179,7 +179,7 @@ describe("NoteComposerDialog", () => {
     await user.click(screen.getByTestId("mock-emoji-picker"));
 
     const textarea = await screen.findByRole("textbox");
-    expect(textarea).toHaveValue(expect.stringContaining(":happy:"));
+    expect(textarea).toHaveValue(":happy:");
   });
 
   it("opens server selector via icon button", async () => {
@@ -202,7 +202,9 @@ describe("NoteComposerDialog", () => {
       <NoteComposerDialog mode="create" open origin="https://example.com" />,
     );
 
-    const groups = container.querySelectorAll("[data-slot='input-group']");
-    expect(groups.length).toBeGreaterThan(0);
+    await waitFor(() => {
+      const groups = container.querySelectorAll("[data-slot='input-group']");
+      expect(groups.length).toBeGreaterThan(0);
+    });
   });
 });
