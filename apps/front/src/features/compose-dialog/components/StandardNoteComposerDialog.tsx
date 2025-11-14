@@ -41,10 +41,10 @@ import Text from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 import { CustomEmojiPicker } from "@/features/timeline/components/CustomEmojiPicker";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
-import type { NoteComposerDialogProps } from "../notes/components/note-composer-types";
-import { useNoteComposer } from "../notes/hooks/useNoteComposer";
-import { ReplyTargetPreview } from "../notes/components/ReplyTargetPreview";
-import { ComposerFieldGroup } from "../notes/components/ComposerFieldGroup";
+import type { NoteComposerDialogProps } from "../lib/note-composer-types";
+import { useNoteComposer } from "../hooks/useNoteComposer";
+import { ReplyTargetPreview } from "../../notes/components/ReplyTargetPreview";
+import { ComposerFieldGroup } from "./ComposerFieldGroup";
 
 const MAX_NOTE_LENGTH = 3000;
 

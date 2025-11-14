@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import type { Note } from "misskey-js/entities.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { RenoteMenu } from "./RenoteMenu";
+import { JSX } from "react/jsx-runtime";
 
 const mockUseRenoteAction = vi.fn();
 
@@ -9,7 +10,7 @@ vi.mock("@/features/notes/actions/useRenoteAction", () => ({
   useRenoteAction: (args: unknown) => mockUseRenoteAction(args),
 }));
 
-vi.mock("@/features/notes/components/NoteComposerDialog", () => ({
+vi.mock("@/features/compose-dialog/components/NoteComposerDialog", () => ({
   // biome-ignore lint/style/useNamingConvention: 実際のエクスポート名に合わせてPascalCaseを維持
   NoteComposerDialog: ({ trigger }: { trigger?: JSX.Element }) =>
     trigger ?? null,

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import Text from "@/components/ui/text";
 import { useStorage } from "@/lib/storage/context";
 import { cn } from "@/lib/utils";
-import { NoteComposerDialog } from "./NoteComposerDialog";
+import { NoteComposerDialog } from "@/features/compose-dialog/components/NoteComposerDialog";
 
 const normalizeOrigin = (origin: string | undefined): string => {
   if (!origin) return "";

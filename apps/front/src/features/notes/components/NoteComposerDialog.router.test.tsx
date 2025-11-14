@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("../../compose-dialog/StandardNoteComposerDialog", () => ({
+vi.mock("@/features/compose-dialog/components/StandardNoteComposerDialog", () => ({
   StandardNoteComposerDialog: vi.fn((props: { mode: string }) => (
     <div data-testid="standard">standard-{props.mode}</div>
   )),
@@ -13,17 +13,17 @@ vi.mock("./RenoteDialogWrapper", () => ({
   )),
 }));
 
-let NoteComposerDialog: (typeof import("./NoteComposerDialog"))[
+let NoteComposerDialog: (typeof import("@/features/compose-dialog/components/NoteComposerDialog"))[
   "NoteComposerDialog"
 ];
-let StandardNoteComposerDialog: (typeof import("../../compose-dialog/StandardNoteComposerDialog"))[
+let StandardNoteComposerDialog: (typeof import("@/features/compose-dialog/components/StandardNoteComposerDialog"))[
   "StandardNoteComposerDialog"
 ];
 let RenoteDialogWrapper: (typeof import("./RenoteDialogWrapper"))["RenoteDialogWrapper"];
 
 beforeAll(async () => {
-  ({ NoteComposerDialog } = await import("./NoteComposerDialog"));
-  ({ StandardNoteComposerDialog } = await import("../../compose-dialog/StandardNoteComposerDialog"));
+  ({ NoteComposerDialog } = await import("@/features/compose-dialog/components/NoteComposerDialog"));
+  ({ StandardNoteComposerDialog } = await import("@/features/compose-dialog/components/StandardNoteComposerDialog"));
   ({ RenoteDialogWrapper } = await import("./RenoteDialogWrapper"));
 });
 

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { NoteComposerDialog } from "./NoteComposerDialog";
+import { NoteComposerDialog } from "@/features/compose-dialog/components/NoteComposerDialog";
 
 interface NewNoteProps {
   trigger?: ReactNode;
