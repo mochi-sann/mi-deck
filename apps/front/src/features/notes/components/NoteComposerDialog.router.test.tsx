@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("./compose-dialog/StandardNoteComposerDialog", () => ({
+vi.mock("../../compose-dialog/StandardNoteComposerDialog", () => ({
   StandardNoteComposerDialog: vi.fn((props: { mode: string }) => (
     <div data-testid="standard">standard-{props.mode}</div>
   )),
@@ -16,14 +16,14 @@ vi.mock("./RenoteDialogWrapper", () => ({
 let NoteComposerDialog: (typeof import("./NoteComposerDialog"))[
   "NoteComposerDialog"
 ];
-let StandardNoteComposerDialog: (typeof import("./compose-dialog/StandardNoteComposerDialog"))[
+let StandardNoteComposerDialog: (typeof import("../../compose-dialog/StandardNoteComposerDialog"))[
   "StandardNoteComposerDialog"
 ];
 let RenoteDialogWrapper: (typeof import("./RenoteDialogWrapper"))["RenoteDialogWrapper"];
 
 beforeAll(async () => {
   ({ NoteComposerDialog } = await import("./NoteComposerDialog"));
-  ({ StandardNoteComposerDialog } = await import("./compose-dialog/StandardNoteComposerDialog"));
+  ({ StandardNoteComposerDialog } = await import("../../compose-dialog/StandardNoteComposerDialog"));
   ({ RenoteDialogWrapper } = await import("./RenoteDialogWrapper"));
 });
 
