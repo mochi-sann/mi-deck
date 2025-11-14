@@ -9,13 +9,9 @@ import {
   useState,
   useId,
 } from "react";
-import { Check, Globe, ImagePlus, Server, Smile } from "lucide-react";
+import { Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { FileUpload } from "@/components/parts/FileUpload";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -25,26 +21,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import {
-  InputGroupButton,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Form, FormControl, FormField } from "@/components/ui/form";
+import { InputGroupTextarea } from "@/components/ui/input-group";
 import Text from "@/components/ui/text";
 import { cn } from "@/lib/utils";
-import { CustomEmojiPicker } from "@/features/timeline/components/CustomEmojiPicker";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
 import type { NoteComposerDialogProps } from "../lib/note-composer-types";
-import { useNoteComposer } from "../hooks/useNoteComposer";
+import { useNoteComposer, type NoteComposerFormValues } from "../hooks/useNoteComposer";
 import { ReplyTargetPreview } from "../../notes/components/ReplyTargetPreview";
 import { ComposerFieldGroup } from "./ComposerFieldGroup";
+import { ComposerFieldActions } from "./standard/ComposerFieldActions";
+import { ComposerLocalOnlyField } from "./standard/ComposerLocalOnlyField";
+import { ComposerAttachmentsField } from "./standard/ComposerAttachmentsField";
+import { createComposerFieldIds } from "./standard/types";
 
 const MAX_NOTE_LENGTH = 3000;
 
@@ -174,6 +163,7 @@ export function StandardNoteComposerDialog({
   const attachmentsDescription = t("compose.attachmentsDescription");
   const formDisabled = disabled || isSubmitting;
   const emojiOrigin = selectedServer?.origin ?? origin ?? "";
+  const canUseEmoji = Boolean(selectedServer);
   const characterStatusClass = cn(
     "font-mono text-xs",
     isCharacterLimitExceeded
@@ -225,38 +215,31 @@ export function StandardNoteComposerDialog({
     fileInputRef.current?.click();
   }, []);
 
-  const fieldIds = {
-    server: {
-      control: `${baseFieldId}-server-control`,
-      description: `${baseFieldId}-server-description`,
-      status: `${baseFieldId}-server-status`,
-      error: `${baseFieldId}-server-error`,
+  const registerFileInput = useCallback((element: HTMLInputElement | null) => {
+    fileInputRef.current = element;
+  }, []);
+
+  const handleServerSelect = useCallback(
+    (serverId: string) => {
+      form.setValue("serverSessionId", serverId, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
     },
-    visibility: {
-      control: `${baseFieldId}-visibility-control`,
-      description: `${baseFieldId}-visibility-description`,
-      status: `${baseFieldId}-visibility-status`,
-      error: `${baseFieldId}-visibility-error`,
+    [form],
+  );
+
+  const handleVisibilitySelect = useCallback(
+    (visibility: NoteComposerFormValues["visibility"]) => {
+      form.setValue("visibility", visibility, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
     },
-    localOnly: {
-      control: `${baseFieldId}-local-control`,
-      description: `${baseFieldId}-local-description`,
-      status: `${baseFieldId}-local-status`,
-      error: `${baseFieldId}-local-error`,
-    },
-    content: {
-      control: `${baseFieldId}-content-control`,
-      description: `${baseFieldId}-content-description`,
-      status: `${baseFieldId}-content-status`,
-      error: `${baseFieldId}-content-error`,
-    },
-    attachments: {
-      control: `${baseFieldId}-attachments-control`,
-      description: `${baseFieldId}-attachments-description`,
-      status: `${baseFieldId}-attachments-status`,
-      error: `${baseFieldId}-attachments-error`,
-    },
-  } as const;
+    [form],
+  );
+
+  const fieldIds = useMemo(() => createComposerFieldIds(baseFieldId), [baseFieldId]);
 
   useEffect(() => {
     if (!open) {
@@ -392,214 +375,39 @@ export function StandardNoteComposerDialog({
                       errorId={fieldIds.content.error}
                       disabled={disabled}
                       actions={
-                        <div className="flex items-center gap-1.5">
-                          <FormField
-                            control={form.control}
-                            name="serverSessionId"
-                            render={({ field }) => (
-                              <Popover
-                                open={isServerPopoverOpen}
-                                onOpenChange={setIsServerPopoverOpen}
-                              >
-                                <PopoverTrigger asChild>
-                                  <InputGroupButton
-                                    type="button"
-                                    size="icon-sm"
-                                    variant="ghost"
-                                    aria-label={serverButtonLabel}
-                                    title={serverButtonLabel}
-                                    disabled={
-                                      formDisabled ||
-                                      isLoadingServers ||
-                                      serversWithToken.length === 0
-                                    }
-                                  >
-                                    <Server className="size-4" />
-                                  </InputGroupButton>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-72 p-0" align="end">
-                                  {serversWithToken.length === 0 ? (
-                                    <div className="p-4 text-sm text-muted-foreground">
-                                      {t("compose.error.noServer")}
-                                    </div>
-                                  ) : (
-                                    <div className="max-h-72 overflow-y-auto p-1">
-                                      {serversWithToken.map((server) => {
-                                        const isActive = server.id === field.value;
-                                        return (
-                                          <button
-                                            key={server.id}
-                                            type="button"
-                                            className={cn(
-                                              "flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition-colors",
-                                              isActive
-                                                ? "bg-muted"
-                                                : "hover:bg-muted/80",
-                                            )}
-                                            onClick={() => {
-                                              field.onChange(server.id);
-                                              setIsServerPopoverOpen(false);
-                                            }}
-                                          >
-                                            <Avatar className="h-8 w-8">
-                                              {server.userInfo?.avatarUrl ? (
-                                                <AvatarImage
-                                                  src={server.userInfo.avatarUrl}
-                                                  alt={getServerDisplayName(server)}
-                                                />
-                                              ) : (
-                                                <AvatarFallback>
-                                                  {getServerDisplayName(server)
-                                                    .slice(0, 2)
-                                                    .toUpperCase()}
-                                                </AvatarFallback>
-                                              )}
-                                            </Avatar>
-                                            <div className="flex flex-col text-left">
-                                              <span className="font-medium">
-                                                {getServerDisplayName(server)}
-                                              </span>
-                                              <span className="text-xs text-muted-foreground">
-                                                {getServerSubtitle(server)}
-                                              </span>
-                                            </div>
-                                            <Check
-                                              className={cn(
-                                                "ml-auto size-4 text-primary",
-                                                isActive ? "opacity-100" : "opacity-0",
-                                              )}
-                                            />
-                                          </button>
-                                        );
-                                      })}
-                                    </div>
-                                  )}
-                                </PopoverContent>
-                              </Popover>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="visibility"
-                            render={({ field }) => (
-                              <Popover
-                                open={isVisibilityPopoverOpen}
-                                onOpenChange={setIsVisibilityPopoverOpen}
-                              >
-                                <PopoverTrigger asChild>
-                                  <InputGroupButton
-                                    type="button"
-                                    size="icon-sm"
-                                    variant="ghost"
-                                    aria-label={visibilityButtonLabel}
-                                    title={visibilityButtonLabel}
-                                    disabled={formDisabled}
-                                  >
-                                    <Globe className="size-4" />
-                                  </InputGroupButton>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-48 p-0" align="end">
-                                  <div className="p-1">
-                                    {visibilityOptions.map((option) => (
-                                      <button
-                                        key={option.value}
-                                        type="button"
-                                        className={cn(
-                                          "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors",
-                                          option.value === field.value
-                                            ? "bg-muted"
-                                            : "hover:bg-muted/80",
-                                        )}
-                                        onClick={() => {
-                                          field.onChange(option.value);
-                                          setIsVisibilityPopoverOpen(false);
-                                        }}
-                                      >
-                                        <span>{option.label}</span>
-                                        <Check
-                                          className={cn(
-                                            "ml-auto size-4 text-primary",
-                                            option.value === field.value
-                                              ? "opacity-100"
-                                              : "opacity-0",
-                                          )}
-                                        />
-                                      </button>
-                                    ))}
-                                  </div>
-                                </PopoverContent>
-                              </Popover>
-                            )}
-                          />
-                          <Popover
-                            open={isEmojiPickerOpen}
-                            onOpenChange={setIsEmojiPickerOpen}
-                          >
-                            <PopoverTrigger asChild>
-                              <InputGroupButton
-                                type="button"
-                                size="icon-sm"
-                                variant="ghost"
-                                disabled={!selectedServer || formDisabled}
-                                aria-label={t("compose.emojiInsert")}
-                                title={t("compose.emojiInsert")}
-                              >
-                                <Smile className="size-4" />
-                              </InputGroupButton>
-                            </PopoverTrigger>
-                            <PopoverContent
-                              align="end"
-                              sideOffset={8}
-                              className="w-80 p-0"
-                            >
-                              {selectedServer ? (
-                                <CustomEmojiPicker
-                                  origin={emojiOrigin}
-                                  onEmojiSelect={handleEmojiSelect}
-                                />
-                              ) : (
-                                <div className="p-4 text-sm text-muted-foreground">
-                                  {t("compose.emojiPickerPlaceholder")}
-                                </div>
-                              )}
-                            </PopoverContent>
-                          </Popover>
-                          <InputGroupButton
-                            type="button"
-                            size="icon-sm"
-                            variant="ghost"
-                            aria-label={t("compose.attachmentsLabel")}
-                            title={t("compose.attachmentsLabel")}
-                            disabled={formDisabled}
-                            onClick={openFileSelector}
-                          >
-                            <ImagePlus className="size-4" />
-                          </InputGroupButton>
-                        </div>
+                        <ComposerFieldActions
+                          t={t}
+                          serversWithToken={serversWithToken}
+                          visibilityOptions={visibilityOptions}
+                          isServerPopoverOpen={isServerPopoverOpen}
+                          onServerPopoverChange={setIsServerPopoverOpen}
+                          isVisibilityPopoverOpen={isVisibilityPopoverOpen}
+                          onVisibilityPopoverChange={setIsVisibilityPopoverOpen}
+                          isEmojiPickerOpen={isEmojiPickerOpen}
+                          onEmojiPickerChange={setIsEmojiPickerOpen}
+                          formDisabled={formDisabled}
+                          isLoadingServers={isLoadingServers}
+                          selectedServer={selectedServer}
+                          serverButtonLabel={serverButtonLabel}
+                          visibilityButtonLabel={visibilityButtonLabel}
+                          currentVisibility={visibilityValue}
+                          emojiOrigin={emojiOrigin}
+                          canUseEmoji={canUseEmoji}
+                          onServerSelect={handleServerSelect}
+                          onVisibilitySelect={handleVisibilitySelect}
+                          onEmojiSelect={handleEmojiSelect}
+                          onOpenFileSelector={openFileSelector}
+                          getServerDisplayName={getServerDisplayName}
+                          getServerSubtitle={getServerSubtitle}
+                        />
                       }
                     >
                       <div className="flex flex-col gap-3">
-                        <FormField
-                          control={form.control}
-                          name="isLocalOnly"
-                          render={({ field: localField }) => (
-                            <FormItem className="flex flex-row items-center gap-2">
-                              <FormControl>
-                                <Checkbox
-                                  id={fieldIds.localOnly.control}
-                                  checked={localField.value}
-                                  onCheckedChange={localField.onChange}
-                                  disabled={disabled}
-                                />
-                              </FormControl>
-                              <FormLabel
-                                htmlFor={fieldIds.localOnly.control}
-                                className="text-sm text-muted-foreground"
-                              >
-                                {t("compose.localOnlyDescription")}
-                              </FormLabel>
-                            </FormItem>
-                          )}
+                        <ComposerLocalOnlyField
+                          form={form}
+                          fieldIds={fieldIds}
+                          disabled={disabled}
+                          t={t}
                         />
                         <FormControl>
                           <InputGroupTextarea
@@ -622,44 +430,16 @@ export function StandardNoteComposerDialog({
                 }}
               />
 
-              <ComposerFieldGroup
-                label={t("compose.attachmentsLabel")}
-                labelFor={fieldIds.attachments.control}
+              <ComposerAttachmentsField
+                t={t}
+                files={files}
+                fileStatusText={fileStatusText}
                 description={attachmentsDescription}
-                descriptionId={fieldIds.attachments.description}
-                status={
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary">
-                      <ImagePlus className="mr-1 size-3.5" />
-                      {files.length}
-                    </Badge>
-                    <span>{fileStatusText}</span>
-                  </div>
-                }
-                statusId={fieldIds.attachments.status}
+                fieldIds={fieldIds}
                 disabled={formDisabled}
-              >
-                <FormControl>
-                  <FileUpload
-                    files={files}
-                    onFilesChange={setFiles}
-                    hideLabel
-                    id={fieldIds.attachments.control}
-                    disabled={formDisabled}
-                    inputProps={{
-                      "aria-describedby": [
-                        fieldIds.attachments.description,
-                        fieldIds.attachments.status,
-                      ]
-                        .filter(Boolean)
-                        .join(" ") || undefined,
-                    }}
-                    inputRef={(element) => {
-                      fileInputRef.current = element;
-                    }}
-                  />
-                </FormControl>
-              </ComposerFieldGroup>
+                onFilesChange={setFiles}
+                registerFileInput={registerFileInput}
+              />
 
               {submitError ? (
                 <Text affects="small" className="text-destructive">
