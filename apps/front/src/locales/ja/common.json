@@ -53,5 +53,12 @@
     },
     "devInfo": "詳細なエラー情報（開発用）",
     "clearStorageAlert": "ブラウザの開発者ツールでApplication > Storage > Clear storageを実行してください。"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "ページが見つかりません",
+    "description": "URLが間違っているか、ページが削除された可能性があります。",
+    "primaryAction": "ホームに戻る",
+    "secondaryAction": "前のページに戻る"
   }
 }

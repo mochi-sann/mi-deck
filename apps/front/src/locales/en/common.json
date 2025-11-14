@@ -53,5 +53,12 @@
     },
     "devInfo": "Detailed error information (for development)",
     "clearStorageAlert": "Please go to Developer Tools > Application > Storage > Clear storage."
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Page not found",
+    "description": "The page you were looking for may have been moved or the URL is incorrect.",
+    "primaryAction": "Go to home",
+    "secondaryAction": "Go back"
   }
 }
