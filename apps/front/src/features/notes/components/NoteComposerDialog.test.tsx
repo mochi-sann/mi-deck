@@ -203,7 +203,7 @@ describe("NoteComposerDialog", () => {
     );
 
     await waitFor(() => {
-      const groups = container.querySelectorAll("[data-slot='input-group']");
+      const groups = document.querySelectorAll("[data-slot='input-group']");
       expect(groups.length).toBeGreaterThan(0);
     });
   });
