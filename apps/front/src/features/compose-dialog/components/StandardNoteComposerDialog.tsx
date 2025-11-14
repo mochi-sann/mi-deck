@@ -402,7 +402,7 @@ export function StandardNoteComposerDialog({
                         <ComposerLocalOnlyField
                           form={form}
                           fieldIds={fieldIds}
-                          disabled={disabled}
+                          disabled={Boolean(disabled)}
                           t={t}
                         />
                         <FormControl>
