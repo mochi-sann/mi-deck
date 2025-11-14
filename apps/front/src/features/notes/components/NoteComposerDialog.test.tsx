@@ -197,7 +197,7 @@ describe("NoteComposerDialog", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders input groups for composer fields", () => {
+  it("renders input groups for composer fields", async () => {
     const { container } = render(
       <NoteComposerDialog mode="create" open origin="https://example.com" />,
     );
