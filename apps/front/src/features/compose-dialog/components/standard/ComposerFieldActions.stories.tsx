@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { ComposerFieldActions } from "./ComposerFieldActions";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
+import { ComposerFieldActions } from "./ComposerFieldActions";
 
 const sampleServers: MisskeyServerConnection[] = [
   {
@@ -67,8 +67,12 @@ export const Default: Story = {
         onVisibilitySelect={setCurrentVisibility}
         onEmojiSelect={() => setEmojiOpen(false)}
         onOpenFileSelector={() => undefined}
-        getServerDisplayName={(server) => server.userInfo?.name ?? server.origin}
-        getServerSubtitle={(server) => server.origin.replace(/^https?:\/\//, "")}
+        getServerDisplayName={(server) =>
+          server.userInfo?.name ?? server.origin
+        }
+        getServerSubtitle={(server) =>
+          server.origin.replace(/^https?:\/\//, "")
+        }
       />
     );
   },

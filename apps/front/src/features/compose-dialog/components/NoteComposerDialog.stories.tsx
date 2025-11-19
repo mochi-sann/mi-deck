@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState } from "react";
 import { createInstance } from "i18next";
-import { I18nextProvider } from "react-i18next";
-import { initReactI18next } from "react-i18next";
+import { useState } from "react";
+import { I18nextProvider, initReactI18next } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { NoteComposerDialog } from "./NoteComposerDialog";
 import type { NoteComposerDialogProps } from "../lib/note-composer-types";
+import { NoteComposerDialog } from "./NoteComposerDialog";
 
 const i18n = createInstance();
 i18n.use(initReactI18next).init({

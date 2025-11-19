@@ -34,7 +34,11 @@ export const Default: Story = {
 export const WithError: Story = {
   args: {
     error: "入力が必須です",
-    status: <Text affects="small" className="text-destructive">残り 0 文字</Text>,
+    status: (
+      <Text affects="small" className="text-destructive">
+        残り 0 文字
+      </Text>
+    ),
   },
   render: (args) => (
     <div className="w-[480px]">
