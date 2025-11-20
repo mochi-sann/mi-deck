@@ -162,51 +162,51 @@
         }
       }
     },
-    "pnpm@10": {
-      "last_modified": "2025-04-08T07:10:31Z",
-      "resolved": "github:NixOS/nixpkgs/b2b0718004cc9a5bca610326de0a82e6ea75920b#pnpm",
+    "pnpm@10.22.0": {
+      "last_modified": "2025-11-15T07:28:48Z",
+      "resolved": "github:NixOS/nixpkgs/1d4c88323ac36805d09657d13a5273aea1b34f0c#pnpm",
       "source": "devbox-search",
-      "version": "10.8.0",
+      "version": "10.22.0",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/lk5zn7zj9aapazn25l8qag76kmnvdpn3-pnpm-10.8.0",
+              "path": "/nix/store/af4bd5xpgqq9fbfi9xlicgyw5xksxjbp-pnpm-10.22.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/lk5zn7zj9aapazn25l8qag76kmnvdpn3-pnpm-10.8.0"
+          "store_path": "/nix/store/af4bd5xpgqq9fbfi9xlicgyw5xksxjbp-pnpm-10.22.0"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/qqgg823s3vd2hlhiwh92ci1zn0snnlb5-pnpm-10.8.0",
+              "path": "/nix/store/0ymqyi6zgfhzl5gl18ggifiqy1wlpapg-pnpm-10.22.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/qqgg823s3vd2hlhiwh92ci1zn0snnlb5-pnpm-10.8.0"
+          "store_path": "/nix/store/0ymqyi6zgfhzl5gl18ggifiqy1wlpapg-pnpm-10.22.0"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/yacdhmmyqskcgcwnaxlz60cl4s29g1wb-pnpm-10.8.0",
+              "path": "/nix/store/2n3i2vqq03833kb73n5swr9yz4ifk5ya-pnpm-10.22.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/yacdhmmyqskcgcwnaxlz60cl4s29g1wb-pnpm-10.8.0"
+          "store_path": "/nix/store/2n3i2vqq03833kb73n5swr9yz4ifk5ya-pnpm-10.22.0"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/kclz9i3vq2fz8nnn947l773a95fj77z3-pnpm-10.8.0",
+              "path": "/nix/store/lalvgz06zbpb1hw43nr7lj8rb05k3yka-pnpm-10.22.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/kclz9i3vq2fz8nnn947l773a95fj77z3-pnpm-10.8.0"
+          "store_path": "/nix/store/lalvgz06zbpb1hw43nr7lj8rb05k3yka-pnpm-10.22.0"
         }
       }
     }
