@@ -1,5 +1,4 @@
 import { type MfmNode } from "mfm-js";
-import * as Misskey from "misskey-js";
 import { Fragment, type ReactNode } from "react";
 import { type MfmBasicProps } from ".";
 import Code from "./components/Code";
@@ -11,7 +10,7 @@ import Hashtag from "./components/Hashtag";
 import Link from "./components/Link";
 import Mention from "./components/Mention";
 import Search from "./components/Search";
-import { id, intersperse } from "./utils";
+import { id, intersperse, nyaize } from "./utils";
 
 const Node = ({ nodes, ...props }: MfmBasicProps & { nodes?: MfmNode[] }) =>
   // biome-ignore lint/suspicious/noArrayIndexKey: keyがこれ以外ない
@@ -135,8 +134,6 @@ function SingleNode({ node, ...props }: MfmBasicProps & { node: MfmNode }) {
       );
 
     case "fn":
-      console.log(...[{ node }, "👀 [Node.tsx:135]: {node}"].reverse());
-
       return (
         <Fn {...node.props} nodeChildren={node.children}>
           <Node nodes={node.children} {...props} />
@@ -152,7 +149,7 @@ function SingleNode({ node, ...props }: MfmBasicProps & { node: MfmNode }) {
 
     case "text": {
       const orig = node.props.text.replace(/\r\n?/g, "\n");
-      const text = props.nyaize ? Misskey.nyaize(orig) : orig;
+      const text = props.nyaize ? nyaize(orig) : orig;
 
       if (props.plain) return text.replace(/\n/g, " ");
       return (

@@ -22,37 +22,49 @@
     "jsdom": "^25.0.1",
     "lucide-react": "^0.513.0",
     "misskey-js": "2025.11.0",
-    "tsup": "8.5.0",
+    "tsdown": "^0.16.8",
     "vite": "^7.0.6",
     "vitest": "^3.2.4"
   },
   "exports": {
-    ".": "./dist/index.js",
+    ".": "./dist/index.mjs",
     "./style.css": "./dist/style.css"
   },
   "files": [
     "dist"
   ],
-  "main": "./dist/index.js",
+  "main": "./dist/index.mjs",
   "peerDependencies": {
     "react": ">=19.0.0"
   },
   "scripts": {
-    "build": "tsup --minify --dts",
+    "build": "tsdown ",
     "check": "tsc",
-    "dev": "tsup --watch",
+    "dev": "tsdown --watch",
     "fmt": "prettier -w .",
     "test": "vitest --run",
     "test:watch": "vitest",
     "test:coverage": "vitest --run --coverage"
   },
-  "tsup": {
+  "tsdown": {
     "entry": [
       "src/index.tsx",
       "src/Node.tsx",
       "src/utils.ts",
       "src/components/*.tsx",
+      "!src/components/*.test.tsx",
       "src/style.css"
+    ],
+    "external": [
+      "react",
+      "react-dom",
+      "mfm-js",
+      "katex",
+      "shiki",
+      "shiki/bundle/web",
+      "jotai",
+      "lucide-react",
+      "@twemoji/api"
     ],
     "format": "esm",
     "sourcemap": true,
@@ -60,5 +72,5 @@
     "clean": true
   },
   "type": "module",
-  "types": "./dist/index.d.ts"
+  "types": "./dist/index.d.mts"
 }
