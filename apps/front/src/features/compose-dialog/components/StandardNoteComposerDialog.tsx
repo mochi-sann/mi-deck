@@ -412,7 +412,7 @@ export function StandardNoteComposerDialog({
                             aria-describedby={describedBy}
                             placeholder={t("compose.contentPlaceholder")}
                             minLength={0}
-                            className="min-h-[140px]"
+                            className="max-h-[200px] min-h-[140px]"
                             disabled={disabled}
                             ref={(element) => {
                               field.ref(element);
