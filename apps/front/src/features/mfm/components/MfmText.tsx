@@ -1,5 +1,5 @@
-import Mfm, { MfmBasicProps } from "@mi-deck/react-mfm";
 import "@mi-deck/react-mfm/style.css";
+import { Mfm, type MfmBasicProps } from "@mi-deck/react-mfm";
 import "katex/dist/katex.min.css"; // to support Formula
 import { getWordBreakClasses } from "@/lib/utils/text";
 

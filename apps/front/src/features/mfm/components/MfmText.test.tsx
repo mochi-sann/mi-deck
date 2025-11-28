@@ -3,8 +3,8 @@ import { describe, expect, it, vi } from "vitest";
 import { MfmText } from "./MfmText";
 
 // Mock the react-mfm library
-vi.mock("@mi-deck/react-mfm", () => ({
-  default: ({
+vi.mock("@mi-deck/react-mfm", () => {
+  const MockMfm = ({
     text,
     host,
     emojis,
@@ -18,8 +18,14 @@ vi.mock("@mi-deck/react-mfm", () => ({
       <span data-testid="mfm-host">{host}</span>
       <span data-testid="mfm-emojis">{JSON.stringify(emojis)}</span>
     </div>
-  ),
-}));
+  );
+
+  return {
+    default: MockMfm,
+    // biome-ignore lint/style/useNamingConvention: ignore
+    Mfm: MockMfm,
+  };
+});
 
 describe("MfmText", () => {
   it("should render basic text", () => {
