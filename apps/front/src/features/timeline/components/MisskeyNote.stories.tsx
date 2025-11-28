@@ -1,8 +1,38 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Note } from "misskey-js/built/entities";
+import { Provider } from "jotai";
+import { useHydrateAtoms } from "jotai/utils";
+import { Note } from "misskey-js/entities.js";
 import { HttpResponse, http } from "msw";
 import type { CustomEmojiContext } from "@/types/emoji";
+import {
+  type NsfwBehavior,
+  timelineSettingsAtom,
+} from "../../settings/stores/timelineSettings";
 import { MisskeyNoteDisplay } from "./MisskeyNote";
+
+const HydrateAtoms = ({
+  initialValues,
+  children,
+}: {
+  initialValues: [
+    typeof timelineSettingsAtom,
+    { nsfwBehavior: NsfwBehavior },
+  ][];
+  children: React.ReactNode;
+}) => {
+  useHydrateAtoms(new Map(initialValues));
+  return <>{children}</>;
+};
+
+const withNsfwSettings = (behavior: NsfwBehavior) => (Story: any) => (
+  <Provider>
+    <HydrateAtoms
+      initialValues={[[timelineSettingsAtom, { nsfwBehavior: behavior }]]}
+    >
+      <Story />
+    </HydrateAtoms>
+  </Provider>
+);
 
 const meta = {
   title: "Parts/MisskeyNote",
@@ -432,6 +462,48 @@ export const TimelineWrappingDemo: Story = {
         story: "実際のタイムライン表示での文字折り返し動作を確認できます。",
       },
     },
+    msw: {
+      handlers,
+    },
+  },
+};
+
+// NSFW Examples
+const nsfwNote: Note = {
+  ...noteWithImage,
+  id: "note-nsfw",
+  files: [
+    {
+      ...(noteWithImage.files?.[0] ?? {}),
+      isSensitive: true,
+    } as any,
+  ],
+};
+
+export const NsfwBlur: Story = {
+  args: buildStoryArgs(nsfwNote),
+  decorators: [withNsfwSettings("blur")],
+  parameters: {
+    msw: {
+      handlers,
+    },
+  },
+};
+
+export const NsfwHide: Story = {
+  args: buildStoryArgs(nsfwNote),
+  decorators: [withNsfwSettings("hide")],
+  parameters: {
+    msw: {
+      handlers,
+    },
+  },
+};
+
+export const NsfwShow: Story = {
+  args: buildStoryArgs(nsfwNote),
+  decorators: [withNsfwSettings("show")],
+  parameters: {
     msw: {
       handlers,
     },

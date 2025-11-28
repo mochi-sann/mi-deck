@@ -108,5 +108,6 @@
       "action": "Renote",
       "actionUndo": "Undo"
     }
-  }
+  },
+  "sensitive": "Sensitive"
 }
