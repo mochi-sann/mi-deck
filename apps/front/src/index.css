@@ -113,9 +113,14 @@
 }
 
 @layer base {
+  .word-break-word {
+    word-break: break-word;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground font-sans text-sm;
   }
