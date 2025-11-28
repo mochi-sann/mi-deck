@@ -159,8 +159,8 @@ importers:
         specifier: ^0.25.0
         version: 0.25.0
       misskey-js:
-        specifier: 2025.11.0
-        version: 2025.11.0
+        specifier: 2025.11.1
+        version: 2025.11.1
       react:
         specifier: ^19.2.0
         version: 19.2.0
@@ -359,8 +359,8 @@ importers:
         specifier: ^0.513.0
         version: 0.513.0(react@19.2.0)
       misskey-js:
-        specifier: 2025.11.0
-        version: 2025.11.0
+        specifier: 2025.11.1
+        version: 2025.11.1
       tsdown:
         specifier: ^0.16.8
         version: 0.16.8(synckit@0.11.11)(typescript@5.9.3)
@@ -2044,6 +2044,7 @@ packages:
 
   '@simplewebauthn/types@12.0.0':
     resolution: {integrity: sha512-q6y8MkoV8V8jB4zzp18Uyj2I7oFp2/ONL8c3j8uT06AOWu3cIChc1au71QYHrP2b+xDapkGTiv+9lX7xkTlAsA==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@sinclair/typebox@0.34.41':
     resolution: {integrity: sha512-6gS8pZzSXdyRHTIqoqSVknxolr1kzfy4/CeDnrzsVz8TTIWUbOBr6gnzOmTYJ3eXQNh4IYHIGi5aIL7sOZ2G/g==}
@@ -4666,8 +4667,8 @@ packages:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
 
-  misskey-js@2025.11.0:
-    resolution: {integrity: sha512-lxeWv77/8czn+XDyplpeFOepvkfMbX4/zJzfzqaVmesnzWpVeWolsIFwMxMTPKz5dBAQQ7Iub1P/h0DMV4yICw==}
+  misskey-js@2025.11.1:
+    resolution: {integrity: sha512-Ep1QPXw9OCg6PurM+h3VcNtBVIh7xu7FGbh0evHMHLjxhVCFnFCNF/g++Z6GmgPcONZH/si6u8EUds+8XFa67g==}
 
   mkdirp@1.0.4:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
@@ -10836,7 +10837,7 @@ snapshots:
 
   minipass@7.1.2: {}
 
-  misskey-js@2025.11.0:
+  misskey-js@2025.11.1:
     dependencies:
       '@simplewebauthn/types': 12.0.0
       eventemitter3: 5.0.1
