@@ -1,5 +1,6 @@
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { Fragment, lazy, Suspense } from "react";
+import { NotFoundPage } from "@/components/parts/NotFoundPage";
 import { Toaster } from "@/components/ui/toaster";
 
 const TanStackRouterDevtools = !import.meta.env.DEV
@@ -29,6 +30,7 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  notFoundComponent: NotFoundPage,
   component: () => (
     <Fragment>
       <Outlet />

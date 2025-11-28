@@ -24,6 +24,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Text from "@/components/ui/text";
 import { useStorage } from "@/lib/storage/context";
 import { SortableTimeline } from "./SortbleTimeline";
+import { TimelineEmptyState } from "./TimelineEmptyState";
 
 export function ClientTimelineList() {
   const { t } = useTranslation("timeline");
@@ -120,7 +121,10 @@ export function ClientTimelineList() {
             </SortableContext>
           ) : (
             <Card className="flex flex-1 items-center justify-center">
-              <Text>{t("list.noTimelinesCreated")}</Text>
+              <TimelineEmptyState
+                onCreateTimeline={() => setIsDialogOpen(true)}
+                canCreateTimeline={storage.servers.length > 0}
+              />
             </Card>
           )}
           <Card className="flex h-full w-80 flex-[0_0_320px] flex-col items-center justify-center gap-0 rounded-none">

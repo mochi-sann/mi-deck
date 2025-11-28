@@ -25,6 +25,23 @@ vi.mock("@/lib/uploadAndCompresFiles", () => ({
     mockUploadAndCompressFiles(...args),
 }));
 
+vi.mock("@/features/timeline/components/CustomEmojiPicker", () => ({
+  // biome-ignore lint/style/useNamingConvention: erro
+  CustomEmojiPicker: ({
+    onEmojiSelect,
+  }: {
+    onEmojiSelect: (emojiName: string) => void;
+  }) => (
+    <button
+      type="button"
+      data-testid="mock-emoji-picker"
+      onClick={() => onEmojiSelect("happy")}
+    >
+      mock emoji
+    </button>
+  ),
+}));
+
 vi.mock("react-i18next", () => ({
   useTranslation: (namespace?: string) => ({
     t: (key: string) => key,
@@ -142,6 +159,57 @@ describe("NoteComposerDialog", () => {
           renoteId: "note-1",
         }),
       );
+    });
+  });
+
+  it("inserts emoji text via the picker", async () => {
+    render(
+      <NoteComposerDialog
+        mode="create"
+        open
+        origin="https://misskey.example"
+      />,
+    );
+
+    const user = userEvent.setup();
+    const emojiButton = await screen.findByRole("button", {
+      name: "compose.emojiInsert",
+    });
+
+    await user.click(emojiButton);
+    await user.click(screen.getByTestId("mock-emoji-picker"));
+
+    const textarea = await screen.findByRole("textbox");
+    expect(textarea).toHaveValue(":happy:");
+  });
+
+  it("opens server selector via icon button", async () => {
+    render(
+      <NoteComposerDialog
+        mode="create"
+        open
+        origin="https://misskey.example"
+      />,
+    );
+
+    const user = userEvent.setup();
+    await user.click(
+      screen.getByRole("button", { name: /compose.serverLabel/ }),
+    );
+
+    expect(
+      await screen.findByText("https://misskey.example"),
+    ).toBeInTheDocument();
+  });
+
+  it("renders input groups for composer fields", async () => {
+    const _ = render(
+      <NoteComposerDialog mode="create" open origin="https://example.com" />,
+    );
+
+    await waitFor(() => {
+      const groups = document.querySelectorAll("[data-slot='input-group']");
+      expect(groups.length).toBeGreaterThan(0);
     });
   });
 });

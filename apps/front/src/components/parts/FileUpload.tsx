@@ -2,6 +2,7 @@ import { X } from "lucide-react";
 import type React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
 import { IconButton } from "../ui/icon-button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -9,14 +10,33 @@ import { Label } from "../ui/label";
 interface FileUploadProps {
   files: File[];
   onFilesChange: (files: File[]) => void;
+  id?: string;
+  hideLabel?: boolean;
+  label?: string;
+  disabled?: boolean;
+  multiple?: boolean;
+  accept?: string;
+  className?: string;
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
+  inputRef?: React.Ref<HTMLInputElement>;
 }
 
 export const FileUpload: React.FC<FileUploadProps> = ({
   files,
   onFilesChange,
+  id = "file-upload-input",
+  hideLabel = false,
+  label,
+  disabled = false,
+  multiple = true,
+  accept = "image/*",
+  className,
+  inputProps,
+  inputRef,
 }) => {
   const { t } = useTranslation("common");
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const computedLabel = label ?? t("fileUpload.label");
 
   // Generate previews when files change externally or internally
   // biome-ignore lint/correctness/useExhaustiveDependencies: imagepreviesを入れると画像のpreviewがうまくできないため無視
@@ -61,15 +81,18 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   );
 
   return (
-    <div className="grid w-full items-center gap-1.5">
-      <Label htmlFor="picture">{t("fileUpload.label")}</Label>
+    <div className={cn("grid w-full items-center gap-1.5", className)}>
+      {!hideLabel ? <Label htmlFor={id}>{computedLabel}</Label> : null}
       <Input
-        id="picture"
+        id={id}
         className="w-full"
         type="file"
-        multiple
-        accept="image/*" // Only accept image files
+        multiple={multiple}
+        disabled={disabled}
+        accept={accept}
         onChange={handleFileChange}
+        ref={inputRef}
+        {...inputProps}
       />
       {/* Display Image Previews with Delete Buttons */}
       {imagePreviews.length > 0 && (
