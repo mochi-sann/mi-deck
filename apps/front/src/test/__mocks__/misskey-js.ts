@@ -45,7 +45,9 @@ export class Stream {
     this.listeners[event].push(cb);
   }
   emit(event: string, ...args: unknown[]) {
-    (this.listeners[event] || []).forEach((cb) => cb(...args));
+    (this.listeners[event] || []).forEach((cb) => {
+      cb(...args);
+    });
   }
   close() {
     this.listeners = {};

@@ -32,7 +32,14 @@
     },
     "autoLoadImages": {
       "title": "画像の自動読み込み",
-      "description": "ノートの画像を自動的に読み込みます"
+      "description": "タイムラインの画像を自動的に読み込みます"
+    },
+    "nsfw": {
+      "title": "NSFWコンテンツ",
+      "description": "センシティブなコンテンツの表示方法を制御します",
+      "show": "表示",
+      "blur": "画像をぼかす",
+      "hide": "投稿を隠す"
     },
     "updateInterval": {
       "title": "更新間隔",
