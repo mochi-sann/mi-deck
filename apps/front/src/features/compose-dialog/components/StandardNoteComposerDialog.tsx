@@ -286,6 +286,7 @@ export function StandardNoteComposerDialog({
             // prevent default auto focus to allow manual control
             event.preventDefault();
           }}
+          className="max-h-[100vh] overflow-y-scroll"
         >
           <Form {...form}>
             <form onSubmit={handleSubmit} className="space-y-4">
