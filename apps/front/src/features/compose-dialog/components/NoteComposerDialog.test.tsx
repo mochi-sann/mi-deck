@@ -8,6 +8,8 @@ const mockRequest = vi.fn();
 const mockUseStorage = vi.fn();
 const mockUploadAndCompressFiles = vi.fn();
 const mockToggleRenote = vi.fn();
+const originalCreateObjectUrl = URL.createObjectURL;
+const mockCreateObjectUrl = vi.fn(() => "blob:mock");
 
 vi.mock("@/lib/storage/context", () => ({
   useStorage: () => mockUseStorage(),
@@ -60,6 +62,12 @@ const ResizeObserverMock = class {
 
 beforeAll(() => {
   vi.stubGlobal("ResizeObserver", ResizeObserverMock);
+  // JSDOM には createObjectURL がないためモックする
+  URL.createObjectURL = mockCreateObjectUrl;
+});
+
+afterAll(() => {
+  URL.createObjectURL = originalCreateObjectUrl;
 });
 
 const createNote = (overrides: Partial<Note> = {}): Note =>
