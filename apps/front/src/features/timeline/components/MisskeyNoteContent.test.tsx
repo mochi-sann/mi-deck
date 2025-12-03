@@ -135,7 +135,6 @@ describe("MisskeyNoteContent NSFW Behavior", () => {
     // Check initial state
     expect(image).toHaveClass("blur-xl");
     expect(label).toBeInTheDocument();
-    expect(imageContainer).toHaveClass("cursor-pointer");
 
     // Click to unblur
     fireEvent.click(imageContainer);

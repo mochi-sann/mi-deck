@@ -1,19 +1,19 @@
 import { useAtomValue } from "jotai";
-import { EyeOff } from "lucide-react";
 import type { Note } from "misskey-js/entities.js";
 import { isPureRenote } from "misskey-js/note.js";
 import { memo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Button } from "@/components/ui/button";
 import { CustomEmojiCtx } from "@/features/emoji";
 import { MfmText } from "@/features/mfm";
 import { NoteReplySection } from "@/features/notes/components/NoteReplySection";
 import { ReactionButton } from "@/features/reactions/components/ReactionButton";
 import { timelineSettingsAtom } from "@/features/settings/stores/timelineSettings";
-import { cn } from "@/lib/utils";
 import { NoteReactions } from "../../reactions/components/NoteReactions";
 import { useMisskeyNoteEmojis } from "../hooks/useMisskeyNoteEmojis";
+import { AttachmentGallery } from "./AttachmentGallery";
+import { ImagePreviewDialog } from "./ImagePreviewDialog";
 import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
+import { NoteFile } from "./NoteAttachmentTypes";
+import { NsfwBarrier } from "./NsfwBarrier";
 import { RenoteMenu } from "./RenoteMenu";
 
 interface MisskeyNoteContentProps {
@@ -50,30 +50,25 @@ function MisskeyNoteContentBase({
   const user = note.user;
   const isRenote = isPureRenote(note);
   const settings = useAtomValue(timelineSettingsAtom);
-  const { t } = useTranslation("settings");
-  const { t: tTimeline } = useTranslation("timeline");
-  const isNsfw = note.cw || note.files?.some((f) => f.isSensitive);
+  const isNsfw =
+    Boolean(note.cw) || Boolean(note.files?.some((f) => f.isSensitive));
   const [isRevealed, setIsRevealed] = useState(false);
+  const [previewFile, setPreviewFile] = useState<NoteFile | null>(null);
+
+  const handleAttachmentAction = (file: NoteFile) => {
+    const shouldRevealOnBlur =
+      isNsfw && settings.nsfwBehavior === "blur" && !isRevealed;
+
+    if (shouldRevealOnBlur) {
+      setIsRevealed(true);
+      return;
+    }
+
+    setPreviewFile(file);
+  };
 
   if (isNsfw && settings.nsfwBehavior === "hide" && !isRevealed) {
-    return (
-      <div className="flex w-full flex-col gap-2 rounded-md border border-muted bg-muted/20 p-4">
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <EyeOff className="h-4 w-4" />
-          <span className="font-medium text-sm">
-            {t("timeline.nsfw.title")}
-          </span>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setIsRevealed(true)}
-          className="w-full sm:w-auto"
-        >
-          {t("timeline.nsfw.show")}
-        </Button>
-      </div>
-    );
+    return <NsfwBarrier onReveal={() => setIsRevealed(true)} />;
   }
 
   return (
@@ -95,54 +90,13 @@ function MisskeyNoteContentBase({
           <MfmText text={note.text} host={origin} emojis={emojis} />
         )}
         {note.files && note.files.length > 0 && (
-          <div className="space-y-2">
-            {note.files.map((file) => (
-              <button
-                key={file.id}
-                type="button"
-                className={cn(
-                  "relative overflow-hidden rounded-md",
-                  isNsfw &&
-                    settings.nsfwBehavior === "blur" &&
-                    !isRevealed &&
-                    "cursor-pointer",
-                )}
-                onClick={() => {
-                  if (isNsfw && settings.nsfwBehavior === "blur") {
-                    setIsRevealed(true);
-                  }
-                }}
-                onKeyDown={(e) => {
-                  if (
-                    isNsfw &&
-                    settings.nsfwBehavior === "blur" &&
-                    (e.key === "Enter" || e.key === " ")
-                  ) {
-                    setIsRevealed(true);
-                  }
-                }}
-              >
-                <img
-                  src={file.url}
-                  alt="Note Attachment"
-                  className={cn(
-                    "mt-2 h-auto max-w-full rounded-md border",
-                    isNsfw &&
-                      settings.nsfwBehavior === "blur" &&
-                      !isRevealed &&
-                      "blur-xl transition-all duration-300",
-                  )}
-                />
-                {isNsfw && settings.nsfwBehavior === "blur" && !isRevealed && (
-                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                    <span className="rounded-full bg-black/50 px-3 py-1 font-medium text-sm text-white backdrop-blur-sm">
-                      {tTimeline("sensitive")}
-                    </span>
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
+          <AttachmentGallery
+            files={note.files}
+            settings={settings}
+            isNsfw={isNsfw}
+            isRevealed={isRevealed}
+            onAttachmentClick={handleAttachmentAction}
+          />
         )}
         {note.renote ? (
           <RenotePreview
@@ -164,6 +118,10 @@ function MisskeyNoteContentBase({
           </div>
         )}
       </div>
+      <ImagePreviewDialog
+        file={previewFile}
+        onClose={() => setPreviewFile(null)}
+      />
     </div>
   );
 }
