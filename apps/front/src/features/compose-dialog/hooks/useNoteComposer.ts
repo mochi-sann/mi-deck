@@ -2,7 +2,15 @@ import { valibotResolver } from "@hookform/resolvers/valibot";
 import { APIClient } from "misskey-js/api.js";
 import type { Note } from "misskey-js/entities.js";
 import type { BaseSyntheticEvent } from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as v from "valibot";
@@ -33,7 +41,7 @@ export interface NoteComposerFormValues {
 interface UseNoteComposerReturn {
   form: UseFormReturn<NoteComposerFormValues>;
   files: File[];
-  setFiles: (files: File[]) => void;
+  setFiles: Dispatch<SetStateAction<File[]>>;
   isSubmitting: boolean;
   submitError: string | null;
   clearSubmitError: () => void;
