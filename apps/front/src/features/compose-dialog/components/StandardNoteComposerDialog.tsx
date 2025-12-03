@@ -1,5 +1,5 @@
 import { ImagePlus } from "lucide-react";
-import type { DragEvent, ReactElement } from "react";
+import type { ClipboardEvent, DragEvent, ReactElement } from "react";
 import {
   cloneElement,
   isValidElement,
@@ -263,6 +263,18 @@ export function StandardNoteComposerDialog({
     setIsDraggingFile(false);
   }, []);
 
+  const handlePasteFiles = useCallback(
+    (event: ClipboardEvent<HTMLTextAreaElement>) => {
+      if (formDisabled) return;
+      const pastedFiles = Array.from(event.clipboardData?.files ?? []).filter(
+        (file) => file.type.startsWith("image/"),
+      );
+      if (pastedFiles.length === 0) return;
+      setFiles((prev) => [...prev, ...pastedFiles]);
+    },
+    [formDisabled, setFiles],
+  );
+
   const handleServerSelect = useCallback(
     (serverId: string) => {
       form.setValue("serverSessionId", serverId, {
@@ -471,6 +483,7 @@ export function StandardNoteComposerDialog({
                             minLength={0}
                             className="max-h-[200px] min-h-[140px]"
                             disabled={disabled}
+                            onPaste={handlePasteFiles}
                             ref={(element) => {
                               field.ref(element);
                               noteTextareaRef.current = element;
