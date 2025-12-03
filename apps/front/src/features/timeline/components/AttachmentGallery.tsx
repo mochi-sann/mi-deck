@@ -38,7 +38,10 @@ export function AttachmentGallery({
         <button
           key={file.id}
           type="button"
-          className="relative overflow-hidden rounded-md cursor-zoom-in"
+          className={cn(
+            "relative overflow-hidden rounded-md",
+            shouldBlurImages ? "cursor-pointer cursor-zoom-in" : "cursor-zoom-in",
+          )}
           onClick={() => onAttachmentClick(file)}
           onKeyDown={(event) => handleKeyDown(event, file)}
           aria-label="画像を拡大表示"
