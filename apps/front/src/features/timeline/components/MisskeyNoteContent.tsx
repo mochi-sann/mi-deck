@@ -5,6 +5,7 @@ import { isPureRenote } from "misskey-js/note.js";
 import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { CustomEmojiCtx } from "@/features/emoji";
 import { MfmText } from "@/features/mfm";
 import { NoteReplySection } from "@/features/notes/components/NoteReplySection";
@@ -22,6 +23,8 @@ interface MisskeyNoteContentProps {
   emojis: Record<string, string>;
   depth?: number;
 }
+
+type NoteFile = NonNullable<Note["files"]>[number];
 
 const MAX_RENOTE_PREVIEW_DEPTH = 1;
 
@@ -54,6 +57,19 @@ function MisskeyNoteContentBase({
   const { t: tTimeline } = useTranslation("timeline");
   const isNsfw = note.cw || note.files?.some((f) => f.isSensitive);
   const [isRevealed, setIsRevealed] = useState(false);
+  const [previewFile, setPreviewFile] = useState<NoteFile | null>(null);
+
+  const handleAttachmentAction = (file: NoteFile) => {
+    const shouldRevealOnBlur =
+      isNsfw && settings.nsfwBehavior === "blur" && !isRevealed;
+
+    if (shouldRevealOnBlur) {
+      setIsRevealed(true);
+      return;
+    }
+
+    setPreviewFile(file);
+  };
 
   if (isNsfw && settings.nsfwBehavior === "hide" && !isRevealed) {
     return (
@@ -97,30 +113,20 @@ function MisskeyNoteContentBase({
         {note.files && note.files.length > 0 && (
           <div className="space-y-2">
             {note.files.map((file) => (
-              <button
-                key={file.id}
-                type="button"
-                className={cn(
-                  "relative overflow-hidden rounded-md",
-                  isNsfw &&
-                    settings.nsfwBehavior === "blur" &&
-                    !isRevealed &&
-                    "cursor-pointer",
-                )}
-                onClick={() => {
-                  if (isNsfw && settings.nsfwBehavior === "blur") {
-                    setIsRevealed(true);
-                  }
-                }}
+                <button
+                  key={file.id}
+                  type="button"
+                  className={cn(
+                    "relative overflow-hidden rounded-md cursor-zoom-in",
+                  )}
+                onClick={() => handleAttachmentAction(file)}
                 onKeyDown={(e) => {
-                  if (
-                    isNsfw &&
-                    settings.nsfwBehavior === "blur" &&
-                    (e.key === "Enter" || e.key === " ")
-                  ) {
-                    setIsRevealed(true);
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleAttachmentAction(file);
                   }
                 }}
+                aria-label="画像を拡大表示"
               >
                 <img
                   src={file.url}
@@ -164,6 +170,29 @@ function MisskeyNoteContentBase({
           </div>
         )}
       </div>
+      <Dialog
+        open={Boolean(previewFile)}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            setPreviewFile(null);
+          }
+        }}
+      >
+        <DialogContent
+          className="max-w-[95vw] p-0 shadow-none"
+          onClick={() => setPreviewFile(null)}
+        >
+          {previewFile && (
+            <div className="relative flex max-h-[90vh] w-full cursor-zoom-out items-center justify-center overflow-hidden rounded-lg bg-background p-4">
+              <img
+                src={previewFile.url}
+                alt={previewFile.name || "Note Attachment"}
+                className="h-full w-full max-h-[90vh] max-w-[90vw] object-contain"
+              />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
