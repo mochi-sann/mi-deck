@@ -8,6 +8,8 @@ import type { CustomEmojiContext } from "@/types/emoji";
 import { useMisskeyNoteEmojis } from "../hooks/useMisskeyNoteEmojis";
 import { MisskeyNoteContent } from "./MisskeyNoteContent";
 import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
+import { NoteContextMenu } from "./NoteContextMenu";
+import { resolveNoteUrl } from "./note-utils";
 
 type MisskeyNoteDisplayProps = {
   note: Note;
@@ -37,41 +39,43 @@ function MisskeyNoteBase({
 
   return (
     <CustomEmojiCtx.Provider value={providerValue}>
-      <article
-        className={cn(
-          "flex items-start gap-3 border-b p-3 transition-colors duration-200 hover:bg-muted/50",
-        )}
-      >
-        <div>
-          <MisskeyNoteHeader user={note.user} note={note} />
-        </div>
-        <div className="min-w-0 flex-1">
-          {note.renote && (
-            <div className="mb-1 flex items-center gap-1 text-muted-foreground text-xs">
-              <Repeat2 className="h-3.5 w-3.5" aria-hidden />
-              <span>Renote</span>
-            </div>
+      <NoteContextMenu note={note} origin={origin}>
+        <article
+          className={cn(
+            "flex items-start gap-3 border-b p-3 transition-colors duration-200 hover:bg-muted/50",
           )}
-          {note.replyId && (
-            <div className="mb-1 flex items-center gap-1 text-muted-foreground text-xs">
-              <CornerUpRight className="h-3.5 w-3.5" aria-hidden />
-              {replyUrl ? (
-                <a
-                  href={replyUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="underline underline-offset-2 hover:text-foreground"
-                >
-                  {t("reply.badge")}
-                </a>
-              ) : (
-                <span>{t("reply.badge")}</span>
-              )}
-            </div>
-          )}
-          <MisskeyNoteContent note={note} origin={origin} emojis={emojis} />
-        </div>
-      </article>
+        >
+          <div>
+            <MisskeyNoteHeader user={note.user} note={note} />
+          </div>
+          <div className="min-w-0 flex-1">
+            {note.renote && (
+              <div className="mb-1 flex items-center gap-1 text-muted-foreground text-xs">
+                <Repeat2 className="h-3.5 w-3.5" aria-hidden />
+                <span>Renote</span>
+              </div>
+            )}
+            {note.replyId && (
+              <div className="mb-1 flex items-center gap-1 text-muted-foreground text-xs">
+                <CornerUpRight className="h-3.5 w-3.5" aria-hidden />
+                {replyUrl ? (
+                  <a
+                    href={replyUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline underline-offset-2 hover:text-foreground"
+                  >
+                    {t("reply.badge")}
+                  </a>
+                ) : (
+                  <span>{t("reply.badge")}</span>
+                )}
+              </div>
+            )}
+            <MisskeyNoteContent note={note} origin={origin} emojis={emojis} />
+          </div>
+        </article>
+      </NoteContextMenu>
     </CustomEmojiCtx.Provider>
   );
 }
@@ -131,25 +135,6 @@ const areMisskeyNotePropsEqual = (
   }
 
   return true;
-};
-
-const resolveNoteUrl = (
-  note: Partial<Note> & { id: string },
-  origin: string,
-): string => {
-  if ("url" in note && note.url) return note.url as string;
-  if ("uri" in note && note.uri) return note.uri as string;
-
-  const hasProtocol = /^https?:\/\//.test(origin);
-  const normalizedOrigin = origin
-    ? (hasProtocol ? origin : `https://${origin}`).replace(/\/$/, "")
-    : "";
-
-  if (!normalizedOrigin) {
-    return `/notes/${note.id}`;
-  }
-
-  return `${normalizedOrigin}/notes/${note.id}`;
 };
 
 const MisskeyNoteDisplay = memo(MisskeyNoteBase);

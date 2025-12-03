@@ -109,5 +109,21 @@
       "actionUndo": "Undo"
     }
   },
-  "sensitive": "Sensitive"
+  "sensitive": "Sensitive",
+  "contextMenu": {
+    "label": "Note context menu",
+    "renote": "Renote",
+    "quoteRenote": "Quote renote",
+    "bookmark": "Bookmark",
+    "bookmarkSuccess": "Bookmarked note",
+    "bookmarkFailure": "Failed to bookmark note",
+    "mute": "Mute",
+    "muteSuccess": "Muted {{user}}",
+    "muteFailure": "Failed to mute user",
+    "viewProfile": "View profile",
+    "copyUrl": "Copy note URL",
+    "copySuccess": "Copied note URL",
+    "copyFailure": "Failed to copy note URL",
+    "noServer": "No authenticated server available"
+  }
 }
