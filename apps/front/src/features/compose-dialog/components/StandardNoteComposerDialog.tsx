@@ -1,4 +1,5 @@
-import type { ReactElement } from "react";
+import { ImagePlus } from "lucide-react";
+import type { DragEvent, ReactElement } from "react";
 import {
   cloneElement,
   isValidElement,
@@ -10,6 +11,8 @@ import {
   useState,
 } from "react";
 import { useTranslation } from "react-i18next";
+import { FileUpload } from "@/components/parts/FileUpload";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -32,7 +35,6 @@ import {
 } from "../hooks/useNoteComposer";
 import type { NoteComposerDialogProps } from "../lib/note-composer-types";
 import { ComposerFieldGroup } from "./ComposerFieldGroup";
-import { ComposerAttachmentsField } from "./standard/ComposerAttachmentsField";
 import { ComposerFieldActions } from "./standard/ComposerFieldActions";
 import { ComposerLocalOnlyField } from "./standard/ComposerLocalOnlyField";
 import { createComposerFieldIds } from "./standard/types";
@@ -99,6 +101,7 @@ export function StandardNoteComposerDialog({
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
   const [isServerPopoverOpen, setIsServerPopoverOpen] = useState(false);
   const [isVisibilityPopoverOpen, setIsVisibilityPopoverOpen] = useState(false);
+  const [isDraggingFile, setIsDraggingFile] = useState(false);
 
   const {
     form,
@@ -216,6 +219,48 @@ export function StandardNoteComposerDialog({
 
   const registerFileInput = useCallback((element: HTMLInputElement | null) => {
     fileInputRef.current = element;
+  }, []);
+
+  const handleDragOverFiles = useCallback(
+    (event: DragEvent<HTMLElement>) => {
+      if (formDisabled) return;
+      if (event.dataTransfer?.types?.includes("Files")) {
+        event.preventDefault();
+        setIsDraggingFile(true);
+      }
+    },
+    [formDisabled],
+  );
+
+  const handleDropFiles = useCallback(
+    (event: DragEvent<HTMLElement>) => {
+      if (formDisabled) {
+        setIsDraggingFile(false);
+        return;
+      }
+
+      const droppedFiles = Array.from(event.dataTransfer?.files ?? []).filter(
+        (file) => file.type.startsWith("image/"),
+      );
+
+      if (droppedFiles.length === 0) {
+        setIsDraggingFile(false);
+        return;
+      }
+
+      event.preventDefault();
+      setFiles((prev) => [...prev, ...droppedFiles]);
+      setIsDraggingFile(false);
+    },
+    [formDisabled, setFiles],
+  );
+
+  const handleDragLeaveFiles = useCallback((event: DragEvent<HTMLElement>) => {
+    const nextTarget = event.relatedTarget as Node | null;
+    if (nextTarget && event.currentTarget.contains(nextTarget)) {
+      return;
+    }
+    setIsDraggingFile(false);
   }, []);
 
   const handleServerSelect = useCallback(
@@ -399,7 +444,18 @@ export function StandardNoteComposerDialog({
                         />
                       }
                     >
-                      <div className="flex flex-col gap-3">
+                      <fieldset
+                        className={cn(
+                          "flex flex-col gap-3 rounded-md border-0 p-0",
+                          isDraggingFile
+                            ? "ring-2 ring-ring/50 ring-offset-2 ring-offset-background"
+                            : undefined,
+                        )}
+                        onDragOver={handleDragOverFiles}
+                        onDragEnter={handleDragOverFiles}
+                        onDragLeave={handleDragLeaveFiles}
+                        onDrop={handleDropFiles}
+                      >
                         <ComposerLocalOnlyField
                           form={form}
                           fieldIds={fieldIds}
@@ -421,21 +477,56 @@ export function StandardNoteComposerDialog({
                             }}
                           />
                         </FormControl>
-                      </div>
+                        <div
+                          className={cn(
+                            "flex flex-col gap-2 rounded-md border border-border/70 border-dashed bg-muted/20 p-3",
+                            formDisabled ? "opacity-60" : undefined,
+                          )}
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2 font-medium text-sm">
+                              <ImagePlus className="size-4" />
+                              <span>{t("compose.attachmentsLabel")}</span>
+                              <Badge variant="secondary">{files.length}</Badge>
+                            </div>
+                            <span
+                              id={fieldIds.attachments.status}
+                              className="text-muted-foreground text-xs"
+                            >
+                              {fileStatusText}
+                            </span>
+                          </div>
+                          <Text
+                            affects="muted"
+                            id={fieldIds.attachments.description}
+                            className="text-muted-foreground text-xs"
+                          >
+                            {attachmentsDescription}
+                          </Text>
+                          <FormControl>
+                            <FileUpload
+                              files={files}
+                              onFilesChange={setFiles}
+                              hideLabel
+                              id={fieldIds.attachments.control}
+                              disabled={formDisabled}
+                              inputRef={registerFileInput}
+                              inputProps={{
+                                "aria-describedby":
+                                  [
+                                    fieldIds.attachments.description,
+                                    fieldIds.attachments.status,
+                                  ]
+                                    .filter(Boolean)
+                                    .join(" ") || undefined,
+                              }}
+                            />
+                          </FormControl>
+                        </div>
+                      </fieldset>
                     </ComposerFieldGroup>
                   );
                 }}
-              />
-
-              <ComposerAttachmentsField
-                t={t}
-                files={files}
-                fileStatusText={fileStatusText}
-                description={attachmentsDescription}
-                fieldIds={fieldIds}
-                disabled={formDisabled}
-                onFilesChange={setFiles}
-                registerFileInput={registerFileInput}
               />
 
               {submitError ? (
