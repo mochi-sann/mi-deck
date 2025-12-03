@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { Note } from "misskey-js/entities.js";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -210,6 +210,42 @@ describe("NoteComposerDialog", () => {
     await waitFor(() => {
       const groups = document.querySelectorAll("[data-slot='input-group']");
       expect(groups.length).toBeGreaterThan(0);
+    });
+  });
+
+  it("attaches image when pasted into the textarea", async () => {
+    mockRequest.mockResolvedValue({});
+
+    render(
+      <NoteComposerDialog
+        mode="create"
+        open
+        origin="https://misskey.example"
+      />,
+    );
+
+    const user = userEvent.setup();
+    const textarea = await screen.findByRole("textbox");
+    await user.type(textarea, "text");
+
+    const imageFile = new File(["dummy"], "pasted.png", { type: "image/png" });
+    fireEvent.paste(textarea, {
+      clipboardData: {
+        files: [imageFile],
+        types: ["Files"],
+      } as unknown as DataTransfer,
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: "compose.submit.create" }),
+    );
+
+    await waitFor(() => {
+      expect(mockUploadAndCompressFiles).toHaveBeenCalledWith(
+        [imageFile],
+        "https://misskey.example",
+        "token",
+      );
     });
   });
 });
