@@ -109,21 +109,5 @@
       "actionUndo": "取り消す"
     }
   },
-  "sensitive": "センシティブ",
-  "contextMenu": {
-    "label": "ノートコンテキストメニュー",
-    "renote": "リノート",
-    "quoteRenote": "引用リノート",
-    "bookmark": "ブックマーク",
-    "bookmarkSuccess": "ノートをブックマークしました",
-    "bookmarkFailure": "ブックマークに失敗しました",
-    "mute": "ミュート",
-    "muteSuccess": "{{user}}をミュートしました",
-    "muteFailure": "ミュートに失敗しました",
-    "viewProfile": "プロフィールを見る",
-    "copyUrl": "ノートURLをコピー",
-    "copySuccess": "ノートURLをコピーしました",
-    "copyFailure": "URLのコピーに失敗しました",
-    "noServer": "操作可能なサーバーがありません"
-  }
+  "sensitive": "センシティブ"
 }
