@@ -50,7 +50,8 @@ function MisskeyNoteContentBase({
   const user = note.user;
   const isRenote = isPureRenote(note);
   const settings = useAtomValue(timelineSettingsAtom);
-  const isNsfw = note.cw || note.files?.some((f) => f.isSensitive);
+  const isNsfw =
+    Boolean(note.cw) || Boolean(note.files?.some((f) => f.isSensitive));
   const [isRevealed, setIsRevealed] = useState(false);
   const [previewFile, setPreviewFile] = useState<NoteFile | null>(null);
 
