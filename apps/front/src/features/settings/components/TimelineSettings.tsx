@@ -1,3 +1,4 @@
+import { useAtom } from "jotai";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -10,9 +11,19 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import {
+  type NsfwBehavior,
+  timelineSettingsAtom,
+} from "../stores/timelineSettings";
 
 export function TimelineSettings() {
   const { t } = useTranslation("settings");
+  const [settings, setSettings] = useAtom(timelineSettingsAtom);
+
+  const handleNsfwChange = (value: string) => {
+    setSettings((prev) => ({ ...prev, nsfwBehavior: value as NsfwBehavior }));
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -39,6 +50,28 @@ export function TimelineSettings() {
             </p>
           </div>
           <Switch defaultChecked />
+        </div>
+
+        <Separator />
+
+        <div className="space-y-2">
+          <Label>{t("timeline.nsfw.title")}</Label>
+          <p className="text-muted-foreground text-sm">
+            {t("timeline.nsfw.description")}
+          </p>
+          <Select
+            value={settings.nsfwBehavior}
+            onValueChange={handleNsfwChange}
+          >
+            <SelectTrigger className="w-48">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="show">{t("timeline.nsfw.show")}</SelectItem>
+              <SelectItem value="blur">{t("timeline.nsfw.blur")}</SelectItem>
+              <SelectItem value="hide">{t("timeline.nsfw.hide")}</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <Separator />
