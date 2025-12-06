@@ -124,4 +124,77 @@ describe("useNoteEmojis", () => {
       expect(mockFetchEmojis).not.toHaveBeenCalled();
     });
   });
+
+  it("should NOT fetch emoji for REMOTE reaction (containing @)", async () => {
+    const note = createMockNote({
+      text: "Hello",
+      emojis: {},
+      reactionEmojis: {},
+      reactions: {
+        ":remote_reaction@remote:": 1,
+      },
+    });
+    const origin = "misskey.example.com";
+
+    renderHook(() => useNoteEmojis(note, origin));
+
+    await waitFor(() => {
+      expect(mockFetchEmojis).not.toHaveBeenCalled();
+    });
+  });
+
+  it("should fetch emoji for LOCAL reaction", async () => {
+    const note = createMockNote({
+      text: "Hello",
+      emojis: {},
+      reactionEmojis: {},
+      reactions: {
+        ":local_reaction:": 1,
+      },
+    });
+    const origin = "misskey.example.com";
+
+    renderHook(() => useNoteEmojis(note, origin));
+
+    await waitFor(() => {
+      expect(mockFetchEmojis).toHaveBeenCalledWith(["local_reaction"]);
+    });
+  });
+
+  it("should correctly identify and fetch ONLY valid local custom emojis from reactions", async () => {
+    const note = createMockNote({
+      text: "Hello",
+      emojis: {},
+      reactionEmojis: {},
+      reactions: {
+        ":local_reaction:": 1, // Local custom emoji -> Should fetch 'local_reaction'
+        ":remote_reaction@remote:": 1, // Remote custom emoji -> Should IGNORE
+        "👍": 1, // Standard emoji -> Should IGNORE
+        ":malformed": 1, // Malformed -> Should IGNORE
+        "malformed:": 1, // Malformed -> Should IGNORE
+        ":another_local:": 1, // Another local -> Should fetch 'another_local'
+        ":local_alias@.:": 1, // Local alias with @. -> Should fetch 'local_alias'
+        "other@host": 1, // Plain text like user@host -> Should IGNORE
+      },
+    });
+    const origin = "misskey.example.com";
+
+    renderHook(() => useNoteEmojis(note, origin));
+
+    await waitFor(() => {
+      // It should be called with an array containing exactly the two local emoji names
+      // The order might depend on Set iteration, so we check for array containing members
+      expect(mockFetchEmojis).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          "local_reaction",
+          "another_local",
+          "local_alias",
+        ]),
+      );
+      // Ensure strictly only those two were requested in that call (length check)
+      // Note: toHaveBeenCalledWith matches arguments. If we want to be strict about content:
+      const lastCall = mockFetchEmojis.mock.calls[0][0]; // First argument of first call
+      expect(lastCall).toHaveLength(3);
+    });
+  });
 });
