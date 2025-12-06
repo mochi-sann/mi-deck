@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-
-import type { NoteFile } from "./NoteAttachmentTypes";
 import { ImagePreviewDialog } from "./ImagePreviewDialog";
+import type { NoteFile } from "./NoteAttachmentTypes";
 
 const meta = {
   title: "Parts/Timeline/ImagePreviewDialog",

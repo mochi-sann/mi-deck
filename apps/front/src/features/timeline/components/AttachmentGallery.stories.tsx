@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { TimelineSettings } from "@/features/settings/stores/timelineSettings";
-
-import type { NoteFile } from "./NoteAttachmentTypes";
 import { AttachmentGallery } from "./AttachmentGallery";
+import type { NoteFile } from "./NoteAttachmentTypes";
 
 const meta = {
   title: "Parts/Timeline/AttachmentGallery",
