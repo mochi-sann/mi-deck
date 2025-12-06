@@ -25,7 +25,10 @@ export function AttachmentGallery({
   const shouldBlurImages =
     isNsfw && settings.nsfwBehavior === "blur" && !isRevealed;
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>, file: NoteFile) => {
+  const handleKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    file: NoteFile,
+  ) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       onAttachmentClick(file);
@@ -40,7 +43,9 @@ export function AttachmentGallery({
           type="button"
           className={cn(
             "relative overflow-hidden rounded-md",
-            shouldBlurImages ? "cursor-pointer cursor-zoom-in" : "cursor-zoom-in",
+            shouldBlurImages
+              ? "cursor-pointer cursor-zoom-in"
+              : "cursor-zoom-in",
           )}
           onClick={() => onAttachmentClick(file)}
           onKeyDown={(event) => handleKeyDown(event, file)}

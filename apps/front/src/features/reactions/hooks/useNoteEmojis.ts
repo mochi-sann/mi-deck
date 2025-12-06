@@ -9,6 +9,7 @@ import { GetReactionsWithCounts } from "./useNoteReactions";
  */
 export function useNoteEmojis(note: Note, origin: string) {
   const user = note.user;
+
   const host = origin || "";
   const { fetchEmojis } = useCustomEmojis(host);
   const [customEmojis, setCustomEmojis] = useState<EmojiResult>({});
@@ -56,7 +57,9 @@ export function useNoteEmojis(note: Note, origin: string) {
 
     const allEmojiNames = new Set<string>();
     for (const text of textsToCheck) {
-      extractCustomEmojiNames(text).forEach((name) => allEmojiNames.add(name));
+      extractCustomEmojiNames(text).forEach((name) => {
+        allEmojiNames.add(name);
+      });
     }
 
     return Array.from(allEmojiNames);
@@ -64,8 +67,25 @@ export function useNoteEmojis(note: Note, origin: string) {
 
   // Fetch emojis when emoji names change
   useEffect(() => {
+    // Filter out emojis that are already known, checking both exact match and lowercase match
+    const missingEmojiNames = extractedEmojiNames.filter(
+      (name) => !proxiedEmojis[name] && !proxiedEmojis[name.toLowerCase()],
+    );
+
+    // DEBUG LOGGING
     if (extractedEmojiNames.length > 0) {
-      fetchEmojis(extractedEmojiNames)
+      console.log("[useNoteEmojis] Debug:", {
+        origin,
+        host,
+        noteId: note.id,
+        extractedEmojiNames,
+        proxiedEmojisKeys: Object.keys(proxiedEmojis),
+        missingEmojiNames,
+      });
+    }
+
+    if (missingEmojiNames.length > 0) {
+      fetchEmojis(missingEmojiNames)
         .then(setCustomEmojis)
         .catch((error) => {
           console.error("Failed to fetch emojis:", error);
@@ -73,7 +93,7 @@ export function useNoteEmojis(note: Note, origin: string) {
           setCustomEmojis({});
         });
     }
-  }, [extractedEmojiNames, fetchEmojis]);
+  }, [extractedEmojiNames, fetchEmojis, proxiedEmojis, origin, host, note.id]);
 
   return {
     allEmojis,
