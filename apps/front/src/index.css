@@ -119,7 +119,7 @@ body {
 
 *::-webkit-scrollbar {
   display: block;
-  width: 16px;
+  width: 6px;
 }
 
 *::-webkit-scrollbar-button {
