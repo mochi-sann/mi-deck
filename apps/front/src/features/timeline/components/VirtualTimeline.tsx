@@ -2,6 +2,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { type Note } from "misskey-js/entities.js";
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import Text from "@/components/ui/text";
 import { cn } from "@/lib/utils";
@@ -82,7 +83,7 @@ export function VirtualTimeline({
   }
 
   return (
-    <div ref={parentRef} className="h-full overflow-y-auto">
+    <ScrollArea viewportRef={parentRef} className="h-full overflow-y-auto">
       <div
         style={{
           height: `${rowVirtualizer.getTotalSize()}px`,
@@ -132,6 +133,6 @@ export function VirtualTimeline({
           </Button>
         </div>
       )}
-    </div>
+    </ScrollArea>
   );
 }
