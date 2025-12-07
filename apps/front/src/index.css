@@ -112,7 +112,6 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-
 body {
   overflow: overlay;
 }
@@ -139,7 +138,6 @@ body {
   border: 1px solid rgb(255 255 255 / 25%);
   border-radius: 24px;
 }
-
 
 @layer base {
   .word-break-word {
