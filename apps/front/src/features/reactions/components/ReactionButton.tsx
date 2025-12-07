@@ -1,6 +1,6 @@
 import { Heart } from "lucide-react";
 import type { EmojiSimple, Note } from "misskey-js/entities.js";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -16,6 +16,8 @@ interface ReactionButtonProps {
   note: Note;
   origin: string;
   emojis?: Record<string, string>;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 const QUICK_REACTIONS = ["❤️", "👍", "👎", "😂", "😢", "😮", "😡", "👏"];
@@ -24,8 +26,14 @@ function ReactionButtonBase({
   note,
   origin,
   emojis = {},
+  open,
+  onOpenChange,
 }: ReactionButtonProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(open ?? false);
+  useEffect(() => {
+    if (open === undefined) return;
+    setIsOpen(open);
+  }, [open]);
   const {
     myReaction,
     totalReactionCount,
@@ -41,21 +49,30 @@ function ReactionButtonBase({
 
   const isLoading = isReacting || isRemoving;
   const hasMyReaction = !!myReaction;
+  const isControlled = open !== undefined;
+  const resolvedOpen = isControlled ? (open ?? false) : isOpen;
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!isControlled) {
+      setIsOpen(nextOpen);
+    }
+    onOpenChange?.(nextOpen);
+  };
 
   const handleQuickReaction = async (reaction: string) => {
     await toggleReaction(reaction);
     await refetchReactions();
-    setIsOpen(false);
+    handleOpenChange(false);
   };
 
   const handleCustomEmojiSelect = async (emoji: EmojiSimple) => {
     await toggleReaction(`:${emoji.name}:`);
     await refetchReactions();
-    setIsOpen(false);
+    handleOpenChange(false);
   };
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <Popover open={resolvedOpen} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"

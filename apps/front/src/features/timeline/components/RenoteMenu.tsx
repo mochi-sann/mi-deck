@@ -1,6 +1,6 @@
 import { MessageSquareQuote, Repeat2 } from "lucide-react";
 import type { Note } from "misskey-js/entities.js";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,13 +21,55 @@ import { cn } from "@/lib/utils";
 interface RenoteMenuProps {
   note: Note;
   origin: string;
+  renoteAction?: ReturnType<typeof useRenoteAction>;
+  renoteDialogOpen?: boolean;
+  quoteDialogOpen?: boolean;
+  onRenoteDialogOpenChange?: (open: boolean) => void;
+  onQuoteDialogOpenChange?: (open: boolean) => void;
 }
 
-export function RenoteMenu({ note, origin }: RenoteMenuProps) {
+export function RenoteMenu({
+  note,
+  origin,
+  renoteAction,
+  renoteDialogOpen,
+  quoteDialogOpen,
+  onRenoteDialogOpenChange,
+  onQuoteDialogOpenChange,
+}: RenoteMenuProps) {
   const { t } = useTranslation("timeline");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [renoteDialogOpen, setRenoteDialogOpen] = useState(false);
-  const [quoteDialogOpen, setQuoteDialogOpen] = useState(false);
+  const [internalRenoteDialogOpen, setInternalRenoteDialogOpen] = useState(
+    renoteDialogOpen ?? false,
+  );
+  const [internalQuoteDialogOpen, setInternalQuoteDialogOpen] = useState(
+    quoteDialogOpen ?? false,
+  );
+
+  const renoteDialogs = {
+    renote: renoteDialogOpen ?? internalRenoteDialogOpen,
+    quote: quoteDialogOpen ?? internalQuoteDialogOpen,
+  };
+
+  useEffect(() => {
+    if (renoteDialogOpen === undefined) return;
+    setInternalRenoteDialogOpen(renoteDialogOpen);
+  }, [renoteDialogOpen]);
+
+  useEffect(() => {
+    if (quoteDialogOpen === undefined) return;
+    setInternalQuoteDialogOpen(quoteDialogOpen);
+  }, [quoteDialogOpen]);
+
+  const setRenoteDialogOpen = (open: boolean) => {
+    setInternalRenoteDialogOpen(open);
+    onRenoteDialogOpenChange?.(open);
+  };
+
+  const setQuoteDialogOpen = (open: boolean) => {
+    setInternalQuoteDialogOpen(open);
+    onQuoteDialogOpenChange?.(open);
+  };
 
   const {
     renoteCount,
@@ -37,7 +79,7 @@ export function RenoteMenu({ note, origin }: RenoteMenuProps) {
     serversWithToken,
     determineInitialServerId,
     toggleRenote,
-  } = useRenoteAction({ note, origin });
+  } = renoteAction ?? useRenoteAction({ note, origin });
 
   const renoteContext = useMemo(
     () => ({
@@ -142,7 +184,7 @@ export function RenoteMenu({ note, origin }: RenoteMenuProps) {
 
       <NoteComposerDialog
         mode="renote"
-        open={renoteDialogOpen}
+        open={renoteDialogs.renote}
         disabled={(!hasServers && !isRenoted) || isProcessing}
         renoteTarget={note}
         origin={origin}
@@ -155,7 +197,7 @@ export function RenoteMenu({ note, origin }: RenoteMenuProps) {
 
       <NoteComposerDialog
         mode="quote"
-        open={quoteDialogOpen}
+        open={renoteDialogs.quote}
         disabled={!hasServers || isProcessing}
         replyTarget={note}
         quoteTarget={note}

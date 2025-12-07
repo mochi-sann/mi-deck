@@ -1,11 +1,12 @@
 import { MessageCircle } from "lucide-react";
 import type { Note } from "misskey-js/entities.js";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import Text from "@/components/ui/text";
 import { NoteComposerDialog } from "@/features/compose-dialog/components/NoteComposerDialog";
 import { useStorage } from "@/lib/storage/context";
+import type { MisskeyServerConnection } from "@/lib/storage/types";
 import { cn } from "@/lib/utils";
 
 const normalizeOrigin = (origin: string | undefined): string => {
@@ -18,16 +19,17 @@ const normalizeOrigin = (origin: string | undefined): string => {
   return normalized.toLowerCase();
 };
 
-interface NoteReplySectionProps {
-  note: Note;
-  origin: string;
+export interface ReplyAvailability {
+  isPureRenote: boolean;
+  serversWithToken: MisskeyServerConnection[];
+  initialServerId: string | undefined;
+  isReplyDisabled: boolean;
+  isLoading: boolean;
+  hasAvailableServer: boolean;
 }
 
-export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
-  const { t } = useTranslation("timeline");
+export function useReplyAvailability(note: Note, origin: string) {
   const { servers, currentServerId, isLoading } = useStorage();
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
   const noteOrigin = normalizeOrigin(origin);
   const serversWithToken = useMemo(
     () => servers.filter((server) => Boolean(server.accessToken)),
@@ -59,12 +61,67 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
     return serversWithToken[0]?.id;
   }, [noteOrigin, serversWithToken, currentServerId]);
 
+  const hasAvailableServer = serversWithToken.length > 0;
+  const isReplyDisabled = isLoading || !hasAvailableServer;
+
+  return {
+    isPureRenote,
+    serversWithToken,
+    initialServerId,
+    isReplyDisabled,
+    isLoading,
+    hasAvailableServer,
+  };
+}
+
+interface NoteReplySectionProps {
+  note: Note;
+  origin: string;
+  availability?: ReplyAvailability;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function NoteReplySection({
+  note,
+  origin,
+  availability,
+  open,
+  onOpenChange,
+}: NoteReplySectionProps) {
+  const { t } = useTranslation("timeline");
+  const {
+    isPureRenote,
+    isReplyDisabled,
+    isLoading,
+    serversWithToken,
+    initialServerId,
+  } = availability ?? useReplyAvailability(note, origin);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   if (isPureRenote) {
     return null;
   }
 
-  const hasAvailableServer = serversWithToken.length > 0;
-  const isReplyDisabled = isLoading || !hasAvailableServer;
+  const isControlled = open !== undefined;
+  const [internalOpen, setInternalOpen] = useState(open ?? false);
+
+  useEffect(() => {
+    if (open === undefined) return;
+    setInternalOpen(open);
+  }, [open]);
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!isControlled) {
+      setInternalOpen(nextOpen);
+    }
+    if (nextOpen) {
+      setSuccessMessage(null);
+    }
+    onOpenChange?.(nextOpen);
+  };
+
+  const dialogOpen = isControlled ? (open ?? false) : internalOpen;
 
   const baseButtonClass = cn(
     "h-8 px-3 text-muted-foreground hover:text-foreground",
@@ -94,11 +151,8 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
           origin={origin}
           initialServerId={initialServerId}
           onSuccess={() => setSuccessMessage(t("reply.success"))}
-          onOpenChange={(open) => {
-            if (open) {
-              setSuccessMessage(null);
-            }
-          }}
+          open={dialogOpen}
+          onOpenChange={handleOpenChange}
           showSuccessMessage={false}
         />
       </div>

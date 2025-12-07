@@ -1,10 +1,13 @@
 import { useAtomValue } from "jotai";
 import type { Note } from "misskey-js/entities.js";
-import { isPureRenote } from "misskey-js/note.js";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { CustomEmojiCtx } from "@/features/emoji";
 import { MfmText } from "@/features/mfm";
-import { NoteReplySection } from "@/features/notes/components/NoteReplySection";
+import { useRenoteAction } from "@/features/notes/actions/useRenoteAction";
+import {
+  NoteReplySection,
+  useReplyAvailability,
+} from "@/features/notes/components/NoteReplySection";
 import { ReactionButton } from "@/features/reactions/components/ReactionButton";
 import { timelineSettingsAtom } from "@/features/settings/stores/timelineSettings";
 import { NoteReactions } from "../../reactions/components/NoteReactions";
@@ -21,6 +24,16 @@ interface MisskeyNoteContentProps {
   origin: string;
   emojis: Record<string, string>;
   depth?: number;
+  renoteAction?: ReturnType<typeof useRenoteAction>;
+  replyAvailability?: ReturnType<typeof useReplyAvailability>;
+  reactionMenuOpen?: boolean;
+  onReactionMenuOpenChange?: (open: boolean) => void;
+  renoteDialogOpen?: boolean;
+  quoteDialogOpen?: boolean;
+  onRenoteDialogOpenChange?: (open: boolean) => void;
+  onQuoteDialogOpenChange?: (open: boolean) => void;
+  replyDialogOpen?: boolean;
+  onReplyDialogOpenChange?: (open: boolean) => void;
 }
 
 const MAX_RENOTE_PREVIEW_DEPTH = 1;
@@ -46,14 +59,95 @@ function MisskeyNoteContentBase({
   origin,
   emojis,
   depth = 0,
+  renoteAction,
+  replyAvailability,
+  reactionMenuOpen,
+  onReactionMenuOpenChange,
+  renoteDialogOpen,
+  quoteDialogOpen,
+  onRenoteDialogOpenChange,
+  onQuoteDialogOpenChange,
+  replyDialogOpen,
+  onReplyDialogOpenChange,
 }: MisskeyNoteContentProps) {
   const user = note.user;
-  const isRenote = isPureRenote(note);
+  const renoteActionState = renoteAction ?? useRenoteAction({ note, origin });
+  const replyState = replyAvailability ?? useReplyAvailability(note, origin);
+  const isRenote = replyState.isPureRenote;
   const settings = useAtomValue(timelineSettingsAtom);
   const isNsfw =
     Boolean(note.cw) || Boolean(note.files?.some((f) => f.isSensitive));
   const [isRevealed, setIsRevealed] = useState(false);
   const [previewFile, setPreviewFile] = useState<NoteFile | null>(null);
+  const [internalReactionOpen, setInternalReactionOpen] = useState(
+    reactionMenuOpen ?? false,
+  );
+  const [internalRenoteDialogOpen, setInternalRenoteDialogOpen] = useState(
+    renoteDialogOpen ?? false,
+  );
+  const [internalQuoteDialogOpen, setInternalQuoteDialogOpen] = useState(
+    quoteDialogOpen ?? false,
+  );
+  const [internalReplyDialogOpen, setInternalReplyDialogOpen] = useState(
+    replyDialogOpen ?? false,
+  );
+
+  useEffect(() => {
+    if (reactionMenuOpen === undefined) return;
+    setInternalReactionOpen(reactionMenuOpen);
+  }, [reactionMenuOpen]);
+
+  useEffect(() => {
+    if (renoteDialogOpen === undefined) return;
+    setInternalRenoteDialogOpen(renoteDialogOpen);
+  }, [renoteDialogOpen]);
+
+  useEffect(() => {
+    if (quoteDialogOpen === undefined) return;
+    setInternalQuoteDialogOpen(quoteDialogOpen);
+  }, [quoteDialogOpen]);
+
+  useEffect(() => {
+    if (replyDialogOpen === undefined) return;
+    setInternalReplyDialogOpen(replyDialogOpen);
+  }, [replyDialogOpen]);
+
+  const resolvedReactionOpen =
+    reactionMenuOpen ?? internalReactionOpen ?? false;
+  const resolvedRenoteDialogOpen =
+    renoteDialogOpen ?? internalRenoteDialogOpen ?? false;
+  const resolvedQuoteDialogOpen =
+    quoteDialogOpen ?? internalQuoteDialogOpen ?? false;
+  const resolvedReplyDialogOpen =
+    replyDialogOpen ?? internalReplyDialogOpen ?? false;
+
+  const handleReactionOpenChange = (open: boolean) => {
+    if (reactionMenuOpen === undefined) {
+      setInternalReactionOpen(open);
+    }
+    onReactionMenuOpenChange?.(open);
+  };
+
+  const handleRenoteDialogOpenChange = (open: boolean) => {
+    if (renoteDialogOpen === undefined) {
+      setInternalRenoteDialogOpen(open);
+    }
+    onRenoteDialogOpenChange?.(open);
+  };
+
+  const handleQuoteDialogOpenChange = (open: boolean) => {
+    if (quoteDialogOpen === undefined) {
+      setInternalQuoteDialogOpen(open);
+    }
+    onQuoteDialogOpenChange?.(open);
+  };
+
+  const handleReplyDialogOpenChange = (open: boolean) => {
+    if (replyDialogOpen === undefined) {
+      setInternalReplyDialogOpen(open);
+    }
+    onReplyDialogOpenChange?.(open);
+  };
 
   const handleAttachmentAction = (file: NoteFile) => {
     const shouldRevealOnBlur =
@@ -112,9 +206,29 @@ function MisskeyNoteContentBase({
         />
         {isRenote ? null : (
           <div className="flex items-center gap-2 pt-1">
-            <ReactionButton note={note} origin={origin} emojis={emojis} />
-            <RenoteMenu note={note} origin={origin} />
-            <NoteReplySection note={note} origin={origin} />
+            <ReactionButton
+              note={note}
+              origin={origin}
+              emojis={emojis}
+              open={resolvedReactionOpen}
+              onOpenChange={handleReactionOpenChange}
+            />
+            <RenoteMenu
+              note={note}
+              origin={origin}
+              renoteAction={renoteActionState}
+              renoteDialogOpen={resolvedRenoteDialogOpen}
+              quoteDialogOpen={resolvedQuoteDialogOpen}
+              onRenoteDialogOpenChange={handleRenoteDialogOpenChange}
+              onQuoteDialogOpenChange={handleQuoteDialogOpenChange}
+            />
+            <NoteReplySection
+              note={note}
+              origin={origin}
+              availability={replyState}
+              open={resolvedReplyDialogOpen}
+              onOpenChange={handleReplyDialogOpenChange}
+            />
           </div>
         )}
       </div>

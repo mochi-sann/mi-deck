@@ -1,13 +1,17 @@
 import { CornerUpRight, Repeat2 } from "lucide-react";
 import type { Note } from "misskey-js/entities.js";
-import { memo } from "react";
+import type React from "react";
+import { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CustomEmojiCtx } from "@/features/emoji";
+import { useRenoteAction } from "@/features/notes/actions/useRenoteAction";
+import { useReplyAvailability } from "@/features/notes/components/NoteReplySection";
 import { cn } from "@/lib/utils";
 import type { CustomEmojiContext } from "@/types/emoji";
 import { useMisskeyNoteEmojis } from "../hooks/useMisskeyNoteEmojis";
 import { MisskeyNoteContent } from "./MisskeyNoteContent";
 import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
+import { NoteContextMenu } from "./NoteContextMenu";
 
 type MisskeyNoteDisplayProps = {
   note: Note;
@@ -28,6 +32,16 @@ function MisskeyNoteBase({
     host: origin || null,
     emojis,
   };
+  const renoteAction = useRenoteAction({ note, origin });
+  const replyState = useReplyAvailability(note, origin);
+  const [reactionMenuOpen, setReactionMenuOpen] = useState(false);
+  const [renoteDialogOpen, setRenoteDialogOpen] = useState(false);
+  const [quoteDialogOpen, setQuoteDialogOpen] = useState(false);
+  const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+  const [contextMenuPosition, setContextMenuPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
 
   const replyTarget =
     note.reply || (note.replyId ? { id: note.replyId } : null);
@@ -35,12 +49,61 @@ function MisskeyNoteBase({
     ? resolveNoteUrl(replyTarget as Partial<Note> & { id: string }, origin)
     : null;
 
+  const hasServers = renoteAction.serversWithToken.length > 0;
+  const renoteDisabled =
+    (!hasServers && !renoteAction.isRenoted) || renoteAction.isProcessing;
+  const quoteDisabled = !hasServers || renoteAction.isProcessing;
+  const replyDisabled = replyState.isReplyDisabled;
+  const showActions = !replyState.isPureRenote;
+
+  useEffect(() => {
+    setReactionMenuOpen(false);
+    setRenoteDialogOpen(false);
+    setQuoteDialogOpen(false);
+    setReplyDialogOpen(false);
+    setContextMenuPosition(null);
+  }, []);
+
+  const handleContextMenu = (event: React.MouseEvent<HTMLElement>) => {
+    if (!showActions) return;
+    event.preventDefault();
+    setContextMenuPosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const closeContextMenu = () => {
+    setContextMenuPosition(null);
+  };
+
+  const handleOpenReaction = () => {
+    setReactionMenuOpen(true);
+    closeContextMenu();
+  };
+
+  const handleOpenReply = () => {
+    if (replyDisabled) return;
+    setReplyDialogOpen(true);
+    closeContextMenu();
+  };
+
+  const handleOpenRenote = () => {
+    if (renoteDisabled) return;
+    setRenoteDialogOpen(true);
+    closeContextMenu();
+  };
+
+  const handleOpenQuote = () => {
+    if (quoteDisabled) return;
+    setQuoteDialogOpen(true);
+    closeContextMenu();
+  };
+
   return (
     <CustomEmojiCtx.Provider value={providerValue}>
       <article
         className={cn(
           "flex items-start gap-3 border-b p-3 transition-colors duration-200 hover:bg-muted/50",
         )}
+        onContextMenu={handleContextMenu}
       >
         <div>
           <MisskeyNoteHeader user={note.user} note={note} />
@@ -69,9 +132,64 @@ function MisskeyNoteBase({
               )}
             </div>
           )}
-          <MisskeyNoteContent note={note} origin={origin} emojis={emojis} />
+          <MisskeyNoteContent
+            note={note}
+            origin={origin}
+            emojis={emojis}
+            renoteAction={renoteAction}
+            replyAvailability={replyState}
+            reactionMenuOpen={reactionMenuOpen}
+            renoteDialogOpen={renoteDialogOpen}
+            quoteDialogOpen={quoteDialogOpen}
+            replyDialogOpen={replyDialogOpen}
+            onReactionMenuOpenChange={(open) => {
+              setReactionMenuOpen(open);
+              if (!open) {
+                closeContextMenu();
+              }
+            }}
+            onRenoteDialogOpenChange={(open) => {
+              setRenoteDialogOpen(open);
+              if (!open) {
+                closeContextMenu();
+              }
+            }}
+            onQuoteDialogOpenChange={(open) => {
+              setQuoteDialogOpen(open);
+              if (!open) {
+                closeContextMenu();
+              }
+            }}
+            onReplyDialogOpenChange={(open) => {
+              setReplyDialogOpen(open);
+              if (!open) {
+                closeContextMenu();
+              }
+            }}
+          />
         </div>
       </article>
+      {contextMenuPosition && showActions ? (
+        <NoteContextMenu
+          position={contextMenuPosition}
+          onClose={closeContextMenu}
+          onReact={handleOpenReaction}
+          onReply={handleOpenReply}
+          onRenote={handleOpenRenote}
+          onQuote={handleOpenQuote}
+          labels={{
+            react: "リアクションする",
+            reply: t("reply.button"),
+            renote: renoteAction.isRenoted
+              ? t("renote.menu.undoRenote")
+              : t("renote.menu.renote"),
+            quote: t("renote.menu.quote"),
+          }}
+          replyDisabled={replyDisabled}
+          renoteDisabled={renoteDisabled}
+          quoteDisabled={quoteDisabled}
+        />
+      ) : null}
     </CustomEmojiCtx.Provider>
   );
 }

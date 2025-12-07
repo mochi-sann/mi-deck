@@ -67,6 +67,15 @@ vi.mock("react-i18next", () => ({
 vi.mock("@/features/notes/components/NoteReplySection", () => ({
   // biome-ignore lint/style/useNamingConvention: testing mock
   NoteReplySection: () => <div data-testid="note-reply-section" />,
+  // biome-ignore lint/style/useNamingConvention: testing mock
+  useReplyAvailability: () => ({
+    isPureRenote: false,
+    serversWithToken: [],
+    initialServerId: undefined,
+    isReplyDisabled: false,
+    isLoading: false,
+    hasAvailableServer: true,
+  }),
 }));
 vi.mock("@/features/notes/actions/useRenoteAction", () => ({
   useRenoteAction: () => ({
