@@ -19,7 +19,7 @@ function SettingsPage() {
 
   return (
     <div className="container mx-auto flex h-screen max-w-4xl flex-col p-6">
-      <div className="mb-6 flex flex-shrink-0 items-center justify-between">
+      <div className="mb-6 flex shrink-0 items-center justify-between">
         <div className="flex items-center gap-2">
           <SettingsIcon className="h-6 w-6" />
           <h1 className="font-bold text-2xl">{t("title")}</h1>

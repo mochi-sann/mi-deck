@@ -36,6 +36,18 @@ const Sparkle: React.FC<SparkleProps> = ({ children }) => {
       resizeObserver.observe(elementRef.current);
     }
 
+    // Track timeouts to clear them on unmount
+    const timeouts = new Set<NodeJS.Timeout>();
+
+    const safeSetTimeout = (callback: () => void, delay: number) => {
+      const id = setTimeout(() => {
+        timeouts.delete(id);
+        callback();
+      }, delay);
+      timeouts.add(id);
+      return id;
+    };
+
     const addParticle = () => {
       if (stopRef.current) return;
 
@@ -54,12 +66,13 @@ const Sparkle: React.FC<SparkleProps> = ({ children }) => {
       setParticles((prev) => [...prev, particle]);
 
       // Remove particle after animation
-      setTimeout(() => {
+      safeSetTimeout(() => {
+        if (stopRef.current) return;
         setParticles((prev) => prev.filter((p) => p.id !== particle.id));
       }, particle.dur - 100);
 
       // Schedule next particle
-      setTimeout(
+      safeSetTimeout(
         () => {
           addParticle();
         },
@@ -75,6 +88,10 @@ const Sparkle: React.FC<SparkleProps> = ({ children }) => {
     return () => {
       stopRef.current = true;
       resizeObserver.disconnect();
+      for (const id of timeouts) {
+        clearTimeout(id);
+      }
+      timeouts.clear();
     };
   }, [dimensions.width, dimensions.height]);
 

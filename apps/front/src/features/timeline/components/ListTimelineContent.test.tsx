@@ -214,7 +214,7 @@ describe("ListTimelineContent", () => {
 
     // Check error message
     const errorText = screen.getByText(
-      "Error loading list timeline: Test error message",
+      "Error loading notes: Test error message",
     );
     expect(errorText).toBeInTheDocument();
     expect(errorText).toHaveClass("text-center", "text-red-500");
@@ -250,9 +250,7 @@ describe("ListTimelineContent", () => {
       />,
     );
 
-    const errorText = screen.getByText(
-      "Error loading list timeline: Unknown error",
-    );
+    const errorText = screen.getByText("Error loading notes: Unknown error");
     expect(errorText).toBeInTheDocument();
   });
 

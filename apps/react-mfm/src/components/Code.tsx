@@ -1,7 +1,7 @@
 "use client";
 
 import { atom, useAtom, useAtomValue } from "jotai";
-import { Suspense, useMemo } from "react";
+import { Suspense, useEffect, useMemo } from "react";
 import {
   type BundledLanguage,
   bundledLanguages,
@@ -30,16 +30,27 @@ function CodeSuspense({ code, lang = defaultLang }: CodeProps) {
   const highlighter = useAtomValue(highlighterAtom);
   const [langs, setLangs] = useAtom(langsAtom);
 
+  useEffect(() => {
+    let isMounted = true;
+    if (
+      !langs.includes(lang) &&
+      bundledLangs.includes(lang as BundledLanguage)
+    ) {
+      highlighter.loadLanguage(lang as BundledLanguage).then(() => {
+        if (isMounted) setLangs(highlighter.getLoadedLanguages());
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [highlighter, langs, lang, setLangs]);
+
   const html = useMemo(() => {
-    if (!langs.includes(lang) && bundledLangs.includes(lang as BundledLanguage))
-      highlighter
-        .loadLanguage(lang as BundledLanguage)
-        .then(() => setLangs(highlighter.getLoadedLanguages()));
     return highlighter.codeToHtml(code, {
       lang: langs.includes(lang) ? lang : defaultLang,
       theme,
     });
-  }, [highlighter, langs, setLangs, code, lang]);
+  }, [highlighter, langs, code, lang]);
 
   return (
     // biome-ignore lint/security/noDangerouslySetInnerHtml: mfmの表示に必要
