@@ -23,11 +23,22 @@ export const TimelineNotes: React.FC<TimelineNotesProps> = ({
 
   return (
     <ul className="flex list-none flex-col p-0">
-      {notes.map((note) => (
-        <li key={note.id}>
-          <MisskeyNote note={note} origin={origin} />
-        </li>
-      ))}
+      {notes.map((note) => {
+        const isRecent =
+          Date.now() - new Date(note.createdAt).getTime() < 15000;
+        return (
+          <li
+            key={note.id}
+            className={
+              isRecent
+                ? "fade-in slide-in-from-top-8 animate-in duration-500"
+                : ""
+            }
+          >
+            <MisskeyNote note={note} origin={origin} />
+          </li>
+        );
+      })}
     </ul>
   );
 };
