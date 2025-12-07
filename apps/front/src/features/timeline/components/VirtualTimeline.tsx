@@ -82,7 +82,11 @@ export function VirtualTimeline({
   }
 
   return (
-    <div ref={parentRef} className="h-full overflow-y-auto">
+    <div
+      ref={parentRef}
+      className="h-full overflow-y-auto"
+      data-testid="virtual-timeline"
+    >
       <div
         style={{
           height: `${rowVirtualizer.getTotalSize()}px`,

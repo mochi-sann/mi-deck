@@ -3,7 +3,6 @@ import type React from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useStorage } from "@/lib/storage/context";
 import { useTimeline } from "../hooks/useTimeline";
 
@@ -93,7 +92,7 @@ export const Timeline: React.FC = () => {
         <p className="text-muted-foreground text-sm">{t("homeTimeline")}</p>
       </div>
 
-      <ScrollArea className="flex-1">
+      <div className="flex-1 overflow-y-auto">
         <div className="space-y-4 p-4">
           {notes.length === 0 ? (
             <div className="py-8 text-center">
@@ -129,7 +128,7 @@ export const Timeline: React.FC = () => {
             ))
           )}
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 };

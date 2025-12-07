@@ -1,7 +1,6 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { Settings as SettingsIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   ApplicationInfo,
   ApplicationSettings,
@@ -18,7 +17,7 @@ function SettingsPage() {
   const { t } = useTranslation("settings");
 
   return (
-    <div className="container mx-auto flex h-screen max-w-4xl flex-col p-6">
+    <div className="container mx-auto flex max-w-4xl flex-col p-6">
       <div className="mb-6 flex flex-shrink-0 items-center justify-between">
         <div className="flex items-center gap-2">
           <SettingsIcon className="h-6 w-6" />
@@ -26,7 +25,7 @@ function SettingsPage() {
         </div>
       </div>
 
-      <ScrollArea className="flex-1 pb-12">
+      <div className="flex-1 pb-12">
         <div className="space-y-6 pr-4">
           <ApplicationSettings />
           <TimelineSettings />
@@ -34,7 +33,7 @@ function SettingsPage() {
           <DataManagement />
           <ApplicationInfo />
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 }
