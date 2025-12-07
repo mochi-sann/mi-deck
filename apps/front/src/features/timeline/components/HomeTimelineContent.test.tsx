@@ -86,7 +86,10 @@ describe("HomeTimelineContent", () => {
     );
 
     expect(screen.getByTestId("note")).toHaveAttribute("data-note-id", "1");
-    expect(screen.getByTestId("virtual-timeline")).toBeDefined();
+    expect(document.querySelector('[data-slot="scroll-area"]')).not.toBeNull();
+    expect(
+      document.querySelector('[data-slot="scroll-area-viewport"]'),
+    ).not.toBeNull();
   });
 
   it("末尾までスクロールした場合に fetchNotes を呼び出す", async () => {

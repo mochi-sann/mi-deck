@@ -3,6 +3,7 @@ import type { EmojiSimple } from "misskey-js/entities.js";
 import { memo, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCustomEmojis } from "@/hooks/useCustomEmojis";
 import { useForeignApi } from "@/hooks/useForeignApi";
 import { cn } from "@/lib/utils";
@@ -184,9 +185,9 @@ function CustomEmojiPickerBase({
       </div>
 
       {searchQuery.trim() ? (
-        <div className="h-48 overflow-y-auto">
+        <ScrollArea className="h-48">
           <EmojiGrid emojis={searchResults} />
-        </div>
+        </ScrollArea>
       ) : (
         <div className="w-full">
           <div className="flex border-b">
@@ -208,7 +209,7 @@ function CustomEmojiPickerBase({
             </Button>
           </div>
 
-          <div className="h-48 overflow-y-auto">
+          <ScrollArea className="h-48">
             {activeTab === "recent" ? (
               <div className="flex h-32 items-center justify-center text-muted-foreground text-sm">
                 最近使用した絵文字はありません
@@ -229,7 +230,7 @@ function CustomEmojiPickerBase({
                 カスタム絵文字がありません
               </div>
             )}
-          </div>
+          </ScrollArea>
         </div>
       )}
     </div>

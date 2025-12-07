@@ -20,6 +20,7 @@ import { ClientCreateTimelineDialog } from "@/components/parts/ClientCreateTimel
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Text from "@/components/ui/text";
 import { useStorage } from "@/lib/storage/context";
 import { SortableTimeline } from "./SortbleTimeline";
@@ -97,8 +98,8 @@ export function ClientTimelineList() {
   // Allow access without authentication - users can add servers as needed
 
   return (
-    <div className="h-screen overflow-x-auto overflow-y-hidden">
-      <div className="flex h-full">
+    <ScrollArea>
+      <div className="flex h-screen overflow-x-auto overflow-y-hidden">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -150,6 +151,7 @@ export function ClientTimelineList() {
           />
         </DndContext>
       </div>
-    </div>
+      <ScrollBar orientation="horizontal" />
+    </ScrollArea>
   );
 }
