@@ -15,6 +15,12 @@ export interface MiAuthResult {
   server?: MisskeyServerConnection;
   error?: string;
 }
+
+export interface ManualAuthResult {
+  success: boolean;
+  server?: MisskeyServerConnection;
+  error?: string;
+}
 export type PeendingAuthType = {
   uuid: string;
   origin: string;
@@ -37,6 +43,14 @@ class ClientAuthManager {
   private getProtocolFromOrigin(origin: string): "http" | "https" {
     if (!origin || typeof origin !== "string") {
       return "https"; // フォールバック
+    }
+
+    // 入力にプロトコルが明示的に指定されている場合はそれを尊重
+    if (origin.startsWith("http://")) {
+      return "http";
+    }
+    if (origin.startsWith("https://")) {
+      return "https";
     }
 
     const domain = origin.replace(/^https?:\/\//, "");
@@ -62,8 +76,10 @@ class ClientAuthManager {
       return "https://"; // フォールバック
     }
 
+    // プロトコル判定（元の入力をそのまま渡すことで明示的なプロトコルを検出できる）
+    const protocol = this.getProtocolFromOrigin(origin);
     const cleanOrigin = origin.replace(/^https?:\/\//, "");
-    const protocol = this.getProtocolFromOrigin(cleanOrigin);
+
     return `${protocol}://${cleanOrigin}`;
   }
 
@@ -82,11 +98,8 @@ class ClientAuthManager {
       return "";
     }
 
-    // プロトコルプレフィックスを除去
-    const cleaned = trimmed.replace(/^https?:\/\//, "");
-
-    // 末尾のスラッシュを除去
-    return cleaned.replace(/\/$/, "");
+    // 末尾のスラッシュを除去 (プロトコルは保持する)
+    return trimmed.replace(/\/$/, "");
   }
 
   private generateMiAuthUrl(
@@ -251,6 +264,65 @@ class ClientAuthManager {
 
       // Clean up pending auth on error
       localStorage.removeItem(PENDING_AUTH_KEY_PREFIX);
+
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Authentication failed",
+      };
+    }
+  }
+
+  async addServerWithToken(
+    origin: string,
+    token: string,
+  ): Promise<ManualAuthResult> {
+    try {
+      console.log("addServerWithToken called with:", { origin, token });
+      await storageManager.initialize();
+
+      const originUrl = this.buildOriginUrl(origin);
+      const misskeyClient = new Misskey.api.APIClient({
+        origin: originUrl,
+        credential: token,
+      });
+
+      console.log("Making API requests to validate token...");
+      const [userInfo, serverInfo] = await Promise.all([
+        misskeyClient.request("i", {
+          detail: true,
+        }),
+        misskeyClient.request("meta", { detail: true }),
+      ]);
+      console.log("API requests successful:", { userInfo, serverInfo });
+
+      // Create server connection
+      const serverConnection: Omit<
+        MisskeyServerConnection,
+        "id" | "createdAt" | "updatedAt"
+      > = {
+        origin: originUrl,
+        accessToken: token,
+        isActive: true,
+        userInfo: {
+          id: userInfo.id,
+          username: userInfo.username,
+          name: userInfo.name || userInfo.username,
+          avatarUrl: userInfo.avatarUrl || undefined,
+        },
+        serverInfo: {
+          name: serverInfo.name || origin,
+          version: serverInfo.version || "unknown",
+          description: serverInfo.description || undefined,
+          iconUrl: serverInfo.iconUrl || undefined,
+        },
+      };
+
+      // Save to storage
+      const savedServer = await storageManager.addServer(serverConnection);
+
+      return { success: true, server: savedServer };
+    } catch (error) {
+      console.error("Failed to add server with token:", error);
 
       return {
         success: false,

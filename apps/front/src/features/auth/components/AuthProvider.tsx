@@ -24,6 +24,10 @@ interface AuthContextValue {
     uuid: string,
     sessionToken: string,
   ) => Promise<{ success: boolean; error?: string }>;
+  addServerWithToken: (
+    origin: string,
+    token: string,
+  ) => Promise<{ success: boolean; error?: string }>;
   switchServer: (serverId: string) => Promise<void>;
   refreshServerInfo: (serverId: string) => Promise<void>;
   removeServer: (serverId: string) => Promise<void>;
@@ -129,6 +133,31 @@ export function AuthProvider({ children }: AuthProviderProps) {
       return { success: false, error: errorMessage };
     }
   };
+  const addServerWithToken = async (
+    origin: string,
+    token: string,
+  ): Promise<{ success: boolean; error?: string }> => {
+    try {
+      setError(undefined);
+      const result = await clientAuthManager.addServerWithToken(origin, token);
+
+      if (result.success && result.server) {
+        // Refresh storage to get the new server
+        await storage.refresh();
+
+        // Set as current server if it's the first one
+        if (storage.servers.length === 0) {
+          await storage.setCurrentServer(result.server.id);
+        }
+      }
+      return { success: result.success, error: result.error };
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to add server with token";
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  };
 
   const switchServer = async (serverId: string) => {
     try {
@@ -205,6 +234,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     error: error || storage.error,
     initiateAuth,
     completeAuth,
+    addServerWithToken,
     switchServer,
     refreshServerInfo,
     removeServer,

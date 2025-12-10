@@ -5,11 +5,16 @@
     "serverType": "サーバータイプ",
     "selectPlaceholder": "サーバーを選んでください",
     "addButton": "サーバーを追加する",
+    "authMethod": "認証方法",
+    "miAuth": "MiAuth",
+    "accessToken": "アクセストークン",
+    "accessTokenPlaceholder": "アクセストークンを入力してください",
     "onlyMisskey": "現在はMisskeyサーバーのみサポートしています",
     "addFailed": "サーバー追加に失敗しました",
     "validation": {
       "serverOriginRequired": "有効なサーバーアドレスを入力してください",
       "serverTypeRequired": "サーバータイプを選択してください",
+      "accessTokenRequired": "アクセストークンを入力してください",
       "invalidServerUrl": "有効なサーバーURLを入力してください"
     }
   },

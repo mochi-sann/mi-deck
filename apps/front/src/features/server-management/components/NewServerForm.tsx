@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 import * as v from "valibot";
 import { TextFieldSet } from "@/components/forms/TextFieldSet";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { clientAuthManager } from "@/features/auth/api/clientAuth";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
@@ -23,10 +25,14 @@ const NewServerFormSchema = (t: TFunction<"server", undefined>) =>
       ),
       v.nonEmpty(t("newServerForm.validation.serverTypeRequired")),
     ),
+    authMethod: v.optional(v.union([v.literal("miauth"), v.literal("token")])),
+    accessToken: v.optional(v.string()),
   });
 type NewServerFormType = {
   serverOrigin: string;
   serverType: string;
+  authMethod?: "miauth" | "token";
+  accessToken?: string;
 };
 
 export type NewServerFormProps = {
@@ -43,8 +49,11 @@ export const NewServerForm: React.FC<NewServerFormProps> = ({ onSuccess }) => {
     defaultValues: {
       serverOrigin: "",
       serverType: "Misskey",
+      authMethod: "miauth",
+      accessToken: "",
     },
   });
+  const [method, setMethod] = useState<"miauth" | "token">("miauth");
   const auth = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | undefined>();
@@ -67,8 +76,17 @@ export const NewServerForm: React.FC<NewServerFormProps> = ({ onSuccess }) => {
         return;
       }
 
-      await auth.initiateAuth(origin);
-      onSuccess?.();
+      if (method === "token") {
+        if (!data.accessToken) {
+          setError(t("newServerForm.validation.accessTokenRequired"));
+          return;
+        }
+        await auth.addServerWithToken(origin, data.accessToken);
+        onSuccess?.();
+      } else {
+        await auth.initiateAuth(origin);
+        onSuccess?.();
+      }
     } catch (err) {
       console.log(...[err, "👀 [NewServerForm.tsx:34]: err"].reverse());
       setError(
@@ -95,6 +113,41 @@ export const NewServerForm: React.FC<NewServerFormProps> = ({ onSuccess }) => {
             required: t("newServerForm.validation.serverOriginRequired"),
           }}
         />
+
+        <div className="space-y-3">
+          <Label>{t("newServerForm.authMethod")}</Label>
+          <RadioGroup
+            defaultValue="miauth"
+            onValueChange={(v) => setMethod(v as "miauth" | "token")}
+            className="flex flex-col space-y-1"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="miauth" id="miauth" />
+              <Label htmlFor="miauth">{t("newServerForm.miAuth")}</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="token" id="token" />
+              <Label htmlFor="token">{t("newServerForm.accessToken")}</Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        {method === "token" && (
+          <TextFieldSet
+            required
+            placeholder={t("newServerForm.accessTokenPlaceholder")}
+            label={t("newServerForm.accessToken")}
+            type="password"
+            control={control}
+            name="accessToken"
+            rules={{
+              required:
+                method === "token"
+                  ? t("newServerForm.validation.accessTokenRequired")
+                  : undefined,
+            }}
+          />
+        )}
         {error && (
           <div className="rounded bg-red-50 p-3 text-red-600 text-sm">
             {error}
