@@ -1,5 +1,5 @@
 import type { TFunction } from "i18next";
-import { Check, Globe, ImagePlus, Server, Smile } from "lucide-react";
+import { Check, ImagePlus, Server, Smile } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { InputGroupButton } from "@/components/ui/input-group";
 import {
@@ -14,7 +14,11 @@ import type { NoteComposerFormValues } from "../../hooks/useNoteComposer";
 interface ComposerFieldActionsProps {
   t: TFunction<"notes">;
   serversWithToken: MisskeyServerConnection[];
-  visibilityOptions: { value: string; label: string }[];
+  visibilityOptions: {
+    value: string;
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+  }[];
   isServerPopoverOpen: boolean;
   onServerPopoverChange: (open: boolean) => void;
   isVisibilityPopoverOpen: boolean;
@@ -165,7 +169,13 @@ export function ComposerFieldActions({
             title={visibilityButtonLabel}
             disabled={formDisabled}
           >
-            <Globe className="size-4" />
+            {(() => {
+              const VisibilityIcon =
+                visibilityOptions.find(
+                  (option) => option.value === currentVisibility,
+                )?.icon ?? visibilityOptions[0].icon;
+              return <VisibilityIcon className="size-4" />;
+            })()}
           </InputGroupButton>
         </PopoverTrigger>
         <PopoverContent className="w-48 p-0" align="end">
@@ -182,6 +192,7 @@ export function ComposerFieldActions({
                   onVisibilityPopoverChange(false);
                 }}
               >
+                <option.icon className="size-4 text-muted-foreground" />
                 <span>{option.label}</span>
                 <Check
                   className={`ml-auto size-4 text-primary ${option.value === currentVisibility ? "opacity-100" : "opacity-0"}`}
