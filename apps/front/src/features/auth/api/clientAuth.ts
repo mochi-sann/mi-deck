@@ -158,22 +158,62 @@ class ClientAuthManager {
 
       return uuid;
     } catch (error) {
-      console.error("Failed to initiate auth:", error);
       throw error;
     }
   }
 
+  private async validateAndSaveServer(
+    origin: string,
+    token: string,
+  ): Promise<MisskeyServerConnection> {
+    const originUrl = this.buildOriginUrl(origin);
+    const misskeyClient = new Misskey.api.APIClient({
+      origin: originUrl,
+      credential: token,
+    });
+
+    const [userInfo, serverInfo] = await Promise.all([
+      misskeyClient.request("i", {
+        detail: true, // Get detailed user info
+      }),
+      misskeyClient.request("meta", { detail: true }),
+    ]);
+
+    // Create server connection
+    const serverConnection: Omit<
+      MisskeyServerConnection,
+      "id" | "createdAt" | "updatedAt"
+    > = {
+      origin: originUrl,
+      accessToken: token,
+      isActive: true,
+      userInfo: {
+        id: userInfo.id,
+        username: userInfo.username,
+        name: userInfo.name || userInfo.username,
+        avatarUrl: userInfo.avatarUrl || undefined,
+      },
+      serverInfo: {
+        name: serverInfo.name || origin,
+        version: serverInfo.version || "unknown",
+        description: serverInfo.description || undefined,
+        iconUrl: serverInfo.iconUrl || undefined,
+      },
+    };
+
+    // Save to storage
+    return await storageManager.addServer(serverConnection);
+  }
+
   async completeAuth(
-    uuid: string,
+    _uuid: string,
     sessionToken: string,
   ): Promise<MiAuthResult> {
     try {
-      console.log("CompleteAuth called with:", { uuid, sessionToken });
       await storageManager.initialize();
 
       // Retrieve pending auth session
       const pendingAuthData = localStorage.getItem(PENDING_AUTH_KEY_PREFIX);
-      console.log("Retrieved pending auth data:", pendingAuthData);
 
       if (!pendingAuthData) {
         return { success: false, error: "Auth session not found or expired" };
@@ -192,7 +232,6 @@ class ClientAuthManager {
       )
         .then((res) => res.json())
         .catch((err) => {
-          console.error(err);
           const errorInfo = this.classifyError(err);
           return {
             ok: false,
@@ -212,56 +251,17 @@ class ClientAuthManager {
       }
 
       const origin = pendingAuth.origin;
-      console.log("Using origin from pending auth:", origin);
 
-      // Validate session token and get user info
-      const originUrl = this.buildOriginUrl(origin);
-      const misskeyClient = new Misskey.api.APIClient({
-        origin: originUrl,
-        credential: fetchMisskey.token,
-      });
-
-      console.log("Making API requests to validate token...");
-      const [userInfo, serverInfo] = await Promise.all([
-        misskeyClient.request("i", {
-          detail: true, // Get detailed user info
-        }),
-        misskeyClient.request("meta", { detail: true }),
-      ]);
-      console.log("API requests successful:", { userInfo, serverInfo });
-
-      // Create server connection
-      const serverConnection: Omit<
-        MisskeyServerConnection,
-        "id" | "createdAt" | "updatedAt"
-      > = {
-        origin: originUrl,
-        accessToken: fetchMisskey.token,
-        isActive: true,
-        userInfo: {
-          id: userInfo.id,
-          username: userInfo.username,
-          name: userInfo.name || userInfo.username,
-          avatarUrl: userInfo.avatarUrl || undefined,
-        },
-        serverInfo: {
-          name: serverInfo.name || origin,
-          version: serverInfo.version || "unknown",
-          description: serverInfo.description || undefined,
-          iconUrl: serverInfo.iconUrl || undefined,
-        },
-      };
-
-      // Save to storage
-      const savedServer = await storageManager.addServer(serverConnection);
+      const savedServer = await this.validateAndSaveServer(
+        origin,
+        fetchMisskey.token,
+      );
 
       // Clean up pending auth
       localStorage.removeItem(PENDING_AUTH_KEY_PREFIX);
 
       return { success: true, server: savedServer };
     } catch (error) {
-      console.error("Failed to complete auth:", error);
-
       // Clean up pending auth on error
       localStorage.removeItem(PENDING_AUTH_KEY_PREFIX);
 
@@ -277,53 +277,12 @@ class ClientAuthManager {
     token: string,
   ): Promise<ManualAuthResult> {
     try {
-      console.log("addServerWithToken called with:", { origin, token });
       await storageManager.initialize();
 
-      const originUrl = this.buildOriginUrl(origin);
-      const misskeyClient = new Misskey.api.APIClient({
-        origin: originUrl,
-        credential: token,
-      });
-
-      console.log("Making API requests to validate token...");
-      const [userInfo, serverInfo] = await Promise.all([
-        misskeyClient.request("i", {
-          detail: true,
-        }),
-        misskeyClient.request("meta", { detail: true }),
-      ]);
-      console.log("API requests successful:", { userInfo, serverInfo });
-
-      // Create server connection
-      const serverConnection: Omit<
-        MisskeyServerConnection,
-        "id" | "createdAt" | "updatedAt"
-      > = {
-        origin: originUrl,
-        accessToken: token,
-        isActive: true,
-        userInfo: {
-          id: userInfo.id,
-          username: userInfo.username,
-          name: userInfo.name || userInfo.username,
-          avatarUrl: userInfo.avatarUrl || undefined,
-        },
-        serverInfo: {
-          name: serverInfo.name || origin,
-          version: serverInfo.version || "unknown",
-          description: serverInfo.description || undefined,
-          iconUrl: serverInfo.iconUrl || undefined,
-        },
-      };
-
-      // Save to storage
-      const savedServer = await storageManager.addServer(serverConnection);
+      const savedServer = await this.validateAndSaveServer(origin, token);
 
       return { success: true, server: savedServer };
     } catch (error) {
-      console.error("Failed to add server with token:", error);
-
       return {
         success: false,
         error: error instanceof Error ? error.message : "Authentication failed",

@@ -13,21 +13,34 @@ import { clientAuthManager } from "@/features/auth/api/clientAuth";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
 const NewServerFormSchema = (t: TFunction<"server", undefined>) =>
-  v.object({
-    serverOrigin: v.pipe(
-      v.string(t("newServerForm.validation.serverOriginRequired")),
-      v.minLength(1, t("newServerForm.validation.serverOriginRequired")),
-    ),
-    serverType: v.pipe(
-      v.union(
-        [v.literal("Misskey")],
-        t("newServerForm.validation.serverTypeRequired"),
+  v.pipe(
+    v.object({
+      serverOrigin: v.pipe(
+        v.string(t("newServerForm.validation.serverOriginRequired")),
+        v.minLength(1, t("newServerForm.validation.serverOriginRequired")),
       ),
-      v.nonEmpty(t("newServerForm.validation.serverTypeRequired")),
+      serverType: v.pipe(
+        v.union(
+          [v.literal("Misskey")],
+          t("newServerForm.validation.serverTypeRequired"),
+        ),
+        v.nonEmpty(t("newServerForm.validation.serverTypeRequired")),
+      ),
+      authMethod: v.optional(
+        v.union([v.literal("miauth"), v.literal("token")]),
+      ),
+      accessToken: v.optional(v.string()),
+    }),
+    v.forward(
+      v.check((input) => {
+        if (input.authMethod === "token" && !input.accessToken) {
+          return false;
+        }
+        return true;
+      }, t("newServerForm.validation.accessTokenRequired")),
+      ["accessToken"],
     ),
-    authMethod: v.optional(v.union([v.literal("miauth"), v.literal("token")])),
-    accessToken: v.optional(v.string()),
-  });
+  );
 type NewServerFormType = {
   serverOrigin: string;
   serverType: string;
@@ -44,7 +57,7 @@ export const NewServerForm: React.FC<NewServerFormProps> = ({ onSuccess }) => {
   const formSchema = useMemo(() => NewServerFormSchema(t), [t]);
   type FormValues = v.InferOutput<typeof formSchema>;
 
-  const { handleSubmit, control } = useForm<FormValues>({
+  const { handleSubmit, control, watch, setValue } = useForm<FormValues>({
     resolver: valibotResolver(formSchema),
     defaultValues: {
       serverOrigin: "",
@@ -53,7 +66,10 @@ export const NewServerForm: React.FC<NewServerFormProps> = ({ onSuccess }) => {
       accessToken: "",
     },
   });
-  const [method, setMethod] = useState<"miauth" | "token">("miauth");
+
+  // Watch authMethod to update local state and UI
+  const authMethod = watch("authMethod");
+
   const auth = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | undefined>();
@@ -76,19 +92,15 @@ export const NewServerForm: React.FC<NewServerFormProps> = ({ onSuccess }) => {
         return;
       }
 
-      if (method === "token") {
-        if (!data.accessToken) {
-          setError(t("newServerForm.validation.accessTokenRequired"));
-          return;
-        }
-        await auth.addServerWithToken(origin, data.accessToken);
+      if (data.authMethod === "token") {
+        // Safe to assert accessToken exists because of schema validation
+        await auth.addServerWithToken(origin, data.accessToken!);
         onSuccess?.();
       } else {
         await auth.initiateAuth(origin);
         onSuccess?.();
       }
     } catch (err) {
-      console.log(...[err, "👀 [NewServerForm.tsx:34]: err"].reverse());
       setError(
         err instanceof Error ? err.message : t("newServerForm.addFailed"),
       );
@@ -118,7 +130,11 @@ export const NewServerForm: React.FC<NewServerFormProps> = ({ onSuccess }) => {
           <Label>{t("newServerForm.authMethod")}</Label>
           <RadioGroup
             defaultValue="miauth"
-            onValueChange={(v) => setMethod(v as "miauth" | "token")}
+            onValueChange={(v) => {
+              if (v === "miauth" || v === "token") {
+                setValue("authMethod", v);
+              }
+            }}
             className="flex flex-col space-y-1"
           >
             <div className="flex items-center space-x-2">
@@ -132,7 +148,7 @@ export const NewServerForm: React.FC<NewServerFormProps> = ({ onSuccess }) => {
           </RadioGroup>
         </div>
 
-        {method === "token" && (
+        {authMethod === "token" && (
           <TextFieldSet
             required
             placeholder={t("newServerForm.accessTokenPlaceholder")}
@@ -142,7 +158,7 @@ export const NewServerForm: React.FC<NewServerFormProps> = ({ onSuccess }) => {
             name="accessToken"
             rules={{
               required:
-                method === "token"
+                authMethod === "token"
                   ? t("newServerForm.validation.accessTokenRequired")
                   : undefined,
             }}
