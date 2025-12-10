@@ -78,7 +78,21 @@ export function ComposerFieldActions({
               formDisabled || isLoadingServers || serversWithToken.length === 0
             }
           >
-            <Server className="size-4" />
+            {selectedServer ? (
+              <Avatar className="size-5">
+                <AvatarImage
+                  src={selectedServer.userInfo?.avatarUrl}
+                  alt={getServerDisplayName(selectedServer)}
+                />
+                <AvatarFallback>
+                  {getServerDisplayName(selectedServer)
+                    .slice(0, 2)
+                    .toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            ) : (
+              <Server className="size-4" />
+            )}
           </InputGroupButton>
         </PopoverTrigger>
         <PopoverContent className="w-72 p-0" align="end">
@@ -116,9 +130,16 @@ export function ComposerFieldActions({
                     </Avatar>
                     <div className="flex flex-col text-left">
                       <span className="font-medium">{serverName}</span>
-                      <span className="text-muted-foreground text-xs">
-                        {subtitle}
-                      </span>
+                      <div className="flex items-center gap-1 text-muted-foreground text-xs">
+                        {server.serverInfo?.iconUrl && (
+                          <img
+                            src={server.serverInfo.iconUrl}
+                            alt={server.serverInfo.name}
+                            className="size-3 rounded-full"
+                          />
+                        )}
+                        <span>{subtitle}</span>
+                      </div>
                     </div>
                     <Check
                       className={`ml-auto size-4 text-primary ${isActive ? "opacity-100" : "opacity-0"}`}

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as v from "valibot";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -167,8 +168,22 @@ export function ClientCreateTimelineDialog({
                     <SelectContent>
                       {storage.servers.map((server) => (
                         <SelectItem key={server.id} value={server.id}>
-                          {server.serverInfo?.name ||
-                            new URL(server.origin).hostname}
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-6 w-6">
+                              <AvatarImage
+                                src={server.serverInfo?.iconUrl}
+                                alt={server.serverInfo?.name}
+                              />
+                              <AvatarFallback>
+                                {server.serverInfo?.name?.[0]?.toUpperCase() ??
+                                  "?"}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span>
+                              {server.serverInfo?.name ||
+                                new URL(server.origin).hostname}
+                            </span>
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
