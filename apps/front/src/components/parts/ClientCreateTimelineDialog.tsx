@@ -55,10 +55,7 @@ const createFormSchema = (t: TFunction<"timeline", undefined>) =>
       ],
       t("createDialog.validation.selectType"),
     ),
-    name: v.pipe(
-      v.string(t("createDialog.validation.enterName")),
-      v.minLength(1),
-    ),
+    name: v.optional(v.string()),
     listId: v.optional(v.string()),
   });
 
@@ -110,7 +107,20 @@ export function ClientCreateTimelineDialog({
       const maxOrder = Math.max(...storage.timelines.map((t) => t.order), -1);
 
       await storage.addTimeline({
-        name: values.name,
+        name:
+          values.name ||
+          (() => {
+            const server = storage.servers.find(
+              (s) => s.id === values.serverId,
+            );
+            const host = server?.origin
+              ? new URL(server.origin).hostname
+              : "Unknown Server";
+            const username = server?.userInfo?.username;
+            const identifier = username ? `${username}@${host}` : host;
+            const typeLabel = t(`createDialog.types.${values.type}` as any);
+            return `${typeLabel} (${identifier})`;
+          })(),
         serverId: values.serverId,
         type: values.type,
         order: maxOrder + 1,
