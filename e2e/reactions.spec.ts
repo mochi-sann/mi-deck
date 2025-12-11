@@ -65,4 +65,3 @@ test.describe("Reactions optimistic update", () => {
     await expect(mainButton).toContainText("0");
   });
 });
-

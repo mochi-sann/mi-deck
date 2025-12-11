@@ -1,7 +1,11 @@
 pre-commit:
   commands:
+    format:
+      glob: "*"
+      run: pnpm dlx oxfmt {staged_files}
+      stage_fixed: true
     check:
-      glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
+      glob: "*.{js,mjs,cjs,jsx,ts,mts,cts,tsx,vue,astro,svelte}"
       exclude: "tsconfig.app.json|tsconfig.json|tsconfig.node.json"
-      run: npx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
+      run: pnpm dlx oxlint --no-error-on-unmatched-pattern {staged_files}
       stage_fixed: true

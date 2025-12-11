@@ -1,4 +1,3 @@
-
 あなたの役割は、フロントエンドのエキスパートとしてテストコードを追加することです。カバレッジ 100%を目指します。
 
 最初に `pnpm --filter front test:coverage` を実行して、テストが通っていることと、現在のテストカバレッジを確認します。
@@ -7,7 +6,7 @@
 
 テストは必ず一件ずつ追加して、`pnpm --filter front test -- <target>` でテストが通過することを確認します。
 
-### apps/front/src/Components/**/*.tsx
+### apps/front/src/Components/\*_/_.tsx
 
 React Component として次のコードを参考にテストを追加します。`@testing-library/react` を使用してコンポーネントをレンダリングし、アサーションを行います。
 
@@ -35,7 +34,7 @@ describe("Button Component", () => {
 });
 ```
 
-### apps/front/src/routes/**/*.tsx
+### apps/front/src/routes/\*_/_.tsx
 
 `@tanstack/react-router` を使用したルートコンポーネントのテストを追加します。`createMemoryHistory` と `createRouter` を使用して、テスト環境でルーティングをシミュレートします。
 
@@ -89,12 +88,14 @@ test("Index route renders correctly", async () => {
   // 必要に応じて、非同期処理（loaderなど）の結果が反映されているか確認
 });
 ```
-**注記:**
-*   上記の例では、`routeTree.gen.ts` が `@tanstack/react-router` の CLI によって生成されていることを前提としています。実際のファイルパスに合わせて `import` を修正してください。
-*   ルートコンポーネントが `loader` や `useContext` などで外部データや状態に依存している場合、テスト内でそれらを適切にモックするか、テスト用のデータを提供する必要があります (`QueryClientProvider` や `router` の `context` オプションなど)。
-*   `expect` 内のアサーション (`/welcome/i` や `/some specific text/i`) は、テスト対象のルートコンポーネントが実際に表示する内容に合わせてください。
 
-### apps/front/src/hooks/**/*.ts
+**注記:**
+
+- 上記の例では、`routeTree.gen.ts` が `@tanstack/react-router` の CLI によって生成されていることを前提としています。実際のファイルパスに合わせて `import` を修正してください。
+- ルートコンポーネントが `loader` や `useContext` などで外部データや状態に依存している場合、テスト内でそれらを適切にモックするか、テスト用のデータを提供する必要があります (`QueryClientProvider` や `router` の `context` オプションなど)。
+- `expect` 内のアサーション (`/welcome/i` や `/some specific text/i`) は、テスト対象のルートコンポーネントが実際に表示する内容に合わせてください。
+
+### apps/front/src/hooks/\*_/_.ts
 
 React Hooks 関数に対してテストを追加します。`@testing-library/react` の `renderHook` を使用します。
 

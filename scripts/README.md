@@ -21,7 +21,7 @@ pnpm run fix-test-any
 
 - `*.test.ts`
 - `*.test.tsx`
-- `*.spec.ts` 
+- `*.spec.ts`
 - `*.spec.tsx`
 
 非テストファイルは無視されます。

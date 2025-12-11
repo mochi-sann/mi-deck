@@ -1,7 +1,6 @@
-
 services:
   # postgres:
-  #   container_name: new-db 
+  #   container_name: new-db
   #   image: postgres:latest
   #   ports:
   #     - "5432:5432"
@@ -34,7 +33,6 @@ services:
   #   networks:
   #     - app-network
 
-
   # https-portal:
   #   image: steveltn/https-portal:1
   #   ports:
@@ -48,13 +46,13 @@ services:
   #     - app-network
   misskey-web:
     # build: .
-    image : misskey/misskey:2025.11.0
+    image: misskey/misskey:2025.11.0
     # restart: always
     links:
       - misskey-db
       - redis
-#     - mcaptcha
-#     - meilisearch
+    #     - mcaptcha
+    #     - meilisearch
     depends_on:
       misskey-db:
         condition: service_healthy
