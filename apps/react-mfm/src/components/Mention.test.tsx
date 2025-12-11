@@ -26,14 +26,12 @@ describe("Mention", () => {
     );
 
     const store = {
-      // biome-ignore lint/style/useNamingConvention: Property name matches MFM component convention
       get: () => ({ Mention: CustomMention }),
       set: () => {},
       sub: () => () => {},
     };
 
     render(
-      // biome-ignore lint/suspicious/noExplicitAny: Test mock store type
       <Provider store={store as any}>
         <Mention username="custom" acct="@custom" host={null} />
       </Provider>,

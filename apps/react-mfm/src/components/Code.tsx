@@ -53,7 +53,6 @@ function CodeSuspense({ code, lang = defaultLang }: CodeProps) {
   }, [highlighter, langs, code, lang]);
 
   return (
-    // biome-ignore lint/security/noDangerouslySetInnerHtml: mfmの表示に必要
     <div className="mfm-blockCode" dangerouslySetInnerHTML={{ __html: html }} />
   );
 }

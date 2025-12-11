@@ -39,7 +39,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const computedLabel = label ?? t("fileUpload.label");
 
   // Generate previews when files change externally or internally
-  // biome-ignore lint/correctness/useExhaustiveDependencies: imagepreviesを入れると画像のpreviewがうまくできないため無視
+
   useEffect(() => {
     const newPreviews = files.map((file) => URL.createObjectURL(file));
     // Clean up old previews before setting new ones

@@ -16,7 +16,6 @@ vi.mock("@/hooks/use-toast", () => ({
 }));
 
 vi.mock("misskey-js/api.js", () => ({
-  // biome-ignore lint/style/useNamingConvention: misskey-js exports
   APIClient: vi.fn().mockImplementation(() => ({
     request: mockRequest,
   })),
@@ -85,7 +84,7 @@ describe("useRenoteAction", () => {
       useRenoteAction({
         note: createNote({
           renoteCount: 5,
-          // biome-ignore lint/suspicious/noExplicitAny: misskey note augmentation
+
           myRenoteId: "renote-existing" as any,
         }),
         origin: "https://misskey.example",

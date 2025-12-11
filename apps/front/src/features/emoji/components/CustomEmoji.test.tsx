@@ -4,7 +4,6 @@ import { CustomEmoji, CustomEmojiStr } from "./CustomEmoji";
 
 // Mock dependencies
 vi.mock("./CustomEmojiInternal", () => ({
-  // biome-ignore lint/style/useNamingConvention: テストで必須
   CustomEmojiInternal: ({
     name,
     host,
@@ -12,7 +11,7 @@ vi.mock("./CustomEmojiInternal", () => ({
   }: {
     name: string;
     host: string;
-    // biome-ignore lint/suspicious/noExplicitAny: テストで必須
+
     emojis?: any;
   }) => (
     <div data-testid="custom-emoji-internal">
@@ -24,15 +23,13 @@ vi.mock("./CustomEmojiInternal", () => ({
 }));
 
 vi.mock("../contexts/CustomEmojiContext", () => ({
-  // biome-ignore lint/style/useNamingConvention: テストで必須
   CustomEmojiCtx: {
-    // biome-ignore lint/style/useNamingConvention: テストで必須
     Provider: ({
       children,
       value,
     }: {
       children: React.ReactNode;
-      // biome-ignore lint/suspicious/noExplicitAny: テストで必須
+
       value: any;
     }) => (
       <div data-testid="emoji-context" data-value={JSON.stringify(value)}>
@@ -46,7 +43,7 @@ describe("CustomEmoji", () => {
   it("should render with host and emojis context", () => {
     const name = "test_emoji";
     const host = "misskey.example.com";
-    // biome-ignore lint/style/useNamingConvention: テストで必須
+
     const emojis = { test_emoji: "https://example.com/emoji.png" };
 
     render(<CustomEmoji name={name} host={host} emojis={emojis} />);
@@ -78,7 +75,7 @@ describe("CustomEmoji", () => {
 
   it("should render with only emojis", () => {
     const name = "test_emoji";
-    // biome-ignore lint/style/useNamingConvention: テストで必須
+
     const emojis = { test_emoji: "https://example.com/emoji.png" };
 
     render(<CustomEmoji name={name} emojis={emojis} />);
@@ -105,7 +102,7 @@ describe("CustomEmoji", () => {
   it("should handle empty host", () => {
     const name = "test_emoji";
     const host = "";
-    // biome-ignore lint/style/useNamingConvention: テストで必須
+
     const emojis = { test_emoji: "https://example.com/emoji.png" };
 
     render(<CustomEmoji name={name} host={host} emojis={emojis} />);

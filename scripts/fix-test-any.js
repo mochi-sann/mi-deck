@@ -119,7 +119,6 @@ function fixFileErrors(filePath, errors) {
       // インデントを取得
       const indent = line.match(/^(\s*)/)[1];
 
-      // biome-ignore コメントを追加
       const ignoreComment = `${indent}// biome-ignore lint/suspicious/noExplicitAny: テストなので無視`;
 
       // コメントが既に存在しないかチェック

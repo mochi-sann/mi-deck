@@ -69,7 +69,7 @@ export function ClientCreateTimelineDialog({
   const { t } = useTranslation("timeline");
   const storage = useStorage();
   const [selectedServerId, setSelectedServerId] = useState<string>("");
-  // biome-ignore lint/suspicious/noExplicitAny: Server type from storage
+
   const [selectedServer, setSelectedServer] = useState<any>(null);
 
   const formSchema = useMemo(() => createFormSchema(t), [t]);

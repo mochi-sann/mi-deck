@@ -89,7 +89,6 @@ describe("CustomEmoji", () => {
   });
 
   it("renders emoji name when emoji URL is null", () => {
-    // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
     const emojis = { test: null as any };
 
     render(
@@ -102,7 +101,6 @@ describe("CustomEmoji", () => {
   });
 
   it("renders emoji name when emoji URL is undefined", () => {
-    // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
     const emojis = { test: undefined as any };
 
     render(

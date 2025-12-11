@@ -43,11 +43,11 @@ describe("uploadAndCompressFiles", () => {
     const mockCompressedBlob = new Blob(["compressed"], { type: "image/webp" });
 
     // Mock imageCompression
-    // biome-ignore lint/suspicious/noExplicitAny: Mock function type assertion Mock function type assertion
+
     (imageCompression as any).mockResolvedValue(mockCompressedBlob);
 
     // Mock successful API response
-    // biome-ignore lint/suspicious/noExplicitAny: Mock function type assertion
+
     (global.fetch as any).mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ id: mockFileId }),
@@ -61,7 +61,6 @@ describe("uploadAndCompressFiles", () => {
 
     // Verify imageCompression was called with correct options
     expect(imageCompression).toHaveBeenCalledWith(mockImageFile, {
-      // biome-ignore lint/style/useNamingConvention: library option property naming
       maxSizeMB: 1,
       maxWidthOrHeight: 2048,
       useWebWorker: true,
@@ -89,7 +88,7 @@ describe("uploadAndCompressFiles", () => {
     });
 
     // Mock successful API response
-    // biome-ignore lint/suspicious/noExplicitAny: Mock function type assertion
+
     (global.fetch as any).mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ id: mockFileId }),
@@ -125,13 +124,13 @@ describe("uploadAndCompressFiles", () => {
     });
 
     // Mock compression failure
-    // biome-ignore lint/suspicious/noExplicitAny: Mock function type assertion
+
     (imageCompression as any).mockRejectedValue(
       new Error("Compression failed"),
     );
 
     // Mock successful API response
-    // biome-ignore lint/suspicious/noExplicitAny: Mock function type assertion
+
     (global.fetch as any).mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ id: mockFileId }),
@@ -168,11 +167,11 @@ describe("uploadAndCompressFiles", () => {
 
     // Mock successful compression
     const mockCompressedBlob = new Blob(["compressed"], { type: "image/webp" });
-    // biome-ignore lint/suspicious/noExplicitAny: Mock function type assertion
+
     (imageCompression as any).mockResolvedValue(mockCompressedBlob);
 
     // Mock failed API response
-    // biome-ignore lint/suspicious/noExplicitAny: Mock function type assertion
+
     (global.fetch as any).mockResolvedValue({
       ok: false,
       status: 500,
@@ -194,11 +193,11 @@ describe("uploadAndCompressFiles", () => {
 
     // Mock successful compression for image file
     const mockCompressedBlob = new Blob(["compressed"], { type: "image/webp" });
-    // biome-ignore lint/suspicious/noExplicitAny: Mock function type assertion
+
     (imageCompression as any).mockResolvedValue(mockCompressedBlob);
 
     // Mock successful API responses
-    // biome-ignore lint/suspicious/noExplicitAny: Mock function type assertion
+
     (global.fetch as any)
       .mockResolvedValueOnce({
         ok: true,

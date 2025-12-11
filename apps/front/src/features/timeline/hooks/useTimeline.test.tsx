@@ -6,14 +6,12 @@ import { useTimeline } from "./useTimeline";
 
 // Mock misskey-js modules
 vi.mock("misskey-js", () => ({
-  // biome-ignore lint/style/useNamingConvention: misskey-js API class naming
   Stream: vi.fn(),
-  // biome-ignore lint/style/useNamingConvention: misskey-js API class naming
+
   APIClient: vi.fn(),
 }));
 
 vi.mock("misskey-js/api.js", () => ({
-  // biome-ignore lint/style/useNamingConvention: misskey-js API class naming
   APIClient: vi.fn(),
 }));
 

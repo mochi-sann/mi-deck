@@ -48,7 +48,6 @@ describe("emoji-cache-database", () => {
         callback([]);
         return mockSubscription;
       }),
-      // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
     } as any);
   });
 
@@ -89,7 +88,6 @@ describe("emoji-cache-database", () => {
           callback(mockEntries);
           return mockSubscription;
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
       } as any);
 
       const { result } = renderHook(() => useAtomValue(emojiCacheAtom));
@@ -215,7 +213,6 @@ describe("emoji-cache-database", () => {
           callback(invalidEntries);
           return mockSubscription;
         }),
-        // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
       } as any);
 
       const { result } = renderHook(() => useAtomValue(emojiCacheAtom));

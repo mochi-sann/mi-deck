@@ -32,7 +32,6 @@ vi.mock("@tanstack/react-query", () => ({
 
 vi.mock("misskey-js", () => ({
   api: {
-    // biome-ignore lint/style/useNamingConvention: lib name
     APIClient: mockApiClient,
   },
 }));

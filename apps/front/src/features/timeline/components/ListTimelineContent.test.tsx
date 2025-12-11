@@ -22,7 +22,6 @@ vi.mock("../hooks/useListTimeline", () => ({
 
 // Mock UI components
 vi.mock("@/components/ui/button", () => ({
-  // biome-ignore lint/style/useNamingConvention: Mock component
   Button: ({
     children,
     onClick,
@@ -37,7 +36,6 @@ vi.mock("@/components/ui/button", () => ({
 }));
 
 vi.mock("@/components/ui/spinner", () => ({
-  // biome-ignore lint/style/useNamingConvention: Mock component
   Spinner: () => <div data-testid="spinner">Loading...</div>,
 }));
 
@@ -57,8 +55,6 @@ vi.mock("@/components/ui/text", () => ({
 
 // Mock MisskeyNote component
 vi.mock("./MisskeyNote", () => ({
-  // biome-ignore lint/style/useNamingConvention: Mock function
-  // biome-ignore lint/suspicious/noExplicitAny: Mock function
   MisskeyNote: ({ note, origin }: { note: any; origin: string }) => (
     <div
       data-testid="misskey-note"

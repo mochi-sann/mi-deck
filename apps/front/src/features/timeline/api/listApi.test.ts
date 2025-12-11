@@ -4,7 +4,6 @@ import { ListApi } from "./listApi";
 
 // Mock misskey-js modules
 vi.mock("misskey-js/api.js", () => ({
-  // biome-ignore lint/style/useNamingConvention: misskey-js API class naming
   APIClient: vi.fn(),
 }));
 

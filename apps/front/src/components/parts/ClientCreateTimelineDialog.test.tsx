@@ -134,60 +134,56 @@ vi.mock("@/features/timeline/hooks/useUserLists", () => ({
 
 // Mock UI components
 vi.mock("@/components/ui/dialog", () => ({
-  // biome-ignore lint/style/useNamingConvention: Mock component
   Dialog: ({ children, open }: { children: React.ReactNode; open: boolean }) =>
     open ? <div data-testid="dialog">{children}</div> : null,
-  // biome-ignore lint/style/useNamingConvention: Mock component
+
   DialogContent: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="dialog-content">{children}</div>
   ),
-  // biome-ignore lint/style/useNamingConvention: Mock component
+
   DialogDescription: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="dialog-description">{children}</div>
   ),
-  // biome-ignore lint/style/useNamingConvention: Mock component
+
   DialogFooter: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="dialog-footer">{children}</div>
   ),
-  // biome-ignore lint/style/useNamingConvention: Mock component
+
   DialogHeader: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="dialog-header">{children}</div>
   ),
-  // biome-ignore lint/style/useNamingConvention: Mock component
+
   DialogTitle: ({ children }: { children: React.ReactNode }) => (
     <h2 data-testid="dialog-title">{children}</h2>
   ),
 }));
 
 vi.mock("@/components/ui/form", () => ({
-  // biome-ignore lint/style/useNamingConvention: Mock component
   Form: ({ children }: { children: React.ReactNode }) => (
     <form data-testid="form">{children}</form>
   ),
-  // biome-ignore lint/style/useNamingConvention: Mock component
+
   FormControl: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="form-control">{children}</div>
   ),
-  // biome-ignore lint/suspicious/noExplicitAny: Mock component
-  // biome-ignore lint/style/useNamingConvention: Mock component
+
   FormField: ({ render }: { render: (props: any) => React.ReactNode }) =>
     render({ field: { onChange: vi.fn(), value: "" } }),
-  // biome-ignore lint/style/useNamingConvention: Mock component
+
   FormItem: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="form-item">{children}</div>
   ),
-  // biome-ignore lint/style/useNamingConvention: Mock component
+
   FormLabel: ({ children }: { children: React.ReactNode }) => (
     <label htmlFor="test-input" data-testid="form-label">
       {children}
     </label>
   ),
-  // biome-ignore lint/style/useNamingConvention: Mock component
+
   FormMessage: () => <div data-testid="form-message" />,
 }));
 
 vi.mock("@/components/ui/select", () => ({
-  // biome-ignore lint/style/useNamingConvention: Mock component
   Select: ({
     children,
     onValueChange,
@@ -204,11 +200,11 @@ vi.mock("@/components/ui/select", () => ({
       {children}
     </div>
   ),
-  // biome-ignore lint/style/useNamingConvention: Mock component
+
   SelectContent: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="select-content">{children}</div>
   ),
-  // biome-ignore lint/style/useNamingConvention: Mock component
+
   SelectItem: ({
     children,
     value,
@@ -220,25 +216,23 @@ vi.mock("@/components/ui/select", () => ({
       {children}
     </div>
   ),
-  // biome-ignore lint/style/useNamingConvention: Mock component
+
   SelectTrigger: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="select-trigger">{children}</div>
   ),
-  // biome-ignore lint/style/useNamingConvention: Mock component
+
   SelectValue: ({ placeholder }: { placeholder: string }) => (
     <div data-testid="select-value">{placeholder}</div>
   ),
 }));
 
 vi.mock("@/components/ui/input", () => ({
-  // biome-ignore lint/style/useNamingConvention: Mock component
   Input: ({ placeholder, ...props }: { placeholder: string }) => (
     <input data-testid="input" placeholder={placeholder} {...props} />
   ),
 }));
 
 vi.mock("@/components/ui/button", () => ({
-  // biome-ignore lint/style/useNamingConvention: Mock component
   Button: ({
     children,
     disabled,

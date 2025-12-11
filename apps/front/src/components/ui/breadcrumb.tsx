@@ -51,7 +51,6 @@ function BreadcrumbLink({
 
 function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
   return (
-    // biome-ignore lint/a11y/useFocusableInteractive: Current page indicator, not interactive
     <span
       data-slot="breadcrumb-page"
       role="link"

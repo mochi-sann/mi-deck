@@ -4,7 +4,6 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock(
   "@/features/compose-dialog/components/StandardNoteComposerDialog",
   () => ({
-    // biome-ignore lint/style/useNamingConvention: ignore
     StandardNoteComposerDialog: vi.fn((props: { mode: string }) => (
       <div data-testid="standard">standard-{props.mode}</div>
     )),
@@ -12,7 +11,6 @@ vi.mock(
 );
 
 vi.mock("./RenoteDialogWrapper", () => ({
-  // biome-ignore lint/style/useNamingConvention: ignore
   RenoteDialogWrapper: vi.fn((props: { mode: string }) => (
     <div data-testid="renote">renote-{props.mode}</div>
   )),

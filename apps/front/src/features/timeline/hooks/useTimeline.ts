@@ -60,7 +60,6 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
                 : "notes/global-timeline";
         const params = untilId ? { untilId } : {};
 
-        // biome-ignore lint/suspicious/noExplicitAny: Timeline null
         const res = await (client as any).request(endpoint, params);
 
         if (Array.isArray(res)) {
@@ -141,7 +140,6 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
     [isLoading, hasMore, isValidConfig, origin, token, type],
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: fetchNotesを useeffectsにいれるといい感じに動かない
   useEffect(() => {
     if (!isValidConfig) {
       return;
@@ -159,7 +157,7 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
           : type === "local"
             ? "localTimeline"
             : "globalTimeline";
-    // biome-ignore lint/correctness/useHookAtTopLevel: stream.useChannel is not a React hook
+
     const channel = stream.useChannel(channelName);
 
     // Handle new notes

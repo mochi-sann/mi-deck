@@ -39,8 +39,6 @@ vi.mock("@/lib/storage/context", () => ({
 
 // Mock AddServerDialog
 vi.mock("./AddServerDialog", () => ({
-  // biome-ignore lint/style/useNamingConvention: テストに必要
-  // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
   AddServerDialog: ({ open }: any) => {
     if (!open) return null;
     return <div data-testid="add-server-dialog">Add Server Dialog</div>;
@@ -49,8 +47,6 @@ vi.mock("./AddServerDialog", () => ({
 
 // Mock DeleteServerConfirmDialog
 vi.mock("./DeleteServerConfirmDialog", () => ({
-  // biome-ignore lint/style/useNamingConvention: テストに必要
-  // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
   DeleteServerConfirmDialog: ({ open, server, onConfirm }: any) => {
     if (!open || !server) return null;
     return (

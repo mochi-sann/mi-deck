@@ -49,12 +49,12 @@ export default function CustomEmoji(props: CustomEmojiProps) {
 }
 
 export const CustomEmojiStr = ({ text }: { text: string }) =>
-  text.split(":").map((s, i) =>
-    i % 2 ? (
-      // biome-ignore lint/suspicious/noArrayIndexKey: mfm-jsの仕様に合わせるため
-      <CustomEmojiInternal name={s} key={i} />
-    ) : (
-      // biome-ignore lint/suspicious/noArrayIndexKey: mfm-jsの仕様に合わせるため
-      <Fragment key={i}>{s}</Fragment>
-    ),
-  );
+  text
+    .split(":")
+    .map((s, i) =>
+      i % 2 ? (
+        <CustomEmojiInternal name={s} key={i} />
+      ) : (
+        <Fragment key={i}>{s}</Fragment>
+      ),
+    );

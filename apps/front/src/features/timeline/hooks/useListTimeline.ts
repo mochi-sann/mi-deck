@@ -45,7 +45,6 @@ export function useListTimeline(origin: string, token: string, listId: string) {
           ...(untilId ? { untilId } : {}),
         };
 
-        // biome-ignore lint/suspicious/noExplicitAny: Misskey API client type
         const res = await (client as any).request(
           "notes/user-list-timeline",
           params,
@@ -130,12 +129,11 @@ export function useListTimeline(origin: string, token: string, listId: string) {
     [isLoading, hasMore, isValidConfig, origin, token, listId],
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: fetchNotesを useeffectsにいれるといい感じに動かない
   useEffect(() => {
     fetchNotes();
 
     const stream = new Stream(origin, { token });
-    // biome-ignore lint/correctness/useHookAtTopLevel: remove
+
     const channel = stream.useChannel("userList", { listId });
 
     channel.on("note", (note: Note) => {

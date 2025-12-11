@@ -35,12 +35,12 @@ export const CustomEmojiStr = ({
   host?: string;
   emojis?: { [key: string]: string };
 }) =>
-  text.split(":").map((s, i) =>
-    i % 2 ? (
-      // biome-ignore lint/suspicious/noArrayIndexKey: mfm-jsの仕様に合わせるため
-      <CustomEmoji name={s} host={host} emojis={emojis} key={i} />
-    ) : (
-      // biome-ignore lint/suspicious/noArrayIndexKey: mfm-jsの仕様に合わせるため
-      <Fragment key={i}>{s}</Fragment>
-    ),
-  );
+  text
+    .split(":")
+    .map((s, i) =>
+      i % 2 ? (
+        <CustomEmoji name={s} host={host} emojis={emojis} key={i} />
+      ) : (
+        <Fragment key={i}>{s}</Fragment>
+      ),
+    );
