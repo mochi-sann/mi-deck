@@ -91,7 +91,7 @@ export function useNoteEmojis(note: Note, origin: string) {
     }
 
     return Array.from(allEmojiNames);
-  }, [note.text, user.name, user.username, note]);
+  }, [note, user.name, user.username]);
 
   // Fetch emojis when emoji names change
   useEffect(() => {

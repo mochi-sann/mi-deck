@@ -1,5 +1,5 @@
 import { APIClient } from "misskey-js/api.js";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export interface UserList {
   id: string;
@@ -22,7 +22,7 @@ export function useUserLists(origin: string, token: string) {
     setError(new Error("サーバーまたは認証情報が設定されていません。"));
   }
 
-  const fetchLists = async () => {
+  const fetchLists = useCallback(async () => {
     if (isLoading || !isValidConfig) return;
 
     setIsLoading(true);
@@ -99,11 +99,11 @@ export function useUserLists(origin: string, token: string) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isLoading, isValidConfig, origin, token]);
 
   useEffect(() => {
     fetchLists();
-  }, [origin, token]);
+  }, [fetchLists]);
 
   const retryFetch = () => {
     setError(null);

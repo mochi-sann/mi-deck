@@ -13,12 +13,13 @@ interface SparkleProps {
   children: React.ReactNode;
 }
 
+const colors = ["#FF1493", "#00FFFF", "#FFE202", "#FFE202", "#FFE202"] as const;
+
 const Sparkle: React.FC<SparkleProps> = ({ children }) => {
   const [particles, setParticles] = useState<Particle[]>([]);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const elementRef = useRef<HTMLSpanElement>(null);
   const stopRef = useRef(false);
-  const colors = ["#FF1493", "#00FFFF", "#FFE202", "#FFE202", "#FFE202"];
 
   useEffect(() => {
     stopRef.current = false;

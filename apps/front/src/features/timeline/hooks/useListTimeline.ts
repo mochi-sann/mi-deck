@@ -158,7 +158,7 @@ export function useListTimeline(origin: string, token: string, listId: string) {
       channel.dispose();
       stream.close();
     };
-  }, [origin, token, listId]);
+  }, [origin, token, listId, fetchNotes]);
 
   const retryFetch = () => {
     setError(null);

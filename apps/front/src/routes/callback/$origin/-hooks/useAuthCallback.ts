@@ -73,7 +73,7 @@ export function useAuthCallback({
     };
 
     completeAuthentication();
-  }, [auth.completeAuth, navigate, sessionToken, t]);
+  }, [auth, auth.completeAuth, navigate, sessionToken, t]);
 
   const handleRetry = () => {
     window.close(); // Close popup and let user try again

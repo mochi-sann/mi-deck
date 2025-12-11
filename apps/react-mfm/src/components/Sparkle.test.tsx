@@ -33,6 +33,7 @@ describe("Sparkle", () => {
         <span>Test</span>
       </Sparkle>,
     );
+    expect(document.body).toBeInTheDocument();
     unmount();
   });
 });

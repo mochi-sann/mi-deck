@@ -187,7 +187,7 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
       channel.dispose();
       stream.close();
     };
-  }, [origin, token, type]);
+  }, [origin, token, type, fetchNotes, isValidConfig]);
 
   const retryFetch = () => {
     setError(null);
