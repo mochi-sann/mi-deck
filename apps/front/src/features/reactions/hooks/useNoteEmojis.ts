@@ -80,7 +80,7 @@ export function useNoteEmojis(note: Note, origin: string) {
       user.name || "",
       user.username || "",
       // Join local reaction names to be detected by extractCustomEmojiNames
-      `:${localReactionNames.join("::")}:` || "",
+      `:${localReactionNames.join("::")}:`,
     ];
 
     const allEmojiNames = new Set<string>();

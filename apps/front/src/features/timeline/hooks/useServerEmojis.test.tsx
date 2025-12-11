@@ -77,7 +77,7 @@ describe("useServerEmojis", () => {
     ]);
 
     // useQuery mock implementation to simulate data return
-    mockUseQuery.mockImplementation(({ queryFn }) => {
+    mockUseQuery.mockImplementation(() => {
       // We can execute the queryFn to test the fetch logic, but strictly for useQuery's return value:
       // In the hook, useQuery calls queryFn which calls createMisskeyClient -> storageManager -> APIClient
       // The hook returns data from useQuery.
