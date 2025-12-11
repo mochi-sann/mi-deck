@@ -2,11 +2,11 @@
   "files": [],
   "references": [
     {
-      "path": "./tsconfig.app.json"
+      "path": "./tsconfig.app.json",
     },
     {
-      "path": "./tsconfig.node.json"
-    }
+      "path": "./tsconfig.node.json",
+    },
   ],
   "compilerOptions": {
     "baseUrl": ".",
@@ -18,7 +18,7 @@
       "@/hooks/*": ["./src/hooks/*"],
       "@/types/*": ["./src/types/*"],
       "@/utils/*": ["./src/utils/*"],
-      "@/stores/*": ["./src/stores/*"]
-    }
-  }
+      "@/stores/*": ["./src/stores/*"],
+    },
+  },
 }

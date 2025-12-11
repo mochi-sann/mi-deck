@@ -22,8 +22,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "styled-system/*": ["./styled-system/*"]
-    }
+      "styled-system/*": ["./styled-system/*"],
+    },
   },
   "include": ["src", "styled-system", "panda.config.ts", "theme", ".storybook"],
   "exclude": [
@@ -31,6 +31,6 @@
     "src/**/*.stories.ts",
     "src/**/*.test.tsx",
     "src/**/*.test.ts",
-    "src/**/__tests__/**"
-  ]
+    "src/**/__tests__/**",
+  ],
 }

@@ -7,5 +7,5 @@ pre-commit:
     check:
       glob: "*.{js,mjs,cjs,jsx,ts,mts,cts,tsx,vue,astro,svelte}"
       exclude: "tsconfig.app.json|tsconfig.json|tsconfig.node.json"
-      run: pnpm dlx oxlint --no-error-on-unmatched-pattern {staged_files}
+      run: pnpm dlx oxlint {staged_files}
       stage_fixed: true

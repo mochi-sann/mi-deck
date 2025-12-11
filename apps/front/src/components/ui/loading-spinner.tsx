@@ -3,8 +3,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Spinner } from "./spinner"; // Assuming spinner.tsx exports a Spinner component
 
-export interface LoadingSpinnerProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface LoadingSpinnerProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: "sm" | "md" | "lg";
   text?: string;
 }
