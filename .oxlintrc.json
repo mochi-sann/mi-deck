@@ -1,4 +1,5 @@
 {
+  "plugins": ["import", "react", "react-perf", "node", "vitest"],
   "rules": {
     "no-unused-vars": [
       "warn",
