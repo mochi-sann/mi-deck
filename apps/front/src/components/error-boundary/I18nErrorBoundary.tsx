@@ -42,9 +42,8 @@ export class I18nErrorBoundary extends Component<
     });
 
     // Log to monitoring service if available
-    // biome-ignore lint/suspicious/noExplicitAny: Global error reporting service requires any type
+
     if (typeof window !== "undefined" && (window as any).reportError) {
-      // biome-ignore lint/suspicious/noExplicitAny: Global error reporting service requires any type
       (window as any).reportError(error);
     }
   }
@@ -150,9 +149,8 @@ export const useI18nErrorReporting = () => {
     console.error("I18n Error:", error, context ? `Context: ${context}` : "");
 
     // Report to monitoring service if available
-    // biome-ignore lint/suspicious/noExplicitAny: Global error reporting service requires any type
+
     if (typeof window !== "undefined" && (window as any).reportError) {
-      // biome-ignore lint/suspicious/noExplicitAny: Global error reporting service requires any type
       (window as any).reportError(error);
     }
   };

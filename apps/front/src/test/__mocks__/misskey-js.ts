@@ -1,5 +1,4 @@
 export const api = {
-  // biome-ignore lint/style/useNamingConvention: ignore
   APIClient: class MisskeyApiClient {
     origin: string;
     credential?: string;

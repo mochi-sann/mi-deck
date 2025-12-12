@@ -5,15 +5,13 @@ import { MisskeyNote } from "./MisskeyNote";
 
 // Mock dependencies
 vi.mock("@/features/emoji", () => ({
-  // biome-ignore lint/style/useNamingConvention: テストで必須
   CustomEmojiCtx: {
-    // biome-ignore lint/style/useNamingConvention: テストで必須
     Provider: ({
       children,
       value,
     }: {
       children: React.ReactNode;
-      // biome-ignore lint/suspicious/noExplicitAny: テストで必須
+
       value: any;
     }) => (
       <div data-testid="emoji-context" data-value={JSON.stringify(value)}>
@@ -24,7 +22,6 @@ vi.mock("@/features/emoji", () => ({
 }));
 
 vi.mock("@/features/mfm", () => ({
-  // biome-ignore lint/style/useNamingConvention: テストで必須
   MfmText: ({
     text,
     host,
@@ -32,7 +29,7 @@ vi.mock("@/features/mfm", () => ({
   }: {
     text: string;
     host: string;
-    // biome-ignore lint/suspicious/noExplicitAny: テストで必須
+
     emojis: any;
   }) => (
     <div data-testid="mfm-text">
@@ -45,16 +42,13 @@ vi.mock("@/features/mfm", () => ({
 
 // Mock reactions components to avoid React Query provider requirement
 vi.mock("@/features/reactions/components/ReactionButton", () => ({
-  // biome-ignore lint/style/useNamingConvention: testing mock
   ReactionButton: () => <div data-testid="reaction-button" />,
 }));
 vi.mock("@/features/reactions/components/NoteReactions", () => ({
-  // biome-ignore lint/style/useNamingConvention: testing mock
   NoteReactions: () => <div data-testid="note-reactions" />,
 }));
 
 vi.mock("./RenoteMenu", () => ({
-  // biome-ignore lint/style/useNamingConvention: テストで必須
   RenoteMenu: () => <div data-testid="renote-menu" />,
 }));
 
@@ -65,7 +59,6 @@ vi.mock("react-i18next", () => ({
 }));
 
 vi.mock("@/features/notes/components/NoteReplySection", () => ({
-  // biome-ignore lint/style/useNamingConvention: testing mock
   NoteReplySection: () => <div data-testid="note-reply-section" />,
 }));
 vi.mock("@/features/notes/actions/useRenoteAction", () => ({
@@ -81,10 +74,9 @@ vi.mock("@/features/notes/actions/useRenoteAction", () => ({
   }),
 }));
 vi.mock("@/lib/utils/emoji-proxy", () => ({
-  // biome-ignore lint/suspicious/noExplicitAny: テストで必須
   createProxiedEmojis: (emojis: any, host: string) => {
     if (!emojis || !host) return emojis;
-    // biome-ignore lint/suspicious/noExplicitAny: テストで必須
+
     const proxied: any = {};
     for (const [name, url] of Object.entries(emojis)) {
       proxied[name] =
@@ -96,7 +88,6 @@ vi.mock("@/lib/utils/emoji-proxy", () => ({
 
 // Mock UI components
 vi.mock("@/components/ui/avatar", () => ({
-  // biome-ignore lint/style/useNamingConvention: テストで必須
   Avatar: ({
     children,
     className,
@@ -108,12 +99,12 @@ vi.mock("@/components/ui/avatar", () => ({
       {children}
     </div>
   ),
-  // biome-ignore lint/style/useNamingConvention: テストで必須
+
   AvatarImage: ({ src }: { src: string | null }) => {
     const imgProps = src ? { src } : {};
     return <img data-testid="avatar-image" {...imgProps} alt="avatar" />;
   },
-  // biome-ignore lint/style/useNamingConvention: テストで必須
+
   AvatarFallback: ({
     children,
     className,
@@ -138,7 +129,6 @@ const createMockNote = (overrides: Partial<Note> = {}): Note =>
       name: "Test User",
       avatarUrl: "https://example.com/avatar.jpg",
       emojis: {
-        // biome-ignore lint/style/useNamingConvention: テストで必須
         user_emoji: "https://example.com/user-emoji.png",
       },
     },

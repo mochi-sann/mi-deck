@@ -14,9 +14,7 @@ vi.mock("jotai", async (importOriginal) => {
 });
 
 vi.mock("@/features/emoji", () => ({
-  // biome-ignore lint/style/useNamingConvention: testing mock
   CustomEmojiCtx: {
-    // biome-ignore lint/style/useNamingConvention: testing mock
     Provider: ({ children }: { children: React.ReactNode }) => (
       <div>{children}</div>
     ),
@@ -24,29 +22,24 @@ vi.mock("@/features/emoji", () => ({
 }));
 
 vi.mock("@/features/mfm", () => ({
-  // biome-ignore lint/style/useNamingConvention: testing mock
   MfmText: ({ text }: { text: string }) => (
     <span data-testid="mfm-text">{text}</span>
   ),
 }));
 
 vi.mock("@/features/reactions/components/ReactionButton", () => ({
-  // biome-ignore lint/style/useNamingConvention: testing mock
   ReactionButton: () => <div data-testid="reaction-button" />,
 }));
 
 vi.mock("../../reactions/components/NoteReactions", () => ({
-  // biome-ignore lint/style/useNamingConvention: testing mock
   NoteReactions: () => <div data-testid="note-reactions" />,
 }));
 
 vi.mock("./RenoteMenu", () => ({
-  // biome-ignore lint/style/useNamingConvention: testing mock
   RenoteMenu: () => <div data-testid="renote-menu" />,
 }));
 
 vi.mock("@/features/notes/components/NoteReplySection", () => ({
-  // biome-ignore lint/style/useNamingConvention: testing mock
   NoteReplySection: () => <div data-testid="note-reply-section" />,
 }));
 

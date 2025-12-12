@@ -11,8 +11,8 @@
     "front": "pnpm -F @mi-deck/front",
     "server": "pnpm -F @mi-deck/server",
     "test:e2e:server": "pnpm -F @mi-deck/server run test:e2e",
-    "format": "biome format --write ",
-    "check": "biome check --write --unsafe ",
+    "format": "pnpm dlx oxfmt",
+    "check": "pnpm dlx oxlint",
     "fix-test-any": "node scripts/fix-test-any.js",
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",
@@ -29,12 +29,13 @@
   "author": "",
   "license": "",
   "devDependencies": {
-    "@biomejs/biome": "2.3.5",
     "@playwright/test": "^1.56.1",
     "@types/node": "^24.10.1",
     "dotenv": "^16.6.1",
     "execa": "^9.6.0",
     "lefthook": "^1.13.6",
+    "oxlint": "^1.32.0",
+    "oxlint-tsgolint": "^0.8.5",
     "turbo": "^2.6.1",
     "typescript": "^5.9.3"
   }

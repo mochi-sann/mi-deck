@@ -47,12 +47,12 @@ Jotai `Provider` を利用しない場合でもデフォルトストアで動作
 
 ### `<Mfm />`
 
-| プロパティ | 型 | 既定値 | 説明 |
-| --- | --- | --- | --- |
-| `text` | `string` | 必須 | 解析対象となる MFM 文字列 |
-| `plain` | `boolean` | `false` | `true` の場合は解析せずテキストをそのまま描画 |
-| `host` | `string` | `undefined` | カスタム絵文字取得時のホスト情報 (カスタム実装向け) |
-| `emojis` | `Record<string, string>` | `undefined` | 絵文字名と画像 URL のマップ |
+| プロパティ | 型                       | 既定値      | 説明                                                |
+| ---------- | ------------------------ | ----------- | --------------------------------------------------- |
+| `text`     | `string`                 | 必須        | 解析対象となる MFM 文字列                           |
+| `plain`    | `boolean`                | `false`     | `true` の場合は解析せずテキストをそのまま描画       |
+| `host`     | `string`                 | `undefined` | カスタム絵文字取得時のホスト情報 (カスタム実装向け) |
+| `emojis`   | `Record<string, string>` | `undefined` | 絵文字名と画像 URL のマップ                         |
 
 > `nowrap` / `nyaize` プロパティは将来の機能追加に向けたプレースホルダーです。現時点では限定的な動作のみ提供されます。
 
@@ -119,14 +119,14 @@ export function TimelineItem({ body }: { body: string }) {
 
 設定で利用できる主なキーは次の通りです。
 
-| キー | 型 | 既定値 | 用途 |
-| --- | --- | --- | --- |
-| `advanced` | `boolean` | `true` | `$[position]` など高度な MFM 関数を有効化 |
-| `animation` | `boolean` | `true` | スピンやレインボーなどアニメーション効果の有効／無効 |
-| `CustomEmoji` | `FC<CustomEmojiProps>` | 内蔵実装 | カスタム絵文字描画の差し替え |
-| `Hashtag` | `FC<HashtagProps>` | 内蔵実装 | ハッシュタグリンクの差し替え |
-| `Link` | `FC<LinkProps>` | 内蔵実装 | URL / `$[link]` の描画差し替え |
-| `Mention` | `FC<MentionProps>` | 内蔵実装 | メンションリンクの差し替え |
+| キー          | 型                     | 既定値   | 用途                                                 |
+| ------------- | ---------------------- | -------- | ---------------------------------------------------- |
+| `advanced`    | `boolean`              | `true`   | `$[position]` など高度な MFM 関数を有効化            |
+| `animation`   | `boolean`              | `true`   | スピンやレインボーなどアニメーション効果の有効／無効 |
+| `CustomEmoji` | `FC<CustomEmojiProps>` | 内蔵実装 | カスタム絵文字描画の差し替え                         |
+| `Hashtag`     | `FC<HashtagProps>`     | 内蔵実装 | ハッシュタグリンクの差し替え                         |
+| `Link`        | `FC<LinkProps>`        | 内蔵実装 | URL / `$[link]` の描画差し替え                       |
+| `Mention`     | `FC<MentionProps>`     | 内蔵実装 | メンションリンクの差し替え                           |
 
 カスタム絵文字実装では `CustomEmojiCtx` を利用することで `host` や `emojis` の情報を参照できます。
 

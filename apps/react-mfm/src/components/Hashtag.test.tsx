@@ -18,14 +18,12 @@ describe("Hashtag", () => {
     );
 
     const store = {
-      // biome-ignore lint/style/useNamingConvention: Property name matches MFM component convention
       get: () => ({ Hashtag: CustomHashtag }),
       set: () => {},
       sub: () => () => {},
     };
 
     render(
-      // biome-ignore lint/suspicious/noExplicitAny: Test mock store type
       <Provider store={store as any}>
         <Hashtag hashtag="custom" />
       </Provider>,

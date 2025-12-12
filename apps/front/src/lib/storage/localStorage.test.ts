@@ -263,7 +263,9 @@ describe("LocalStorageManager", () => {
       });
 
       // Since setStoredData calls localStorage.setItem, it should throw an error
-      await expect(localStorageManager.importData(testData)).rejects.toThrow();
+      await expect(localStorageManager.importData(testData)).rejects.toThrow(
+        "Storage quota exceeded",
+      );
 
       // Restore original function
       localStorageMock.setItem = originalSetItem;

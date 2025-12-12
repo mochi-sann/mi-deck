@@ -17,9 +17,7 @@ import { cn } from "@/lib/utils";
 const Form = FormProvider;
 
 type FormFieldContextValue<
-  // biome-ignore lint/style/useNamingConvention: React Hook Form generic type convention
   TFieldValues extends FieldValues = FieldValues,
-  // biome-ignore lint/style/useNamingConvention: React Hook Form generic type convention
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = {
   name: TName;
@@ -30,9 +28,7 @@ const FormFieldContext = React.createContext<FormFieldContextValue>(
 );
 
 const FormField = <
-  // biome-ignore lint/style/useNamingConvention: React Hook Form generic type convention
   TFieldValues extends FieldValues = FieldValues,
-  // biome-ignore lint/style/useNamingConvention: React Hook Form generic type convention
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
   ...props

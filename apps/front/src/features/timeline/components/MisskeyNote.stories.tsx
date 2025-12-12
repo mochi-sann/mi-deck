@@ -51,8 +51,8 @@ const storyOrigin = "local-misskey.local";
 
 const buildEmojiArgs = (note: Note, origin = storyOrigin) => {
   const mergedEmojis: Record<string, string> = {
-    ...(note.emojis ?? {}),
-    ...(note.user?.emojis ?? {}),
+    ...note.emojis,
+    ...note.user?.emojis,
   };
 
   const contextValue: CustomEmojiContext = {
@@ -474,7 +474,7 @@ const nsfwNote: Note = {
   id: "note-nsfw",
   files: [
     {
-      ...(noteWithImage.files?.[0] ?? {}),
+      ...noteWithImage.files?.[0],
       isSensitive: true,
     } as any,
   ],

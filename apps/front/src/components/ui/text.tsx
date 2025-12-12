@@ -32,7 +32,8 @@ export const TextVariants = cva("text-xl", {
 });
 
 export interface TextProps
-  extends React.HTMLAttributes<HTMLHeadingElement>,
+  extends
+    React.HTMLAttributes<HTMLHeadingElement>,
     VariantProps<typeof TextVariants> {}
 
 const Text = React.forwardRef<HTMLHeadingElement, TextProps>(

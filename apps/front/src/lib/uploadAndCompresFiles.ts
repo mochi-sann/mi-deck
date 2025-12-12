@@ -13,7 +13,6 @@ export async function uploadAndCompressFiles(
   console.log("Compressing and uploading files:", files);
 
   const compressionOptions = {
-    // biome-ignore lint/style/useNamingConvention: library option property naming
     maxSizeMB: 1, // Adjust max size as needed
     maxWidthOrHeight: 2048, // Adjust max dimensions as needed
     useWebWorker: true,

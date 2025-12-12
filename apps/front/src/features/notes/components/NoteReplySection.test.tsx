@@ -19,7 +19,6 @@ vi.mock("react-i18next", () => ({
 }));
 
 vi.mock("misskey-js/api.js", () => ({
-  // biome-ignore lint/style/useNamingConvention: misskey js
   APIClient: vi.fn().mockImplementation(() => ({
     request: mockRequest,
   })),

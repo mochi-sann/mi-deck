@@ -2,6 +2,6 @@
   "name": "mideck-storybook",
   "compatibility_date": "2025-12-10",
   "assets": {
-    "directory": "./apps/front/storybook-static/"
-  }
+    "directory": "./apps/front/storybook-static/",
+  },
 }

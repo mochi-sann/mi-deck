@@ -26,7 +26,8 @@ const spinnerVariants = cva("animate-spin", {
 });
 
 export interface SpinnerProps
-  extends React.SVGAttributes<SVGSVGElement>,
+  extends
+    React.SVGAttributes<SVGSVGElement>,
     VariantProps<typeof spinnerVariants> {
   /**
    * The speed of the spinner animation in milliseconds.

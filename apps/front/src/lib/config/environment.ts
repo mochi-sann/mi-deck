@@ -1,7 +1,7 @@
 /**
  * 環境変数を管理するクラス
  */
-// biome-ignore lint/complexity/noStaticOnlyClass: 除外
+
 export class EnvironmentConfig {
   private static _isLocalHttpEnabled: boolean | null = null;
 

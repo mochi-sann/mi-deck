@@ -34,14 +34,12 @@ describe("useForeignApi", () => {
     });
 
     it("should return null when host is null", () => {
-      // biome-ignore lint/suspicious/noExplicitAny: テストで必須
       const { result } = renderHook(() => useForeignApi(null as any));
 
       expect(result.current).toBeNull();
     });
 
     it("should return null when host is undefined", () => {
-      // biome-ignore lint/suspicious/noExplicitAny: テストで必須
       const { result } = renderHook(() => useForeignApi(undefined as any));
 
       expect(result.current).toBeNull();

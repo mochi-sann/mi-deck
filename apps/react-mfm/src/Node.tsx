@@ -13,7 +13,6 @@ import Search from "./components/Search";
 import { id, intersperse, nyaize } from "./utils";
 
 const Node = ({ nodes, ...props }: MfmBasicProps & { nodes?: MfmNode[] }) =>
-  // biome-ignore lint/suspicious/noArrayIndexKey: keyがこれ以外ない
   nodes?.map((node, i) => <SingleNode node={node} {...props} key={i} />);
 
 export default Node;
@@ -152,12 +151,10 @@ function SingleNode({ node, ...props }: MfmBasicProps & { node: MfmNode }) {
       const text = props.nyaize ? nyaize(orig) : orig;
 
       if (props.plain) return text.replace(/\n/g, " ");
-      return (
-        intersperse<ReactNode>(text.split("\n"), <br />)
-          .filter(id)
-          // biome-ignore lint/suspicious/noArrayIndexKey: keyがこれ以外ない
-          .map((e, i) => <Fragment key={i}>{e}</Fragment>)
-      );
+      return intersperse<ReactNode>(text.split("\n"), <br />)
+        .filter(id)
+
+        .map((e, i) => <Fragment key={i}>{e}</Fragment>);
     }
   }
 }

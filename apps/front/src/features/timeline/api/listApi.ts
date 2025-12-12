@@ -13,7 +13,6 @@ export class ListApi {
   }
 
   async getUserLists(): Promise<UserList[]> {
-    // biome-ignore lint/suspicious/noExplicitAny: Misskey API client type
     const response = await (this.client as any).request("users/lists/list", {});
     return response as UserList[];
   }
@@ -24,7 +23,6 @@ export class ListApi {
       ...(untilId ? { untilId } : {}),
     };
 
-    // biome-ignore lint/suspicious/noExplicitAny: Misskey API client type
     const response = await (this.client as any).request(
       "notes/user-list-timeline",
       params,
@@ -33,7 +31,6 @@ export class ListApi {
   }
 
   async createList(name: string, isPublic = false): Promise<UserList> {
-    // biome-ignore lint/suspicious/noExplicitAny: Misskey API client type
     const response = await (this.client as any).request("users/lists/create", {
       name,
       isPublic,
@@ -42,7 +39,6 @@ export class ListApi {
   }
 
   async deleteList(listId: string): Promise<void> {
-    // biome-ignore lint/suspicious/noExplicitAny: Misskey API client type
     await (this.client as any).request("users/lists/delete", {
       listId,
     });
@@ -59,7 +55,6 @@ export class ListApi {
       ...(isPublic !== undefined ? { isPublic } : {}),
     };
 
-    // biome-ignore lint/suspicious/noExplicitAny: Misskey API client type
     const response = await (this.client as any).request(
       "users/lists/update",
       params,
@@ -68,7 +63,6 @@ export class ListApi {
   }
 
   async addUserToList(listId: string, userId: string): Promise<void> {
-    // biome-ignore lint/suspicious/noExplicitAny: Misskey API client type
     await (this.client as any).request("users/lists/push", {
       listId,
       userId,
@@ -76,7 +70,6 @@ export class ListApi {
   }
 
   async removeUserFromList(listId: string, userId: string): Promise<void> {
-    // biome-ignore lint/suspicious/noExplicitAny: Misskey API client type
     await (this.client as any).request("users/lists/pull", {
       listId,
       userId,

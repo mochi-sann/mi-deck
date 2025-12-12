@@ -163,7 +163,7 @@ fulltextSearch:
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
 # ID SETTINGS AFTER THAT!
 
-id: 'aidx'
+id: "aidx"
 
 #   ┌────────────────┐
 #───┘ Error tracking └──────────────────────────────────────────

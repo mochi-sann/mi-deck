@@ -1,22 +1,21 @@
-
-
 wsl でアクセスできるようにする方法
 linux側
+
 ```/etc/hosts
 127.0.0.1 local-misskey.local
 ```
+
 windows側
+
 ```C:\Windows\System32\drivers\etc\hosts
 127.0.0.1  local-misskey.local
 ```
+
 どっちも編集したらmisskeyをブラウザとかからアクセスできるようになる
 
-
-
-
-```bash 
-# dump misskey sql 
-docker exec mi-deck-misskey-db-1 pg_dumpall -c -U example-misskey-user  > db_dump/dump.sql 
+```bash
+# dump misskey sql
+docker exec mi-deck-misskey-db-1 pg_dumpall -c -U example-misskey-user  > db_dump/dump.sql
 docker compose exec misskey-db pg_dumpall -c -U example-misskey-user  > db_dump/dump.sql
 
 #  restore misskey db
@@ -27,6 +26,7 @@ cat db_dump/dump.sql | docker-compose exec --no-TTY misskey-db psql misskey exam
 ```
 
 # misskey local info
+
 ```
 url: http://localhost:3002
 user: @hoge
@@ -43,7 +43,7 @@ pass: hoge
 
 テストは必ず一件ずつ追加して、`pnpm --filter front test -- <target>` でテストが通過することを確認します。
 
-### apps/front/src/Components/**/*.tsx
+### apps/front/src/Components/\*_/_.tsx
 
 React Component として次のコードを参考にテストを追加します。`@testing-library/react` を使用してコンポーネントをレンダリングし、アサーションを行います。
 
@@ -71,7 +71,7 @@ describe("Button Component", () => {
 });
 ```
 
-### apps/front/src/routes/**/*.tsx
+### apps/front/src/routes/\*_/_.tsx
 
 `@tanstack/react-router` を使用したルートコンポーネントのテストを追加します。`createMemoryHistory` と `createRouter` を使用して、テスト環境でルーティングをシミュレートします。
 
@@ -125,12 +125,14 @@ test("Index route renders correctly", async () => {
   // 必要に応じて、非同期処理（loaderなど）の結果が反映されているか確認
 });
 ```
-**注記:**
-*   上記の例では、`routeTree.gen.ts` が `@tanstack/react-router` の CLI によって生成されていることを前提としています。実際のファイルパスに合わせて `import` を修正してください。
-*   ルートコンポーネントが `loader` や `useContext` などで外部データや状態に依存している場合、テスト内でそれらを適切にモックするか、テスト用のデータを提供する必要があります (`QueryClientProvider` や `router` の `context` オプションなど)。
-*   `expect` 内のアサーション (`/welcome/i` や `/some specific text/i`) は、テスト対象のルートコンポーネントが実際に表示する内容に合わせてください。
 
-### apps/front/src/hooks/**/*.ts
+**注記:**
+
+- 上記の例では、`routeTree.gen.ts` が `@tanstack/react-router` の CLI によって生成されていることを前提としています。実際のファイルパスに合わせて `import` を修正してください。
+- ルートコンポーネントが `loader` や `useContext` などで外部データや状態に依存している場合、テスト内でそれらを適切にモックするか、テスト用のデータを提供する必要があります (`QueryClientProvider` や `router` の `context` オプションなど)。
+- `expect` 内のアサーション (`/welcome/i` や `/some specific text/i`) は、テスト対象のルートコンポーネントが実際に表示する内容に合わせてください。
+
+### apps/front/src/hooks/\*_/_.ts
 
 React Hooks 関数に対してテストを追加します。`@testing-library/react` の `renderHook` を使用します。
 

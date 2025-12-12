@@ -22,7 +22,7 @@ vi.mock("@mi-deck/react-mfm", () => {
 
   return {
     default: MockMfm,
-    // biome-ignore lint/style/useNamingConvention: ignore
+
     Mfm: MockMfm,
   };
 });

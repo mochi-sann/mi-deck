@@ -24,7 +24,6 @@ vi.mock("@tanstack/react-virtual", () => ({
 }));
 
 vi.mock("./MisskeyNote", () => ({
-  // biome-ignore lint/style/useNamingConvention: 実際のエクスポート名に合わせてPascalCaseを維持
   MisskeyNote: ({ note }: { note: MockNote }) => (
     <div data-testid="note" data-note-id={note.id}>
       note-{note.id}

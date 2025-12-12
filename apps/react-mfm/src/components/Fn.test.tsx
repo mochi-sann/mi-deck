@@ -61,13 +61,12 @@ describe("ccodestr", () => {
   });
 
   it("文字列以外の値に対してnullを返す", () => {
-    // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
     expect(ccodestr(123 as any)).toBe(null);
-    // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
+
     expect(ccodestr(true as any)).toBe(null);
-    // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
+
     expect(ccodestr(null as any)).toBe(null);
-    // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
+
     expect(ccodestr(undefined as any)).toBe(null);
   });
 });

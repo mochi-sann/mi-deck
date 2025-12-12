@@ -52,7 +52,6 @@ const mockMisskeyClient = {
 
 vi.mock("misskey-js", () => ({
   api: {
-    // biome-ignore lint/style/useNamingConvention: External library naming convention
     APIClient: vi.fn(() => mockMisskeyClient),
   },
 }));

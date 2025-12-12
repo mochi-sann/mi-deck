@@ -27,7 +27,6 @@ type ValidKeys<T extends TranslationKeys> = NestedKeyOf<
   TranslationResources[T]
 >;
 
-// biome-ignore lint/style/useNamingConvention: 修正
 export type TypedTFunction<T extends TranslationKeys = "common"> =
   T extends "common"
     ? <K extends ValidKeys<"common">>(
@@ -36,7 +35,6 @@ export type TypedTFunction<T extends TranslationKeys = "common"> =
       ) => string
     : <K extends ValidKeys<T>>(key: K, options?: TranslationOptions) => string;
 
-// biome-ignore lint/style/useNamingConvention: 修正
 export type GlobalTFunction = <K extends AllTranslationKeys>(
   key: K,
   options?: TranslationOptions,

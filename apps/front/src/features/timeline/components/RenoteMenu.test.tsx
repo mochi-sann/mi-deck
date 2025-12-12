@@ -11,7 +11,6 @@ vi.mock("@/features/notes/actions/useRenoteAction", () => ({
 }));
 
 vi.mock("@/features/compose-dialog/components/NoteComposerDialog", () => ({
-  // biome-ignore lint/style/useNamingConvention: 実際のエクスポート名に合わせてPascalCaseを維持
   NoteComposerDialog: ({ trigger }: { trigger?: JSX.Element }) =>
     trigger ?? null,
 }));

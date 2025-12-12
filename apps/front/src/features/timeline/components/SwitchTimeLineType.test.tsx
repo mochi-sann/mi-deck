@@ -8,7 +8,6 @@ import { SwitchTimeLineType } from "./SwitchTimeLineType";
 
 // Mock components
 vi.mock("./HomeTimelineContent", () => ({
-  // biome-ignore lint/style/useNamingConvention: Mock component
   HomeTimelineContent: ({
     origin,
     token,
@@ -30,7 +29,6 @@ vi.mock("./HomeTimelineContent", () => ({
 }));
 
 vi.mock("./ListTimelineContent", () => ({
-  // biome-ignore lint/style/useNamingConvention: Mock component
   ListTimelineContent: ({
     origin,
     token,
@@ -207,7 +205,6 @@ describe("SwitchTimeLineType", () => {
   });
 
   it("should render default case for unknown timeline type", () => {
-    // biome-ignore lint/suspicious/noExplicitAny: Test case for unknown type
     const timeline = createMockTimeline("unknown" as any);
 
     render(<SwitchTimeLineType timeline={timeline} />);
@@ -234,7 +231,6 @@ describe("SwitchTimeLineType", () => {
   });
 
   it("should handle channel timeline type", () => {
-    // biome-ignore lint/suspicious/noExplicitAny: Test case for channel type
     const timeline = createMockTimeline("channel" as any);
 
     render(<SwitchTimeLineType timeline={timeline} />);

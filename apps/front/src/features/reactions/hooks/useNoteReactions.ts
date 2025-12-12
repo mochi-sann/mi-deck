@@ -118,12 +118,12 @@ export function useNoteReactions({
     note.myReaction ?? null,
   );
   const [reactionsMap, setReactionsMap] = useState<Record<string, number>>(
-    () => ({ ...(note.reactions || {}) }),
+    () => ({ ...note.reactions }),
   );
 
   useEffect(() => {
     setMyReaction(note.myReaction ?? null);
-    setReactionsMap({ ...(note.reactions || {}) });
+    setReactionsMap({ ...note.reactions });
   }, [note.myReaction, note.reactions]);
 
   // Aggregated counts for list display (sorted)

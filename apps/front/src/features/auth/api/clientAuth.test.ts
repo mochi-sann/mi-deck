@@ -6,7 +6,7 @@ describe("ClientAuthManager", () => {
   // 環境変数制御なしのレガシーテスト（環境変数未設定時の動作をテスト）
   describe("getProtocolFromOrigin (環境変数制御なし)", () => {
     // プライベートメソッドをテストするため、型アサーションを使用
-    // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
+
     const manager = clientAuthManager as any;
 
     beforeEach(() => {
@@ -65,13 +65,12 @@ describe("ClientAuthManager", () => {
       expect(manager.getProtocolFromOrigin("")).toBe("https");
       expect(manager.getProtocolFromOrigin(null)).toBe("https");
       expect(manager.getProtocolFromOrigin(undefined)).toBe("https");
-      // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
+
       expect(manager.getProtocolFromOrigin(123 as any)).toBe("https");
     });
   });
 
   describe("buildOriginUrl (環境変数制御なし)", () => {
-    // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
     const manager = clientAuthManager as any;
 
     beforeEach(() => {
@@ -126,7 +125,6 @@ describe("ClientAuthManager", () => {
   });
 
   describe("cleanOriginInput", () => {
-    // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
     const manager = clientAuthManager as any;
 
     it("should clean basic domain input", () => {
@@ -167,17 +165,16 @@ describe("ClientAuthManager", () => {
     it("should handle invalid input gracefully", () => {
       expect(manager.cleanOriginInput("")).toBe("");
       expect(manager.cleanOriginInput("   ")).toBe("");
-      // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
+
       expect(manager.cleanOriginInput(null as any)).toBe("");
-      // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
+
       expect(manager.cleanOriginInput(undefined as any)).toBe("");
-      // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
+
       expect(manager.cleanOriginInput(123 as any)).toBe("");
     });
   });
 
   describe("buildOriginUrl with environment control", () => {
-    // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
     const manager = clientAuthManager as any;
 
     beforeEach(() => {
@@ -223,7 +220,6 @@ describe("ClientAuthManager", () => {
       // 環境変数を未設定にする
       vi.stubEnv("VITE_ENABLE_LOCAL_HTTP", undefined);
 
-      // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
       const manager = new (clientAuthManager.constructor as any)();
       expect(manager.getProtocolFromOrigin("localhost")).toBe("https");
       expect(manager.getProtocolFromOrigin("127.0.0.1")).toBe("https");
@@ -233,7 +229,6 @@ describe("ClientAuthManager", () => {
     it("環境変数=true時はローカルアドレスでHTTP", () => {
       vi.stubEnv("VITE_ENABLE_LOCAL_HTTP", "true");
 
-      // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
       const manager = new (clientAuthManager.constructor as any)();
       expect(manager.getProtocolFromOrigin("localhost")).toBe("http");
       expect(manager.getProtocolFromOrigin("127.0.0.1")).toBe("http");
@@ -244,7 +239,6 @@ describe("ClientAuthManager", () => {
     it("環境変数=false時はローカルアドレスでもHTTPS", () => {
       vi.stubEnv("VITE_ENABLE_LOCAL_HTTP", "false");
 
-      // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
       const manager = new (clientAuthManager.constructor as any)();
       expect(manager.getProtocolFromOrigin("localhost")).toBe("https");
       expect(manager.getProtocolFromOrigin("127.0.0.1")).toBe("https");
@@ -253,7 +247,6 @@ describe("ClientAuthManager", () => {
     it("環境変数が無効な値の場合はHTTPS", () => {
       vi.stubEnv("VITE_ENABLE_LOCAL_HTTP", "TRUE"); // 大文字は無効
 
-      // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
       const manager = new (clientAuthManager.constructor as any)();
       expect(manager.getProtocolFromOrigin("localhost")).toBe("https");
 
@@ -265,7 +258,6 @@ describe("ClientAuthManager", () => {
     it("リモートアドレスは環境変数に関係なくHTTPS", () => {
       vi.stubEnv("VITE_ENABLE_LOCAL_HTTP", "true");
 
-      // biome-ignore lint/suspicious/noExplicitAny: テストなので無視
       const manager = new (clientAuthManager.constructor as any)();
       expect(manager.getProtocolFromOrigin("example.com")).toBe("https");
       expect(manager.getProtocolFromOrigin("misskey.io")).toBe("https");

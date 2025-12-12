@@ -66,7 +66,6 @@ export const CustomEmojiFromMap: Story = {
     isUnicodeEmoji: false,
     emojiUrl: null,
     emojis: {
-      // biome-ignore lint/style/useNamingConvention: Story用のダミーURL
       custom_hello: "https://placehold.co/160x160/png",
     },
     emojiSize: "lg",

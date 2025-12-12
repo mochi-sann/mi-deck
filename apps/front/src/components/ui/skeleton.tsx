@@ -15,7 +15,8 @@ const skeletonVariants = cva("animate-pulse rounded-md bg-accent", {
 });
 
 interface SkeletonProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof skeletonVariants> {}
 
 function Skeleton({ className, variant, ...props }: SkeletonProps) {

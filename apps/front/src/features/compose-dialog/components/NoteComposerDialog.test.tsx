@@ -18,7 +18,6 @@ vi.mock("@/lib/storage/context", () => ({
 }));
 
 vi.mock("misskey-js/api.js", () => ({
-  // biome-ignore lint/style/useNamingConvention: external lib
   APIClient: vi.fn().mockImplementation(() => ({
     request: mockRequest,
   })),
@@ -30,7 +29,6 @@ vi.mock("@/lib/uploadAndCompresFiles", () => ({
 }));
 
 vi.mock("@/features/timeline/components/CustomEmojiPicker", () => ({
-  // biome-ignore lint/style/useNamingConvention: erro
   CustomEmojiPicker: ({
     onEmojiSelect,
   }: {

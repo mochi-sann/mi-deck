@@ -44,13 +44,13 @@ export type MfmConfig = Partial<{
   animation: boolean; // default: true
 
   // components
-  // biome-ignore lint/style/useNamingConvention: mfm-jsの仕様に合わせるため
+
   CustomEmoji: FC<CustomEmojiProps>;
-  // biome-ignore lint/style/useNamingConvention: mfm-jsの仕様に合わせるため
+
   Hashtag: FC<HashtagProps>;
-  // biome-ignore lint/style/useNamingConvention: mfm-jsの仕様に合わせるため
+
   Link: FC<LinkProps>;
-  // biome-ignore lint/style/useNamingConvention: mfm-jsの仕様に合わせるため
+
   Mention: FC<MentionProps>;
 }>;
 

@@ -14,7 +14,6 @@ vi.mock("@/lib/storage", () => ({
 
 vi.mock("misskey-js", () => ({
   api: {
-    // biome-ignore lint/style/useNamingConvention: 予約済み
     APIClient: vi.fn().mockImplementation(() => ({
       request: vi.fn(),
     })),

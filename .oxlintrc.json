@@ -1,0 +1,21 @@
+{
+  "plugins": [
+    "import",
+    "react",
+    "react-perf",
+    "node",
+    "vitest",
+    "promise",
+    "jsx-a11y"
+  ],
+  "rules": {
+    "no-unused-vars": [
+      "warn",
+      {
+        "varsIgnorePattern": "^_",
+        "argsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ]
+  }
+}

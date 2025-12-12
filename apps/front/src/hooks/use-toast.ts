@@ -13,13 +13,12 @@ type ToasterToast = ToastProps & {
 };
 
 const actionTypes = {
-  // biome-ignore lint/style/useNamingConvention: 状態管理なので除外
   ADD_TOAST: "ADD_TOAST",
-  // biome-ignore lint/style/useNamingConvention: 状態管理なので除外
+
   UPDATE_TOAST: "UPDATE_TOAST",
-  // biome-ignore lint/style/useNamingConvention: 状態管理なので除外
+
   DISMISS_TOAST: "DISMISS_TOAST",
-  // biome-ignore lint/style/useNamingConvention: 状態管理なので除外
+
   REMOVE_TOAST: "REMOVE_TOAST",
 } as const;
 

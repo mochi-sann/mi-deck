@@ -1,4 +1,3 @@
-// biome-ignore lint/style/useNamingConvention: external library class name
 export const APIClient = class {
   origin: string;
   credential?: string;

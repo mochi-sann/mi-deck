@@ -22,10 +22,8 @@ function FormulaSuspense({ formula, block }: FormulaProps) {
   );
 
   return block ? (
-    // biome-ignore lint/security/noDangerouslySetInnerHtml: mfmの表示に必要
     <div dangerouslySetInnerHTML={{ __html: html }} />
   ) : (
-    // biome-ignore lint/security/noDangerouslySetInnerHtml: mfmの表示に必要
     <span dangerouslySetInnerHTML={{ __html: html }} />
   );
 }
