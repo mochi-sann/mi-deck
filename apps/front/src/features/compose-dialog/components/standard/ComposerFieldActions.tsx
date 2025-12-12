@@ -1,5 +1,5 @@
 import type { TFunction } from "i18next";
-import { Check, Globe, ImagePlus, Server, Smile } from "lucide-react";
+import { Check, ImagePlus, Server, Smile } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { InputGroupButton } from "@/components/ui/input-group";
 import {
@@ -14,7 +14,11 @@ import type { NoteComposerFormValues } from "../../hooks/useNoteComposer";
 interface ComposerFieldActionsProps {
   t: TFunction<"notes">;
   serversWithToken: MisskeyServerConnection[];
-  visibilityOptions: { value: string; label: string }[];
+  visibilityOptions: {
+    value: string;
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+  }[];
   isServerPopoverOpen: boolean;
   onServerPopoverChange: (open: boolean) => void;
   isVisibilityPopoverOpen: boolean;
@@ -78,7 +82,21 @@ export function ComposerFieldActions({
               formDisabled || isLoadingServers || serversWithToken.length === 0
             }
           >
-            <Server className="size-4" />
+            {selectedServer ? (
+              <Avatar className="size-5">
+                <AvatarImage
+                  src={selectedServer.userInfo?.avatarUrl}
+                  alt={getServerDisplayName(selectedServer)}
+                />
+                <AvatarFallback>
+                  {getServerDisplayName(selectedServer)
+                    .slice(0, 2)
+                    .toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            ) : (
+              <Server className="size-4" />
+            )}
           </InputGroupButton>
         </PopoverTrigger>
         <PopoverContent className="w-72 p-0" align="end">
@@ -116,9 +134,16 @@ export function ComposerFieldActions({
                     </Avatar>
                     <div className="flex flex-col text-left">
                       <span className="font-medium">{serverName}</span>
-                      <span className="text-muted-foreground text-xs">
-                        {subtitle}
-                      </span>
+                      <div className="flex items-center gap-1 text-muted-foreground text-xs">
+                        {server.serverInfo?.iconUrl && (
+                          <img
+                            src={server.serverInfo.iconUrl}
+                            alt={server.serverInfo.name}
+                            className="size-3 rounded-full"
+                          />
+                        )}
+                        <span>{subtitle}</span>
+                      </div>
                     </div>
                     <Check
                       className={`ml-auto size-4 text-primary ${isActive ? "opacity-100" : "opacity-0"}`}
@@ -144,7 +169,13 @@ export function ComposerFieldActions({
             title={visibilityButtonLabel}
             disabled={formDisabled}
           >
-            <Globe className="size-4" />
+            {(() => {
+              const VisibilityIcon =
+                visibilityOptions.find(
+                  (option) => option.value === currentVisibility,
+                )?.icon ?? visibilityOptions[0].icon;
+              return <VisibilityIcon className="size-4" />;
+            })()}
           </InputGroupButton>
         </PopoverTrigger>
         <PopoverContent className="w-48 p-0" align="end">
@@ -161,6 +192,7 @@ export function ComposerFieldActions({
                   onVisibilityPopoverChange(false);
                 }}
               >
+                <option.icon className="size-4 text-muted-foreground" />
                 <span>{option.label}</span>
                 <Check
                   className={`ml-auto size-4 text-primary ${option.value === currentVisibility ? "opacity-100" : "opacity-0"}`}

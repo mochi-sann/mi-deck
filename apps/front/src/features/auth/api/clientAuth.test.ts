@@ -50,13 +50,15 @@ describe("ClientAuthManager", () => {
       expect(manager.getProtocolFromOrigin("https://localhost:3002")).toBe(
         "https",
       );
+      // 明示的なhttpは尊重されるべき
       expect(manager.getProtocolFromOrigin("http://localhost:3002")).toBe(
-        "https",
+        "http",
       );
       expect(manager.getProtocolFromOrigin("https://example.com")).toBe(
         "https",
       );
-      expect(manager.getProtocolFromOrigin("http://example.com")).toBe("https");
+      // 明示的なhttpは尊重されるべき
+      expect(manager.getProtocolFromOrigin("http://example.com")).toBe("http");
     });
 
     it("should return https for invalid input (error handling)", () => {
@@ -102,14 +104,16 @@ describe("ClientAuthManager", () => {
       expect(manager.buildOriginUrl("https://localhost:3002")).toBe(
         "https://localhost:3002",
       );
+      // httpが明示されている場合はhttpになる
       expect(manager.buildOriginUrl("http://localhost:3002")).toBe(
-        "https://localhost:3002",
+        "http://localhost:3002",
       );
       expect(manager.buildOriginUrl("https://example.com")).toBe(
         "https://example.com",
       );
+      // httpが明示されている場合はhttpになる
       expect(manager.buildOriginUrl("http://example.com")).toBe(
-        "https://example.com",
+        "http://example.com",
       );
     });
 
@@ -129,13 +133,15 @@ describe("ClientAuthManager", () => {
       expect(manager.cleanOriginInput("example.com")).toBe("example.com");
     });
 
-    it("should remove http/https prefixes", () => {
-      expect(manager.cleanOriginInput("https://misskey.io")).toBe("misskey.io");
+    it("should NOT remove http/https prefixes anymore", () => {
+      expect(manager.cleanOriginInput("https://misskey.io")).toBe(
+        "https://misskey.io",
+      );
       expect(manager.cleanOriginInput("http://localhost:3002")).toBe(
-        "localhost:3002",
+        "http://localhost:3002",
       );
       expect(manager.cleanOriginInput("https://example.com/")).toBe(
-        "example.com",
+        "https://example.com",
       );
     });
 
@@ -143,16 +149,16 @@ describe("ClientAuthManager", () => {
       expect(manager.cleanOriginInput("  misskey.io  ")).toBe("misskey.io");
       expect(manager.cleanOriginInput("misskey.io/")).toBe("misskey.io");
       expect(manager.cleanOriginInput("  https://misskey.io/  ")).toBe(
-        "misskey.io",
+        "https://misskey.io",
       );
     });
 
     it("should handle complex cases", () => {
       expect(manager.cleanOriginInput("https://misskey.example.com:443/")).toBe(
-        "misskey.example.com:443",
+        "https://misskey.example.com:443",
       );
       expect(manager.cleanOriginInput("http://127.0.0.1:3000/")).toBe(
-        "127.0.0.1:3000",
+        "http://127.0.0.1:3000",
       );
     });
 

@@ -1,4 +1,4 @@
-import { ImagePlus } from "lucide-react";
+import { Globe, Home, ImagePlus, Lock, Mail } from "lucide-react";
 import type { ClipboardEvent, DragEvent, ReactElement } from "react";
 import {
   cloneElement,
@@ -137,10 +137,22 @@ export function StandardNoteComposerDialog({
 
   const visibilityOptions = useMemo(
     () => [
-      { value: "public", label: t("compose.visibility.public") },
-      { value: "home", label: t("compose.visibility.home") },
-      { value: "followers", label: t("compose.visibility.followers") },
-      { value: "specified", label: t("compose.visibility.specified") },
+      {
+        value: "public",
+        label: t("compose.visibility.public"),
+        icon: Globe,
+      },
+      { value: "home", label: t("compose.visibility.home"), icon: Home },
+      {
+        value: "followers",
+        label: t("compose.visibility.followers"),
+        icon: Lock,
+      },
+      {
+        value: "specified",
+        label: t("compose.visibility.specified"),
+        icon: Mail,
+      },
     ],
     [t],
   );

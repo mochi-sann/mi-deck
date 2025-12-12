@@ -24,6 +24,10 @@ interface AuthContextValue {
     uuid: string,
     sessionToken: string,
   ) => Promise<{ success: boolean; error?: string }>;
+  addServerWithToken: (
+    origin: string,
+    token: string,
+  ) => Promise<{ success: boolean; error?: string }>;
   switchServer: (serverId: string) => Promise<void>;
   refreshServerInfo: (serverId: string) => Promise<void>;
   removeServer: (serverId: string) => Promise<void>;
@@ -98,33 +102,50 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
+  const handleAuthSuccess = async (result: {
+    success: boolean;
+    server?: MisskeyServerConnection;
+    error?: string;
+  }) => {
+    if (result.success && result.server) {
+      // Refresh storage to get the new server
+      await storage.refresh();
+
+      // Set as current server if it's the first one
+      if (storage.servers.length === 0) {
+        await storage.setCurrentServer(result.server.id);
+      }
+    }
+    return { success: result.success, error: result.error };
+  };
+
   const completeAuth = async (uuid: string, sessionToken: string) => {
     try {
-      console.log(
-        ...[
-          { uuid, sessionToken },
-          "👀 [AuthProvider.tsx:103]: {uuid , sessionToken}",
-        ].reverse(),
-      );
       setError(undefined);
       const result = await clientAuthManager.completeAuth(uuid, sessionToken);
 
-      if (result.success && result.server) {
-        // Refresh storage to get the new server
-        await storage.refresh();
-
-        // Set as current server if it's the first one
-        if (storage.servers.length === 0) {
-          await storage.setCurrentServer(result.server.id);
-        }
-      }
-
-      return { success: result.success, error: result.error };
+      return await handleAuthSuccess(result);
     } catch (err) {
       const errorMessage =
         err instanceof Error
           ? err.message
           : "Failed to complete authentication";
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  };
+  const addServerWithToken = async (
+    origin: string,
+    token: string,
+  ): Promise<{ success: boolean; error?: string }> => {
+    try {
+      setError(undefined);
+      const result = await clientAuthManager.addServerWithToken(origin, token);
+
+      return await handleAuthSuccess(result);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to add server with token";
       setError(errorMessage);
       return { success: false, error: errorMessage };
     }
@@ -205,6 +226,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     error: error || storage.error,
     initiateAuth,
     completeAuth,
+    addServerWithToken,
     switchServer,
     refreshServerInfo,
     removeServer,

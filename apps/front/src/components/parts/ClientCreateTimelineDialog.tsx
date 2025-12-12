@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as v from "valibot";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -54,10 +55,7 @@ const createFormSchema = (t: TFunction<"timeline", undefined>) =>
       ],
       t("createDialog.validation.selectType"),
     ),
-    name: v.pipe(
-      v.string(t("createDialog.validation.enterName")),
-      v.minLength(1),
-    ),
+    name: v.optional(v.string()),
     listId: v.optional(v.string()),
   });
 
@@ -109,7 +107,20 @@ export function ClientCreateTimelineDialog({
       const maxOrder = Math.max(...storage.timelines.map((t) => t.order), -1);
 
       await storage.addTimeline({
-        name: values.name,
+        name:
+          values.name ||
+          (() => {
+            const server = storage.servers.find(
+              (s) => s.id === values.serverId,
+            );
+            const host = server?.origin
+              ? new URL(server.origin).hostname
+              : "Unknown Server";
+            const username = server?.userInfo?.username;
+            const identifier = username ? `${username}@${host}` : host;
+            const typeLabel = t(`createDialog.types.${values.type}` as any);
+            return `${typeLabel} (${identifier})`;
+          })(),
         serverId: values.serverId,
         type: values.type,
         order: maxOrder + 1,
@@ -167,8 +178,22 @@ export function ClientCreateTimelineDialog({
                     <SelectContent>
                       {storage.servers.map((server) => (
                         <SelectItem key={server.id} value={server.id}>
-                          {server.serverInfo?.name ||
-                            new URL(server.origin).hostname}
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-6 w-6">
+                              <AvatarImage
+                                src={server.serverInfo?.iconUrl}
+                                alt={server.serverInfo?.name}
+                              />
+                              <AvatarFallback>
+                                {server.serverInfo?.name?.[0]?.toUpperCase() ??
+                                  "?"}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span>
+                              {server.serverInfo?.name ||
+                                new URL(server.origin).hostname}
+                            </span>
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
