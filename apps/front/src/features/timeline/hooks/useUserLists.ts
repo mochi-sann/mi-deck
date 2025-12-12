@@ -103,7 +103,7 @@ export function useUserLists(origin: string, token: string) {
 
   useEffect(() => {
     fetchLists();
-  }, [fetchLists]);
+  }, [origin, token]);
 
   const retryFetch = () => {
     setError(null);
