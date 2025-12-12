@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { useTranslation } from "react-i18next";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -246,11 +247,47 @@ export function RenoteDialog({
               />
             </SelectTrigger>
             <SelectContent>
-              {serversWithToken.map((server) => (
-                <SelectItem key={server.id} value={server.id}>
-                  {server.origin}
-                </SelectItem>
-              ))}
+              {serversWithToken.map((server) => {
+                const displayName =
+                  server.userInfo?.name ??
+                  server.userInfo?.username ??
+                  server.origin;
+                const host = server.origin.replace(/^https?:\/\//, "");
+                const subtitle = server.userInfo?.username
+                  ? `${server.userInfo.username}@${host}`
+                  : host;
+
+                return (
+                  <SelectItem key={server.id} value={server.id}>
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-6 w-6">
+                        <AvatarImage
+                          src={server.userInfo?.avatarUrl}
+                          alt={displayName}
+                        />
+                        <AvatarFallback>
+                          {displayName.slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col text-left">
+                        <span className="font-medium text-sm">
+                          {displayName}
+                        </span>
+                        <div className="flex items-center gap-1 text-muted-foreground text-xs">
+                          {server.serverInfo?.iconUrl && (
+                            <img
+                              src={server.serverInfo.iconUrl}
+                              alt={server.serverInfo.name}
+                              className="size-3 rounded-full"
+                            />
+                          )}
+                          <span>{subtitle}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </SelectItem>
+                );
+              })}
             </SelectContent>
           </Select>
           {!hasServers ? (
