@@ -1,7 +1,8 @@
+import { useQuery } from "@tanstack/react-query";
 import { Stream } from "misskey-js";
 import { APIClient } from "misskey-js/api.js";
 import { Note } from "misskey-js/entities.js";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 export function useListTimeline(origin: string, token: string, listId: string) {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -129,8 +130,8 @@ export function useListTimeline(origin: string, token: string, listId: string) {
     [isLoading, hasMore, isValidConfig, origin, token, listId],
   );
 
-  useEffect(() => {
-    fetchNotes(); // oxlint-disable-line
+  const fetchTimeline = () => {
+    fetchNotes();
 
     const stream = new Stream(origin, { token });
 
@@ -158,7 +159,12 @@ export function useListTimeline(origin: string, token: string, listId: string) {
       channel.dispose();
       stream.close();
     };
-  }, [origin, token, listId]);
+  };
+  useQuery({
+    queryKey: ["useListTimeline", origin, token, listId],
+    queryFn: () => fetchTimeline(),
+    enabled: !!origin && !!token,
+  });
 
   const retryFetch = () => {
     setError(null);

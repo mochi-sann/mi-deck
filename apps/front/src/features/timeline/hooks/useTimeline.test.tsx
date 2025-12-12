@@ -1,6 +1,8 @@
 import { act, renderHook } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stream } from "misskey-js";
 import { APIClient } from "misskey-js/api.js";
+import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { useTimeline } from "./useTimeline";
 
@@ -19,6 +21,29 @@ describe("useTimeline", () => {
   const mockOrigin = "https://example.com";
   const mockToken = "test-token";
   const mockType = "home" as const;
+
+  const createWrapper = () => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+
+    return ({ children }: { children: ReactNode }) => (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+  };
+
+  const renderUseTimelineHook = (
+    origin: string,
+    token: string,
+    type: typeof mockType,
+  ) =>
+    renderHook(() => useTimeline(origin, token, type), {
+      wrapper: createWrapper(),
+    });
 
   // Mock APIClient
   const mockRequest = vi.fn();
@@ -49,9 +74,7 @@ describe("useTimeline", () => {
     const mockNotes = [{ id: "1", text: "Test note" }];
     mockRequest.mockResolvedValueOnce(mockNotes);
 
-    const { result } = renderHook(() =>
-      useTimeline(mockOrigin, mockToken, mockType),
-    );
+    const { result } = renderUseTimelineHook(mockOrigin, mockToken, mockType);
 
     // Check initial state
     expect(result.current.notes).toEqual([]);
@@ -84,9 +107,7 @@ describe("useTimeline", () => {
     const mockError = new Error("API Error");
     mockRequest.mockRejectedValueOnce(mockError);
 
-    const { result } = renderHook(() =>
-      useTimeline(mockOrigin, mockToken, mockType),
-    );
+    const { result } = renderUseTimelineHook(mockOrigin, mockToken, mockType);
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
@@ -99,9 +120,7 @@ describe("useTimeline", () => {
   it("should handle WebSocket disconnection", async () => {
     mockRequest.mockResolvedValueOnce([]);
 
-    const { result } = renderHook(() =>
-      useTimeline(mockOrigin, mockToken, mockType),
-    );
+    const { result } = renderUseTimelineHook(mockOrigin, mockToken, mockType);
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
@@ -127,9 +146,7 @@ describe("useTimeline", () => {
     const mockNewNote = { id: "2", text: "New note" };
     mockRequest.mockResolvedValueOnce(mockNotes);
 
-    const { result } = renderHook(() =>
-      useTimeline(mockOrigin, mockToken, mockType),
-    );
+    const { result } = renderUseTimelineHook(mockOrigin, mockToken, mockType);
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
@@ -155,9 +172,7 @@ describe("useTimeline", () => {
       .mockResolvedValueOnce(initialNotes)
       .mockResolvedValueOnce(moreNotes);
 
-    const { result } = renderHook(() =>
-      useTimeline(mockOrigin, mockToken, mockType),
-    );
+    const { result } = renderUseTimelineHook(mockOrigin, mockToken, mockType);
 
     // Wait for initial fetch
     await act(async () => {
@@ -179,9 +194,7 @@ describe("useTimeline", () => {
     const initialNotes = [{ id: "1", text: "Note 1" }];
     mockRequest.mockResolvedValueOnce(initialNotes).mockResolvedValueOnce([]);
 
-    const { result } = renderHook(() =>
-      useTimeline(mockOrigin, mockToken, mockType),
-    );
+    const { result } = renderUseTimelineHook(mockOrigin, mockToken, mockType);
 
     // Wait for initial fetch
     await act(async () => {
@@ -198,7 +211,7 @@ describe("useTimeline", () => {
   });
 
   it("should surface configuration errors when connection info is missing", async () => {
-    const { result } = renderHook(() => useTimeline("", mockToken, mockType));
+    const { result } = renderUseTimelineHook("", mockToken, mockType);
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
