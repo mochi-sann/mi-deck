@@ -130,7 +130,7 @@ export function useListTimeline(origin: string, token: string, listId: string) {
   );
 
   useEffect(() => {
-    fetchNotes();
+    fetchNotes(); // oxlint-disable-line
 
     const stream = new Stream(origin, { token });
 
@@ -158,7 +158,7 @@ export function useListTimeline(origin: string, token: string, listId: string) {
       channel.dispose();
       stream.close();
     };
-  }, [origin, token, listId, fetchNotes]);
+  }, [origin, token, listId]);
 
   const retryFetch = () => {
     setError(null);

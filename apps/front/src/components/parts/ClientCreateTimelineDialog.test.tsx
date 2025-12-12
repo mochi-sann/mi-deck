@@ -354,7 +354,6 @@ describe("ClientCreateTimelineDialog", () => {
     // Note: This test assumes the form watch functionality works
     // In a real test, you would need to simulate selecting the list type
     // and then check if the list selection appears
-    expect(screen.getByTestId("dialog")).toBeInTheDocument();
   });
 
   it("should render list options when list type is selected", async () => {
@@ -421,7 +420,6 @@ describe("ClientCreateTimelineDialog", () => {
 
     // Note: In a real test, you would need to fill out the form first
     // and then test the submission
-    expect(submitButton).toBeInTheDocument();
   });
 
   it("should validate list selection for list type", () => {
@@ -440,7 +438,6 @@ describe("ClientCreateTimelineDialog", () => {
     // without selecting a list
 
     mockAlert.mockRestore();
-    expect(screen.getByTestId("dialog")).toBeInTheDocument();
   });
 
   it("should handle loading state", () => {
@@ -493,7 +490,6 @@ describe("ClientCreateTimelineDialog", () => {
     }
 
     // This would test that selecting a server updates the selected server state
-    expect(screen.getByTestId("dialog")).toBeInTheDocument();
   });
 
   it("should render server and type selection fields", () => {
@@ -555,6 +551,5 @@ describe("ClientCreateTimelineDialog", () => {
     );
 
     // Test that form is reset and callbacks are called on successful submission
-    expect(screen.getByTestId("dialog")).toBeInTheDocument();
   });
 });

@@ -1,5 +1,13 @@
 {
-  "plugins": ["import", "react", "react-perf", "node", "vitest"],
+  "plugins": [
+    "import",
+    "react",
+    "react-perf",
+    "node",
+    "vitest",
+    "promise",
+    "jsx-a11y"
+  ],
   "rules": {
     "no-unused-vars": [
       "warn",
