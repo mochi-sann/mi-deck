@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { Stream } from "misskey-js";
 import { APIClient } from "misskey-js/api.js";
 import { Note } from "misskey-js/entities.js";
@@ -141,7 +140,7 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
     [isLoading, hasMore, isValidConfig, origin, token, type],
   );
 
-  const fetchTimeline = () => {
+  useEffect(() => {
     if (!isValidConfig) {
       return;
     }
@@ -188,12 +187,7 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
       channel.dispose();
       stream.close();
     };
-  };
-  useQuery({
-    queryKey: ["useTimeline", origin, token, type],
-    queryFn: () => fetchTimeline(),
-    enabled: !!origin && !!token,
-  });
+  }, [origin, token, type]);
 
   const retryFetch = () => {
     setError(null);

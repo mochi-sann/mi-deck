@@ -1,6 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
 import { APIClient } from "misskey-js/api.js";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export interface UserList {
   id: string;
@@ -102,11 +101,9 @@ export function useUserLists(origin: string, token: string) {
     }
   }, [isLoading, isValidConfig, origin, token]);
 
-  useQuery({
-    queryKey: ["lists", origin, token],
-    queryFn: () => fetchLists(),
-    enabled: !!origin && !!token,
-  });
+  useEffect(() => {
+    fetchLists();
+  }, [origin, token]);
 
   const retryFetch = () => {
     setError(null);

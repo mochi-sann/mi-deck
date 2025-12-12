@@ -1,7 +1,5 @@
 import { act, renderHook } from "@testing-library/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { APIClient } from "misskey-js/api.js";
-import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { useUserLists } from "./useUserLists";
 
@@ -13,25 +11,6 @@ vi.mock("misskey-js/api.js", () => ({
 describe("useUserLists", () => {
   const mockOrigin = "https://example.com";
   const mockToken = "test-token";
-
-  const createWrapper = () => {
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    });
-
-    return ({ children }: { children: ReactNode }) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
-  };
-
-  const renderUseUserListsHook = (origin: string, token: string) =>
-    renderHook(() => useUserLists(origin, token), {
-      wrapper: createWrapper(),
-    });
 
   // Mock APIClient
   const mockRequest = vi.fn();
@@ -65,7 +44,7 @@ describe("useUserLists", () => {
     ];
     mockRequest.mockResolvedValueOnce(mockLists);
 
-    const { result } = renderUseUserListsHook(mockOrigin, mockToken);
+    const { result } = renderHook(() => useUserLists(mockOrigin, mockToken));
 
     // Check initial state
     expect(result.current.lists).toEqual([]);
@@ -91,7 +70,7 @@ describe("useUserLists", () => {
   });
 
   it("should handle invalid configuration - missing origin", async () => {
-    const { result } = renderUseUserListsHook("", mockToken);
+    const { result } = renderHook(() => useUserLists("", mockToken));
 
     expect(result.current.error?.message).toBe(
       "サーバーまたは認証情報が設定されていません。",
@@ -100,7 +79,7 @@ describe("useUserLists", () => {
   });
 
   it("should handle invalid configuration - missing token", async () => {
-    const { result } = renderUseUserListsHook(mockOrigin, "");
+    const { result } = renderHook(() => useUserLists(mockOrigin, ""));
 
     expect(result.current.error?.message).toBe(
       "サーバーまたは認証情報が設定されていません。",
@@ -112,7 +91,7 @@ describe("useUserLists", () => {
     const mockError = new Error("Network error");
     mockRequest.mockRejectedValueOnce(mockError);
 
-    const { result } = renderUseUserListsHook(mockOrigin, mockToken);
+    const { result } = renderHook(() => useUserLists(mockOrigin, mockToken));
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
@@ -127,7 +106,7 @@ describe("useUserLists", () => {
     const mockError = new Error("NetworkError: fetch failed");
     mockRequest.mockRejectedValueOnce(mockError);
 
-    const { result } = renderUseUserListsHook(mockOrigin, mockToken);
+    const { result } = renderHook(() => useUserLists(mockOrigin, mockToken));
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
@@ -142,7 +121,7 @@ describe("useUserLists", () => {
     const mockError = new Error("timeout");
     mockRequest.mockRejectedValueOnce(mockError);
 
-    const { result } = renderUseUserListsHook(mockOrigin, mockToken);
+    const { result } = renderHook(() => useUserLists(mockOrigin, mockToken));
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
@@ -157,7 +136,7 @@ describe("useUserLists", () => {
     const mockError = new Error("401 Unauthorized");
     mockRequest.mockRejectedValueOnce(mockError);
 
-    const { result } = renderUseUserListsHook(mockOrigin, mockToken);
+    const { result } = renderHook(() => useUserLists(mockOrigin, mockToken));
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
@@ -172,7 +151,7 @@ describe("useUserLists", () => {
     const mockError = { code: "INVALID_TOKEN", message: "Invalid token" };
     mockRequest.mockRejectedValueOnce(mockError);
 
-    const { result } = renderUseUserListsHook(mockOrigin, mockToken);
+    const { result } = renderHook(() => useUserLists(mockOrigin, mockToken));
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
@@ -187,7 +166,7 @@ describe("useUserLists", () => {
     const mockError = { code: "RATE_LIMIT_EXCEEDED" };
     mockRequest.mockRejectedValueOnce(mockError);
 
-    const { result } = renderUseUserListsHook(mockOrigin, mockToken);
+    const { result } = renderHook(() => useUserLists(mockOrigin, mockToken));
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
@@ -201,7 +180,7 @@ describe("useUserLists", () => {
   it("should handle invalid response format", async () => {
     mockRequest.mockResolvedValueOnce("invalid response");
 
-    const { result } = renderUseUserListsHook(mockOrigin, mockToken);
+    const { result } = renderHook(() => useUserLists(mockOrigin, mockToken));
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
@@ -226,7 +205,7 @@ describe("useUserLists", () => {
     // First call fails
     mockRequest.mockRejectedValueOnce(new Error("Network error"));
 
-    const { result } = renderUseUserListsHook(mockOrigin, mockToken);
+    const { result } = renderHook(() => useUserLists(mockOrigin, mockToken));
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
@@ -249,7 +228,7 @@ describe("useUserLists", () => {
   it("should handle empty lists response", async () => {
     mockRequest.mockResolvedValueOnce([]);
 
-    const { result } = renderUseUserListsHook(mockOrigin, mockToken);
+    const { result } = renderHook(() => useUserLists(mockOrigin, mockToken));
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
@@ -261,7 +240,7 @@ describe("useUserLists", () => {
   });
 
   it("should not fetch when configuration is invalid", async () => {
-    const { result } = renderUseUserListsHook("", "");
+    const { result } = renderHook(() => useUserLists("", ""));
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));

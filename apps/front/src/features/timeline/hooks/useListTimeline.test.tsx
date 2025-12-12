@@ -1,8 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stream } from "misskey-js";
 import { APIClient } from "misskey-js/api.js";
-import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { useListTimeline } from "./useListTimeline";
 
@@ -21,29 +19,6 @@ describe("useListTimeline", () => {
   const mockOrigin = "https://example.com";
   const mockToken = "test-token";
   const mockListId = "test-list-id";
-
-  const createWrapper = () => {
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    });
-
-    return ({ children }: { children: ReactNode }) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
-  };
-
-  const renderUseListTimelineHook = (
-    origin: string,
-    token: string,
-    listId: string,
-  ) =>
-    renderHook(() => useListTimeline(origin, token, listId), {
-      wrapper: createWrapper(),
-    });
 
   // Mock APIClient
   const mockRequest = vi.fn();
@@ -74,10 +49,8 @@ describe("useListTimeline", () => {
     const mockNotes = [{ id: "1", text: "Test note" }];
     mockRequest.mockResolvedValueOnce(mockNotes);
 
-    const { result } = renderUseListTimelineHook(
-      mockOrigin,
-      mockToken,
-      mockListId,
+    const { result } = renderHook(() =>
+      useListTimeline(mockOrigin, mockToken, mockListId),
     );
 
     // Check initial state
@@ -112,7 +85,9 @@ describe("useListTimeline", () => {
   });
 
   it("should handle invalid configuration", async () => {
-    const { result } = renderUseListTimelineHook("", mockToken, mockListId);
+    const { result } = renderHook(() =>
+      useListTimeline("", mockToken, mockListId),
+    );
 
     expect(result.current.error?.message).toBe(
       "設定に問題があります: サーバー情報が不足しています。",
@@ -120,7 +95,9 @@ describe("useListTimeline", () => {
   });
 
   it("should handle missing token", async () => {
-    const { result } = renderUseListTimelineHook(mockOrigin, "", mockListId);
+    const { result } = renderHook(() =>
+      useListTimeline(mockOrigin, "", mockListId),
+    );
 
     expect(result.current.error?.message).toBe(
       "設定に問題があります: 認証情報が不足しています。",
@@ -128,7 +105,9 @@ describe("useListTimeline", () => {
   });
 
   it("should handle missing listId", async () => {
-    const { result } = renderUseListTimelineHook(mockOrigin, mockToken, "");
+    const { result } = renderHook(() =>
+      useListTimeline(mockOrigin, mockToken, ""),
+    );
 
     expect(result.current.error?.message).toBe(
       "設定に問題があります: リストIDが設定されていません。",
@@ -139,10 +118,8 @@ describe("useListTimeline", () => {
     const mockError = new Error("API Error");
     mockRequest.mockRejectedValueOnce(mockError);
 
-    const { result } = renderUseListTimelineHook(
-      mockOrigin,
-      mockToken,
-      mockListId,
+    const { result } = renderHook(() =>
+      useListTimeline(mockOrigin, mockToken, mockListId),
     );
 
     await act(async () => {
@@ -157,10 +134,8 @@ describe("useListTimeline", () => {
     const mockError = { code: "NO_SUCH_LIST", message: "List not found" };
     mockRequest.mockRejectedValueOnce(mockError);
 
-    const { result } = renderUseListTimelineHook(
-      mockOrigin,
-      mockToken,
-      mockListId,
+    const { result } = renderHook(() =>
+      useListTimeline(mockOrigin, mockToken, mockListId),
     );
 
     await act(async () => {
@@ -175,10 +150,8 @@ describe("useListTimeline", () => {
   it("should handle WebSocket disconnection", async () => {
     mockRequest.mockResolvedValueOnce([]);
 
-    const { result } = renderUseListTimelineHook(
-      mockOrigin,
-      mockToken,
-      mockListId,
+    const { result } = renderHook(() =>
+      useListTimeline(mockOrigin, mockToken, mockListId),
     );
 
     await act(async () => {
@@ -205,10 +178,8 @@ describe("useListTimeline", () => {
     const mockNewNote = { id: "2", text: "New note" };
     mockRequest.mockResolvedValueOnce(mockNotes);
 
-    const { result } = renderUseListTimelineHook(
-      mockOrigin,
-      mockToken,
-      mockListId,
+    const { result } = renderHook(() =>
+      useListTimeline(mockOrigin, mockToken, mockListId),
     );
 
     await act(async () => {
@@ -235,10 +206,8 @@ describe("useListTimeline", () => {
       .mockResolvedValueOnce(initialNotes)
       .mockResolvedValueOnce(moreNotes);
 
-    const { result } = renderUseListTimelineHook(
-      mockOrigin,
-      mockToken,
-      mockListId,
+    const { result } = renderHook(() =>
+      useListTimeline(mockOrigin, mockToken, mockListId),
     );
 
     // Wait for initial fetch
@@ -262,10 +231,8 @@ describe("useListTimeline", () => {
     const initialNotes = [{ id: "1", text: "Note 1" }];
     mockRequest.mockResolvedValueOnce(initialNotes).mockResolvedValueOnce([]);
 
-    const { result } = renderUseListTimelineHook(
-      mockOrigin,
-      mockToken,
-      mockListId,
+    const { result } = renderHook(() =>
+      useListTimeline(mockOrigin, mockToken, mockListId),
     );
 
     // Wait for initial fetch
@@ -289,10 +256,8 @@ describe("useListTimeline", () => {
     mockRequest.mockResolvedValueOnce(mockNotes);
     mockRequest.mockResolvedValueOnce(mockNotes);
 
-    const { result } = renderUseListTimelineHook(
-      mockOrigin,
-      mockToken,
-      mockListId,
+    const { result } = renderHook(() =>
+      useListTimeline(mockOrigin, mockToken, mockListId),
     );
 
     // Wait for initial fetch
