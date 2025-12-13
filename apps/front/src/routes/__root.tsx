@@ -1,27 +1,10 @@
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
-import { Fragment, lazy, Suspense } from "react";
+import { Fragment } from "react";
 import { NotFoundPage } from "@/components/parts/NotFoundPage";
 import { Toaster } from "@/components/ui/toaster";
-
-const TanStackRouterDevtools = !import.meta.env.DEV
-  ? () => null // Render nothing in production
-  : lazy(() =>
-      // Lazy load in development
-      import("@tanstack/router-devtools").then((res) => ({
-        default: res.TanStackRouterDevtools,
-        // For Embedded Mode
-        // default: res.TanStackRouterDevtoolsPanel
-      })),
-    );
-
-const ReactQueryDevtools = import.meta.env.DEV
-  ? lazy(() =>
-      // Lazy load in development
-      import("@tanstack/react-query-devtools").then((res) => ({
-        default: res.ReactQueryDevtools,
-      })),
-    )
-  : () => null;
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/router-devtools";
 
 interface MyRouterContext {
   auth: {
@@ -35,12 +18,20 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     <Fragment>
       <Outlet />
       <Toaster />
-      <Suspense>
-        <TanStackRouterDevtools position="bottom-right" />
-      </Suspense>
-      <Suspense>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </Suspense>
+      <TanStackDevtools
+        plugins={[
+          {
+            name: "TanStack Query",
+            render: <ReactQueryDevtoolsPanel />,
+            defaultOpen: true,
+          },
+          {
+            name: "TanStack Router",
+            render: <TanStackRouterDevtoolsPanel />,
+            defaultOpen: false,
+          },
+        ]}
+      />
     </Fragment>
   ),
 });

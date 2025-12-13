@@ -5,6 +5,7 @@ import viteReact from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 import { analyzer } from "vite-bundle-analyzer";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { devtools } from "@tanstack/devtools-vite";
 
 const showAnayler = process.env.BUNDLE_ANALYZE === "true";
 const IsDev = process.env.NODE_ENV === "development";
@@ -15,6 +16,7 @@ export default defineConfig({
     tanstackRouter({ autoCodeSplitting: true }),
     viteReact(),
     tailwindcss(),
+    devtools(),
     // analyzer がprocess.env.BUNDLE_ANALYZEがある場合にのみ実行される
     analyzer({
       analyzerMode: showAnayler ? "server" : "json",
