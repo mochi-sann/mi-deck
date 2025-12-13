@@ -117,10 +117,8 @@ export function VirtualTimeline({
         })}
       </div>
       {isLoading && (
-        <div style={{ textAlign: "center", padding: "1rem" }}>
-          <Text>
-            <Spinner />
-          </Text>
+        <div style={{ textAlign: "center", paddingTop: "10rem" }}>
+          <Spinner center={true} />
         </div>
       )}
       {error && notes.length > 0 && (

@@ -34,11 +34,24 @@ export interface SpinnerProps
    * @default 1000
    */
   speed?: number;
+  /**
+   * Center the spinner within the parent container both vertically and horizontally.
+   */
+  center?: boolean;
+  /**
+   * Backward compatible alias for `center` prop.
+   */
+  Center?: boolean;
 }
 
 const Spinner = React.forwardRef<SVGSVGElement, SpinnerProps>(
-  ({ className, variant, size, speed = 1000, ...props }, ref) => {
-    return (
+  (
+    { className, variant, size, speed = 1000, center, Center, ...props },
+    ref,
+  ) => {
+    const shouldCenter = center ?? Center ?? false;
+
+    const spinnerElement = (
       <LoaderCircle
         ref={ref}
         className={cn(spinnerVariants({ variant, size }), className)}
@@ -47,6 +60,14 @@ const Spinner = React.forwardRef<SVGSVGElement, SpinnerProps>(
         }}
         {...props}
       />
+    );
+
+    if (!shouldCenter) return spinnerElement;
+
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        {spinnerElement}
+      </div>
     );
   },
 );

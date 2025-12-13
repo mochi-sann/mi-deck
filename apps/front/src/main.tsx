@@ -21,10 +21,6 @@ const router = createRouter({
 function InnerApp() {
   const auth = useAuth();
 
-  if (auth.isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <RouterProvider
       router={router}
