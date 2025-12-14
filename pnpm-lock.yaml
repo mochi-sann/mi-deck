@@ -56,9 +56,9 @@ importers:
       "@hookform/resolvers":
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.66.0(react@19.2.0))
-      "@mi-deck/react-mfm":
+      "mfm-react-render":
         specifier: workspace:*
-        version: link:../react-mfm
+        version: link:../../packages/react-mfm
       "@radix-ui/react-avatar":
         specifier: ^1.1.11
         version: 1.1.11(@types/react-dom@19.2.3(@types/react@19.2.3))(@types/react@19.2.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -316,7 +316,7 @@ importers:
         specifier: ^8.0.5
         version: 8.0.5
 
-  apps/react-mfm:
+  packages/react-mfm:
     dependencies:
       "@twemoji/api":
         specifier: 16.0.1
