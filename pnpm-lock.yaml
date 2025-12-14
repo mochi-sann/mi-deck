@@ -56,7 +56,7 @@ importers:
       "@hookform/resolvers":
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.66.0(react@19.2.0))
-      "@mi-deck/react-mfm":
+      "mfm-react-render":
         specifier: workspace:*
         version: link:../../packages/react-mfm
       "@radix-ui/react-avatar":

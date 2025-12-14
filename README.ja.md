@@ -14,7 +14,7 @@
 - **高度なルーティングとデータ**: **TanStack Router** と **TanStack Query** を活用し、シームレスなナビゲーションと効率的なサーバー状態管理を実現しています。
 - **状態管理**: 柔軟でアトミックなクライアント状態管理のために **Jotai** を使用しています。
 - **美しいUI**: **Tailwind CSS v4** と **Radix UI** のプリミティブを使用して、アクセスしやすく高品質なコンポーネントでスタイルされています。
-- **MFMサポート**: カスタムの `@mi-deck/react-mfm` パッケージを介して、**Misskey Flavored Markdown (MFM)** を完全にサポートしています。
+- **MFMサポート**: カスタムの `mfm-react-render` パッケージを介して、**Misskey Flavored Markdown (MFM)** を完全にサポートしています。
 - **堅牢なテスト**: **Vitest**、**Playwright**、\***\*Testing Library** を使用した包括的なテスト戦略。
 - **開発者体験**: **Storybook** によるコンポーネント分離、**Oxlint** および **Biome** による高速なツール。
 

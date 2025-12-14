@@ -1,4 +1,4 @@
-# @mi-deck/react-mfm
+# mfm-react-render
 
 Misskey Flavored Markdown (MFM) を React でレンダリングするためのコンポーネント群です。`mfm-js` をベースに、コードブロックや数式のシンタックスハイライト、カスタム絵文字のレンダリング、MFM 関数のアニメーションなど、Misskey で一般的な表現を忠実に再現します。
 
@@ -7,13 +7,13 @@ Misskey Flavored Markdown (MFM) を React でレンダリングするための�
 - `mfm-js` を使用して標準 MFM 構文と `$[...]` 関数構文をパースし、React コンポーネントに変換します。
 - Shiki と KaTeX を動的にロードし、コードブロックと数式を即座にレンダリングします。
 - Jotai ベースの設定を使用して、`CustomEmoji` / `Link` / `Mention` / `Hashtag` コンポーネントを差し替え可能です。
-- `@mi-deck/react-mfm/style.css` で提供されるスタイルと CSS カスタムプロパティを使用してテーマをカスタマイズできます。
+- `mfm-react-render/style.css` で提供されるスタイルと CSS カスタムプロパティを使用してテーマをカスタマイズできます。
 - React 19+ クライアントコンポーネントとしてそのまま使用できる ESM パッケージです。
 
 ## インストール
 
 ```bash
-pnpm add @mi-deck/react-mfm
+pnpm add mfm-react-render
 ```
 
 必要に応じて、KaTeX のスタイルシートを一度ロードしてください。
@@ -26,8 +26,8 @@ import "katex/dist/katex.min.css";
 
 ```tsx
 import { Provider } from "jotai";
-import { Mfm } from "@mi-deck/react-mfm";
-import "@mi-deck/react-mfm/style.css";
+import { Mfm } from "mfm-react-render";
+import "mfm-react-render/style.css";
 
 export function App() {
   return (
@@ -62,7 +62,7 @@ Jotai `Provider` を使用しない場合でもデフォルトのストアで動
 
 ## Provider 設定
 
-`@mi-deck/react-mfm` は内部で Jotai を使用して設定を共有します。ルートに `Provider` を配置することで、ツリー全体で同じ設定を参照できます。
+`mfm-react-render` は内部で Jotai を使用して設定を共有します。ルートに `Provider` を配置することで、ツリー全体で同じ設定を参照できます。
 
 ```tsx
 import { StrictMode } from "react";
@@ -71,7 +71,7 @@ import { Provider, createStore } from "jotai";
 import {
   Mfm,
   mfmConfigAtom,
-} from "@mi-deck/react-mfm";
+} from "mfm-react-render";
 
 const store = createStore();
 store.set(mfmConfigAtom, {
@@ -96,7 +96,7 @@ createRoot(document.getElementById("root")!).render(
 
 ```tsx
 import { useEffect } from "react";
-import { useMfmConfig, Mfm } from "@mi-deck/react-mfm";
+import { useMfmConfig, Mfm } from "mfm-react-render";
 
 const ExternalLink = (props: React.ComponentProps<"a">) => (
   <a {...props} className="underline decoration-dotted" target="_blank" />
@@ -132,7 +132,7 @@ export function TimelineItem({ body }: { body: string }) {
 
 ## スタイルとテーマ
 
-`@mi-deck/react-mfm/style.css` は、MFM 向けの最小限のスタイルとアニメーションを提供します。アプリケーション固有のデザインに合わせたい場合は、CSS カスタムプロパティを上書きしてください。
+`mfm-react-render/style.css` は、MFM 向けの最小限のスタイルとアニメーションを提供します。アプリケーション固有のデザインに合わせたい場合は、CSS カスタムプロパティを上書きしてください。
 
 ```css
 :root {
@@ -149,9 +149,9 @@ Shiki と KaTeX は動的に HTML を生成するため、適切な CSS リセ�
 
 ワークスペースルートで以下のコマンドが利用可能です。
 
-- `pnpm -F @mi-deck/react-mfm build` — ライブラリのビルド (tsup)
-- `pnpm -F @mi-deck/react-mfm test` — Vitest による単体テスト
-- `pnpm -F @mi-deck/react-mfm dev` — tsup のウォッチモード
+- `pnpm -F mfm-react-render build` — ライブラリのビルド (tsup)
+- `pnpm -F mfm-react-render test` — Vitest による単体テスト
+- `pnpm -F mfm-react-render dev` — tsup のウォッチモード
 
 ## 制限事項
 

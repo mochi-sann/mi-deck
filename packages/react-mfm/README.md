@@ -1,4 +1,4 @@
-# @mi-deck/react-mfm
+# mfm-react-render
 
 A set of React components for rendering Misskey Flavored Markdown (MFM). Based on `mfm-js`, it faithfully reproduces common Misskey expressions such as code block and math syntax highlighting, custom emoji rendering, and MFM function animations.
 
@@ -7,13 +7,13 @@ A set of React components for rendering Misskey Flavored Markdown (MFM). Based o
 - Parses standard MFM syntax and `$[...]` function syntax using `mfm-js` and converts them into React components.
 - Dynamically loads Shiki and KaTeX for instant rendering of code blocks and math formulas.
 - Replaceable `CustomEmoji` / `Link` / `Mention` / `Hashtag` components using Jotai-based configuration.
-- Theme customization using CSS custom properties and styles provided by `@mi-deck/react-mfm/style.css`.
+- Theme customization using CSS custom properties and styles provided by `mfm-react-render/style.css`.
 - An ESM package ready to be used as React 19+ Client Components.
 
 ## Installation
 
 ```bash
-pnpm add @mi-deck/react-mfm
+pnpm add mfm-react-render
 ```
 
 If necessary, load the KaTeX stylesheet once.
@@ -26,8 +26,8 @@ import "katex/dist/katex.min.css";
 
 ```tsx
 import { Provider } from "jotai";
-import { Mfm } from "@mi-deck/react-mfm";
-import "@mi-deck/react-mfm/style.css";
+import { Mfm } from "mfm-react-render";
+import "mfm-react-render/style.css";
 
 export function App() {
   return (
@@ -62,7 +62,7 @@ A lightweight version that uses `parseSimple` with the same API as `Mfm`. Use th
 
 ## Provider Configuration
 
-`@mi-deck/react-mfm` uses Jotai internally to share configuration. By placing a `Provider` at the root, you can reference the same settings throughout the tree.
+`mfm-react-render` uses Jotai internally to share configuration. By placing a `Provider` at the root, you can reference the same settings throughout the tree.
 
 ```tsx
 import { StrictMode } from "react";
@@ -71,7 +71,7 @@ import { Provider, createStore } from "jotai";
 import {
   Mfm,
   mfmConfigAtom,
-} from "@mi-deck/react-mfm";
+} from "mfm-react-render";
 
 const store = createStore();
 store.set(mfmConfigAtom, {
@@ -96,7 +96,7 @@ You can inject rendering settings and custom components from your app using `use
 
 ```tsx
 import { useEffect } from "react";
-import { useMfmConfig, Mfm } from "@mi-deck/react-mfm";
+import { useMfmConfig, Mfm } from "mfm-react-render";
 
 const ExternalLink = (props: React.ComponentProps<"a">) => (
   <a {...props} className="underline decoration-dotted" target="_blank" />
@@ -132,7 +132,7 @@ In custom emoji implementations, you can use `CustomEmojiCtx` to access `host` a
 
 ## Styles and Themes
 
-`@mi-deck/react-mfm/style.css` provides minimal styles and animations for MFM. If you want to match your app's specific design, override the CSS custom properties.
+`mfm-react-render/style.css` provides minimal styles and animations for MFM. If you want to match your app's specific design, override the CSS custom properties.
 
 ```css
 :root {
@@ -149,9 +149,9 @@ Since Shiki and KaTeX generate HTML dynamically, it is safer to apply classes to
 
 The following commands are available at the workspace root:
 
-- `pnpm -F @mi-deck/react-mfm build` — Build the library (tsup)
-- `pnpm -F @mi-deck/react-mfm test` — Unit tests with Vitest
-- `pnpm -F @mi-deck/react-mfm dev` — Watch mode with tsup
+- `pnpm -F mfm-react-render build` — Build the library (tsup)
+- `pnpm -F mfm-react-render test` — Unit tests with Vitest
+- `pnpm -F mfm-react-render dev` — Watch mode with tsup
 
 ## Limitations
 

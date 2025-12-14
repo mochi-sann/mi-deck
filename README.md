@@ -14,7 +14,7 @@
 - **Advanced Routing & Data**: Leveraging **TanStack Router** and **TanStack Query** for seamless navigation and efficient server state management.
 - **State Management**: Using **Jotai** for flexible and atomic client-state management.
 - **Beautiful UI**: Styled with **Tailwind CSS v4** and **Radix UI** primitives for accessible, high-quality components.
-- **MFM Support**: Dedicated support for **Misskey Flavored Markdown (MFM)** via the custom `@mi-deck/react-mfm` package.
+- **MFM Support**: Dedicated support for **Misskey Flavored Markdown (MFM)** via the custom `mfm-react-render` package.
 - **Robust Testing**: Comprehensive testing strategy using **Vitest**, **Playwright**, and **Testing Library**.
 - **Developer Experience**: Component isolation with **Storybook** and fast tooling with **Oxlint** and **Biome**.
 

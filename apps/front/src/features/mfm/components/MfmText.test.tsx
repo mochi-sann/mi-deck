@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { MfmText } from "./MfmText";
 
 // Mock the react-mfm library
-vi.mock("@mi-deck/react-mfm", () => {
+vi.mock("mfm-react-render", () => {
   const MockMfm = ({
     text,
     host,
