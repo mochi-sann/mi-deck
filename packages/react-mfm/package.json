@@ -1,10 +1,10 @@
 {
   "name": "mfm-react-render",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "MFM for React",
   "license": "AGPL-3.0",
   "author": "mochi33i <44772513+mochi-sann@users.noreply.github.com>",
-  "homepage": "https://github.com/mochi-sann/mi-deck/tree/main/packages/react-mfm",
+  "homepage": "https://sb.mideck.mochi33.com/?path=/docs/features-mfm-mfmtext--docs",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mochi-sann/mi-deck.git",
