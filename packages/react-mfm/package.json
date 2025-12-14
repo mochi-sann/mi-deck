@@ -36,7 +36,7 @@
     "fake-indexeddb": "^6.0.1",
     "jsdom": "^25.0.1",
     "lucide-react": "^0.513.0",
-    "misskey-js": "2025.11.0",
+    "misskey-js": "2025.12.1",
     "tsdown": "^0.16.8",
     "vite": "^7.0.6",
     "vitest": "^3.2.4"
