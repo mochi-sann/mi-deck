@@ -1,28 +1,28 @@
 # @mi-deck/react-mfm
 
-Misskey Flavored Markdown (MFM) を React で描画するためのコンポーネント群です。`mfm-js` をベースに、コードブロックや数式のハイライト、カスタム絵文字の描画、MFM 関数のアニメーションなど Misskey で一般的な表現をそのまま再現できます。
+A set of React components for rendering Misskey Flavored Markdown (MFM). Based on `mfm-js`, it faithfully reproduces common Misskey expressions such as code block and math syntax highlighting, custom emoji rendering, and MFM function animations.
 
-## 特徴
+## Features
 
-- MFM の通常構文と `$[...]` 関数構文を `mfm-js` で解釈して React コンポーネントに変換
-- Shiki と KaTeX を動的読み込みし、コードブロックと数式を即時にレンダリング
-- `CustomEmoji` / `Link` / `Mention` / `Hashtag` を Jotai ベースの設定で差し替え可能
-- `@mi-deck/react-mfm/style.css` で提供するスタイルと CSS カスタムプロパティを用いたテーマ調整
-- React 19 以降のクライアントコンポーネントとしてそのまま利用可能な ESM パッケージ
+- Parses standard MFM syntax and `$[...]` function syntax using `mfm-js` and converts them into React components.
+- Dynamically loads Shiki and KaTeX for instant rendering of code blocks and math formulas.
+- Replaceable `CustomEmoji` / `Link` / `Mention` / `Hashtag` components using Jotai-based configuration.
+- Theme customization using CSS custom properties and styles provided by `@mi-deck/react-mfm/style.css`.
+- An ESM package ready to be used as React 19+ Client Components.
 
-## インストール
+## Installation
 
 ```bash
 pnpm add @mi-deck/react-mfm
 ```
 
-必要に応じて KaTeX のスタイルシートも一度だけ読み込んでください。
+If necessary, load the KaTeX stylesheet once.
 
 ```ts
 import "katex/dist/katex.min.css";
 ```
 
-## クイックスタート
+## Quick Start
 
 ```tsx
 import { Provider } from "jotai";
@@ -33,7 +33,7 @@ export function App() {
   return (
     <Provider>
       <Mfm
-        text="$[tada **こんにちは**] 🎉"
+        text="$[tada **Hello**] 🎉"
         emojis={{ party: "https://example.com/party.webp" }}
       />
     </Provider>
@@ -41,28 +41,28 @@ export function App() {
 }
 ```
 
-Jotai `Provider` を利用しない場合でもデフォルトストアで動作しますが、アプリ全体で設定を共有する場合は `Provider` でラップしてください。
+Even if you don't use the Jotai `Provider`, it will work with the default store, but please wrap it with `Provider` if you want to share settings across the entire app.
 
-## コンポーネント
+## Components
 
 ### `<Mfm />`
 
-| プロパティ | 型                       | 既定値      | 説明                                                |
-| ---------- | ------------------------ | ----------- | --------------------------------------------------- |
-| `text`     | `string`                 | 必須        | 解析対象となる MFM 文字列                           |
-| `plain`    | `boolean`                | `false`     | `true` の場合は解析せずテキストをそのまま描画       |
-| `host`     | `string`                 | `undefined` | カスタム絵文字取得時のホスト情報 (カスタム実装向け) |
-| `emojis`   | `Record<string, string>` | `undefined` | 絵文字名と画像 URL のマップ                         |
+| Property | Type                     | Default     | Description                                                               |
+| :------- | :----------------------- | :---------- | :------------------------------------------------------------------------ |
+| `text`   | `string`                 | Required    | The MFM string to be parsed.                                              |
+| `plain`  | `boolean`                | `false`     | If `true`, renders the text as-is without parsing.                        |
+| `host`   | `string`                 | `undefined` | Host information for fetching custom emojis (for custom implementations). |
+| `emojis` | `Record<string, string>` | `undefined` | A map of emoji names to image URLs.                                       |
 
-> `nowrap` / `nyaize` プロパティは将来の機能追加に向けたプレースホルダーです。現時点では限定的な動作のみ提供されます。
+> The `nowrap` / `nyaize` properties are placeholders for future feature additions. Only limited functionality is provided at this time.
 
 ### `<MfmSimple />`
 
-`Mfm` と同じ API で `parseSimple` を使用する軽量版です。Misskey クライアントの「シンプル表示」と同じ挙動を再現したい場合に利用してください。
+A lightweight version that uses `parseSimple` with the same API as `Mfm`. Use this when you want to reproduce the same behavior as the "Simple View" in Misskey clients.
 
-## Provider 設定
+## Provider Configuration
 
-`@mi-deck/react-mfm` は内部で Jotai を用いて構成を共有します。`Provider` をルートに置くことで、ツリー全体で同じ設定を参照できます。
+`@mi-deck/react-mfm` uses Jotai internally to share configuration. By placing a `Provider` at the root, you can reference the same settings throughout the tree.
 
 ```tsx
 import { StrictMode } from "react";
@@ -81,18 +81,18 @@ store.set(mfmConfigAtom, {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
-      <Mfm text="$[tada **設定済み**]" />
+      <Mfm text="$[tada **Configured**]" />
     </Provider>
   </StrictMode>,
 );
 ```
 
-- `Provider` を省略した場合は内部でデフォルトストアが生成され、単一コンポーネントでの利用には十分です。
-- カスタムストアを使うと、`mfmConfigAtom` に初期値を設定したり、他の Jotai アトムと組み合わせて状態を同期できます。
+- If `Provider` is omitted, a default store is generated internally, which is sufficient for use in a single component.
+- Using a custom store allows you to set initial values for `mfmConfigAtom` or synchronize state with other Jotai atoms.
 
-## 設定 (MfmConfig)
+## Configuration (MfmConfig)
 
-`useMfmConfig` / `useMfmConfigValue` で描画設定とカスタムコンポーネントをアプリから注入できます。
+You can inject rendering settings and custom components from your app using `useMfmConfig` / `useMfmConfigValue`.
 
 ```tsx
 import { useEffect } from "react";
@@ -117,22 +117,22 @@ export function TimelineItem({ body }: { body: string }) {
 }
 ```
 
-設定で利用できる主なキーは次の通りです。
+The main keys available for configuration are as follows:
 
-| キー          | 型                     | 既定値   | 用途                                                 |
-| ------------- | ---------------------- | -------- | ---------------------------------------------------- |
-| `advanced`    | `boolean`              | `true`   | `$[position]` など高度な MFM 関数を有効化            |
-| `animation`   | `boolean`              | `true`   | スピンやレインボーなどアニメーション効果の有効／無効 |
-| `CustomEmoji` | `FC<CustomEmojiProps>` | 内蔵実装 | カスタム絵文字描画の差し替え                         |
-| `Hashtag`     | `FC<HashtagProps>`     | 内蔵実装 | ハッシュタグリンクの差し替え                         |
-| `Link`        | `FC<LinkProps>`        | 内蔵実装 | URL / `$[link]` の描画差し替え                       |
-| `Mention`     | `FC<MentionProps>`     | 内蔵実装 | メンションリンクの差し替え                           |
+| Key           | Type                   | Default  | Usage                                                     |
+| :------------ | :--------------------- | :------- | :-------------------------------------------------------- |
+| `advanced`    | `boolean`              | `true`   | Enables advanced MFM functions like `$[position]`.        |
+| `animation`   | `boolean`              | `true`   | Enables/disables animation effects like spin and rainbow. |
+| `CustomEmoji` | `FC<CustomEmojiProps>` | Built-in | Replaces custom emoji rendering.                          |
+| `Hashtag`     | `FC<HashtagProps>`     | Built-in | Replaces hashtag link rendering.                          |
+| `Link`        | `FC<LinkProps>`        | Built-in | Replaces URL / `$[link]` rendering.                       |
+| `Mention`     | `FC<MentionProps>`     | Built-in | Replaces mention link rendering.                          |
 
-カスタム絵文字実装では `CustomEmojiCtx` を利用することで `host` や `emojis` の情報を参照できます。
+In custom emoji implementations, you can use `CustomEmojiCtx` to access `host` and `emojis` information.
 
-## スタイルとテーマ
+## Styles and Themes
 
-`@mi-deck/react-mfm/style.css` は MFM 向けの最低限のスタイルとアニメーションを提供します。アプリ固有のデザインに合わせたい場合は CSS カスタムプロパティを上書きしてください。
+`@mi-deck/react-mfm/style.css` provides minimal styles and animations for MFM. If you want to match your app's specific design, override the CSS custom properties.
 
 ```css
 :root {
@@ -143,19 +143,19 @@ export function TimelineItem({ body }: { body: string }) {
 }
 ```
 
-Shiki と KaTeX が動的に HTML を生成するため、適切な CSS リセットやダークモード対応を行いたい場合はラッパー要素ごとにクラスを付与して制御すると安全です。
+Since Shiki and KaTeX generate HTML dynamically, it is safer to apply classes to each wrapper element to control appropriate CSS resets and dark mode support.
 
-## 開発・テスト
+## Development & Testing
 
-ワークスペース直下で次のコマンドを利用できます。
+The following commands are available at the workspace root:
 
-- `pnpm -F @mi-deck/react-mfm build` — ライブラリのビルド (tsup)
-- `pnpm -F @mi-deck/react-mfm test` — Vitest による単体テスト
-- `pnpm -F @mi-deck/react-mfm dev` — tsup のウォッチモード
+- `pnpm -F @mi-deck/react-mfm build` — Build the library (tsup)
+- `pnpm -F @mi-deck/react-mfm test` — Unit tests with Vitest
+- `pnpm -F @mi-deck/react-mfm dev` — Watch mode with tsup
 
-## 制限事項
+## Limitations
 
-- すべてのコンポーネントはクライアントサイド専用 (`"use client"`) です。SSR 環境では `next/dynamic` 等でクライアントレンダリングに切り替えてください。
-- `nyaize` 機能はまだ実装途上です。
+- All components are client-side only (`"use client"`). In SSR environments, please switch to client rendering using `next/dynamic` or similar.
+- The `nyaize` feature is still under implementation.
 
-フィードバックや改善案があれば Issue / PR でお知らせください。
+If you have feedback or improvement suggestions, please let us know via Issue / PR.

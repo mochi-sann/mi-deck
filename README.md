@@ -2,6 +2,10 @@
 
 ![License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)
 
+> [!WARNING]
+> **Project Status: Experimental**
+> This project is currently in the early stages of development (v0.0.0). Features and APIs are subject to change.
+
 **Mi-Deck** is a modern, feature-rich web client for [Misskey](https://misskey-hub.net/), built with the latest frontend technologies to provide a fast and accessible user experience.
 
 ## ✨ Key Features
@@ -30,7 +34,7 @@
 This project is organized as a monorepo:
 
 - **`apps/front`**: The main web application client.
-- **`packages/react-mfm`**: A reusable library for rendering mfm.
+- **`packages/react-mfm`**: A reusable library for rendering Misskey Flavored Markdown.
 
 ## 🚀 Getting Started
 
@@ -40,6 +44,7 @@ Ensure you have the following installed:
 
 - **Node.js**: >= 25
 - **pnpm**: >= 10
+- **Docker**: (Optional) Required for running a local Misskey instance.
 
 ### Installation
 
@@ -51,6 +56,26 @@ cd mi-deck
 pnpm install
 ```
 
+### Configuration
+
+Copy the example environment file and configure it:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` to set up your environment variables (e.g., `DATABASE_URL`, `JWT_SECRET`).
+
+### Running Local Backend
+
+To start a local instance of Misskey (along with PostgreSQL and Redis) for development:
+
+```bash
+docker compose up -d
+```
+
+This will launch a Misskey server at `http://localhost:3002`.
+
 ### Development
 
 To start the development server for the frontend and other packages:
@@ -59,7 +84,7 @@ To start the development server for the frontend and other packages:
 pnpm dev
 ```
 
-This will typically launch the app at `http://localhost:5173` (check the terminal output for the exact port).
+This will typically launch the app at `http://localhost:5173`.
 
 ### Building
 
@@ -68,6 +93,10 @@ To build the application and packages for production:
 ```bash
 pnpm build
 ```
+
+### Deployment
+
+The project is configured for deployment to **Cloudflare Pages** via `wrangler`.
 
 ## 🧪 Testing & Quality
 
