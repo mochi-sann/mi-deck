@@ -1,6 +1,21 @@
 {
   "name": "@mi-deck/react-mfm",
+  "version": "0.0.1",
   "description": "MFM for React",
+  "license": "AGPL-3.0",
+  "author": "mochi33i <44772513+mochi-sann@users.noreply.github.com>",
+  "homepage": "https://github.com/mochi-sann/mi-deck/tree/main/packages/react-mfm",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mochi-sann/mi-deck.git",
+    "directory": "packages/react-mfm"
+  },
+  "bugs": {
+    "url": "https://github.com/mochi-sann/mi-deck/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@twemoji/api": "16.0.1",
     "dexie": "^4.0.11",
