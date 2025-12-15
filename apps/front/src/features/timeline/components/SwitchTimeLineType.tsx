@@ -5,6 +5,7 @@ import type {
 } from "@/lib/storage/types";
 import { HomeTimelineContent } from "./HomeTimelineContent";
 import { ListTimelineContent } from "./ListTimelineContent";
+import { UserTimelineContent } from "./UserTimelineContent";
 
 export type SwitchTimeLineTypeProps = {
   timeline: TimelineConfig & { server: MisskeyServerConnection };
@@ -68,6 +69,24 @@ export const SwitchTimeLineType: React.FC<SwitchTimeLineTypeProps> = (
           origin={timeline.server.origin}
           token={timeline.server.accessToken ?? ""}
           listId={timeline.settings.listId}
+        />
+      );
+
+    case "user":
+      if (!timeline.settings?.userId) {
+        return (
+          <div className="flex flex-col items-center gap-4 p-4">
+            <p className="text-center text-red-500">
+              ユーザーIDが設定されていません。
+            </p>
+          </div>
+        );
+      }
+      return (
+        <UserTimelineContent
+          origin={timeline.server.origin}
+          token={timeline.server.accessToken ?? ""}
+          userId={timeline.settings.userId}
         />
       );
 

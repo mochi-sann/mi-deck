@@ -23,7 +23,7 @@ export interface TimelineConfig {
   id: string;
   name: string;
   serverId: string;
-  type: "home" | "local" | "social" | "global" | "list" | "channel";
+  type: "home" | "local" | "social" | "global" | "list" | "channel" | "user";
   order: number;
   isVisible: boolean;
   settings?: {
@@ -32,6 +32,7 @@ export interface TimelineConfig {
     excludeNsfw?: boolean;
     listId?: string;
     channelId?: string;
+    userId?: string;
   };
   createdAt: Date;
   updatedAt: Date;
