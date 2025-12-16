@@ -33,7 +33,7 @@ const preview: Preview = {
     },
     backgrounds: {
       options: {
-        light: { name: "light", value: " oklch(1 0 0)" }, // ライトテーマ用背景
+        light: { name: "light", value: "oklch(1 0 0)" }, // ライトテーマ用背景
         dark: { name: "dark", value: "oklch(0.129 0.042 264.695)" }, // ダークテーマ用背景
       },
     },
