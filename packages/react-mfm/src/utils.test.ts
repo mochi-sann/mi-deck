@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { nyaize, toUrl } from "./utils";
+import { toUrl, unixTimeToDate } from "./utils";
 
 describe("utils", () => {
   describe("toUrl", () => {
@@ -21,33 +21,23 @@ describe("utils", () => {
     });
   });
 
-  describe("nyaize", () => {
-    it('replaces "na" with "nya"', () => {
-      expect(nyaize("banana")).toBe("banyanya");
+  describe("unixTimeToDate", () => {
+    it("parses second-based integer strings", () => {
+      const result = unixTimeToDate("1700000000");
+      expect(result).not.toBeNull();
+      expect(result?.getTime()).toBe(1_700_000_000 * 1000);
     });
 
-    it('replaces "na" case-insensitively', () => {
-      expect(nyaize("National")).toBe("Nyationyal");
+    it("handles millisecond integers without scaling", () => {
+      const timestamp = 1_700_000_000_000;
+      const result = unixTimeToDate(timestamp);
+      expect(result).not.toBeNull();
+      expect(result?.getTime()).toBe(timestamp);
     });
 
-    it("replaces multiple occurrences", () => {
-      expect(nyaize("banana and mango")).toBe("banyanya and mango");
-    });
-
-    it('handles text without "na"', () => {
-      expect(nyaize("hello world")).toBe("hello world");
-    });
-
-    it("handles empty string", () => {
-      expect(nyaize("")).toBe("");
-    });
-
-    it('handles "na" at the beginning', () => {
-      expect(nyaize("name")).toBe("nyame");
-    });
-
-    it('handles "na" at the end', () => {
-      expect(nyaize("gonna")).toBe("gonnya");
+    it("returns null for non-integer strings", () => {
+      expect(unixTimeToDate("not-a-number")).toBeNull();
+      expect(unixTimeToDate("12.5")).toBeNull();
     });
   });
 });
