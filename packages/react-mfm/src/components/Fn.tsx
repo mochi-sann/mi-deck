@@ -145,10 +145,23 @@ export default function Fn({
     }
 
     case "unixtime": {
-      const timestamp =
-        numstr(args.timestamp) || Number(children?.toString() || "0");
-      const date = new Date(timestamp * 1000);
-      return <time dateTime={date.toISOString()}>{date.toLocaleString()}</time>;
+      const timeArg = args.time ?? children?.toString();
+
+      if (typeof timeArg === "string" && timeArg) {
+        const date = /^\d+$/.test(timeArg)
+          ? new Date(Number(timeArg) * 1000)
+          : new Date(timeArg);
+
+        if (!Number.isNaN(date.getTime())) {
+          return (
+            <time dateTime={date.toISOString()}>{date.toLocaleString()}</time>
+          );
+        }
+      }
+
+      // fallback to current time
+      const now = new Date();
+      return <time dateTime={now.toISOString()}>{now.toLocaleString()}</time>;
     }
 
     case "clickable":
