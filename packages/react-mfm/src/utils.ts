@@ -23,3 +23,36 @@ export const toUrl = (host: string) => {
   }
   return `https://${host}`;
 };
+
+const unixLikePattern = /^-?\d+$/;
+const millisecondThreshold = 1_000_000_000_000;
+
+/**
+ * 整数入力を Unix time として扱い、 Date を返す.
+ * 秒単位を前提にしつつ、13桁以上の値はミリ秒として扱う.
+ */
+export const unixTimeToDate = (
+  value: number | string | null | undefined,
+): Date | null => {
+  if (value == null) return null;
+
+  let numericValue: number | null = null;
+
+  if (typeof value === "number" && Number.isFinite(value)) {
+    numericValue = Math.trunc(value);
+  } else if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!unixLikePattern.test(trimmed)) return null;
+    numericValue = Number.parseInt(trimmed, 10);
+  }
+
+  if (numericValue === null || !Number.isInteger(numericValue)) return null;
+
+  const epochMillis =
+    Math.abs(numericValue) >= millisecondThreshold
+      ? numericValue
+      : numericValue * 1000;
+
+  const result = new Date(epochMillis);
+  return Number.isNaN(result.getTime()) ? null : result;
+};
