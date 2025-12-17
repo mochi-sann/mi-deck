@@ -10,7 +10,8 @@ import Hashtag from "./components/Hashtag";
 import Link from "./components/Link";
 import Mention from "./components/Mention";
 import Search from "./components/Search";
-import { id, intersperse, nyaize } from "./utils";
+import { id, intersperse } from "./utils";
+import { nyaize } from "misskey-js";
 
 const Node = ({ nodes, ...props }: MfmBasicProps & { nodes?: MfmNode[] }) =>
   nodes?.map((node, i) => <SingleNode node={node} {...props} key={i} />);
@@ -22,11 +23,11 @@ function SingleNode({ node, ...props }: MfmBasicProps & { node: MfmNode }) {
     case "quote":
       return node.props?.nowrap ? (
         <span className="mfm-quote">
-          <Node nodes={node.children} nyaize={false} />
+          <Node nodes={node.children} nyaize={props.nyaize} />
         </span>
       ) : (
         <div className="mfm-quote">
-          <Node nodes={node.children} nyaize={false} />
+          <Node nodes={node.children} nyaize={props.nyaize} />
         </div>
       );
 
@@ -128,7 +129,7 @@ function SingleNode({ node, ...props }: MfmBasicProps & { node: MfmNode }) {
     case "link":
       return (
         <Link href={node.props.url} rel="nofollow noopener">
-          <Node nodes={node.children} {...props} nyaize={false} />
+          <Node nodes={node.children} {...props} nyaize={props.nyaize} />
         </Link>
       );
 
@@ -142,7 +143,7 @@ function SingleNode({ node, ...props }: MfmBasicProps & { node: MfmNode }) {
     case "plain":
       return (
         <span>
-          <Node nodes={node.children} {...props} nyaize={false} />
+          <Node nodes={node.children} {...props} nyaize={props.nyaize} />
         </span>
       );
 
