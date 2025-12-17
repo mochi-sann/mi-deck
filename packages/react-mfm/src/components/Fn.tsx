@@ -4,6 +4,7 @@ import { useAtomValue } from "jotai";
 import { type MfmFn, type MfmNode } from "mfm-js";
 import { type CSSProperties, type ReactNode } from "react";
 import { mfmConfigAtom } from "..";
+import { unixTimeToDate } from "../utils";
 import Sparkle from "./Sparkle";
 import MfmTime from "./Time";
 
@@ -146,22 +147,25 @@ export default function Fn({
     }
 
     case "unixtime": {
-      const timeArg = args.time ?? children?.toString();
+      const timeArg = nodeChildren
+        ? nodeChildren[0].type == "text" && nodeChildren[0].props.text
+        : "";
 
       if (typeof timeArg === "string" && timeArg) {
-        const timeValue = /^\d+$/.test(timeArg)
-          ? Number(timeArg) * 1000
-          : timeArg;
-        const date = new Date(timeValue);
+        const unixDate = unixTimeToDate(timeArg);
+        if (unixDate) {
+          return <MfmTime time={unixDate} mode="detail" />;
+        }
 
+        const date = new Date(timeArg);
         if (!Number.isNaN(date.getTime())) {
-          return <MfmTime time={timeValue} />;
+          return <MfmTime time={date} mode="detail" />;
         }
       }
 
       // fallback to current time
       const now = Date.now();
-      return <MfmTime time={now} />;
+      return <MfmTime time={now} mode="detail" />;
     }
 
     case "clickable":

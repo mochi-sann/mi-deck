@@ -6,33 +6,33 @@ import React, { useState, useEffect, useMemo } from "react";
 const i18n = {
   ts: {
     _ago: {
-      invalid: "Invalid Date",
-      justNow: "Just now",
+      invalid: "不正な日時",
+      justNow: "たった今",
     },
   },
   tsx: {
     _ago: {
-      yearsAgo: ({ n }: { n: string }) => `${n} years ago`,
-      monthsAgo: ({ n }: { n: string }) => `${n} months ago`,
-      weeksAgo: ({ n }: { n: string }) => `${n} weeks ago`,
-      daysAgo: ({ n }: { n: string }) => `${n} days ago`,
-      hoursAgo: ({ n }: { n: string }) => `${n} hours ago`,
-      minutesAgo: ({ n }: { n: string }) => `${n} minutes ago`,
-      secondsAgo: ({ n }: { n: string }) => `${n} seconds ago`,
+      yearsAgo: ({ n }: { n: string }) => `${n}年前`,
+      monthsAgo: ({ n }: { n: string }) => `${n}か月前`,
+      weeksAgo: ({ n }: { n: string }) => `${n}週間前`,
+      daysAgo: ({ n }: { n: string }) => `${n}日前`,
+      hoursAgo: ({ n }: { n: string }) => `${n}時間前`,
+      minutesAgo: ({ n }: { n: string }) => `${n}分前`,
+      secondsAgo: ({ n }: { n: string }) => `${n}秒前`,
     },
     _timeIn: {
-      years: ({ n }: { n: string }) => `in ${n} years`,
-      months: ({ n }: { n: string }) => `in ${n} months`,
-      weeks: ({ n }: { n: string }) => `in ${n} weeks`,
-      days: ({ n }: { n: string }) => `in ${n} days`,
-      hours: ({ n }: { n: string }) => `in ${n} hours`,
-      minutes: ({ n }: { n: string }) => `in ${n} minutes`,
-      seconds: ({ n }: { n: string }) => `in ${n} seconds`,
+      years: ({ n }: { n: string }) => `${n}年後`,
+      months: ({ n }: { n: string }) => `${n}か月後`,
+      weeks: ({ n }: { n: string }) => `${n}週間後`,
+      days: ({ n }: { n: string }) => `${n}日後`,
+      hours: ({ n }: { n: string }) => `${n}時間後`,
+      minutes: ({ n }: { n: string }) => `${n}分後`,
+      seconds: ({ n }: { n: string }) => `${n}秒後`,
     },
   },
 };
 
-const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
+const dateTimeFormat = new Intl.DateTimeFormat("ja-JP", {
   year: "numeric",
   month: "short",
   day: "numeric",
@@ -42,11 +42,20 @@ const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
   timeZoneName: "short",
 });
 
-const dateFormat = new Intl.DateTimeFormat("en-US", {
-  year: "numeric",
-  month: "numeric",
-  day: "numeric",
-});
+const formatAbsolute = (timestamp: number) => {
+  const date = new Date(timestamp);
+  console.log(
+    ...[{ timestamp, date }, "👀 [Time.tsx:47]: {timestamp , date}"].reverse(),
+  );
+  const pad = (v: number) => v.toString().padStart(2, "0");
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hours = date.getHours();
+  const minutes = pad(date.getMinutes());
+  const seconds = pad(date.getSeconds());
+  return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
+};
 
 interface Props {
   time: Date | string | number | null;
@@ -61,6 +70,7 @@ const MfmTime: React.FC<Props> = ({
   mode = "relative",
   colored = false,
 }) => {
+  console.log(...[time, "👀 [Time.tsx:71]: time"].reverse());
   // 日付を安全に取得するヘルパー
   const getDateSafe = (
     n: Date | string | number,
@@ -87,7 +97,7 @@ const MfmTime: React.FC<Props> = ({
 
   // 絶対時間のフォーマット
   const absolute = useMemo(
-    () => (!invalid ? dateTimeFormat.format(_time) : i18n.ts._ago.invalid),
+    () => (!invalid ? formatAbsolute(_time) : i18n.ts._ago.invalid),
     [_time, invalid],
   );
 
@@ -189,7 +199,10 @@ const MfmTime: React.FC<Props> = ({
 
   // レンダリング
   return (
-    <time title={absolute} className={className}>
+    <time
+      title={!invalid ? dateTimeFormat.format(_time) : absolute}
+      className={className}
+    >
       {invalid ? (
         i18n.ts._ago.invalid
       ) : mode === "relative" ? (
@@ -197,25 +210,11 @@ const MfmTime: React.FC<Props> = ({
       ) : mode === "absolute" ? (
         absolute
       ) : mode === "detail" ? (
-        isSameDay(_time, now) ? (
-          <>{dateFormat.format(_time)}</>
-        ) : (
-          <>
-            {absolute} ({relative})
-          </>
-        )
+        <>
+          {absolute} ({relative})
+        </>
       ) : null}
     </time>
-  );
-};
-
-const isSameDay = (timestamp1: number, timestamp2: number) => {
-  const date1 = new Date(timestamp1);
-  const date2 = new Date(timestamp2);
-  return (
-    date1.getFullYear() === date2.getFullYear() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getDate() === date2.getDate()
   );
 };
 
