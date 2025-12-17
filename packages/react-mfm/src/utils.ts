@@ -23,12 +23,3 @@ export const toUrl = (host: string) => {
   }
   return `https://${host}`;
 };
-
-export const nyaize = (text: string) => {
-  return text.replace(/na/gi, (match) => {
-    if (match === "Na") return "Nya";
-    if (match === "NA") return "NYA";
-    if (match === "nA") return "nyA";
-    return "nya";
-  });
-};
