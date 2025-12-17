@@ -44,9 +44,6 @@ const dateTimeFormat = new Intl.DateTimeFormat("ja-JP", {
 
 const formatAbsolute = (timestamp: number) => {
   const date = new Date(timestamp);
-  console.log(
-    ...[{ timestamp, date }, "👀 [Time.tsx:47]: {timestamp , date}"].reverse(),
-  );
   const pad = (v: number) => v.toString().padStart(2, "0");
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
@@ -70,7 +67,6 @@ const MfmTime: React.FC<Props> = ({
   mode = "relative",
   colored = false,
 }) => {
-  console.log(...[time, "👀 [Time.tsx:71]: time"].reverse());
   // 日付を安全に取得するヘルパー
   const getDateSafe = (
     n: Date | string | number,
