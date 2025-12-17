@@ -27,7 +27,7 @@ const MfmBase =
       return <span>{text}</span>;
     }
 
-    const parsedText = parse(text);
+    const parsedText = parser(text);
     return <Node nodes={parsedText} {...props} />;
   };
 
