@@ -5,6 +5,7 @@ import { type MfmFn, type MfmNode } from "mfm-js";
 import { type CSSProperties, type ReactNode } from "react";
 import { mfmConfigAtom } from "..";
 import Sparkle from "./Sparkle";
+import MfmTime from "./Time";
 
 type Arg = string | true;
 
@@ -148,20 +149,19 @@ export default function Fn({
       const timeArg = args.time ?? children?.toString();
 
       if (typeof timeArg === "string" && timeArg) {
-        const date = /^\d+$/.test(timeArg)
-          ? new Date(Number(timeArg) * 1000)
-          : new Date(timeArg);
+        const timeValue = /^\d+$/.test(timeArg)
+          ? Number(timeArg) * 1000
+          : timeArg;
+        const date = new Date(timeValue);
 
         if (!Number.isNaN(date.getTime())) {
-          return (
-            <time dateTime={date.toISOString()}>{date.toLocaleString()}</time>
-          );
+          return <MfmTime time={timeValue} />;
         }
       }
 
       // fallback to current time
-      const now = new Date();
-      return <time dateTime={now.toISOString()}>{now.toLocaleString()}</time>;
+      const now = Date.now();
+      return <MfmTime time={now} />;
     }
 
     case "clickable":

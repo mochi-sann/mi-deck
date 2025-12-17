@@ -354,3 +354,8 @@ export const Nyaize: Story = {
     text: "あああななななにゃ",
   },
 };
+export const Time: Story = {
+  args: {
+    text: "$[unixtime 1010000000]",
+  },
+};
