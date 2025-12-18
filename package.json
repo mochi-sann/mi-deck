@@ -2,10 +2,13 @@
   "name": "@mi-deck",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "",
   "type": "module",
+  "main": "index.js",
   "scripts": {
-    "dev": "turbo run dev",
+    "dev": "turbo run dev storybook",
     "build": "turbo run build",
     "start": "turbo run start",
     "front": "pnpm -F @mi-deck/front",
@@ -19,15 +22,10 @@
     "lint": "turbo run lint",
     "clean": "turbo run clean"
   },
-  "engines": {
-    "pnpm": "10",
-    "node": ">=25",
-    "npm": "please_use_pnpm_instead"
+  "dependencies": {
+    "@tanstack/devtools-vite": "^0.3.12",
+    "@tanstack/react-devtools": "^0.8.4"
   },
-  "packageManager": "pnpm@10.20.0",
-  "keywords": [],
-  "author": "",
-  "license": "",
   "devDependencies": {
     "@playwright/test": "^1.56.1",
     "@types/node": "^24.10.1",
@@ -39,8 +37,10 @@
     "turbo": "^2.6.1",
     "typescript": "^5.9.3"
   },
-  "dependencies": {
-    "@tanstack/devtools-vite": "^0.3.12",
-    "@tanstack/react-devtools": "^0.8.4"
+  "packageManager": "pnpm@10.20.0",
+  "engines": {
+    "node": ">=25",
+    "npm": "please_use_pnpm_instead",
+    "pnpm": "10"
   }
 }

@@ -9,6 +9,7 @@ import { devtools } from "@tanstack/devtools-vite";
 
 const showAnayler = process.env.BUNDLE_ANALYZE === "true";
 const IsDev = process.env.NODE_ENV === "development";
+const IsStorybook = process.env.IS_STORYBOOK === "true";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -16,7 +17,7 @@ export default defineConfig({
     tanstackRouter({ autoCodeSplitting: true }),
     viteReact(),
     tailwindcss(),
-    devtools(),
+    IsStorybook && devtools(),
     // analyzer がprocess.env.BUNDLE_ANALYZEがある場合にのみ実行される
     analyzer({
       analyzerMode: showAnayler ? "server" : "json",
