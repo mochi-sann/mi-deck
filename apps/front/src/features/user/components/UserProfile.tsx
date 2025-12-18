@@ -1,6 +1,7 @@
 import { MfmText } from "@/features/mfm";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { normalizeOrigin } from "@/lib/utils";
 import { useUser } from "../hooks/useUser";
 
 interface UserProfileProps {
@@ -23,6 +24,12 @@ export function UserProfile({ userId, origin, token }: UserProfileProps) {
   if (!user) {
     return <div className="p-4">User not found</div>;
   }
+
+  const normalizedOrigin = normalizeOrigin(origin);
+  const serverUrl = `${normalizedOrigin}/@${user.username}`;
+  const serverLinkLabel =
+    user.host ||
+    (normalizedOrigin ? normalizedOrigin.replace(/^https?:\/\//, "") : "");
 
   return (
     <Card className="border-0 shadow-none rounded-none p-0 border-b-2">
@@ -56,6 +63,16 @@ export function UserProfile({ userId, origin, token }: UserProfileProps) {
             />
           </h1>
           <p className="text-muted-foreground text-sm">@{user.username}</p>
+          {serverUrl && (
+            <a
+              href={serverUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-xs text-primary hover:underline break-all"
+            >
+              {serverLinkLabel}
+            </a>
+          )}
         </div>
       </CardHeader>
       <CardContent className="mt-2 space-y-3 px-4 pb-4">
