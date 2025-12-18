@@ -25,7 +25,7 @@ export function UserProfile({ userId, origin, token }: UserProfileProps) {
   }
 
   return (
-    <Card className="border-0 shadow-none rounded-none">
+    <Card className="border-0 shadow-none rounded-none p-0 border-b-2">
       <div className="relative h-24 w-full bg-muted">
         {user.bannerUrl && (
           <img
