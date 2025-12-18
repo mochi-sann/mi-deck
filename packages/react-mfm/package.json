@@ -80,6 +80,7 @@
       "shiki",
       "shiki/bundle/web",
       "jotai",
+      "lucide-react",
       "@twemoji/api"
     ],
     "format": "esm",
