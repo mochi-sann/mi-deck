@@ -26,7 +26,9 @@ const MfmBase =
     if (plain) {
       return <span>{text}</span>;
     }
-    return <Node nodes={parser(text)} {...props} />;
+
+    const parsedText = parser(text);
+    return <Node nodes={parsedText} {...props} />;
   };
 
 export const Mfm = MfmBase(parse);

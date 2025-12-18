@@ -1,26 +1,43 @@
 {
   "name": "mfm-react-render",
-  "version": "0.0.2",
+  "version": "0.1.1",
   "description": "MFM for React",
-  "license": "AGPL-3.0",
-  "author": "mochi33i <44772513+mochi-sann@users.noreply.github.com>",
   "homepage": "https://sb.mideck.mochi33.com/?path=/docs/features-mfm-mfmtext--docs",
+  "bugs": {
+    "url": "https://github.com/mochi-sann/mi-deck/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mochi-sann/mi-deck.git",
     "directory": "packages/react-mfm"
   },
-  "bugs": {
-    "url": "https://github.com/mochi-sann/mi-deck/issues"
+  "author": "mochi33i <44772513+mochi-sann@users.noreply.github.com>",
+  "license": "AGPL-3.0",
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./style.css": "./dist/style.css"
   },
-  "publishConfig": {
-    "access": "public"
+  "types": "./dist/index.d.mts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown ",
+    "check": "tsc",
+    "dev": "tsdown --watch",
+    "fmt": "prettier -w .",
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest --run --coverage"
   },
   "dependencies": {
-    "@twemoji/api": "16.0.1",
+    "@twemoji/api": "17.0.2",
     "dexie": "^4.0.11",
     "jotai": "^2.12.5",
     "katex": "0.16.22",
+    "lucide-react": "^0.561.0",
     "mfm-js": "0.25.0",
     "shiki": "3.12.2"
   },
@@ -35,31 +52,16 @@
     "@vitest/coverage-v8": "3.1.2",
     "fake-indexeddb": "^6.0.1",
     "jsdom": "^25.0.1",
-    "lucide-react": "^0.513.0",
     "misskey-js": "2025.11.0",
     "tsdown": "^0.16.8",
     "vite": "^7.0.6",
     "vitest": "^3.2.4"
   },
-  "exports": {
-    ".": "./dist/index.mjs",
-    "./style.css": "./dist/style.css"
-  },
-  "files": [
-    "dist"
-  ],
-  "main": "./dist/index.mjs",
   "peerDependencies": {
     "react": ">=19.0.0"
   },
-  "scripts": {
-    "build": "tsdown ",
-    "check": "tsc",
-    "dev": "tsdown --watch",
-    "fmt": "prettier -w .",
-    "test": "vitest --run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest --run --coverage"
+  "publishConfig": {
+    "access": "public"
   },
   "tsdown": {
     "entry": [
@@ -85,7 +87,5 @@
     "sourcemap": true,
     "splitting": true,
     "clean": true
-  },
-  "type": "module",
-  "types": "./dist/index.d.mts"
+  }
 }
