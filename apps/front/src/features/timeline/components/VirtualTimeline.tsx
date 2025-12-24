@@ -1,6 +1,6 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { type Note } from "misskey-js/entities.js";
-import { useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
@@ -17,6 +17,7 @@ type VirtualTimelineProps = {
   fetchNotes: (untilId?: string) => void;
   retryFetch: () => void;
   emptyMessage?: string;
+  headerContent?: ReactNode;
 };
 
 const isNoteRecent = (note: Note) => {
@@ -35,6 +36,7 @@ export function VirtualTimeline({
   fetchNotes,
   retryFetch,
   emptyMessage = "No notes found",
+  headerContent,
 }: VirtualTimelineProps) {
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -61,7 +63,7 @@ export function VirtualTimeline({
     }
   }, [hasMore, isLoading, notes, fetchNotes, virtualItems]);
 
-  if (!isLoading && notes.length === 0) {
+  if (!isLoading && notes.length === 0 && !headerContent) {
     if (error) {
       return (
         <div className="flex flex-col items-center gap-4 p-4">
@@ -84,40 +86,49 @@ export function VirtualTimeline({
 
   return (
     <ScrollArea viewportRef={parentRef} className="h-full overflow-y-auto">
-      <div
-        style={{
-          height: `${rowVirtualizer.getTotalSize()}px`,
-          width: "100%",
-          position: "relative",
-        }}
-      >
-        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-          const note = notes[virtualRow.index];
-          if (!note) return null;
+      <div className="w-full">
+        {headerContent}
+        <div
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            width: "100%",
+            position: "relative",
+          }}
+        >
+          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            const note = notes[virtualRow.index];
+            if (!note) return null;
 
-          const isRecent = isNoteRecent(note);
+            const isRecent = isNoteRecent(note);
 
-          return (
-            <div
-              key={virtualRow.key}
-              data-index={virtualRow.index}
-              ref={rowVirtualizer.measureElement}
-              className={cn(
-                "absolute top-0 left-0 w-full",
-                isRecent &&
-                  "fade-in slide-in-from-top-8 animate-in duration-500",
-              )}
-              style={{
-                transform: `translateY(${virtualRow.start}px)`,
-              }}
-            >
-              <MisskeyNote origin={origin} note={note} />
-            </div>
-          );
-        })}
+            return (
+              <div
+                key={virtualRow.key}
+                data-index={virtualRow.index}
+                ref={rowVirtualizer.measureElement}
+                className={cn(
+                  "absolute top-0 left-0 w-full",
+                  isRecent &&
+                    "fade-in slide-in-from-top-8 animate-in duration-500",
+                )}
+                style={{
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}
+              >
+                <MisskeyNote origin={origin} note={note} />
+              </div>
+            );
+          })}
+        </div>
       </div>
       {isLoading && (
-        <div style={{ textAlign: "center", paddingTop: "10rem" }}>
+        <div
+          style={{
+            textAlign: "center",
+            paddingTop: "2rem",
+            paddingBottom: "2rem",
+          }}
+        >
           <Spinner center={true} />
         </div>
       )}
@@ -129,6 +140,11 @@ export function VirtualTimeline({
           <Button onClick={retryFetch} variant="outline" size="sm">
             Retry
           </Button>
+        </div>
+      )}
+      {!isLoading && notes.length === 0 && headerContent && (
+        <div className="p-4 text-center">
+          <Text>{emptyMessage}</Text>
         </div>
       )}
     </ScrollArea>

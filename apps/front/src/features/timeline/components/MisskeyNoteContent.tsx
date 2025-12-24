@@ -7,6 +7,7 @@ import { MfmText } from "@/features/mfm";
 import { NoteReplySection } from "@/features/notes/components/NoteReplySection";
 import { ReactionButton } from "@/features/reactions/components/ReactionButton";
 import { timelineSettingsAtom } from "@/features/settings/stores/timelineSettings";
+import { useStorage } from "@/lib/storage/context";
 import { NoteReactions } from "../../reactions/components/NoteReactions";
 import { useMisskeyNoteEmojis } from "../hooks/useMisskeyNoteEmojis";
 import { AttachmentGallery } from "./AttachmentGallery";
@@ -50,8 +51,11 @@ function MisskeyNoteContentBase({
   const user = note.user;
   const isRenote = isPureRenote(note);
   const settings = useAtomValue(timelineSettingsAtom);
+  const { servers, addTimeline } = useStorage();
+
   const isNsfw =
-    Boolean(note.cw) || Boolean(note.files?.some((f) => f.isSensitive));
+    Boolean(note.cw) ||
+    Boolean(note.files?.some((f: NoteFile) => f.isSensitive));
   const [isRevealed, setIsRevealed] = useState(false);
   const [previewFile, setPreviewFile] = useState<NoteFile | null>(null);
 
@@ -67,6 +71,25 @@ function MisskeyNoteContentBase({
     setPreviewFile(file);
   };
 
+  const handleUserClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const server = servers.find((s) => s.origin === origin);
+    if (server) {
+      addTimeline({
+        name: user.name || user.username,
+        serverId: server.id,
+        type: "user",
+        order: Date.now(), // Temporary order, backend/storage should handle this or list component will sort
+        isVisible: true,
+        settings: {
+          userId: user.id,
+        },
+      });
+    } else {
+      console.error("Server not found for origin:", origin);
+    }
+  };
+
   if (isNsfw && settings.nsfwBehavior === "hide" && !isRevealed) {
     return <NsfwBarrier onReveal={() => setIsRevealed(true)} />;
   }
@@ -75,14 +98,24 @@ function MisskeyNoteContentBase({
     <div className="flex w-full min-w-0 flex-col gap-1">
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-2 text-sm">
-          <p>
-            <MfmText
-              text={user.name || user.username}
-              host={origin}
-              emojis={emojis}
-            />
-            <span className="text-muted-foreground">@{user.username}</span>
-          </p>
+          <button
+            type="button"
+            onClick={handleUserClick}
+            className="flex items-center gap-2 hover:underline appearance-none bg-transparent border-0 p-0 cursor-pointer text-left"
+          >
+            <div className="flex items-center gap-2">
+              <p>
+                <MfmText
+                  text={user.name || user.username}
+                  host={origin}
+                  emojis={emojis}
+                />
+              </p>
+              <span className="text-muted-foreground ml-1">
+                @{user.username}
+              </span>
+            </div>
+          </button>
         </div>
       </div>
       <div className="space-y-2">
@@ -163,7 +196,7 @@ function RenotePreview({
     <CustomEmojiCtx.Provider value={contextValue}>
       <div className="mt-2 rounded-md border bg-muted/40 p-3">
         <div className="flex items-start gap-2">
-          <MisskeyNoteHeader user={renote.user} note={renote} />
+          <MisskeyNoteHeader user={renote.user} note={renote} origin={origin} />
           <MisskeyNoteContent
             note={renote}
             origin={origin}

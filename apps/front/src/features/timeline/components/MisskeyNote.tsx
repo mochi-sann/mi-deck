@@ -43,7 +43,7 @@ function MisskeyNoteBase({
         )}
       >
         <div>
-          <MisskeyNoteHeader user={note.user} note={note} />
+          <MisskeyNoteHeader user={note.user} note={note} origin={origin} />
         </div>
         <div className="min-w-0 flex-1">
           {note.renote && (
