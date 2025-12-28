@@ -127,7 +127,9 @@ describe("MisskeyNoteContent NSFW Behavior", () => {
 
     render(<MisskeyNoteContent note={note} origin={origin} emojis={emojis} />);
 
-    const imageContainer = screen.getByRole("button");
+    const imageContainer = screen.getByRole("button", {
+      name: "画像を拡大表示",
+    });
     const image = screen.getByAltText("Note Attachment");
     const label = screen.getByText("sensitive");
 
