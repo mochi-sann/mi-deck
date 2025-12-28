@@ -3,7 +3,7 @@ import type { Note } from "misskey-js/entities.js";
 import { isPureRenote } from "misskey-js/note.js";
 import { memo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useStorage } from "@/lib/storage/context";
+import { useUserTimelineClick } from "../hooks/useUserTimelineClick";
 
 interface MisskeyNoteHeaderProps {
   user: Note["user"];
@@ -14,26 +14,7 @@ interface MisskeyNoteHeaderProps {
 export const MisskeyNoteHeader = memo(
   ({ user, note, origin }: MisskeyNoteHeaderProps) => {
     const isRenote = isPureRenote(note);
-    const { servers, addTimeline } = useStorage();
-
-    const handleUserClick = (e: React.MouseEvent) => {
-      e.preventDefault();
-      const server = servers.find((s) => s.origin === origin);
-      if (server) {
-        addTimeline({
-          name: user.name || user.username,
-          serverId: server.id,
-          type: "user",
-          order: Date.now(),
-          isVisible: true,
-          settings: {
-            userId: user.id,
-          },
-        });
-      } else {
-        console.error("Server not found for origin:", origin);
-      }
-    };
+    const handleUserClick = useUserTimelineClick(origin, user);
 
     return (
       <div className="flex items-center gap-2">

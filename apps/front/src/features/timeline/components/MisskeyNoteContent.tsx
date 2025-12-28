@@ -7,9 +7,9 @@ import { MfmText } from "@/features/mfm";
 import { NoteReplySection } from "@/features/notes/components/NoteReplySection";
 import { ReactionButton } from "@/features/reactions/components/ReactionButton";
 import { timelineSettingsAtom } from "@/features/settings/stores/timelineSettings";
-import { useStorage } from "@/lib/storage/context";
 import { NoteReactions } from "../../reactions/components/NoteReactions";
 import { useMisskeyNoteEmojis } from "../hooks/useMisskeyNoteEmojis";
+import { useUserTimelineClick } from "../hooks/useUserTimelineClick";
 import { AttachmentGallery } from "./AttachmentGallery";
 import { ImagePreviewDialog } from "./ImagePreviewDialog";
 import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
@@ -51,11 +51,10 @@ function MisskeyNoteContentBase({
   const user = note.user;
   const isRenote = isPureRenote(note);
   const settings = useAtomValue(timelineSettingsAtom);
-  const { servers, addTimeline } = useStorage();
+  const handleUserClick = useUserTimelineClick(origin, user);
 
   const isNsfw =
-    Boolean(note.cw) ||
-    Boolean(note.files?.some((f: NoteFile) => f.isSensitive));
+    Boolean(note.cw) || Boolean(note.files?.some((f) => f.isSensitive));
   const [isRevealed, setIsRevealed] = useState(false);
   const [previewFile, setPreviewFile] = useState<NoteFile | null>(null);
 
@@ -69,25 +68,6 @@ function MisskeyNoteContentBase({
     }
 
     setPreviewFile(file);
-  };
-
-  const handleUserClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const server = servers.find((s) => s.origin === origin);
-    if (server) {
-      addTimeline({
-        name: user.name || user.username,
-        serverId: server.id,
-        type: "user",
-        order: Date.now(), // Temporary order, backend/storage should handle this or list component will sort
-        isVisible: true,
-        settings: {
-          userId: user.id,
-        },
-      });
-    } else {
-      console.error("Server not found for origin:", origin);
-    }
   };
 
   if (isNsfw && settings.nsfwBehavior === "hide" && !isRevealed) {
