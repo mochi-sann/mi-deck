@@ -33,7 +33,7 @@ export function useUserTimeline(origin: string, token: string, userId: string) {
           ...(untilId ? { untilId } : {}),
         };
 
-        const res = await (client as any).request("users/notes", params);
+        const res = await client.request("users/notes", params);
 
         if (Array.isArray(res)) {
           if (res.length === 0) {
