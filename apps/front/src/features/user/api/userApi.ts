@@ -12,7 +12,7 @@ export class UserApi {
   }
 
   async getUser(userId: string): Promise<UserDetailed> {
-    const response = await (this.client as any).request("users/show", {
+    const response = await this.client.request("users/show", {
       userId,
     });
     return response as UserDetailed;
