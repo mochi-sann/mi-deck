@@ -73,6 +73,12 @@ vi.mock("@/features/notes/actions/useRenoteAction", () => ({
     toggleRenote: vi.fn(),
   }),
 }));
+vi.mock("@/lib/storage/context", () => ({
+  useStorage: () => ({
+    servers: [],
+    addTimeline: vi.fn(),
+  }),
+}));
 vi.mock("@/lib/utils/emoji-proxy", () => ({
   createProxiedEmojis: (emojis: any, host: string) => {
     if (!emojis || !host) return emojis;

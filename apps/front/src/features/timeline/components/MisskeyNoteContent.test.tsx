@@ -55,6 +55,12 @@ vi.mock("../hooks/useMisskeyNoteEmojis", () => ({
     contextValue: {},
   }),
 }));
+vi.mock("@/lib/storage/context", () => ({
+  useStorage: () => ({
+    servers: [],
+    addTimeline: vi.fn(),
+  }),
+}));
 
 const createMockNote = (overrides: Partial<Note> = {}): Note =>
   ({
