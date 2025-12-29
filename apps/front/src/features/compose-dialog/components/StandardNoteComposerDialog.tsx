@@ -322,6 +322,13 @@ export function StandardNoteComposerDialog({
     }
   }, [open, resetState, clearSubmitError]);
 
+  useEffect(() => {
+    if (!open || formDisabled) return;
+    requestAnimationFrame(() => {
+      noteTextareaRef.current?.focus();
+    });
+  }, [open, formDisabled]);
+
   const handleDialogChange = (nextOpen: boolean) => {
     if (disabled && nextOpen) return;
     if (nextOpen) {
