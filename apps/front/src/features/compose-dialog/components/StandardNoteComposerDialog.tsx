@@ -1,5 +1,10 @@
 import { Globe, Home, ImagePlus, Lock, Mail } from "lucide-react";
-import type { ClipboardEvent, DragEvent, ReactElement } from "react";
+import type {
+  ClipboardEvent,
+  DragEvent,
+  KeyboardEvent,
+  ReactElement,
+} from "react";
 import {
   cloneElement,
   isValidElement,
@@ -287,6 +292,17 @@ export function StandardNoteComposerDialog({
     [formDisabled, setFiles],
   );
 
+  const handleTextareaKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLTextAreaElement>) => {
+      if (formDisabled) return;
+      if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+        event.preventDefault();
+        handleSubmit();
+      }
+    },
+    [formDisabled, handleSubmit],
+  );
+
   const handleServerSelect = useCallback(
     (serverId: string) => {
       form.setValue("serverSessionId", serverId, {
@@ -321,6 +337,13 @@ export function StandardNoteComposerDialog({
       setIsVisibilityPopoverOpen(false);
     }
   }, [open, resetState, clearSubmitError]);
+
+  useEffect(() => {
+    if (!open || formDisabled) return;
+    requestAnimationFrame(() => {
+      noteTextareaRef.current?.focus();
+    });
+  }, [open, formDisabled]);
 
   const handleDialogChange = (nextOpen: boolean) => {
     if (disabled && nextOpen) return;
@@ -496,6 +519,7 @@ export function StandardNoteComposerDialog({
                             className="max-h-[200px] min-h-[140px]"
                             disabled={disabled}
                             onPaste={handlePasteFiles}
+                            onKeyDown={handleTextareaKeyDown}
                             ref={(element) => {
                               field.ref(element);
                               noteTextareaRef.current = element;
