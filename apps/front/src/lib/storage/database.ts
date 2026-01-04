@@ -232,11 +232,15 @@ class DatabaseManager {
         lastUpdated: new Date(),
       };
     }
-    return {
+    const defaults: AppSettings = {
       theme: "system",
       language: "ja",
       mfmAdvanced: true,
       mfmAnimation: true,
+      lastUpdated: new Date(),
+    };
+    return {
+      ...defaults,
       ...settings,
     };
   }
