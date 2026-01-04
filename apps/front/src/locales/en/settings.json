@@ -19,6 +19,16 @@
     "dark": "Dark",
     "system": "System"
   },
+  "mfm": {
+    "advanced": {
+      "title": "MFM Advanced Styles",
+      "description": "Enable advanced MFM styling such as rotation and ruby text"
+    },
+    "animation": {
+      "title": "MFM Animation",
+      "description": "Enable animated MFM expressions"
+    }
+  },
   "notifications": {
     "title": "Notifications",
     "enabled": "Enable notifications",
