@@ -17,7 +17,10 @@ export function ImagePreviewDialog({ file, onClose }: ImagePreviewDialogProps) {
         }
       }}
     >
-      <DialogContent className="max-w-[95vw] p-0 shadow-none" onClick={onClose}>
+      <DialogContent
+        className="sm:max-w-[90vw] max-w-[90vw] p-0 shadow-none"
+        onClick={onClose}
+      >
         {file && (
           <div className="relative flex max-h-[90vh] w-full cursor-zoom-out items-center justify-center overflow-hidden rounded-lg bg-background p-4">
             <img

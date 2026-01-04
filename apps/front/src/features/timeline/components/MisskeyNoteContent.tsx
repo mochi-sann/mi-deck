@@ -9,6 +9,7 @@ import { ReactionButton } from "@/features/reactions/components/ReactionButton";
 import { timelineSettingsAtom } from "@/features/settings/stores/timelineSettings";
 import { NoteReactions } from "../../reactions/components/NoteReactions";
 import { useMisskeyNoteEmojis } from "../hooks/useMisskeyNoteEmojis";
+import { useUserTimelineClick } from "../hooks/useUserTimelineClick";
 import { AttachmentGallery } from "./AttachmentGallery";
 import { ImagePreviewDialog } from "./ImagePreviewDialog";
 import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
@@ -50,6 +51,8 @@ function MisskeyNoteContentBase({
   const user = note.user;
   const isRenote = isPureRenote(note);
   const settings = useAtomValue(timelineSettingsAtom);
+  const handleUserClick = useUserTimelineClick(origin, user);
+
   const isNsfw =
     Boolean(note.cw) || Boolean(note.files?.some((f) => f.isSensitive));
   const [isRevealed, setIsRevealed] = useState(false);
@@ -75,14 +78,24 @@ function MisskeyNoteContentBase({
     <div className="flex w-full min-w-0 flex-col gap-1">
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-2 text-sm">
-          <p>
-            <MfmText
-              text={user.name || user.username}
-              host={origin}
-              emojis={emojis}
-            />
-            <span className="text-muted-foreground">@{user.username}</span>
-          </p>
+          <button
+            type="button"
+            onClick={handleUserClick}
+            className="flex items-center gap-2 hover:underline appearance-none bg-transparent border-0 p-0 cursor-pointer text-left"
+          >
+            <div className="flex items-center gap-2">
+              <p>
+                <MfmText
+                  text={user.name || user.username}
+                  host={origin}
+                  emojis={emojis}
+                />
+              </p>
+              <span className="text-muted-foreground ml-1">
+                @{user.username}
+              </span>
+            </div>
+          </button>
         </div>
       </div>
       <div className="space-y-2">
@@ -163,7 +176,7 @@ function RenotePreview({
     <CustomEmojiCtx.Provider value={contextValue}>
       <div className="mt-2 rounded-md border bg-muted/40 p-3">
         <div className="flex items-start gap-2">
-          <MisskeyNoteHeader user={renote.user} note={renote} />
+          <MisskeyNoteHeader user={renote.user} note={renote} origin={origin} />
           <MisskeyNoteContent
             note={renote}
             origin={origin}
