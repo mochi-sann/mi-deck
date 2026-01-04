@@ -9,14 +9,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import type { SupportedLanguage } from "@/lib/i18n/types";
+import { useStorage } from "@/lib/storage/context";
 import type { Theme } from "@/lib/storage/types";
 import { useTheme } from "@/lib/theme/context";
 
 export function ApplicationSettings() {
   const { t, i18n } = useTranslation("settings");
   const { theme, setTheme } = useTheme();
+  const { appSettings, updateAppSettings } = useStorage();
+  const mfmAdvanced = appSettings?.mfmAdvanced ?? true;
+  const mfmAnimation = appSettings?.mfmAnimation ?? true;
 
   const handleLanguageChange = (value: string) => {
     void i18n.changeLanguage(value as SupportedLanguage);
@@ -30,6 +35,14 @@ export function ApplicationSettings() {
     if (value && isValidTheme(value)) {
       setTheme(value);
     }
+  };
+
+  const handleMfmAdvancedChange = (checked: boolean) => {
+    void updateAppSettings({ mfmAdvanced: checked });
+  };
+
+  const handleMfmAnimationChange = (checked: boolean) => {
+    void updateAppSettings({ mfmAnimation: checked });
   };
 
   return (
@@ -58,6 +71,36 @@ export function ApplicationSettings() {
               {t("theme.system")}
             </ToggleGroupItem>
           </ToggleGroup>
+        </div>
+
+        <Separator />
+
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>{t("mfm.advanced.title")}</Label>
+              <p className="text-muted-foreground text-sm">
+                {t("mfm.advanced.description")}
+              </p>
+            </div>
+            <Switch
+              checked={mfmAdvanced}
+              onCheckedChange={handleMfmAdvancedChange}
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>{t("mfm.animation.title")}</Label>
+              <p className="text-muted-foreground text-sm">
+                {t("mfm.animation.description")}
+              </p>
+            </div>
+            <Switch
+              checked={mfmAnimation}
+              onCheckedChange={handleMfmAnimationChange}
+            />
+          </div>
         </div>
 
         <Separator />

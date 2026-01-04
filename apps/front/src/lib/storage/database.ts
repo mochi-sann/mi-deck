@@ -227,10 +227,22 @@ class DatabaseManager {
       return {
         theme: "system",
         language: "ja",
+        mfmAdvanced: true,
+        mfmAnimation: true,
         lastUpdated: new Date(),
       };
     }
-    return settings;
+    const defaults: AppSettings = {
+      theme: "system",
+      language: "ja",
+      mfmAdvanced: true,
+      mfmAnimation: true,
+      lastUpdated: new Date(),
+    };
+    return {
+      ...defaults,
+      ...settings,
+    };
   }
 
   async setAppSettings(settings: AppSettings): Promise<void> {
@@ -248,6 +260,8 @@ class DatabaseManager {
     const updatedSettings: AppSettings = {
       theme: "system",
       language: "ja",
+      mfmAdvanced: true,
+      mfmAnimation: true,
       lastUpdated: new Date(),
       ...currentSettings,
       ...updates,
