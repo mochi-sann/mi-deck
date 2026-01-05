@@ -19,6 +19,16 @@
     "dark": "ダーク",
     "system": "システム"
   },
+  "mfm": {
+    "advanced": {
+      "title": "MFMの高度なスタイル",
+      "description": "回転やルビなどの高度なMFMスタイルを有効にします"
+    },
+    "animation": {
+      "title": "MFMのアニメーション",
+      "description": "MFMのアニメーション表現を有効にします"
+    }
+  },
   "notifications": {
     "title": "通知",
     "enabled": "通知を有効にする",

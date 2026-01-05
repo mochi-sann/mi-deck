@@ -244,6 +244,8 @@ class LocalStorageManager {
         return {
           theme: "system",
           language: "ja",
+          mfmAdvanced: true,
+          mfmAnimation: true,
           lastUpdated: new Date(),
         };
       }
@@ -253,12 +255,20 @@ class LocalStorageManager {
       if (parsed.lastUpdated && typeof parsed.lastUpdated === "string") {
         parsed.lastUpdated = new Date(parsed.lastUpdated);
       }
-      return parsed;
+      return {
+        theme: "system",
+        language: "ja",
+        mfmAdvanced: true,
+        mfmAnimation: true,
+        ...parsed,
+      };
     } catch {
       // Return default settings on error
       return {
         theme: "system",
         language: "ja",
+        mfmAdvanced: true,
+        mfmAnimation: true,
         lastUpdated: new Date(),
       };
     }
@@ -283,6 +293,8 @@ class LocalStorageManager {
       const updatedSettings: AppSettings = {
         theme: "system",
         language: "ja",
+        mfmAdvanced: true,
+        mfmAnimation: true,
         lastUpdated: new Date(),
         ...currentSettings,
         ...updates,

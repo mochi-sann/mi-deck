@@ -3,6 +3,7 @@ import { StrictMode } from "react";
 
 import { SidebarProvider } from "../components/ui/sidebar";
 import { AuthProvider } from "../features/auth";
+import { MfmConfigProvider } from "../features/mfm/components/MfmConfigProvider";
 import { StorageProvider } from "../lib/storage/context";
 import { ThemeProvider } from "../lib/theme/context";
 
@@ -23,11 +24,13 @@ export function Providers({ children }: ProvidersProps) {
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <StorageProvider>
-          <ThemeProvider>
-            <AuthProvider>
-              <SidebarProvider>{children}</SidebarProvider>
-            </AuthProvider>
-          </ThemeProvider>
+          <MfmConfigProvider>
+            <ThemeProvider>
+              <AuthProvider>
+                <SidebarProvider>{children}</SidebarProvider>
+              </AuthProvider>
+            </ThemeProvider>
+          </MfmConfigProvider>
         </StorageProvider>
       </QueryClientProvider>
     </StrictMode>
