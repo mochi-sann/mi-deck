@@ -27,27 +27,31 @@ export default defineConfig({
     analyzer({
       analyzerMode: showAnayler ? "server" : "json",
     }),
-    VitePWA({
-      registerType: "autoUpdate",
-      includeAssets: ["pwa-icon.svg"],
-      manifest: {
-        name: "Mi-Deck",
-        short_name: "Mi-Deck",
-        description: "A modern, feature-rich web client for Misskey.",
-        start_url: "/",
-        display: "standalone",
-        background_color: "#0b0f1a",
-        theme_color: "#0b0f1a",
-        icons: [
-          {
-            src: "/pwa-icon.svg",
-            sizes: "any",
-            type: "image/svg+xml",
-            purpose: "any maskable",
-          },
-        ],
-      },
-    }),
+    !IsStorybook &&
+      VitePWA({
+        registerType: "autoUpdate",
+        includeAssets: ["pwa-icon.svg"],
+        workbox: {
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+        },
+        manifest: {
+          name: "Mi-Deck",
+          short_name: "Mi-Deck",
+          description: "A modern, feature-rich web client for Misskey.",
+          start_url: "/",
+          display: "standalone",
+          background_color: "#0b0f1a",
+          theme_color: "#0b0f1a",
+          icons: [
+            {
+              src: "/pwa-icon.svg",
+              sizes: "any",
+              type: "image/svg+xml",
+              purpose: "any maskable",
+            },
+          ],
+        },
+      }),
   ],
   esbuild: {
     drop: !IsDev ? ["console", "debugger"] : [],
