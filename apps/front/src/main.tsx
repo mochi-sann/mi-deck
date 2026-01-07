@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { registerSW } from "virtual:pwa-register";
 
 import { useAuth } from "./features/auth";
 import { Providers } from "./providers";
@@ -44,3 +45,5 @@ createRoot(document.getElementById("root")!).render(
     <InnerApp />
   </Providers>,
 );
+
+registerSW({ immediate: true });
