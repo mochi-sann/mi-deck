@@ -40,6 +40,6 @@ export class UserApi {
     const response = await this.client.request("users/show", {
       userId,
     });
-    return parse(UserDetailedSchema, response) as UserDetailedSchemaOutput;
+    return parse(UserDetailedSchema, response) as UserDetailed;
   }
 }

@@ -35,7 +35,7 @@ const NoteFileSchema = objectWithRest(
   unknown(),
 );
 
-const createNoteSchema = () =>
+const createNoteSchema: () => ReturnType<typeof objectWithRest> = () =>
   objectWithRest(
     {
       id: string(),
