@@ -4,7 +4,6 @@ import tanstackRouter from "@tanstack/router-plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { analyzer } from "vite-bundle-analyzer";
-import { VitePWA } from "vite-plugin-pwa";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { devtools } from "@tanstack/devtools-vite";
 
@@ -27,31 +26,6 @@ export default defineConfig({
     analyzer({
       analyzerMode: showAnayler ? "server" : "json",
     }),
-    !IsStorybook &&
-      VitePWA({
-        registerType: "autoUpdate",
-        includeAssets: ["pwa-icon.svg"],
-        workbox: {
-          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-        },
-        manifest: {
-          name: "Mi-Deck",
-          short_name: "Mi-Deck",
-          description: "A modern, feature-rich web client for Misskey.",
-          start_url: "/",
-          display: "standalone",
-          background_color: "#0b0f1a",
-          theme_color: "#0b0f1a",
-          icons: [
-            {
-              src: "/pwa-icon.svg",
-              sizes: "any",
-              type: "image/svg+xml",
-              purpose: "any maskable",
-            },
-          ],
-        },
-      }),
   ],
   esbuild: {
     drop: !IsDev ? ["console", "debugger"] : [],
