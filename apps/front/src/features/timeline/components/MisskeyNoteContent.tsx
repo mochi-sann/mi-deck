@@ -27,8 +27,6 @@ interface MisskeyNoteContentProps {
 }
 
 const MAX_RENOTE_PREVIEW_DEPTH = 1;
-const NOTE_CONTENT_MAX_HEIGHT_PX = 320;
-
 const resolveNoteUrl = (note: Note, origin: string): string => {
   if (note.url) return note.url;
   if (note.uri) return note.uri;
@@ -64,6 +62,13 @@ function MisskeyNoteContentBase({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const contentRef = useRef<HTMLDivElement | null>(null);
+  const noteMaxHeight =
+    settings.noteContentMaxHeight === null
+      ? null
+      : typeof settings.noteContentMaxHeight === "number"
+        ? settings.noteContentMaxHeight
+        : 320;
+  const isHeightLimited = noteMaxHeight !== null;
 
   useEffect(() => {
     const updateOverflow = () => {
@@ -82,6 +87,7 @@ function MisskeyNoteContentBase({
   }, [
     isExpanded,
     isRevealed,
+    isHeightLimited,
     note.id,
     note.text,
     note.files?.length,
@@ -131,11 +137,13 @@ function MisskeyNoteContentBase({
       <div className="space-y-2">
         <div
           ref={contentRef}
-          className={`space-y-2 ${isExpanded ? "" : "overflow-hidden"}`}
+          className={`space-y-2 ${
+            isExpanded || !isHeightLimited ? "" : "overflow-hidden"
+          }`}
           style={
-            isExpanded
+            isExpanded || !isHeightLimited
               ? { maxHeight: "none" }
-              : { maxHeight: `${NOTE_CONTENT_MAX_HEIGHT_PX}px` }
+              : { maxHeight: `${noteMaxHeight}px` }
           }
         >
           {note.text && (
@@ -158,7 +166,7 @@ function MisskeyNoteContentBase({
             />
           ) : null}
         </div>
-        {isOverflowing && !isExpanded ? (
+        {isHeightLimited && isOverflowing && !isExpanded ? (
           <Button
             type="button"
             onClick={() => setIsExpanded(true)}

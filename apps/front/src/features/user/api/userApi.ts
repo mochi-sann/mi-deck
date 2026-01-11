@@ -1,15 +1,6 @@
 import { APIClient } from "misskey-js/api.js";
 import { UserDetailed } from "misskey-js/entities.js";
-import {
-  type InferOutput,
-  nullable,
-  number,
-  object,
-  optional,
-  parse,
-  record,
-  string,
-} from "valibot";
+import { nullable, number, object, optional, parse, record, string } from "valibot";
 
 const UserDetailedSchema = object({
   id: string(),
@@ -24,7 +15,6 @@ const UserDetailedSchema = object({
   followersCount: number(),
   notesCount: number(),
 });
-type UserDetailedSchemaOutput = InferOutput<typeof UserDetailedSchema>;
 
 export class UserApi {
   private client: APIClient;

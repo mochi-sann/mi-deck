@@ -23,6 +23,12 @@ export function TimelineSettings() {
   const handleNsfwChange = (value: string) => {
     setSettings((prev) => ({ ...prev, nsfwBehavior: value as NsfwBehavior }));
   };
+  const handleNoteMaxHeightChange = (value: string) => {
+    setSettings((prev) => ({
+      ...prev,
+      noteContentMaxHeight: value === "none" ? null : Number(value),
+    }));
+  };
 
   return (
     <Card>
@@ -70,6 +76,38 @@ export function TimelineSettings() {
               <SelectItem value="show">{t("timeline.nsfw.show")}</SelectItem>
               <SelectItem value="blur">{t("timeline.nsfw.blur")}</SelectItem>
               <SelectItem value="hide">{t("timeline.nsfw.hide")}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Separator />
+
+        <div className="space-y-2">
+          <Label>{t("timeline.noteMaxHeight.title")}</Label>
+          <p className="text-muted-foreground text-sm">
+            {t("timeline.noteMaxHeight.description")}
+          </p>
+          <Select
+            value={
+              settings.noteContentMaxHeight === null
+                ? "none"
+                : typeof settings.noteContentMaxHeight === "number"
+                  ? String(settings.noteContentMaxHeight)
+                  : "320"
+            }
+            onValueChange={handleNoteMaxHeightChange}
+          >
+            <SelectTrigger className="w-48">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">
+                {t("timeline.noteMaxHeight.unlimited")}
+              </SelectItem>
+              <SelectItem value="240">240px</SelectItem>
+              <SelectItem value="320">320px</SelectItem>
+              <SelectItem value="480">480px</SelectItem>
+              <SelectItem value="640">640px</SelectItem>
             </SelectContent>
           </Select>
         </div>
