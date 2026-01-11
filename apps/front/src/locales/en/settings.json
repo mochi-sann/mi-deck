@@ -51,6 +51,11 @@
       "blur": "Blur images",
       "hide": "Hide post"
     },
+    "noteMaxHeight": {
+      "title": "Post max height",
+      "description": "Set the height for collapsing long posts",
+      "unlimited": "No limit"
+    },
     "updateInterval": {
       "title": "Update Interval",
       "seconds10": "10 seconds",

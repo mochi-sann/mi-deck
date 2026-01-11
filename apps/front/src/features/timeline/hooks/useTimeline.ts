@@ -2,6 +2,7 @@ import { Stream } from "misskey-js";
 import { APIClient } from "misskey-js/api.js";
 import { Note } from "misskey-js/entities.js";
 import { useCallback, useEffect, useState } from "react";
+import { parseNotesResponse } from "../lib/noteResponseSchema";
 
 type TimelineType = "home" | "local" | "global" | "social";
 // Custom hook for timeline functionality
@@ -62,14 +63,21 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
 
         const res = await (client as any).request(endpoint, params);
 
-        if (Array.isArray(res)) {
-          if (res.length === 0) {
-            setHasMore(false);
-          } else {
-            setNotes((prev) => (untilId ? [...prev, ...res] : res));
-          }
-        } else {
+        const validation = parseNotesResponse(res);
+        if (!validation.success) {
+          console.error("Timeline response validation error:", {
+            issues: validation.issues,
+            endpoint,
+          });
           setError(new Error("Invalid response format"));
+          return;
+        }
+
+        const nextNotes = validation.output as Note[];
+        if (nextNotes.length === 0) {
+          setHasMore(false);
+        } else {
+          setNotes((prev) => (untilId ? [...prev, ...nextNotes] : nextNotes));
         }
       } catch (err) {
         console.error("Timeline fetch error:", {

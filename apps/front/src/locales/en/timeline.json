@@ -109,5 +109,8 @@
       "actionUndo": "Undo"
     }
   },
+  "note": {
+    "showMore": "Show more"
+  },
   "sensitive": "Sensitive"
 }

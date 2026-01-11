@@ -1,6 +1,7 @@
 import { APIClient } from "misskey-js/api.js";
 import { Note } from "misskey-js/entities.js";
 import { useCallback, useEffect, useState } from "react";
+import { parseNotesResponse } from "../lib/noteResponseSchema";
 
 export function useUserTimeline(origin: string, token: string, userId: string) {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -35,14 +36,20 @@ export function useUserTimeline(origin: string, token: string, userId: string) {
 
         const res = await client.request("users/notes", params);
 
-        if (Array.isArray(res)) {
-          if (res.length === 0) {
-            setHasMore(false);
-          } else {
-            setNotes((prev) => (untilId ? [...prev, ...res] : res));
-          }
-        } else {
+        const validation = parseNotesResponse(res);
+        if (!validation.success) {
+          console.error("User timeline response validation error:", {
+            issues: validation.issues,
+          });
           setError(new Error("Invalid response format"));
+          return;
+        }
+
+        const nextNotes = validation.output as Note[];
+        if (nextNotes.length === 0) {
+          setHasMore(false);
+        } else {
+          setNotes((prev) => (untilId ? [...prev, ...nextNotes] : nextNotes));
         }
       } catch (err) {
         console.error("User timeline fetch error:", err);

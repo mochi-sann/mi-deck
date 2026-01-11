@@ -109,5 +109,8 @@
       "actionUndo": "取り消す"
     }
   },
+  "note": {
+    "showMore": "もっと見る"
+  },
   "sensitive": "センシティブ"
 }
