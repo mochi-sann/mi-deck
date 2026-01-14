@@ -19,6 +19,14 @@ describe("useListTimeline", () => {
   const mockOrigin = "https://example.com";
   const mockToken = "test-token";
   const mockListId = "test-list-id";
+  const createMockNote = (id: string, text: string) => ({
+    id,
+    text,
+    user: {
+      id: `user-${id}`,
+      username: `user${id}`,
+    },
+  });
 
   // Mock APIClient
   const mockRequest = vi.fn();
@@ -46,7 +54,7 @@ describe("useListTimeline", () => {
   });
 
   it("should fetch initial notes and setup WebSocket connection", async () => {
-    const mockNotes = [{ id: "1", text: "Test note" }];
+    const mockNotes = [createMockNote("1", "Test note")];
     mockRequest.mockResolvedValueOnce(mockNotes);
 
     const { result } = renderHook(() =>
@@ -174,8 +182,8 @@ describe("useListTimeline", () => {
   });
 
   it("should handle new notes from WebSocket", async () => {
-    const mockNotes = [{ id: "1", text: "Initial note" }];
-    const mockNewNote = { id: "2", text: "New note" };
+    const mockNotes = [createMockNote("1", "Initial note")];
+    const mockNewNote = createMockNote("2", "New note");
     mockRequest.mockResolvedValueOnce(mockNotes);
 
     const { result } = renderHook(() =>
@@ -200,8 +208,8 @@ describe("useListTimeline", () => {
   });
 
   it("should handle pagination correctly", async () => {
-    const initialNotes = [{ id: "1", text: "Note 1" }];
-    const moreNotes = [{ id: "2", text: "Note 2" }];
+    const initialNotes = [createMockNote("1", "Note 1")];
+    const moreNotes = [createMockNote("2", "Note 2")];
     mockRequest
       .mockResolvedValueOnce(initialNotes)
       .mockResolvedValueOnce(moreNotes);
@@ -228,7 +236,7 @@ describe("useListTimeline", () => {
   });
 
   it("should handle empty response for pagination", async () => {
-    const initialNotes = [{ id: "1", text: "Note 1" }];
+    const initialNotes = [createMockNote("1", "Note 1")];
     mockRequest.mockResolvedValueOnce(initialNotes).mockResolvedValueOnce([]);
 
     const { result } = renderHook(() =>
@@ -250,7 +258,7 @@ describe("useListTimeline", () => {
   });
 
   it("should handle retryFetch", async () => {
-    const mockNotes = [{ id: "1", text: "Test note" }];
+    const mockNotes = [createMockNote("1", "Test note")];
 
     // First call succeeds, then we retry
     mockRequest.mockResolvedValueOnce(mockNotes);

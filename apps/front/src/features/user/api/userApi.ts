@@ -1,5 +1,20 @@
 import { APIClient } from "misskey-js/api.js";
 import { UserDetailed } from "misskey-js/entities.js";
+import { nullable, number, object, optional, parse, record, string } from "valibot";
+
+const UserDetailedSchema = object({
+  id: string(),
+  username: string(),
+  name: optional(nullable(string())),
+  host: optional(nullable(string())),
+  bannerUrl: optional(nullable(string())),
+  avatarUrl: optional(nullable(string())),
+  description: optional(nullable(string())),
+  emojis: optional(record(string(), string())),
+  followingCount: number(),
+  followersCount: number(),
+  notesCount: number(),
+});
 
 export class UserApi {
   private client: APIClient;
@@ -15,6 +30,6 @@ export class UserApi {
     const response = await this.client.request("users/show", {
       userId,
     });
-    return response as UserDetailed;
+    return parse(UserDetailedSchema, response) as UserDetailed;
   }
 }

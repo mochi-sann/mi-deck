@@ -51,6 +51,11 @@
       "blur": "画像をぼかす",
       "hide": "投稿を隠す"
     },
+    "noteMaxHeight": {
+      "title": "投稿の最大高さ",
+      "description": "長い投稿を折りたたむ高さを指定します",
+      "unlimited": "制限しない"
+    },
     "updateInterval": {
       "title": "更新間隔",
       "seconds10": "10秒",

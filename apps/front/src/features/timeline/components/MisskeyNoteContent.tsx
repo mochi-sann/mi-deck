@@ -1,7 +1,8 @@
 import { useAtomValue } from "jotai";
 import type { Note } from "misskey-js/entities.js";
 import { isPureRenote } from "misskey-js/note.js";
-import { memo, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { CustomEmojiCtx } from "@/features/emoji";
 import { MfmText } from "@/features/mfm";
 import { NoteReplySection } from "@/features/notes/components/NoteReplySection";
@@ -16,6 +17,7 @@ import { MisskeyNoteHeader } from "./MisskeyNoteHeader";
 import { NoteFile } from "./NoteAttachmentTypes";
 import { NsfwBarrier } from "./NsfwBarrier";
 import { RenoteMenu } from "./RenoteMenu";
+import { Button } from "@/components/ui/button";
 
 interface MisskeyNoteContentProps {
   note: Note;
@@ -25,7 +27,6 @@ interface MisskeyNoteContentProps {
 }
 
 const MAX_RENOTE_PREVIEW_DEPTH = 1;
-
 const resolveNoteUrl = (note: Note, origin: string): string => {
   if (note.url) return note.url;
   if (note.uri) return note.uri;
@@ -52,11 +53,46 @@ function MisskeyNoteContentBase({
   const isRenote = isPureRenote(note);
   const settings = useAtomValue(timelineSettingsAtom);
   const handleUserClick = useUserTimelineClick(origin, user);
+  const { t } = useTranslation("timeline");
 
   const isNsfw =
     Boolean(note.cw) || Boolean(note.files?.some((f) => f.isSensitive));
   const [isRevealed, setIsRevealed] = useState(false);
   const [previewFile, setPreviewFile] = useState<NoteFile | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const noteMaxHeight =
+    settings.noteContentMaxHeight === null
+      ? null
+      : typeof settings.noteContentMaxHeight === "number"
+        ? settings.noteContentMaxHeight
+        : 320;
+  const isHeightLimited = noteMaxHeight !== null;
+
+  useEffect(() => {
+    const updateOverflow = () => {
+      const element = contentRef.current;
+      if (!element) return;
+      setIsOverflowing(element.scrollHeight > element.clientHeight + 1);
+    };
+
+    updateOverflow();
+
+    const element = contentRef.current;
+    if (!element || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => updateOverflow());
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [
+    isExpanded,
+    isRevealed,
+    isHeightLimited,
+    note.id,
+    note.text,
+    note.files?.length,
+    note.renote?.id,
+  ]);
 
   const handleAttachmentAction = (file: NoteFile) => {
     const shouldRevealOnBlur =
@@ -99,24 +135,47 @@ function MisskeyNoteContentBase({
         </div>
       </div>
       <div className="space-y-2">
-        {note.text && (
-          <MfmText text={note.text} host={origin} emojis={emojis} />
-        )}
-        {note.files && note.files.length > 0 && (
-          <AttachmentGallery
-            files={note.files}
-            settings={settings}
-            isNsfw={isNsfw}
-            isRevealed={isRevealed}
-            onAttachmentClick={handleAttachmentAction}
-          />
-        )}
-        {note.renote ? (
-          <RenotePreview
-            renote={note.renote}
-            origin={origin}
-            depth={depth + 1}
-          />
+        <div
+          ref={contentRef}
+          className={`space-y-2 ${
+            isExpanded || !isHeightLimited ? "" : "overflow-hidden"
+          }`}
+          style={
+            isExpanded || !isHeightLimited
+              ? { maxHeight: "none" }
+              : { maxHeight: `${noteMaxHeight}px` }
+          }
+        >
+          {note.text && (
+            <MfmText text={note.text} host={origin} emojis={emojis} />
+          )}
+          {note.files && note.files.length > 0 && (
+            <AttachmentGallery
+              files={note.files}
+              settings={settings}
+              isNsfw={isNsfw}
+              isRevealed={isRevealed}
+              onAttachmentClick={handleAttachmentAction}
+            />
+          )}
+          {note.renote ? (
+            <RenotePreview
+              renote={note.renote}
+              origin={origin}
+              depth={depth + 1}
+            />
+          ) : null}
+        </div>
+        {isHeightLimited && isOverflowing && !isExpanded ? (
+          <Button
+            type="button"
+            onClick={() => setIsExpanded(true)}
+            variant={"secondary"}
+            size={"sm"}
+            aria-expanded={isExpanded}
+          >
+            {t("note.showMore")}
+          </Button>
         ) : null}
         <NoteReactions
           note={note}

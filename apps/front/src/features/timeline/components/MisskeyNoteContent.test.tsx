@@ -80,7 +80,10 @@ describe("MisskeyNoteContent NSFW Behavior", () => {
   const emojis = {};
 
   it("should hide content when behavior is 'hide' and note is NSFW", () => {
-    vi.mocked(useAtomValue).mockReturnValue({ nsfwBehavior: "hide" });
+    vi.mocked(useAtomValue).mockReturnValue({
+      nsfwBehavior: "hide",
+      noteContentMaxHeight: 320,
+    });
     const note = createMockNote({
       cw: "NSFW Content",
       text: "Hidden content",
@@ -101,7 +104,10 @@ describe("MisskeyNoteContent NSFW Behavior", () => {
   });
 
   it("should blur images when behavior is 'blur' and image is sensitive", () => {
-    vi.mocked(useAtomValue).mockReturnValue({ nsfwBehavior: "blur" });
+    vi.mocked(useAtomValue).mockReturnValue({
+      nsfwBehavior: "blur",
+      noteContentMaxHeight: 320,
+    });
     const note = createMockNote({
       files: [
         {
@@ -147,7 +153,10 @@ describe("MisskeyNoteContent NSFW Behavior", () => {
   });
 
   it("should show content normally when behavior is 'show'", () => {
-    vi.mocked(useAtomValue).mockReturnValue({ nsfwBehavior: "show" });
+    vi.mocked(useAtomValue).mockReturnValue({
+      nsfwBehavior: "show",
+      noteContentMaxHeight: 320,
+    });
     const note = createMockNote({
       cw: "NSFW Content",
       text: "Visible content",
@@ -181,5 +190,64 @@ describe("MisskeyNoteContent NSFW Behavior", () => {
     const image = screen.getByAltText("Note Attachment");
     expect(image).not.toHaveClass("blur-xl");
     expect(screen.queryByText("sensitive")).not.toBeInTheDocument();
+  });
+});
+
+describe("MisskeyNoteContent max height", () => {
+  const origin = "misskey.example.com";
+  const emojis = {};
+
+  const defineElementHeights = (
+    scrollHeight: number,
+    clientHeight: number,
+  ) => {
+    Object.defineProperty(HTMLElement.prototype, "scrollHeight", {
+      configurable: true,
+      get() {
+        return scrollHeight;
+      },
+    });
+    Object.defineProperty(HTMLElement.prototype, "clientHeight", {
+      configurable: true,
+      get() {
+        return clientHeight;
+      },
+    });
+  };
+
+  it("shows a show-more button when height is limited and content overflows", () => {
+    vi.mocked(useAtomValue).mockReturnValue({
+      nsfwBehavior: "show",
+      noteContentMaxHeight: 240,
+    });
+    defineElementHeights(600, 200);
+
+    const note = createMockNote({
+      text: "Very long content that should overflow.",
+    });
+
+    render(<MisskeyNoteContent note={note} origin={origin} emojis={emojis} />);
+
+    const showMoreButton = screen.getByText("note.showMore");
+    expect(showMoreButton).toBeInTheDocument();
+
+    fireEvent.click(showMoreButton);
+    expect(screen.queryByText("note.showMore")).not.toBeInTheDocument();
+  });
+
+  it("does not show a show-more button when height is unlimited", () => {
+    vi.mocked(useAtomValue).mockReturnValue({
+      nsfwBehavior: "show",
+      noteContentMaxHeight: null,
+    });
+    defineElementHeights(600, 200);
+
+    const note = createMockNote({
+      text: "Very long content but unlimited height.",
+    });
+
+    render(<MisskeyNoteContent note={note} origin={origin} emojis={emojis} />);
+
+    expect(screen.queryByText("note.showMore")).not.toBeInTheDocument();
   });
 });
