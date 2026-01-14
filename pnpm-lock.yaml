@@ -175,8 +175,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/react-mfm
       misskey-js:
-        specifier: 2025.12.0
-        version: 2025.12.0
+        specifier: 2025.12.2
+        version: 2025.12.2
       react:
         specifier: ^19.2.0
         version: 19.2.0
@@ -378,8 +378,8 @@ importers:
         specifier: ^25.0.1
         version: 25.0.1
       misskey-js:
-        specifier: 2025.12.0
-        version: 2025.12.0
+        specifier: 2025.12.2
+        version: 2025.12.2
       tsdown:
         specifier: ^0.16.8
         version: 0.16.8(synckit@0.11.11)(typescript@5.9.3)
@@ -4802,8 +4802,8 @@ packages:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
 
-  misskey-js@2025.12.0:
-    resolution: {integrity: sha512-5TQss4cn/T02Oz8RvqbCrOtzLJAfnzSv1mAAhis3fP2W8HuVC0ArvfAgJdjdxZcQAKXYp00ixUHAm/hC+b1NkA==}
+  misskey-js@2025.12.2:
+    resolution: {integrity: sha512-s/GRbrPMJzA0Rijqno971uNXUyRYbDfsZudigAm/rYwSspUZl8kUI/p37YTrL5zQif6EF3gwGwTntfmK+c5aYg==}
 
   mkdirp@1.0.4:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
@@ -11136,7 +11136,7 @@ snapshots:
 
   minipass@7.1.2: {}
 
-  misskey-js@2025.12.0:
+  misskey-js@2025.12.2:
     dependencies:
       '@simplewebauthn/types': 12.0.0
       eventemitter3: 5.0.1
