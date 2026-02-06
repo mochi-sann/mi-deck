@@ -8,13 +8,10 @@ export type LayoutProps = {
 };
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const { state, isMobile } = useSidebar();
+  const { state } = useSidebar();
 
-  const sidebarValue = isMobile
-    ? 0
-    : state === "collapsed"
-      ? SIDEBAR_WIDTH_ICON
-      : SIDEBAR_WIDTH;
+  const sidebarValue =
+    state === "collapsed" ? SIDEBAR_WIDTH_ICON : SIDEBAR_WIDTH;
 
   const rootStyle = {
     "--sidebar-w": sidebarValue,
