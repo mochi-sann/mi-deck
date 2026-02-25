@@ -23,7 +23,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Text from "@/components/ui/text";
 import { useStorage } from "@/lib/storage/context";
-import { SortableTimeline } from "./SortbleTimeline";
+import { SortableTimeline } from "./SortableTimeline";
 import { TimelineEmptyState } from "./TimelineEmptyState";
 
 export function ClientTimelineList() {

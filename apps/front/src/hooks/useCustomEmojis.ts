@@ -24,14 +24,9 @@ export function useCustomEmojis(host: string) {
   const updateCacheRef = useRef(updateCache);
   const setFetchesRef = useRef(setFetches);
 
-  // Update refs when values change using useEffect to avoid direct mutation
-  // Only update cache ref when cache actually changes (deep comparison for efficiency)
+  // Update refs when values change.
   useEffect(() => {
-    const hasChanged =
-      JSON.stringify(cacheRef.current) !== JSON.stringify(cache);
-    if (hasChanged) {
-      cacheRef.current = cache;
-    }
+    cacheRef.current = cache;
   }, [cache]);
 
   useEffect(() => {
@@ -122,12 +117,13 @@ export function useCustomEmojis(host: string) {
   /**
    * 単一の絵文字を取得する
    */
-  const fetchEmoji = useMemo(() => {
-    return async (emojiName: string): Promise<string | null> => {
+  const fetchEmoji = useCallback(
+    async (emojiName: string): Promise<string | null> => {
       const result = await fetchEmojis([emojiName]);
       return result[emojiName] || null;
-    };
-  }, [fetchEmojis]);
+    },
+    [fetchEmojis],
+  );
 
   /**
    * キャッシュから絵文字URLを取得する（同期）

@@ -1,11 +1,11 @@
+import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import type { EmojiSimple } from "misskey-js/entities.js";
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCustomEmojis } from "@/hooks/useCustomEmojis";
-import { useForeignApi } from "@/hooks/useForeignApi";
 import { cn } from "@/lib/utils";
 
 interface CustomEmojiPickerProps {
@@ -27,39 +27,32 @@ function CustomEmojiPickerBase({
 }: CustomEmojiPickerProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("recent");
-  const [serverEmojis, setServerEmojis] = useState<EmojiSimple[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const api = useForeignApi(origin);
   const { cache } = useCustomEmojis(origin);
-
-  // サーバーの絵文字一覧を取得
-  useEffect(() => {
-    if (!api) return;
-
-    setIsLoading(true);
-    fetch(`${origin.replace(/\/$/, "")}/api/emojis`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: "{}",
-    })
-      .then((res) => res.json())
-      .then((response: { emojis?: EmojiSimple[] } | EmojiSimple[]) => {
-        const list = Array.isArray(response)
-          ? response
-          : (response?.emojis ?? []);
-        setServerEmojis(list);
-        setError(null);
-      })
-      .catch((err: unknown) => {
-        console.error("Failed to fetch server emojis:", err);
-        setError("絵文字の取得に失敗しました");
-      })
-      .finally(() => {
-        setIsLoading(false);
+  const {
+    data: serverEmojis = [],
+    isLoading,
+    isError,
+  } = useQuery<EmojiSimple[]>({
+    queryKey: ["emoji-picker", origin],
+    enabled: Boolean(origin),
+    staleTime: 1000 * 60 * 5,
+    queryFn: async () => {
+      const response = await fetch(`${origin.replace(/\/$/, "")}/api/emojis`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
       });
-  }, [api, origin]);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch server emojis");
+      }
+
+      const json = (await response.json()) as
+        | { emojis?: EmojiSimple[] }
+        | EmojiSimple[];
+      return Array.isArray(json) ? json : (json.emojis ?? []);
+    },
+  });
 
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return [];
@@ -118,7 +111,7 @@ function CustomEmojiPickerBase({
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <div
         className={cn(
