@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { UserProfile } from "@/features/user";
+import { UserProfile } from "@/features/user/components/UserProfile";
 
 export const Route = createFileRoute("/_authed/user/$userId")({
   component: UserProfilePage,
