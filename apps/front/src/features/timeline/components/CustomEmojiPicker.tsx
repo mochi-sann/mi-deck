@@ -27,17 +27,22 @@ function CustomEmojiPickerBase({
 }: CustomEmojiPickerProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("recent");
+  const normalizedOrigin = useMemo(() => origin.replace(/\/$/, ""), [origin]);
+  const normalizedHost = useMemo(
+    () => normalizedOrigin.replace(/^https?:\/\//, ""),
+    [normalizedOrigin],
+  );
   const { cache } = useCustomEmojis(origin);
   const {
     data: serverEmojis = [],
     isLoading,
     isError,
   } = useQuery<EmojiSimple[]>({
-    queryKey: ["emoji-picker", origin],
-    enabled: Boolean(origin),
+    queryKey: ["emoji-picker", normalizedOrigin],
+    enabled: Boolean(normalizedOrigin),
     staleTime: 1000 * 60 * 5,
     queryFn: async () => {
-      const response = await fetch(`${origin.replace(/\/$/, "")}/api/emojis`, {
+      const response = await fetch(`${normalizedOrigin}/api/emojis`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "{}",
@@ -83,7 +88,7 @@ function CustomEmojiPickerBase({
   };
 
   const getEmojiUrl = (emoji: EmojiSimple): string => {
-    const fullName = `${emoji.name}@${origin.replace(/^https?:\/\//, "")}`;
+    const fullName = `${emoji.name}@${normalizedHost}`;
 
     if (reactionEmojis[fullName]) return reactionEmojis[fullName];
     if (reactionEmojis[`:${emoji.name}:`])
