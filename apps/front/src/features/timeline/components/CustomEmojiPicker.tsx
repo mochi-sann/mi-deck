@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import type { EmojiSimple } from "misskey-js/entities.js";
-import { memo, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -83,23 +83,29 @@ function CustomEmojiPickerBase({
     return Object.keys(groupedEmojis).sort();
   }, [groupedEmojis]);
 
-  const handleEmojiClick = (emoji: EmojiSimple) => {
-    onEmojiSelect(emoji.name);
-  };
+  const handleEmojiClick = useCallback(
+    (emoji: EmojiSimple) => {
+      onEmojiSelect(emoji.name);
+    },
+    [onEmojiSelect],
+  );
 
-  const getEmojiUrl = (emoji: EmojiSimple): string => {
-    const fullName = `${emoji.name}@${normalizedHost}`;
+  const getEmojiUrl = useCallback(
+    (emoji: EmojiSimple): string => {
+      const fullName = `${emoji.name}@${normalizedHost}`;
 
-    if (reactionEmojis[fullName]) return reactionEmojis[fullName];
-    if (reactionEmojis[`:${emoji.name}:`])
-      return reactionEmojis[`:${emoji.name}:`];
+      if (reactionEmojis[fullName]) return reactionEmojis[fullName];
+      if (reactionEmojis[`:${emoji.name}:`])
+        return reactionEmojis[`:${emoji.name}:`];
 
-    if (cache[emoji.name]) return cache[emoji.name] ?? "";
+      if (cache[emoji.name]) return cache[emoji.name] ?? "";
 
-    if (fallbackEmojis[emoji.name]) return fallbackEmojis[emoji.name];
+      if (fallbackEmojis[emoji.name]) return fallbackEmojis[emoji.name];
 
-    return emoji.url ?? "";
-  };
+      return emoji.url ?? "";
+    },
+    [cache, fallbackEmojis, normalizedHost, reactionEmojis],
+  );
 
   if (isLoading) {
     return (
