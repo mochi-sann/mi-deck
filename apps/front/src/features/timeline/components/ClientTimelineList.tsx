@@ -14,7 +14,7 @@ import {
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ClientCreateTimelineDialog } from "@/components/parts/ClientCreateTimelineDialog";
 import { Button } from "@/components/ui/button";
@@ -32,9 +32,13 @@ export function ClientTimelineList() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const visibleTimelines = storage.timelines
-    .filter((t) => t.isVisible)
-    .toSorted((a, b) => a.order - b.order);
+  const visibleTimelines = useMemo(
+    () =>
+      storage.timelines
+        .filter((t) => t.isVisible)
+        .toSorted((a, b) => a.order - b.order),
+    [storage.timelines],
+  );
 
   const sensors = useSensors(
     useSensor(PointerSensor),
