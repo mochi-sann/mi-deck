@@ -7,10 +7,11 @@ const emojiUrlInFlightCache = new Map<string, Promise<string | null>>();
 export function useForeignApi(host: string) {
   const apiInstance = useMemo(() => {
     if (!host) return null;
+    const baseUrl = toUrl(host);
 
     return {
       emojiUrl: async (name: string): Promise<string | null> => {
-        const cacheKey = `${host}::${name}`;
+        const cacheKey = `${baseUrl}::${name}`;
         if (emojiUrlResultCache.has(cacheKey)) {
           return emojiUrlResultCache.get(cacheKey) ?? null;
         }
@@ -22,7 +23,7 @@ export function useForeignApi(host: string) {
 
         const request = (async (): Promise<string | null> => {
           const encodedName = encodeURIComponent(name);
-          const endpoint = `${toUrl(host)}/api/emoji?name=${encodedName}`;
+          const endpoint = `${baseUrl}/api/emoji?name=${encodedName}`;
 
           try {
             const response = await fetch(endpoint);

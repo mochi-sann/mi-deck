@@ -1,7 +1,7 @@
 import { Stream } from "misskey-js";
 import { APIClient } from "misskey-js/api.js";
 import { Note } from "misskey-js/entities.js";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { parseNotesResponse } from "../lib/noteResponseSchema";
 
 export function useListTimeline(origin: string, token: string, listId: string) {
@@ -9,6 +9,8 @@ export function useListTimeline(origin: string, token: string, listId: string) {
   const [error, setError] = useState<Error | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const isLoadingRef = useRef(false);
+  const hasMoreRef = useRef(true);
 
   const isValidConfig =
     origin &&
@@ -41,8 +43,11 @@ export function useListTimeline(origin: string, token: string, listId: string) {
 
   const fetchNotes = useCallback(
     async (untilId?: string) => {
-      if (isLoading || !hasMore || !isValidConfig) return;
+      if (isLoadingRef.current || !hasMoreRef.current || !isValidConfig) {
+        return;
+      }
 
+      isLoadingRef.current = true;
       setIsLoading(true);
       try {
         const client = new APIClient({
@@ -71,6 +76,7 @@ export function useListTimeline(origin: string, token: string, listId: string) {
 
         const nextNotes = validation.output as Note[];
         if (nextNotes.length === 0) {
+          hasMoreRef.current = false;
           setHasMore(false);
         } else {
           setNotes((prev) => (untilId ? [...prev, ...nextNotes] : nextNotes));
@@ -140,13 +146,20 @@ export function useListTimeline(origin: string, token: string, listId: string) {
         setError(new Error(errorMessage));
       } finally {
         setIsLoading(false);
+        isLoadingRef.current = false;
       }
     },
-    [isLoading, hasMore, isValidConfig, origin, token, listId],
+    [isValidConfig, origin, token, listId],
   );
 
   useEffect(() => {
-    fetchNotes(); // oxlint-disable-line
+    if (!isValidConfig) {
+      return;
+    }
+
+    setHasMore(true);
+    hasMoreRef.current = true;
+    void fetchNotes();
 
     const stream = new Stream(origin, { token });
 
@@ -174,13 +187,14 @@ export function useListTimeline(origin: string, token: string, listId: string) {
       channel.dispose();
       stream.close();
     };
-  }, [origin, token, listId]);
+  }, [fetchNotes, isValidConfig, listId, origin, token]);
 
   const retryFetch = () => {
     setError(null);
     setNotes([]);
     setHasMore(true);
-    fetchNotes();
+    hasMoreRef.current = true;
+    void fetchNotes();
   };
 
   return { notes, error, hasMore, isLoading, fetchNotes, retryFetch };

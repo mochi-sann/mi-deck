@@ -296,9 +296,6 @@ export function useNoteReactions({
 
   const toggleReaction = useCallback(
     async (reaction: string) => {
-      console.log(
-        ...[reaction, "👀 [useNoteReactions.ts:124]: reaction"].reverse(),
-      );
       if (myReaction === reaction) {
         await removeReaction();
       } else {

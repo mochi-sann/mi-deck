@@ -18,6 +18,30 @@ interface RecentEmojiData {
   lastUsed: number;
 }
 
+const recentEmojiCache = new Map<string, RecentEmojiData[]>();
+
+const readRecentEmojiData = (key: string): RecentEmojiData[] => {
+  const cached = recentEmojiCache.get(key);
+  if (cached) {
+    return cached;
+  }
+
+  try {
+    const recentData = localStorage.getItem(key);
+    const parsed: RecentEmojiData[] = recentData ? JSON.parse(recentData) : [];
+    recentEmojiCache.set(key, parsed);
+    return parsed;
+  } catch (error) {
+    console.warn("Failed to load recent emojis:", error);
+    return [];
+  }
+};
+
+const writeRecentEmojiData = (key: string, value: RecentEmojiData[]) => {
+  recentEmojiCache.set(key, value);
+  localStorage.setItem(key, JSON.stringify(value));
+};
+
 export function useServerEmojis({
   origin,
   userRoleIds = [],
@@ -105,12 +129,9 @@ export function useServerEmojis({
   );
 
   const getRecentEmojis = useCallback((): EmojiSimple[] => {
+    const key = `recent-emojis-${origin}`;
     try {
-      const recentData = localStorage.getItem(`recent-emojis-${origin}`);
-      if (!recentData) return [];
-
-      const recent: RecentEmojiData[] = JSON.parse(recentData);
-      const recentNames = recent
+      const recentNames = [...readRecentEmojiData(key)]
         .sort((a, b) => b.lastUsed - a.lastUsed)
         .slice(0, 20)
         .map((item) => item.name);
@@ -130,8 +151,7 @@ export function useServerEmojis({
     (emojiName: string) => {
       try {
         const key = `recent-emojis-${origin}`;
-        const existing = localStorage.getItem(key);
-        let recent: RecentEmojiData[] = existing ? JSON.parse(existing) : [];
+        let recent = readRecentEmojiData(key);
 
         recent = recent.filter((item) => item.name !== emojiName);
         recent.unshift({
@@ -141,7 +161,7 @@ export function useServerEmojis({
 
         recent = recent.slice(0, 50);
 
-        localStorage.setItem(key, JSON.stringify(recent));
+        writeRecentEmojiData(key, recent);
       } catch (error) {
         console.warn("Failed to save recent emoji:", error);
       }
