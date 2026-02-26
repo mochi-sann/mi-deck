@@ -23,6 +23,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Text from "@/components/ui/text";
 import { useStorage } from "@/lib/storage/context";
+import type { TimelineConfig } from "@/lib/storage/types";
 import { SortableTimeline } from "./SortableTimeline";
 import { TimelineEmptyState } from "./TimelineEmptyState";
 
@@ -35,8 +36,9 @@ export function ClientTimelineList() {
   const visibleTimelines = useMemo(
     () =>
       storage.timelines
-        .filter((t) => t.isVisible)
-        .toSorted((a, b) => a.order - b.order),
+        .filter((timeline: TimelineConfig) => timeline.isVisible)
+        .slice()
+        .sort((a: TimelineConfig, b: TimelineConfig) => a.order - b.order),
     [storage.timelines],
   );
 
@@ -51,15 +53,17 @@ export function ClientTimelineList() {
     const { active, over } = event;
     if (over && active.id !== over.id) {
       const oldIndex = visibleTimelines.findIndex(
-        (item) => item.id === active.id,
+        (item: TimelineConfig) => item.id === active.id,
       );
       const newIndex = visibleTimelines.findIndex(
-        (item) => item.id === over.id,
+        (item: TimelineConfig) => item.id === over.id,
       );
       const newTimelines = arrayMove(visibleTimelines, oldIndex, newIndex);
 
       // Update order locally and persist
-      const timelineIds = newTimelines.map((t) => t.id);
+      const timelineIds = newTimelines.map(
+        (timeline: TimelineConfig) => timeline.id,
+      );
       try {
         await storage.reorderTimelines(timelineIds);
       } catch (error) {
@@ -114,7 +118,7 @@ export function ClientTimelineList() {
               items={visibleTimelines.map((t) => t.id)}
               strategy={horizontalListSortingStrategy}
             >
-              {visibleTimelines.map((timeline) => (
+              {visibleTimelines.map((timeline: TimelineConfig) => (
                 <SortableTimeline
                   key={timeline.id}
                   timeline={timeline}

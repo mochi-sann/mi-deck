@@ -246,17 +246,17 @@ describe("useServerEmojis", () => {
     });
 
     it("should only return recent emojis that still exist in the filtered list", () => {
-      // Add "deleted_emoji" to local storage
+      const isolatedOrigin = "misskey.test.isolated";
+
       localStorage.setItem(
-        `recent-emojis-${origin}`,
+        `recent-emojis-${isolatedOrigin}`,
         JSON.stringify([{ name: "deleted_emoji", lastUsed: Date.now() }]),
       );
 
       const { result } = renderHook(() =>
-        useServerEmojis({ origin, userRoleIds: ["role1"] }),
+        useServerEmojis({ origin: isolatedOrigin, userRoleIds: ["role1"] }),
       );
 
-      // Should return empty because "deleted_emoji" is not in mockEmojis
       expect(result.current.getRecentEmojis()).toHaveLength(0);
     });
   });

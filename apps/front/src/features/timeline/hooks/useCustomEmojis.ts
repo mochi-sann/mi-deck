@@ -70,8 +70,8 @@ export function useCustomEmojis({ origin }: UseCustomEmojisOptions) {
 
     // カテゴリありの絵文字を追加
     for (const category of sortedCategories) {
-      const categoryEmojis = [...(groups.get(category) ?? [])].toSorted((a, b) =>
-        a.name.localeCompare(b.name),
+      const categoryEmojis = [...(groups.get(category) ?? [])].sort(
+        (a: EmojiSimple, b: EmojiSimple) => a.name.localeCompare(b.name),
       );
       sortedGroups.push({
         category,
@@ -81,8 +81,8 @@ export function useCustomEmojis({ origin }: UseCustomEmojisOptions) {
 
     // カテゴリなしの絵文字を最後に追加
     if (groups.has(null)) {
-      const uncategorizedEmojis = [...(groups.get(null) ?? [])].toSorted(
-        (a, b) => a.name.localeCompare(b.name),
+      const uncategorizedEmojis = [...(groups.get(null) ?? [])].sort(
+        (a: EmojiSimple, b: EmojiSimple) => a.name.localeCompare(b.name),
       );
       sortedGroups.push({
         category: null,

@@ -106,9 +106,9 @@ export function useServerEmojis({
     }
 
     Object.keys(groups).forEach((category) => {
-      groups[category] = groups[category].toSorted((a, b) =>
-        a.name.localeCompare(b.name),
-      );
+      groups[category] = groups[category]
+        .slice()
+        .sort((a: EmojiSimple, b: EmojiSimple) => a.name.localeCompare(b.name));
     });
 
     return groups;

@@ -187,7 +187,7 @@ describe("NoteComposerDialog", () => {
     });
 
     await user.click(emojiButton);
-    await user.click(screen.getByTestId("mock-emoji-picker"));
+    await user.click(await screen.findByTestId("mock-emoji-picker"));
 
     const textarea = await screen.findByRole("textbox");
     expect(textarea).toHaveValue(":happy:");
