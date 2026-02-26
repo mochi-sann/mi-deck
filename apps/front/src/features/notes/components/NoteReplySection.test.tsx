@@ -88,9 +88,9 @@ describe("NoteReplySection", () => {
     const user = userEvent.setup();
     await user.click(screen.getByRole("button", { name: "reply.button" }));
 
-    expect(screen.getByRole("textbox")).toBeInTheDocument();
+    expect(await screen.findByRole("textbox")).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "compose.submit.reply" }),
+      await screen.findByRole("button", { name: "compose.submit.reply" }),
     ).toBeInTheDocument();
   });
 
@@ -106,9 +106,9 @@ describe("NoteReplySection", () => {
     const user = userEvent.setup();
 
     await user.click(screen.getByRole("button", { name: "reply.button" }));
-    await user.type(screen.getByRole("textbox"), "Hello");
+    await user.type(await screen.findByRole("textbox"), "Hello");
     await user.click(
-      screen.getByRole("button", { name: "compose.submit.reply" }),
+      await screen.findByRole("button", { name: "compose.submit.reply" }),
     );
 
     await waitFor(() => {
@@ -142,7 +142,7 @@ describe("NoteReplySection", () => {
 
     await user.click(screen.getByRole("button", { name: "reply.button" }));
     await user.click(
-      screen.getByRole("button", { name: "compose.submit.reply" }),
+      await screen.findByRole("button", { name: "compose.submit.reply" }),
     );
 
     expect(screen.getByText("compose.error.empty")).toBeInTheDocument();
@@ -181,6 +181,6 @@ describe("NoteReplySection", () => {
     const user = userEvent.setup();
     await user.click(screen.getByRole("button", { name: "reply.button" }));
 
-    expect(screen.getByText("Preview note content")).toBeInTheDocument();
+    expect(await screen.findByText("Preview note content")).toBeInTheDocument();
   });
 });

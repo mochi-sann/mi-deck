@@ -1,10 +1,10 @@
 import { MessageCircle } from "lucide-react";
 import type { Note } from "misskey-js/entities.js";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import Text from "@/components/ui/text";
-import { NoteComposerDialog } from "@/features/compose-dialog/components/NoteComposerDialog";
+import { LazyNoteComposerDialog } from "@/features/compose-dialog/components/LazyNoteComposerDialog";
 import { useStorage } from "@/lib/storage/context";
 import { cn } from "@/lib/utils";
 
@@ -86,21 +86,23 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        <NoteComposerDialog
-          mode="reply"
-          trigger={triggerButton}
-          disabled={isReplyDisabled}
-          replyTarget={note}
-          origin={origin}
-          initialServerId={initialServerId}
-          onSuccess={() => setSuccessMessage(t("reply.success"))}
-          onOpenChange={(open) => {
-            if (open) {
-              setSuccessMessage(null);
-            }
-          }}
-          showSuccessMessage={false}
-        />
+        <Suspense fallback={null}>
+          <LazyNoteComposerDialog
+            mode="reply"
+            trigger={triggerButton}
+            disabled={isReplyDisabled}
+            replyTarget={note}
+            origin={origin}
+            initialServerId={initialServerId}
+            onSuccess={() => setSuccessMessage(t("reply.success"))}
+            onOpenChange={(open) => {
+              if (open) {
+                setSuccessMessage(null);
+              }
+            }}
+            showSuccessMessage={false}
+          />
+        </Suspense>
       </div>
 
       {successMessage && (

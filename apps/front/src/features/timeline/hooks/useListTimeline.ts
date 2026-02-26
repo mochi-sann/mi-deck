@@ -18,7 +18,16 @@ export function useListTimeline(origin: string, token: string, listId: string) {
     token.trim() !== "" &&
     listId.trim() !== "";
 
-  if (!isValidConfig && !error) {
+  useEffect(() => {
+    if (isValidConfig) {
+      setError((prev) =>
+        prev?.message.startsWith("設定に問題があります:")
+          ? null
+          : prev,
+      );
+      return;
+    }
+
     let errorMessage = "設定に問題があります: ";
     if (!origin || origin.trim() === "") {
       errorMessage += "サーバー情報が不足しています。";
@@ -28,7 +37,7 @@ export function useListTimeline(origin: string, token: string, listId: string) {
       errorMessage += "リストIDが設定されていません。";
     }
     setError(new Error(errorMessage));
-  }
+  }, [isValidConfig, listId, origin, token]);
 
   const fetchNotes = useCallback(
     async (untilId?: string) => {

@@ -1,5 +1,5 @@
 import { APIClient } from "misskey-js/api.js";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export interface UserList {
   id: string;
@@ -14,18 +14,29 @@ export function useUserLists(origin: string, token: string) {
   const [lists, setLists] = useState<UserList[]>([]);
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const isFetchingRef = useRef(false);
 
   const isValidConfig =
     origin && token && origin.trim() !== "" && token.trim() !== "";
 
-  if (!isValidConfig && !error) {
-    setError(new Error("サーバーまたは認証情報が設定されていません。"));
-  }
+  useEffect(() => {
+    if (!isValidConfig) {
+      setError(new Error("サーバーまたは認証情報が設定されていません。"));
+      return;
+    }
+    setError((prev) =>
+      prev?.message === "サーバーまたは認証情報が設定されていません。"
+        ? null
+        : prev,
+    );
+  }, [isValidConfig]);
 
   const fetchLists = useCallback(async () => {
-    if (isLoading || !isValidConfig) return;
+    if (isFetchingRef.current || !isValidConfig) return;
 
+    isFetchingRef.current = true;
     setIsLoading(true);
+    setError(null);
     try {
       const client = new APIClient({
         origin,
@@ -98,12 +109,13 @@ export function useUserLists(origin: string, token: string) {
       setError(new Error(errorMessage));
     } finally {
       setIsLoading(false);
+      isFetchingRef.current = false;
     }
-  }, [isLoading, isValidConfig, origin, token]);
+  }, [isValidConfig, origin, token]);
 
   useEffect(() => {
-    fetchLists();
-  }, [origin, token]);
+    void fetchLists();
+  }, [fetchLists]);
 
   const retryFetch = () => {
     setError(null);

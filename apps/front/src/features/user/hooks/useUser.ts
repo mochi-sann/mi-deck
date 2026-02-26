@@ -1,33 +1,38 @@
-import { UserDetailed } from "misskey-js/entities.js";
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import type { UserDetailed } from "misskey-js/entities.js";
 import { UserApi } from "../api/userApi";
 
 export function useUser(origin: string, token: string, userId: string) {
-  const [user, setUser] = useState<UserDetailed | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const isValidConfig =
+    origin &&
+    token &&
+    userId &&
+    origin.trim() !== "" &&
+    token.trim() !== "" &&
+    userId.trim() !== "";
 
-  const fetchUser = useCallback(async () => {
-    if (!origin || !token || !userId) return;
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
+  const {
+    data: user = null,
+    error,
+    isLoading,
+    refetch,
+  } = useQuery<UserDetailed>({
+    queryKey: ["user", origin, token, userId],
+    enabled: Boolean(isValidConfig),
+    queryFn: async () => {
       const api = new UserApi(origin, token);
-      const fetchedUser = await api.getUser(userId);
-      setUser(fetchedUser);
-    } catch (err) {
-      console.error("User fetch error:", err);
-      setError(err instanceof Error ? err : new Error("Failed to fetch user"));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [origin, token, userId]);
+      return await api.getUser(userId);
+    },
+    retry: 1,
+    staleTime: 1000 * 60,
+  });
 
-  useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
-
-  return { user, error, isLoading, refetch: fetchUser };
+  return {
+    user,
+    error: error instanceof Error ? error : null,
+    isLoading,
+    refetch: async () => {
+      await refetch();
+    },
+  };
 }
