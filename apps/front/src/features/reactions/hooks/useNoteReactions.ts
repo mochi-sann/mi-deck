@@ -158,7 +158,6 @@ export function useNoteReactions({
   const {
     data: reactionsRaw = [],
     isLoading: reactionsLoading,
-    refetch: refetchReactions,
   } = useQuery<NoteReactionEntry[]>({
     queryKey: ["note-reactions", noteId, origin],
     queryFn: async () => {
@@ -179,17 +178,21 @@ export function useNoteReactions({
     user: ReactionUser;
   };
 
-  const reactionDetails: ReactionDetail[] = reactionsRaw
-    .map((entry) => {
-      if (!entry.user) {
-        return null;
-      }
-      return {
-        reaction: entry.reaction,
-        user: entry.user,
-      };
-    })
-    .filter((detail): detail is ReactionDetail => detail !== null);
+  const reactionDetails: ReactionDetail[] = useMemo(
+    () =>
+      reactionsRaw
+        .map((entry) => {
+          if (!entry.user) {
+            return null;
+          }
+          return {
+            reaction: entry.reaction,
+            user: entry.user,
+          };
+        })
+        .filter((detail): detail is ReactionDetail => detail !== null),
+    [reactionsRaw],
+  );
 
   const reactToNoteMutation = useMutation({
     mutationFn: async ({ reaction }: ReactToNoteParams) => {
@@ -228,14 +231,13 @@ export function useNoteReactions({
         setReactionsMap(context.previousState.reactionsMap);
       }
     },
-    onSuccess: async () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["note-reactions", noteId, origin],
       });
       queryClient.invalidateQueries({
         queryKey: ["timeline"],
       });
-      await refetchReactions();
     },
   });
 
@@ -272,14 +274,13 @@ export function useNoteReactions({
         setReactionsMap(context.previousState.reactionsMap);
       }
     },
-    onSuccess: async () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["note-reactions", noteId, origin],
       });
       queryClient.invalidateQueries({
         queryKey: ["timeline"],
       });
-      await refetchReactions();
     },
   });
 
@@ -319,6 +320,5 @@ export function useNoteReactions({
     isRemoving: removeReactionMutation.isPending,
     reactionsRaw,
     reactionsLoading,
-    refetchReactions,
   };
 }

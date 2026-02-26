@@ -4,12 +4,17 @@ import { useCustomEmojis } from "@/hooks/useCustomEmojis";
 import { createProxiedEmojis } from "@/lib/utils/emoji-proxy";
 import type { EmojiResult } from "@/types/emoji";
 import { GetReactionsWithCounts } from "./useNoteReactions";
+
+const CUSTOM_EMOJI_PATTERN = /:([a-zA-Z0-9_]+):/g;
+
+const extractCustomEmojiNames = (text: string): string[] => {
+  const matches = text.match(CUSTOM_EMOJI_PATTERN);
+  return matches ? matches.map((match) => match.slice(1, -1)).filter(Boolean) : [];
+};
 /**
  * ノートとユーザーの絵文字を統合して管理するフック
  */
 export function useNoteEmojis(note: Note, origin: string) {
-  const user = note.user;
-
   const host = origin || "";
   const { fetchEmojis } = useCustomEmojis(host);
   const [customEmojis, setCustomEmojis] = useState<EmojiResult>({});
@@ -43,13 +48,6 @@ export function useNoteEmojis(note: Note, origin: string) {
 
   // Extract custom emoji names from MFM text and memoize
   const extractedEmojiNames = useMemo(() => {
-    const extractCustomEmojiNames = (text: string): string[] => {
-      const matches = text.match(/:([a-zA-Z0-9_]+):/g);
-      return matches
-        ? matches.map((match) => match.slice(1, -1)).filter(Boolean)
-        : [];
-    };
-
     // Extract custom emoji names from reactions, strictly handling local vs remote
     // Remote reactions (containing '@') are IGNORED for fetching purposes as the server won't have them
     // EXCEPTION: reactions ending in '@.:' are considered local aliases (e.g. :name@.:)
@@ -77,8 +75,8 @@ export function useNoteEmojis(note: Note, origin: string) {
 
     const textsToCheck = [
       note.text || "",
-      user.name || "",
-      user.username || "",
+      note.user.name || "",
+      note.user.username || "",
       // Join local reaction names to be detected by extractCustomEmojiNames
       `:${localReactionNames.join("::")}:`,
     ];
@@ -91,7 +89,7 @@ export function useNoteEmojis(note: Note, origin: string) {
     }
 
     return Array.from(allEmojiNames);
-  }, [note, user.name, user.username]);
+  }, [note.reactions, note.text, note.user.name, note.user.username]);
 
   // Fetch emojis when emoji names change
   useEffect(() => {

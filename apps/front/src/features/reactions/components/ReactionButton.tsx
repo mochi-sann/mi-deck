@@ -36,7 +36,6 @@ function ReactionButtonBase({
     toggleReaction,
     isReacting,
     isRemoving,
-    refetchReactions,
   } = useNoteReactions({
     noteId: note.id,
     origin,
@@ -48,13 +47,11 @@ function ReactionButtonBase({
 
   const handleQuickReaction = async (reaction: string) => {
     await toggleReaction(reaction);
-    await refetchReactions();
     setIsOpen(false);
   };
 
   const handleCustomEmojiSelect = async (emoji: EmojiSimple) => {
     await toggleReaction(`:${emoji.name}:`);
-    await refetchReactions();
     setIsOpen(false);
   };
 
@@ -128,7 +125,6 @@ function ReactionButtonBase({
               onClick={() => {
                 void (async () => {
                   await toggleReaction(myReaction!);
-                  await refetchReactions();
                   setIsOpen(false);
                 })();
               }}

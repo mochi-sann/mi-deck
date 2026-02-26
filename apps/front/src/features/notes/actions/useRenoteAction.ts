@@ -86,7 +86,11 @@ export function useRenoteAction({
     () => (typeof note.renoteCount === "number" ? note.renoteCount : 0),
     [note.renoteCount],
   );
-  const initialRenoteId = useMemo(() => extractMyRenoteId(note), [note]);
+  const noteMyRenoteId = (note as { myRenoteId?: unknown }).myRenoteId;
+  const initialRenoteId = useMemo(
+    () => extractMyRenoteId(note),
+    [note.id, noteMyRenoteId],
+  );
 
   const [renoteCount, setRenoteCount] = useState<number>(baseRenoteCount);
   const [currentRenoteId, setCurrentRenoteId] = useState<string | null>(
@@ -127,7 +131,7 @@ export function useRenoteAction({
         myRenoteId: nextMyRenoteId,
       };
     }
-  }, [note]);
+  }, [note.id, note.renoteCount, noteMyRenoteId]);
 
   const determineInitialServerId = useCallback((): string | undefined => {
     if (serversWithToken.length === 0) return undefined;
@@ -149,7 +153,7 @@ export function useRenoteAction({
     }
 
     return serversWithToken[0]?.id;
-  }, [currentServerId, note, origin, serversWithToken]);
+  }, [currentServerId, note.user?.host, origin, serversWithToken]);
 
   const toggleRenote = useCallback(
     async (serverSessionId: string) => {
