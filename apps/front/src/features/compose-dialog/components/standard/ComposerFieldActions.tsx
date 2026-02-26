@@ -1,5 +1,6 @@
 import type { TFunction } from "i18next";
 import { Check, ImagePlus, Server, Smile } from "lucide-react";
+import { lazy, Suspense } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { InputGroupButton } from "@/components/ui/input-group";
 import {
@@ -7,9 +8,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CustomEmojiPicker } from "@/features/timeline/components/CustomEmojiPicker";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
 import type { NoteComposerFormValues } from "../../hooks/useNoteComposer";
+
+const CustomEmojiPicker = lazy(async () => {
+  const module = await import("@/features/timeline/components/CustomEmojiPicker");
+  return { default: module.CustomEmojiPicker };
+});
 
 interface ComposerFieldActionsProps {
   t: TFunction<"notes">;
@@ -68,6 +73,10 @@ export function ComposerFieldActions({
   getServerDisplayName,
   getServerSubtitle,
 }: ComposerFieldActionsProps) {
+  const VisibilityIcon =
+    visibilityOptions.find((option) => option.value === currentVisibility)
+      ?.icon ?? visibilityOptions[0].icon;
+
   return (
     <div className="flex items-center gap-1.5">
       <Popover open={isServerPopoverOpen} onOpenChange={onServerPopoverChange}>
@@ -169,13 +178,7 @@ export function ComposerFieldActions({
             title={visibilityButtonLabel}
             disabled={formDisabled}
           >
-            {(() => {
-              const VisibilityIcon =
-                visibilityOptions.find(
-                  (option) => option.value === currentVisibility,
-                )?.icon ?? visibilityOptions[0].icon;
-              return <VisibilityIcon className="size-4" />;
-            })()}
+            <VisibilityIcon className="size-4" />
           </InputGroupButton>
         </PopoverTrigger>
         <PopoverContent className="w-48 p-0" align="end">
@@ -217,14 +220,16 @@ export function ComposerFieldActions({
           </InputGroupButton>
         </PopoverTrigger>
         <PopoverContent align="end" sideOffset={8} className="w-80 p-0">
-          {canUseEmoji ? (
-            <CustomEmojiPicker
-              origin={emojiOrigin}
-              onEmojiSelect={(name) => {
-                onEmojiSelect(name);
-                onEmojiPickerChange(false);
-              }}
-            />
+          {canUseEmoji && isEmojiPickerOpen ? (
+            <Suspense fallback={<div className="h-48" />}>
+              <CustomEmojiPicker
+                origin={emojiOrigin}
+                onEmojiSelect={(name) => {
+                  onEmojiSelect(name);
+                  onEmojiPickerChange(false);
+                }}
+              />
+            </Suspense>
           ) : (
             <div className="p-4 text-muted-foreground text-sm">
               {t("compose.emojiPickerPlaceholder")}

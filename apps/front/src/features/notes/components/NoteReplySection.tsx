@@ -34,6 +34,8 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
     [servers],
   );
 
+  const notePoll = (note as { poll?: unknown }).poll;
+
   const isPureRenote = useMemo(() => {
     const hasRenote = Boolean(note.renoteId || note.renote);
     const hasText = Boolean(note.text && note.text.trim().length > 0);
@@ -43,7 +45,7 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
     );
     const hasAttachments = hasFiles || hasPoll;
     return hasRenote && !hasText && !hasAttachments;
-  }, [note]);
+  }, [note.files, note.renote, note.renoteId, note.text, notePoll]);
 
   const initialServerId = useMemo(() => {
     const originMatch = serversWithToken.find(

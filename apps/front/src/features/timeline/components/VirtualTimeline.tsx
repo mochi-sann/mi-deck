@@ -52,16 +52,17 @@ export function VirtualTimeline({
   });
 
   const virtualItems = rowVirtualizer.getVirtualItems();
+  const lastVirtualItemIndex =
+    virtualItems.length > 0 ? virtualItems[virtualItems.length - 1].index : -1;
 
   useEffect(() => {
-    const [lastItem] = [...virtualItems].reverse();
-    if (!lastItem) return;
+    if (lastVirtualItemIndex < 0) return;
 
     // Trigger fetch when we are near the bottom (within 3 items)
-    if (lastItem.index >= notes.length - 3 && hasMore && !isLoading) {
+    if (lastVirtualItemIndex >= notes.length - 3 && hasMore && !isLoading) {
       fetchNotes(notes[notes.length - 1]?.id);
     }
-  }, [hasMore, isLoading, notes, fetchNotes, virtualItems]);
+  }, [fetchNotes, hasMore, isLoading, lastVirtualItemIndex, notes]);
 
   if (!isLoading && notes.length === 0 && !headerContent) {
     if (error) {
@@ -95,7 +96,7 @@ export function VirtualTimeline({
             position: "relative",
           }}
         >
-          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+          {virtualItems.map((virtualRow) => {
             const note = notes[virtualRow.index];
             if (!note) return null;
 
