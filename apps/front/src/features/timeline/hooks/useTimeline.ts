@@ -194,7 +194,6 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
 
     // Handle connection errors
     stream.on("_connected_", () => {
-      console.log("Stream connected to:", origin);
       // Clear connection errors when reconnected
       setError(null);
     });

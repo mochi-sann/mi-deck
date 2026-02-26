@@ -179,7 +179,6 @@ export function useListTimeline(origin: string, token: string, listId: string) {
     });
 
     stream.on("_connected_", () => {
-      console.log("Stream connected to:", origin);
       setError(null);
     });
 

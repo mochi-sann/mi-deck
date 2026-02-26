@@ -34,7 +34,7 @@ export function ClientTimelineList() {
 
   const visibleTimelines = storage.timelines
     .filter((t) => t.isVisible)
-    .sort((a, b) => a.order - b.order);
+    .toSorted((a, b) => a.order - b.order);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
