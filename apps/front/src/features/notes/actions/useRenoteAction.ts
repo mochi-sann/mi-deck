@@ -30,12 +30,6 @@ const extractMyRenoteId = (note: Note): string | null => {
     : null;
 };
 
-const ensureServer = (
-  serverSessionId: string,
-  servers: MisskeyServerConnection[],
-): MisskeyServerConnection | undefined =>
-  servers.find((server) => server.id === serverSessionId);
-
 const extractCreatedRenoteId = (response: unknown): string | null => {
   if (!response || typeof response !== "object") return null;
   const obj = response as Record<string, unknown>;
@@ -81,6 +75,24 @@ export function useRenoteAction({
     () => servers.filter((server) => Boolean(server.accessToken)),
     [servers],
   );
+  const serverById = useMemo(() => {
+    const map = new Map<string, MisskeyServerConnection>();
+    for (const server of serversWithToken) {
+      map.set(server.id, server);
+    }
+    return map;
+  }, [serversWithToken]);
+  const serverIdSet = useMemo(
+    () => new Set(serversWithToken.map((server) => server.id)),
+    [serversWithToken],
+  );
+  const serverIdByOrigin = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const server of serversWithToken) {
+      map.set(normalizeOrigin(server.origin), server.id);
+    }
+    return map;
+  }, [serversWithToken]);
 
   const baseRenoteCount = useMemo(
     () => (typeof note.renoteCount === "number" ? note.renoteCount : 0),
@@ -139,21 +151,23 @@ export function useRenoteAction({
     const targetOrigin =
       normalizeOrigin(note.user?.host) || normalizeOrigin(origin);
     if (targetOrigin) {
-      const originMatch = serversWithToken.find(
-        (server) => normalizeOrigin(server.origin) === targetOrigin,
-      );
-      if (originMatch) return originMatch.id;
+      const originMatchId = serverIdByOrigin.get(targetOrigin);
+      if (originMatchId) return originMatchId;
     }
 
-    if (currentServerId) {
-      const currentMatch = serversWithToken.find(
-        (server) => server.id === currentServerId,
-      );
-      if (currentMatch) return currentMatch.id;
+    if (currentServerId && serverIdSet.has(currentServerId)) {
+      return currentServerId;
     }
 
     return serversWithToken[0]?.id;
-  }, [currentServerId, note.user?.host, origin, serversWithToken]);
+  }, [
+    currentServerId,
+    note.user?.host,
+    origin,
+    serverIdByOrigin,
+    serverIdSet,
+    serversWithToken,
+  ]);
 
   const toggleRenote = useCallback(
     async (serverSessionId: string) => {
@@ -166,7 +180,7 @@ export function useRenoteAction({
         return;
       }
 
-      const server = ensureServer(serverSessionId, serversWithToken);
+      const server = serverById.get(serverSessionId);
       if (!server || !server.accessToken) {
         toast({
           variant: "destructive",
@@ -230,7 +244,7 @@ export function useRenoteAction({
         setIsProcessing(false);
       }
     },
-    [currentRenoteId, note.id, renoteCount, serversWithToken, t],
+    [currentRenoteId, note.id, renoteCount, serverById, t],
   );
 
   return {
