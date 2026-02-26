@@ -1,7 +1,7 @@
 import { useAtomValue } from "jotai";
 import type { Note } from "misskey-js/entities.js";
 import { isPureRenote } from "misskey-js/note.js";
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CustomEmojiCtx } from "@/features/emoji/contexts/CustomEmojiContext";
 import { MfmText } from "@/features/mfm/components/MfmText";
@@ -57,6 +57,8 @@ function MisskeyNoteContentBase({
 
   const isNsfw =
     Boolean(note.cw) || Boolean(note.files?.some((f) => f.isSensitive));
+  const noteFiles = note.files ?? [];
+  const hasFiles = noteFiles.length > 0;
   const [isRevealed, setIsRevealed] = useState(false);
   const [previewFile, setPreviewFile] = useState<NoteFile | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -69,6 +71,16 @@ function MisskeyNoteContentBase({
         ? settings.noteContentMaxHeight
         : 320;
   const isHeightLimited = noteMaxHeight !== null;
+  const contentStyle = useMemo(
+    () =>
+      isExpanded || !isHeightLimited
+        ? { maxHeight: "none" }
+        : { maxHeight: `${noteMaxHeight}px` },
+    [isExpanded, isHeightLimited, noteMaxHeight],
+  );
+  const handleClosePreview = useCallback(() => {
+    setPreviewFile(null);
+  }, []);
 
   useEffect(() => {
     const updateOverflow = () => {
@@ -94,7 +106,7 @@ function MisskeyNoteContentBase({
     note.renote?.id,
   ]);
 
-  const handleAttachmentAction = (file: NoteFile) => {
+  const handleAttachmentAction = useCallback((file: NoteFile) => {
     const shouldRevealOnBlur =
       isNsfw && settings.nsfwBehavior === "blur" && !isRevealed;
 
@@ -104,7 +116,7 @@ function MisskeyNoteContentBase({
     }
 
     setPreviewFile(file);
-  };
+  }, [isNsfw, isRevealed, settings.nsfwBehavior]);
 
   if (isNsfw && settings.nsfwBehavior === "hide" && !isRevealed) {
     return <NsfwBarrier onReveal={() => setIsRevealed(true)} />;
@@ -140,18 +152,14 @@ function MisskeyNoteContentBase({
           className={`space-y-2 ${
             isExpanded || !isHeightLimited ? "" : "overflow-hidden"
           }`}
-          style={
-            isExpanded || !isHeightLimited
-              ? { maxHeight: "none" }
-              : { maxHeight: `${noteMaxHeight}px` }
-          }
+          style={contentStyle}
         >
           {note.text && (
             <MfmText text={note.text} host={origin} emojis={emojis} />
           )}
-          {note.files && note.files.length > 0 && (
+          {hasFiles && (
             <AttachmentGallery
-              files={note.files}
+              files={noteFiles}
               settings={settings}
               isNsfw={isNsfw}
               isRevealed={isRevealed}
@@ -192,7 +200,7 @@ function MisskeyNoteContentBase({
       </div>
       <ImagePreviewDialog
         file={previewFile}
-        onClose={() => setPreviewFile(null)}
+        onClose={handleClosePreview}
       />
     </div>
   );
