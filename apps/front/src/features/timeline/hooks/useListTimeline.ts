@@ -188,13 +188,13 @@ export function useListTimeline(origin: string, token: string, listId: string) {
     };
   }, [fetchNotes, isValidConfig, listId, origin, token]);
 
-  const retryFetch = () => {
+  const retryFetch = useCallback(() => {
     setError(null);
     setNotes([]);
     setHasMore(true);
     hasMoreRef.current = true;
     void fetchNotes();
-  };
+  }, [fetchNotes]);
 
   return { notes, error, hasMore, isLoading, fetchNotes, retryFetch };
 }

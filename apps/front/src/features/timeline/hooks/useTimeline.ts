@@ -205,13 +205,13 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
     };
   }, [fetchNotes, isValidConfig, origin, token, type]);
 
-  const retryFetch = () => {
+  const retryFetch = useCallback(() => {
     setError(null);
     setNotes([]);
     setHasMore(true);
     hasMoreRef.current = true;
     void fetchNotes();
-  };
+  }, [fetchNotes]);
 
   return { notes, error, hasMore, isLoading, fetchNotes, retryFetch };
 }
