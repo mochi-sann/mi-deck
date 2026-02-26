@@ -1,8 +1,23 @@
 import { useMemo } from "react";
 import { toUrl } from "@/lib/utils/url";
 
+const MAX_EMOJI_CACHE_ENTRIES = 2000;
 const emojiUrlResultCache = new Map<string, string | null>();
 const emojiUrlInFlightCache = new Map<string, Promise<string | null>>();
+
+const setCacheWithLimit = <T>(map: Map<string, T>, key: string, value: T) => {
+  if (map.has(key)) {
+    map.delete(key);
+  }
+  map.set(key, value);
+
+  if (map.size > MAX_EMOJI_CACHE_ENTRIES) {
+    const oldestKey = map.keys().next().value;
+    if (oldestKey) {
+      map.delete(oldestKey);
+    }
+  }
+};
 
 export function useForeignApi(host: string) {
   const apiInstance = useMemo(() => {
@@ -32,7 +47,7 @@ export function useForeignApi(host: string) {
               typeof data?.url === "string" && data.url.length > 0
                 ? data.url
                 : null;
-            emojiUrlResultCache.set(cacheKey, url);
+            setCacheWithLimit(emojiUrlResultCache, cacheKey, url);
             return url;
           } catch (error) {
             console.warn("Failed to fetch emoji:", error);
@@ -42,13 +57,8 @@ export function useForeignApi(host: string) {
           }
         })();
 
-        emojiUrlInFlightCache.set(cacheKey, request);
-
-        try {
-          return await request;
-        } catch {
-          return null;
-        }
+        setCacheWithLimit(emojiUrlInFlightCache, cacheKey, request);
+        return request;
       },
     };
   }, [host]);
