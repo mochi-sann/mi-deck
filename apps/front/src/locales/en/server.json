@@ -10,8 +10,13 @@
     "validation": {
       "serverOriginRequired": "Please enter a valid server address",
       "serverTypeRequired": "Please select a server type",
-      "invalidServerUrl": "Please enter a valid server URL"
-    }
+      "invalidServerUrl": "Please enter a valid server URL",
+      "accessTokenRequired": "Please enter an access token"
+    },
+    "authMethod": "Authentication Method",
+    "miAuth": "MiAuth",
+    "accessToken": "Access Token",
+    "accessTokenPlaceholder": "Enter your access token"
   },
   "serverList": {
     "selected": "Selected",

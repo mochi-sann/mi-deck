@@ -146,3 +146,6 @@ apps/server/src/generated/prisma
 /playwright/.cache/
 
 .turbo
+
+# Claude Code
+.claude/settings.local.json

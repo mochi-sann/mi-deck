@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(pnpm install)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm check:*)",
+      "Bash(pnpm format:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm run front:*)",
+      "Bash(pnpm -F:*)",
+      "Bash(pnpm --filter:*)",
+      "Bash(pnpm dlx oxfmt:*)",
+      "Bash(pnpm dlx oxlint:*)",
+      "Bash(pnpm turbo run:*)"
+    ],
+    "deny": ["Read(./.env)", "Edit(./.env)", "Write(./.env)"]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath' | { read -r f; case \"$f\" in *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs|*.json|*.jsonc) pnpm dlx oxfmt \"$f\" >/dev/null 2>&1 || true;; esac; }",
+            "timeout": 60,
+            "statusMessage": "oxfmt でフォーマット中..."
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath' | { read -r f; case \"$f\" in *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs) ./node_modules/.bin/oxlint \"$f\" >&2 || exit 2;; esac; }",
+            "timeout": 60,
+            "statusMessage": "oxlint でチェック中..."
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath' | { read -r f; case \"$f\" in */src/locales/*.json) pnpm -F @mi-deck/front validate-translations >&2 || exit 2;; esac; }",
+            "timeout": 120,
+            "statusMessage": "翻訳キーの整合性チェック中..."
+          }
+        ]
+      }
+    ]
+  }
+}
