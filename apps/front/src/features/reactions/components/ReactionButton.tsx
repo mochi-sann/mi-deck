@@ -1,6 +1,6 @@
 import { Heart } from "lucide-react";
 import type { EmojiSimple, Note } from "misskey-js/entities.js";
-import { memo, useState } from "react";
+import { lazy, memo, Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -8,9 +8,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { CustomEmojiPicker } from "@/features/timeline/components/CustomEmojiPicker";
 import { cn } from "@/lib/utils";
 import { useNoteReactions } from "../hooks/useNoteReactions";
+
+const CustomEmojiPicker = lazy(async () => {
+  const module = await import("@/features/timeline/components/CustomEmojiPicker");
+  return { default: module.CustomEmojiPicker };
+});
 
 interface ReactionButtonProps {
   note: Note;
@@ -32,7 +36,6 @@ function ReactionButtonBase({
     toggleReaction,
     isReacting,
     isRemoving,
-    refetchReactions,
   } = useNoteReactions({
     noteId: note.id,
     origin,
@@ -44,13 +47,11 @@ function ReactionButtonBase({
 
   const handleQuickReaction = async (reaction: string) => {
     await toggleReaction(reaction);
-    await refetchReactions();
     setIsOpen(false);
   };
 
   const handleCustomEmojiSelect = async (emoji: EmojiSimple) => {
     await toggleReaction(`:${emoji.name}:`);
-    await refetchReactions();
     setIsOpen(false);
   };
 
@@ -100,14 +101,18 @@ function ReactionButtonBase({
 
         <div className="mb-2">
           <h3 className="mb-2 font-medium text-sm">カスタム絵文字</h3>
-          <CustomEmojiPicker
-            origin={origin}
-            onEmojiSelect={(name) => {
-              void handleCustomEmojiSelect({ name } as EmojiSimple);
-            }}
-            reactionEmojis={note.reactionEmojis}
-            fallbackEmojis={emojis}
-          />
+          {isOpen ? (
+            <Suspense fallback={<div className="h-48" />}>
+              <CustomEmojiPicker
+                origin={origin}
+                onEmojiSelect={(name) => {
+                  void handleCustomEmojiSelect({ name } as EmojiSimple);
+                }}
+                reactionEmojis={note.reactionEmojis}
+                fallbackEmojis={emojis}
+              />
+            </Suspense>
+          ) : null}
         </div>
 
         {hasMyReaction && (
@@ -120,7 +125,6 @@ function ReactionButtonBase({
               onClick={() => {
                 void (async () => {
                   await toggleReaction(myReaction!);
-                  await refetchReactions();
                   setIsOpen(false);
                 })();
               }}

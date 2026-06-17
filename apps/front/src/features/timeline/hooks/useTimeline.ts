@@ -1,7 +1,7 @@
 import { Stream } from "misskey-js";
 import { APIClient } from "misskey-js/api.js";
 import { Note } from "misskey-js/entities.js";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { parseNotesResponse } from "../lib/noteResponseSchema";
 
 type TimelineType = "home" | "local" | "global" | "social";
@@ -11,6 +11,8 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
   const [error, setError] = useState<Error | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const isLoadingRef = useRef(false);
+  const hasMoreRef = useRef(true);
 
   // Validate origin and token
   const isValidConfig =
@@ -42,8 +44,11 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
 
   const fetchNotes = useCallback(
     async (untilId?: string) => {
-      if (isLoading || !hasMore || !isValidConfig) return;
+      if (isLoadingRef.current || !hasMoreRef.current || !isValidConfig) {
+        return;
+      }
 
+      isLoadingRef.current = true;
       setIsLoading(true);
       try {
         const client = new APIClient({
@@ -75,6 +80,7 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
 
         const nextNotes = validation.output as Note[];
         if (nextNotes.length === 0) {
+          hasMoreRef.current = false;
           setHasMore(false);
         } else {
           setNotes((prev) => (untilId ? [...prev, ...nextNotes] : nextNotes));
@@ -143,9 +149,10 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
         setError(new Error(errorMessage));
       } finally {
         setIsLoading(false);
+        isLoadingRef.current = false;
       }
     },
-    [isLoading, hasMore, isValidConfig, origin, token, type],
+    [isValidConfig, origin, token, type],
   );
 
   useEffect(() => {
@@ -153,7 +160,9 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
       return;
     }
 
-    fetchNotes();
+    setHasMore(true);
+    hasMoreRef.current = true;
+    void fetchNotes();
 
     // Setup WebSocket connection
     const stream = new Stream(origin, { token });
@@ -185,7 +194,6 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
 
     // Handle connection errors
     stream.on("_connected_", () => {
-      console.log("Stream connected to:", origin);
       // Clear connection errors when reconnected
       setError(null);
     });
@@ -195,14 +203,15 @@ export function useTimeline(origin: string, token: string, type: TimelineType) {
       channel.dispose();
       stream.close();
     };
-  }, [origin, token, type]);
+  }, [fetchNotes, isValidConfig, origin, token, type]);
 
-  const retryFetch = () => {
+  const retryFetch = useCallback(() => {
     setError(null);
     setNotes([]);
     setHasMore(true);
-    fetchNotes();
-  };
+    hasMoreRef.current = true;
+    void fetchNotes();
+  }, [fetchNotes]);
 
   return { notes, error, hasMore, isLoading, fetchNotes, retryFetch };
 }

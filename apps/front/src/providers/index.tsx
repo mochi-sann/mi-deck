@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StrictMode } from "react";
 
 import { SidebarProvider } from "../components/ui/sidebar";
-import { AuthProvider } from "../features/auth";
+import { AuthProvider } from "../features/auth/components/AuthProvider";
 import { MfmConfigProvider } from "../features/mfm/components/MfmConfigProvider";
 import { StorageProvider } from "../lib/storage/context";
 import { ThemeProvider } from "../lib/theme/context";

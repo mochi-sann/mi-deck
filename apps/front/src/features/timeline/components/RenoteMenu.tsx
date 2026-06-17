@@ -1,6 +1,6 @@
 import { MessageSquareQuote, Repeat2 } from "lucide-react";
 import type { Note } from "misskey-js/entities.js";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +14,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { NoteComposerDialog } from "@/features/compose-dialog/components/NoteComposerDialog";
+import { LazyNoteComposerDialog } from "@/features/compose-dialog/components/LazyNoteComposerDialog";
 import { useRenoteAction } from "@/features/notes/actions/useRenoteAction";
 import { cn } from "@/lib/utils";
 
@@ -140,31 +140,39 @@ export function RenoteMenu({ note, origin }: RenoteMenuProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <NoteComposerDialog
-        mode="renote"
-        open={renoteDialogOpen}
-        disabled={(!hasServers && !isRenoted) || isProcessing}
-        renoteTarget={note}
-        origin={origin}
-        renoteContext={renoteContext}
-        showSuccessMessage={false}
-        onOpenChange={(open) => {
-          setRenoteDialogOpen(open);
-        }}
-      />
+      {renoteDialogOpen ? (
+        <Suspense fallback={null}>
+          <LazyNoteComposerDialog
+            mode="renote"
+            open={renoteDialogOpen}
+            disabled={(!hasServers && !isRenoted) || isProcessing}
+            renoteTarget={note}
+            origin={origin}
+            renoteContext={renoteContext}
+            showSuccessMessage={false}
+            onOpenChange={(open) => {
+              setRenoteDialogOpen(open);
+            }}
+          />
+        </Suspense>
+      ) : null}
 
-      <NoteComposerDialog
-        mode="quote"
-        open={quoteDialogOpen}
-        disabled={!hasServers || isProcessing}
-        replyTarget={note}
-        quoteTarget={note}
-        origin={origin}
-        initialServerId={initialServerId}
-        onOpenChange={(open) => {
-          setQuoteDialogOpen(open);
-        }}
-      />
+      {quoteDialogOpen ? (
+        <Suspense fallback={null}>
+          <LazyNoteComposerDialog
+            mode="quote"
+            open={quoteDialogOpen}
+            disabled={!hasServers || isProcessing}
+            replyTarget={note}
+            quoteTarget={note}
+            origin={origin}
+            initialServerId={initialServerId}
+            onOpenChange={(open) => {
+              setQuoteDialogOpen(open);
+            }}
+          />
+        </Suspense>
+      ) : null}
     </div>
   );
 }

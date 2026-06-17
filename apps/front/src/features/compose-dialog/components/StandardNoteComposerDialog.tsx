@@ -33,6 +33,7 @@ import { InputGroupTextarea } from "@/components/ui/input-group";
 import Text from "@/components/ui/text";
 import type { MisskeyServerConnection } from "@/lib/storage/types";
 import { cn } from "@/lib/utils";
+import { useWatch } from "react-hook-form";
 import { ReplyTargetPreview } from "../../notes/components/ReplyTargetPreview";
 import {
   type NoteComposerFormValues,
@@ -162,9 +163,11 @@ export function StandardNoteComposerDialog({
     [t],
   );
 
-  const serverSessionIdValue = form.watch("serverSessionId") ?? "";
-  const visibilityValue = form.watch("visibility") ?? "public";
-  const noteContentValue = form.watch("noteContent") ?? "";
+  const [serverSessionIdValue = "", visibilityValue = "public", noteContentValue = ""] =
+    useWatch({
+      control: form.control,
+      name: ["serverSessionId", "visibility", "noteContent"],
+    });
 
   const selectedServer = useMemo(
     () => serversWithToken.find((server) => server.id === serverSessionIdValue),
@@ -345,13 +348,16 @@ export function StandardNoteComposerDialog({
     });
   }, [open, formDisabled]);
 
-  const handleDialogChange = (nextOpen: boolean) => {
-    if (disabled && nextOpen) return;
-    if (nextOpen) {
-      setSuccessMessage(null);
-    }
-    emitOpenChange(nextOpen);
-  };
+  const handleDialogChange = useCallback(
+    (nextOpen: boolean) => {
+      if (disabled && nextOpen) return;
+      if (nextOpen) {
+        setSuccessMessage(null);
+      }
+      emitOpenChange(nextOpen);
+    },
+    [disabled, emitOpenChange],
+  );
 
   const triggerNode = useMemo(() => {
     if (!trigger) return null;

@@ -1,4 +1,4 @@
-import { MfmText } from "@/features/mfm";
+import { MfmText } from "@/features/mfm/components/MfmText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { normalizeOrigin } from "@/lib/utils";

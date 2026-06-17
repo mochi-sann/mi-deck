@@ -6,7 +6,6 @@ import { NavigationSheet } from "./navigation-sheet";
 const Navbar01Page = () => {
   const { open, setOpen, openMobile, setOpenMobile, isMobile } = useSidebar();
   const clicked = () => {
-    console.log("clicked", !open);
     if (isMobile) {
       setOpenMobile(!openMobile);
     } else {

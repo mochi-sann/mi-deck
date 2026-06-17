@@ -10,8 +10,8 @@ vi.mock("@/features/notes/actions/useRenoteAction", () => ({
   useRenoteAction: (args: unknown) => mockUseRenoteAction(args),
 }));
 
-vi.mock("@/features/compose-dialog/components/NoteComposerDialog", () => ({
-  NoteComposerDialog: ({ trigger }: { trigger?: JSX.Element }) =>
+vi.mock("@/features/compose-dialog/components/LazyNoteComposerDialog", () => ({
+  LazyNoteComposerDialog: ({ trigger }: { trigger?: JSX.Element }) =>
     trigger ?? null,
 }));
 

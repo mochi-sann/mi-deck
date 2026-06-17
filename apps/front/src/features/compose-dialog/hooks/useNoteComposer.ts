@@ -126,6 +126,17 @@ export function useNoteComposer({
     () => servers.filter((server) => Boolean(server.accessToken)),
     [servers],
   );
+  const serverIdSet = useMemo(
+    () => new Set(serversWithToken.map((server) => server.id)),
+    [serversWithToken],
+  );
+  const serverIdByOrigin = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const server of serversWithToken) {
+      map.set(normalizeOrigin(server.origin), server.id);
+    }
+    return map;
+  }, [serversWithToken]);
 
   const schema = useMemo(() => createFormSchema(t, mode), [mode, t]);
 
@@ -172,32 +183,21 @@ export function useNoteComposer({
     if (mode === "reply" || mode === "quote") {
       const targetOrigin = normalizedTargetOrigin;
       if (targetOrigin) {
-        const originMatch = serversWithToken.find(
-          (server) => normalizeOrigin(server.origin) === targetOrigin,
-        );
-        if (originMatch) return originMatch.id;
+        const originMatchId = serverIdByOrigin.get(targetOrigin);
+        if (originMatchId) return originMatchId;
       }
     }
 
-    if (initialServerId) {
-      const match = serversWithToken.find(
-        (server) => server.id === initialServerId,
-      );
-      if (match) return match.id;
+    if (initialServerId && serverIdSet.has(initialServerId)) {
+      return initialServerId;
     }
 
-    if (lastSelectedServerId) {
-      const lastMatch = serversWithToken.find(
-        (server) => server.id === lastSelectedServerId,
-      );
-      if (lastMatch) return lastMatch.id;
+    if (lastSelectedServerId && serverIdSet.has(lastSelectedServerId)) {
+      return lastSelectedServerId;
     }
 
-    if (currentServerId) {
-      const currentMatch = serversWithToken.find(
-        (server) => server.id === currentServerId,
-      );
-      if (currentMatch) return currentMatch.id;
+    if (currentServerId && serverIdSet.has(currentServerId)) {
+      return currentServerId;
     }
 
     return serversWithToken[0]?.id;
@@ -206,6 +206,8 @@ export function useNoteComposer({
     initialServerId,
     mode,
     normalizedTargetOrigin,
+    serverIdByOrigin,
+    serverIdSet,
     serversWithToken,
   ]);
 
@@ -272,11 +274,14 @@ export function useNoteComposer({
           credential: selectedServer.accessToken,
         });
 
-        const uploadedFileIds = await uploadAndCompressFiles(
-          files,
-          selectedServer.origin,
-          selectedServer.accessToken ?? "",
-        );
+        const uploadedFileIds =
+          files.length > 0
+            ? await uploadAndCompressFiles(
+                files,
+                selectedServer.origin,
+                selectedServer.accessToken ?? "",
+              )
+            : [];
 
         await client.request("notes/create", {
           text: trimmed,

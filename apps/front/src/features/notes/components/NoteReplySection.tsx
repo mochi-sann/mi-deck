@@ -1,10 +1,10 @@
 import { MessageCircle } from "lucide-react";
 import type { Note } from "misskey-js/entities.js";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import Text from "@/components/ui/text";
-import { NoteComposerDialog } from "@/features/compose-dialog/components/NoteComposerDialog";
+import { LazyNoteComposerDialog } from "@/features/compose-dialog/components/LazyNoteComposerDialog";
 import { useStorage } from "@/lib/storage/context";
 import { cn } from "@/lib/utils";
 
@@ -34,6 +34,8 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
     [servers],
   );
 
+  const notePoll = (note as { poll?: unknown }).poll;
+
   const isPureRenote = useMemo(() => {
     const hasRenote = Boolean(note.renoteId || note.renote);
     const hasText = Boolean(note.text && note.text.trim().length > 0);
@@ -43,7 +45,7 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
     );
     const hasAttachments = hasFiles || hasPoll;
     return hasRenote && !hasText && !hasAttachments;
-  }, [note]);
+  }, [note.files, note.renote, note.renoteId, note.text, notePoll]);
 
   const initialServerId = useMemo(() => {
     const originMatch = serversWithToken.find(
@@ -86,21 +88,23 @@ export function NoteReplySection({ note, origin }: NoteReplySectionProps) {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        <NoteComposerDialog
-          mode="reply"
-          trigger={triggerButton}
-          disabled={isReplyDisabled}
-          replyTarget={note}
-          origin={origin}
-          initialServerId={initialServerId}
-          onSuccess={() => setSuccessMessage(t("reply.success"))}
-          onOpenChange={(open) => {
-            if (open) {
-              setSuccessMessage(null);
-            }
-          }}
-          showSuccessMessage={false}
-        />
+        <Suspense fallback={null}>
+          <LazyNoteComposerDialog
+            mode="reply"
+            trigger={triggerButton}
+            disabled={isReplyDisabled}
+            replyTarget={note}
+            origin={origin}
+            initialServerId={initialServerId}
+            onSuccess={() => setSuccessMessage(t("reply.success"))}
+            onOpenChange={(open) => {
+              if (open) {
+                setSuccessMessage(null);
+              }
+            }}
+            showSuccessMessage={false}
+          />
+        </Suspense>
       </div>
 
       {successMessage && (

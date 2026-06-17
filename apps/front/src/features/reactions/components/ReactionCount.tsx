@@ -1,7 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import { Suspense } from "react";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { CustomEmoji } from "@/features/emoji";
+import { CustomEmoji } from "@/features/emoji/components/CustomEmoji";
 import { cn } from "@/lib/utils";
 
 const textSizeBarient = {
@@ -64,14 +62,12 @@ export function ReactionEmoji({
       {isUnicodeEmoji ? (
         <span className={cn(emojiTextVariants({ size }))}>{reaction}</span>
       ) : emojiUrl ? (
-        <Suspense fallback={<LoadingSpinner />}>
-          <img
-            src={emojiUrl}
-            alt={reaction}
-            className={cn(emojiImgVariants({ size }))}
-            loading="lazy"
-          />
-        </Suspense>
+        <img
+          src={emojiUrl}
+          alt={reaction}
+          className={cn(emojiImgVariants({ size }))}
+          loading="lazy"
+        />
       ) : (
         <span className={cn(emojiTextVariants({ size }))}>
           <CustomEmoji name={reaction.replace(/:/g, "")} emojis={emojis} />

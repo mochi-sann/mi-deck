@@ -2,7 +2,7 @@ import { CornerUpRight, Repeat2 } from "lucide-react";
 import type { Note } from "misskey-js/entities.js";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { CustomEmojiCtx } from "@/features/emoji";
+import { CustomEmojiCtx } from "@/features/emoji/contexts/CustomEmojiContext";
 import { cn } from "@/lib/utils";
 import type { CustomEmojiContext } from "@/types/emoji";
 import { useMisskeyNoteEmojis } from "../hooks/useMisskeyNoteEmojis";
