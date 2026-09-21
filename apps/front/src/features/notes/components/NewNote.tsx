@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
+import { Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { NoteComposerDialog } from "@/features/compose-dialog/components/NoteComposerDialog";
+import { LazyNoteComposerDialog } from "@/features/compose-dialog/components/LazyNoteComposerDialog";
 
 interface NewNoteProps {
   trigger?: ReactNode;
@@ -25,13 +26,15 @@ export const NewNote = ({
   );
 
   return (
-    <NoteComposerDialog
-      mode="create"
-      trigger={defaultTrigger}
-      disabled={disabled}
-      onSuccess={onSuccess}
-      onError={onError}
-      onOpenChange={onOpenChange}
-    />
+    <Suspense fallback={null}>
+      <LazyNoteComposerDialog
+        mode="create"
+        trigger={defaultTrigger}
+        disabled={disabled}
+        onSuccess={onSuccess}
+        onError={onError}
+        onOpenChange={onOpenChange}
+      />
+    </Suspense>
   );
 };

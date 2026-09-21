@@ -1,5 +1,6 @@
 import { AlertCircle, Server } from "lucide-react";
 import type React from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -15,7 +16,10 @@ export const Timeline: React.FC = () => {
     isLoading: isStorageLoading,
   } = useStorage();
 
-  const currentServer = servers.find((s) => s.id === currentServerId);
+  const currentServer = useMemo(
+    () => servers.find((s) => s.id === currentServerId),
+    [currentServerId, servers],
+  );
 
   const {
     notes,

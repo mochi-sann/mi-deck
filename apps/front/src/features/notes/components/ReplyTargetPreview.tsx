@@ -2,8 +2,8 @@ import type { Note } from "misskey-js/entities.js";
 import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Text from "@/components/ui/text";
-import { CustomEmojiCtx } from "@/features/emoji";
-import { MfmText } from "@/features/mfm";
+import { MfmText } from "@/features/mfm/components/MfmText";
+import { CustomEmojiCtx } from "@/features/emoji/contexts/CustomEmojiContext";
 import { useMisskeyNoteEmojis } from "@/features/timeline/hooks/useMisskeyNoteEmojis";
 import { cn, normalizeOrigin } from "@/lib/utils";
 

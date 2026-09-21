@@ -1,3 +1,3 @@
-export * from "./components/UserProfile";
-export * from "./hooks/useUser";
-export * from "./api/userApi";
+export { UserProfile } from "./components/UserProfile";
+export { useUser } from "./hooks/useUser";
+export { UserApi } from "./api/userApi";

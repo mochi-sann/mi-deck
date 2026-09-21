@@ -1,5 +1,5 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { ClientTimelineList } from "@/features/timeline";
+import { ClientTimelineList } from "@/features/timeline/components/ClientTimelineList";
 
 export const Route = createLazyFileRoute("/_authed/")({
   component: RouteComponent,

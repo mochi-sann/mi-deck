@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 
-import { useAuth } from "./features/auth";
+import { useAuth } from "./features/auth/hooks/useAuth";
 import { Providers } from "./providers";
 import { routeTree } from "./routeTree.gen";
 import "./lib/i18n";

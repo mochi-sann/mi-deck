@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { APIClient } from "misskey-js/api.js";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 
 export interface UserList {
   id: string;
@@ -11,21 +12,10 @@ export interface UserList {
 }
 
 export function useUserLists(origin: string, token: string) {
-  const [lists, setLists] = useState<UserList[]>([]);
-  const [error, setError] = useState<Error | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
   const isValidConfig =
     origin && token && origin.trim() !== "" && token.trim() !== "";
 
-  if (!isValidConfig && !error) {
-    setError(new Error("サーバーまたは認証情報が設定されていません。"));
-  }
-
-  const fetchLists = useCallback(async () => {
-    if (isLoading || !isValidConfig) return;
-
-    setIsLoading(true);
+  const fetchListsInternal = useCallback(async (): Promise<UserList[]> => {
     try {
       const client = new APIClient({
         origin,
@@ -35,10 +25,9 @@ export function useUserLists(origin: string, token: string) {
       const res = await (client as any).request("users/lists/list", {});
 
       if (Array.isArray(res)) {
-        setLists(res);
-      } else {
-        setError(new Error("Invalid response format"));
+        return res;
       }
+      throw new Error("Invalid response format");
     } catch (err) {
       console.error("User lists fetch error:", {
         origin,
@@ -95,21 +84,38 @@ export function useUserLists(origin: string, token: string) {
         }
       }
 
-      setError(new Error(errorMessage));
-    } finally {
-      setIsLoading(false);
+      throw new Error(errorMessage);
     }
-  }, [isLoading, isValidConfig, origin, token]);
-
-  useEffect(() => {
-    fetchLists();
   }, [origin, token]);
 
-  const retryFetch = () => {
-    setError(null);
-    setLists([]);
-    fetchLists();
-  };
+  const {
+    data = [],
+    error: queryError,
+    isLoading,
+    refetch,
+  } = useQuery<UserList[]>({
+    queryKey: ["user-lists", origin, token],
+    enabled: Boolean(isValidConfig),
+    queryFn: fetchListsInternal,
+    retry: 1,
+    staleTime: 1000 * 60,
+  });
 
-  return { lists, error, isLoading, fetchLists, retryFetch };
+  const error = !isValidConfig
+    ? new Error("サーバーまたは認証情報が設定されていません。")
+    : queryError instanceof Error
+      ? queryError
+      : null;
+
+  const fetchLists = useCallback(async () => {
+    if (!isValidConfig) return;
+    await refetch();
+  }, [isValidConfig, refetch]);
+
+  const retryFetch = useCallback(() => {
+    if (!isValidConfig) return;
+    void refetch();
+  }, [isValidConfig, refetch]);
+
+  return { lists: isValidConfig ? data : [], error, isLoading, fetchLists, retryFetch };
 }

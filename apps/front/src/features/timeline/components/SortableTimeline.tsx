@@ -1,9 +1,8 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { GripVertical, Server, Trash2 } from "lucide-react";
 import { APIClient } from "misskey-js/api.js";
-import { Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,20 +35,17 @@ export function SortableTimeline({
     transition,
   };
 
-  const client = server
-    ? new APIClient({
-        origin: server.origin,
-        credential: server.accessToken || "",
-      })
-    : null;
-
-  const queryKey = ["meta", server?.origin];
-  const { data: serverInfo } = useSuspenseQuery({
-    queryKey: queryKey,
+  const { data: serverInfo } = useQuery({
+    queryKey: ["meta", server?.origin],
+    enabled: Boolean(server?.origin),
     queryFn: async () => {
-      if (!client || !server) {
+      if (!server) {
         throw new Error("Server not found or client not initialized");
       }
+      const client = new APIClient({
+        origin: server.origin,
+        credential: server.accessToken || "",
+      });
       return await client
         .request("meta", {
           detail: true,
@@ -60,6 +56,7 @@ export function SortableTimeline({
           return null;
         });
     },
+    staleTime: 1000 * 60 * 5,
   });
 
   const handleDelete = (e: React.MouseEvent) => {
@@ -100,23 +97,17 @@ export function SortableTimeline({
       <Card className="flex h-full w-80 flex-[0_0_320px] flex-col gap-0 rounded-none pt-6 pb-0">
         <CardHeader className="flex shrink-0 items-center justify-between border-b pb-2">
           <CardTitle className="flex items-center gap-2 font-bold text-base">
-            <Suspense
-              fallback={
-                <div className="size-8 rounded-md border bg-gray-200" />
-              }
-            >
-              {serverInfo?.iconUrl ? (
-                <img
-                  src={serverInfo.iconUrl}
-                  className="size-8 rounded-md border"
-                  alt={serverInfo.name ?? ""}
-                />
-              ) : (
-                <div className="flex size-8 content-center items-center justify-center rounded-md border">
-                  <Server className="size-5" />
-                </div>
-              )}
-            </Suspense>
+            {serverInfo?.iconUrl ? (
+              <img
+                src={serverInfo.iconUrl}
+                className="size-8 rounded-md border"
+                alt={serverInfo.name ?? ""}
+              />
+            ) : (
+              <div className="flex size-8 content-center items-center justify-center rounded-md border">
+                <Server className="size-5" />
+              </div>
+            )}
             {server.serverInfo?.name && <span>{server.serverInfo.name}</span>}
             <span>({timeline.type})</span>
           </CardTitle>

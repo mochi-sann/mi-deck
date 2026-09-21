@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from "jotai";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { useForeignApi } from "@/hooks/useForeignApi";
 import { emojiFetchAtom } from "@/lib/atoms/emoji-fetch";
 import {
@@ -24,27 +24,11 @@ export function useCustomEmojis(host: string) {
   const updateCacheRef = useRef(updateCache);
   const setFetchesRef = useRef(setFetches);
 
-  // Update refs when values change using useEffect to avoid direct mutation
-  // Only update cache ref when cache actually changes (deep comparison for efficiency)
-  useEffect(() => {
-    const hasChanged =
-      JSON.stringify(cacheRef.current) !== JSON.stringify(cache);
-    if (hasChanged) {
-      cacheRef.current = cache;
-    }
-  }, [cache]);
-
-  useEffect(() => {
-    fetchesRef.current = fetches;
-  }, [fetches]);
-
-  useEffect(() => {
-    updateCacheRef.current = updateCache;
-  }, [updateCache]);
-
-  useEffect(() => {
-    setFetchesRef.current = setFetches;
-  }, [setFetches]);
+  // Keep refs in sync without extra effects.
+  cacheRef.current = cache;
+  fetchesRef.current = fetches;
+  updateCacheRef.current = updateCache;
+  setFetchesRef.current = setFetches;
 
   /**
    * 指定された絵文字名の配列を並列で取得する
@@ -122,12 +106,13 @@ export function useCustomEmojis(host: string) {
   /**
    * 単一の絵文字を取得する
    */
-  const fetchEmoji = useMemo(() => {
-    return async (emojiName: string): Promise<string | null> => {
+  const fetchEmoji = useCallback(
+    async (emojiName: string): Promise<string | null> => {
       const result = await fetchEmojis([emojiName]);
       return result[emojiName] || null;
-    };
-  }, [fetchEmojis]);
+    },
+    [fetchEmojis],
+  );
 
   /**
    * キャッシュから絵文字URLを取得する（同期）
@@ -139,8 +124,7 @@ export function useCustomEmojis(host: string) {
     [host],
   );
 
-  // Memoize the cache for this host to prevent unnecessary re-renders
-  const hostCache = useMemo(() => cache[host] || {}, [cache, host]);
+  const hostCache = cache[host] || {};
 
   return {
     fetchEmojis,

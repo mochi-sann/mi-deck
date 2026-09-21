@@ -18,10 +18,6 @@ export function LocalTimelineContent({
   // Define the query key
   const queryKey = ["timelineNotes", origin, type, serverToken]; // Include token in key if it can change
 
-  const client = new APIClient({
-    origin,
-    credential: serverToken,
-  });
   const {
     data: notes,
     error,
@@ -31,6 +27,10 @@ export function LocalTimelineContent({
     queryKey: queryKey,
     queryFn: async () => {
       try {
+        const client = new APIClient({
+          origin,
+          credential: serverToken,
+        });
         const res = await client.request("notes/local-timeline", {});
         return res;
       } catch (err) {

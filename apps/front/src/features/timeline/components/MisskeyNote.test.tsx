@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { MisskeyNote } from "./MisskeyNote";
 
 // Mock dependencies
-vi.mock("@/features/emoji", () => ({
+vi.mock("@/features/emoji/contexts/CustomEmojiContext", () => ({
   CustomEmojiCtx: {
     Provider: ({
       children,
@@ -21,7 +21,7 @@ vi.mock("@/features/emoji", () => ({
   },
 }));
 
-vi.mock("@/features/mfm", () => ({
+vi.mock("@/features/mfm/components/MfmText", () => ({
   MfmText: ({
     text,
     host,

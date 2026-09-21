@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { Note } from "misskey-js/entities.js";
+import { cloneElement, useState } from "react";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { NoteReplySection } from "./NoteReplySection";
 
@@ -27,6 +28,66 @@ vi.mock("misskey-js/api.js", () => ({
 vi.mock("@/lib/uploadAndCompresFiles", () => ({
   uploadAndCompressFiles: (...args: unknown[]) =>
     mockUploadAndCompressFiles(...args),
+}));
+
+vi.mock("@/features/compose-dialog/components/LazyNoteComposerDialog", () => ({
+  LazyNoteComposerDialog: ({
+    trigger,
+    disabled,
+    replyTarget,
+    onSuccess,
+  }: {
+    trigger: React.ReactElement;
+    disabled?: boolean;
+    replyTarget: Note;
+    onSuccess?: () => void;
+  }) => {
+    const [open, setOpen] = useState(false);
+    const [text, setText] = useState("");
+    const [error, setError] = useState<string | null>(null);
+
+    const handleSubmit = async () => {
+      if (!text.trim()) {
+        setError("compose.error.empty");
+        return;
+      }
+
+      await mockRequest("notes/create", {
+        text,
+        replyId: replyTarget.id,
+        visibility: "public",
+        localOnly: false,
+      });
+
+      setOpen(false);
+      setText("");
+      setError(null);
+      onSuccess?.();
+    };
+
+    return (
+      <div>
+        {cloneElement(trigger, {
+          onClick: () => setOpen(true),
+          disabled,
+        })}
+        {open && (
+          <div>
+            <div>{replyTarget.text}</div>
+            <textarea
+              aria-label="reply-input"
+              value={text}
+              onChange={(event) => setText(event.target.value)}
+            />
+            <button type="button" onClick={handleSubmit}>
+              compose.submit.reply
+            </button>
+            {error && <div>{error}</div>}
+          </div>
+        )}
+      </div>
+    );
+  },
 }));
 
 const ResizeObserverMock = class {
@@ -88,9 +149,9 @@ describe("NoteReplySection", () => {
     const user = userEvent.setup();
     await user.click(screen.getByRole("button", { name: "reply.button" }));
 
-    expect(screen.getByRole("textbox")).toBeInTheDocument();
+    expect(await screen.findByRole("textbox")).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "compose.submit.reply" }),
+      await screen.findByRole("button", { name: "compose.submit.reply" }),
     ).toBeInTheDocument();
   });
 
@@ -106,9 +167,9 @@ describe("NoteReplySection", () => {
     const user = userEvent.setup();
 
     await user.click(screen.getByRole("button", { name: "reply.button" }));
-    await user.type(screen.getByRole("textbox"), "Hello");
+    await user.type(await screen.findByRole("textbox"), "Hello");
     await user.click(
-      screen.getByRole("button", { name: "compose.submit.reply" }),
+      await screen.findByRole("button", { name: "compose.submit.reply" }),
     );
 
     await waitFor(() => {
@@ -142,7 +203,7 @@ describe("NoteReplySection", () => {
 
     await user.click(screen.getByRole("button", { name: "reply.button" }));
     await user.click(
-      screen.getByRole("button", { name: "compose.submit.reply" }),
+      await screen.findByRole("button", { name: "compose.submit.reply" }),
     );
 
     expect(screen.getByText("compose.error.empty")).toBeInTheDocument();
@@ -181,6 +242,6 @@ describe("NoteReplySection", () => {
     const user = userEvent.setup();
     await user.click(screen.getByRole("button", { name: "reply.button" }));
 
-    expect(screen.getByText("Preview note content")).toBeInTheDocument();
+    expect(await screen.findByText("Preview note content")).toBeInTheDocument();
   });
 });

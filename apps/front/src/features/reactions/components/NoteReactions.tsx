@@ -1,5 +1,5 @@
 import type { Note } from "misskey-js/entities.js";
-import { memo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   HoverCard,
@@ -36,21 +36,18 @@ function NoteReactionsBase({ note, origin, emojis }: NoteReactionsProps) {
 
   // const isLoading = isReacting || isRemoving;
 
-  const getEmojiUrl = (reaction: string): string | null => {
-    if (note.reactionEmojis?.[reaction]) return note.reactionEmojis[reaction];
+  const getEmojiUrl = useCallback(
+    (reaction: string): string | null => {
+      if (note.reactionEmojis?.[reaction]) return note.reactionEmojis[reaction];
 
-    const parts = reaction.split(/[:@]/);
-    // 配列から必要な部分を取り出す
-    const emojiName = parts[1];
-    // const name = match ? match[1] : null;
-    // if (name && emojis[name]) return emojis[name];
-    // if (domain === ".") {
-    //   return emojiName;
-    // }
-    if (allEmojis[emojiName]) return allEmojis[emojiName];
+      const parts = reaction.split(/[:@]/);
+      const emojiName = parts[1];
+      if (allEmojis[emojiName]) return allEmojis[emojiName];
 
-    return null;
-  };
+      return null;
+    },
+    [allEmojis, note.reactionEmojis],
+  );
 
   return (
     <div className="flex flex-wrap gap-1">
