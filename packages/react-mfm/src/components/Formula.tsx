@@ -17,6 +17,7 @@ function FormulaSuspense({ formula, block }: FormulaProps) {
       renderToString(formula, {
         displayMode: block,
         throwOnError: false,
+        trust: false,
       }),
     [renderToString, formula, block],
   );

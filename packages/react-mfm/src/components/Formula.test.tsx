@@ -1,13 +1,28 @@
+import katex from "katex";
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import Formula from "./Formula";
 
 // Mock katex
-vi.mock("katex", () => ({
-  default: {
-    renderToString: vi.fn((tex) => `<span class="katex-mock">${tex}</span>`),
-  },
-}));
+vi.mock("katex", () => {
+  const htmlEntities: Record<string, string> = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  };
+  const escapeHtml = (formula: string) =>
+    formula.replace(/[&<>"']/g, (character) => htmlEntities[character]);
+
+  return {
+    default: {
+      renderToString: vi.fn(
+        (tex: string) => `<span class="katex-mock">${escapeHtml(tex)}</span>`,
+      ),
+    },
+  };
+});
 
 describe("Formula", () => {
   it("renders inline formula correctly", async () => {
@@ -19,6 +34,23 @@ describe("Formula", () => {
 
     const element = screen.getByText("E = mc^2");
     expect(element.tagName).toBe("SPAN");
+  });
+
+  it("disables KaTeX trusted HTML extensions", async () => {
+    const formula = String.raw`\href{javascript:alert(1)}{x}`;
+    render(<Formula formula={formula} />);
+
+    await waitFor(() => {
+      expect(screen.getByText(formula)).toBeInTheDocument();
+    });
+
+    expect(katex.renderToString).toHaveBeenCalledWith(
+      formula,
+      expect.objectContaining({
+        throwOnError: false,
+        trust: false,
+      }),
+    );
   });
 
   it("renders block formula correctly", async () => {

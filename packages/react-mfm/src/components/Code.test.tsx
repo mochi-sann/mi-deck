@@ -3,14 +3,29 @@ import { describe, expect, it, vi } from "vitest";
 import Code from "./Code";
 
 // Mock shiki
-vi.mock("shiki/bundle/web", () => ({
-  bundledLanguages: { js: {}, ts: {} },
-  createHighlighter: vi.fn().mockReturnValue({
-    loadLanguage: vi.fn().mockResolvedValue(undefined),
-    getLoadedLanguages: vi.fn().mockReturnValue(["js", "ts"]),
-    codeToHtml: vi.fn((code) => `<span class="highlighted">${code}</span>`),
-  }),
-}));
+vi.mock("shiki/bundle/web", () => {
+  const htmlEntities: Record<string, string> = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  };
+  const escapeHtml = (code: string) =>
+    code.replace(/[&<>"']/g, (character) => htmlEntities[character]);
+
+  return {
+    bundledLanguages: { js: {}, ts: {} },
+    createHighlighter: vi.fn().mockReturnValue({
+      loadLanguage: vi.fn().mockResolvedValue(undefined),
+      getLoadedLanguages: vi.fn().mockReturnValue(["js", "ts"]),
+      codeToHtml: vi.fn(
+        (code: string) =>
+          `<span class="highlighted">${escapeHtml(code)}</span>`,
+      ),
+    }),
+  };
+});
 
 describe("Code", () => {
   it("renders code block correctly", async () => {
