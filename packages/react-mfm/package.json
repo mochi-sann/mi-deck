@@ -58,7 +58,7 @@
     "misskey-js": "2025.12.2",
     "tsdown": "^0.16.8",
     "vite": "^7.0.6",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.0"
   },
   "peerDependencies": {
     "react": ">=19.0.0"
