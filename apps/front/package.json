@@ -116,7 +116,7 @@
     "vite-bundle-analyzer": "^1.2.3",
     "vite-plugin-pwa": "^1.0.3",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.4",
+    "vitest": "^4.0.0",
     "wait-on": "^8.0.5"
   }
 }
