@@ -1,11 +1,15 @@
 {
-  "extends": ["config:base"],
+  "extends": ["config:recommended"],
   "timezone": "Asia/Tokyo",
-  "baseBranches": ["main"],
+  "baseBranchPatterns": [
+    "main"
+  ],
   "pruneStaleBranches": false,
   "automerge": false,
   "prConcurrentLimit": 5,
-  "dependencyDashboard": true,
+  "dependencyDashboard": {
+    "enabled": true
+  },
   "reviewers": ["mochi-sann"],
   "labels": ["renovate", "dependencies"],
   "automergeStrategy": "merge-commit"
